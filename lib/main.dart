@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'utils/theme/theme_notifier.dart';
 
 void main() {
@@ -17,10 +18,21 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeNotifier>(
       builder: (context, theme, _) => MaterialApp(
         theme: theme.getTheme(),
-        //debugShowCheckedModeBanner: false,
-        home: const MyHomePage(
-          title: "test",
-        ),
+        debugShowCheckedModeBanner: false,
+        // home: const MyHomePage(
+        //   title: "test",
+        // ),
+        initialRoute: '/feed',
+        routes: {
+          // '/': (context) => SignUpScreen(),
+          // '/login': (context) => LoginScreen(),
+          // '/video': (context) => ChapterVideoPlayer(),
+          // '/welcome': (context) => WelcomeScreen(),
+          // '/responsive': (context) => ResponsiveTestScreen(),
+          // '/isauth': (context) => const ShowUserData(),
+          '/feed': (context) => const FeedScreen(),
+          // '/uploadvideo': (context) => const UploadVideoScreen(),
+        },
       ),
     );
   }

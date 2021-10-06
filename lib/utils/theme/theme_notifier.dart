@@ -9,9 +9,9 @@ class ThemeNotifier with ChangeNotifier {
     dividerColor: Colors.black12,
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
         .copyWith(secondary: Colors.white, brightness: Brightness.dark),
-    canvasColor: const Color(0xFFBC023B),
+    canvasColor: const Color(0xFF020304),
     appBarTheme:
-        const AppBarTheme(backgroundColor: Color(0xFFBC023B), elevation: 0),
+        const AppBarTheme(backgroundColor: Colors.yellow, elevation: 0),
   );
 
   final lightTheme = ThemeData(
