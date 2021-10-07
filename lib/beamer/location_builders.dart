@@ -3,19 +3,19 @@ import 'package:beamer/beamer.dart';
 import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 
-
-
 // OPTION A:
 final simpleLocationBuilder = SimpleLocationBuilder(
   routes: {
     '/': (context, state) => BeamPage(
           key: const ValueKey('home'),
           title: 'Home',
-          child: const MyHomePage(title: "test",),
+          child: const MyHomePage(
+            title: "test",
+          ),
         ),
-    '/books': (context, state) => BeamPage(
-          key: const ValueKey('books'),
-          title: 'Books',
+    '/feed': (context, state) => BeamPage(
+          key: const ValueKey('feed'),
+          title: 'feed',
           child: const FeedScreen(),
         ),
     // '/books/:bookId': (context, state) {

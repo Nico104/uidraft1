@@ -1,29 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/constants/themes.dart';
 import 'package:uidraft1/utils/store/store_manager.dart';
 
 class ThemeNotifier with ChangeNotifier {
-  final darkTheme = ThemeData(
-    primaryColor: Colors.green,
-    brightness: Brightness.dark,
-    backgroundColor: Colors.yellow,
-    dividerColor: Colors.black12,
-    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
-        .copyWith(secondary: Colors.white, brightness: Brightness.dark),
-    canvasColor: const Color(0xFF020304),
-    appBarTheme:
-        const AppBarTheme(backgroundColor: Colors.yellow, elevation: 0),
-  );
+  final darkTheme = constDarkTheme;
 
-  final lightTheme = ThemeData(
-    primaryColor: Colors.white,
-    brightness: Brightness.light,
-    backgroundColor: const Color(0xFFE5E5E5),
-    dividerColor: Colors.white54,
-    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(
-      secondary: Colors.black,
-      brightness: Brightness.light,
-    ),
-  );
+  final lightTheme = constLightTheme;
 
   late ThemeData _themeData;
   ThemeData getTheme() => _themeData;
