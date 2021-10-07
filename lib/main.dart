@@ -1,39 +1,52 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
+import 'beamer/location_builders.dart';
 import 'utils/theme/theme_notifier.dart';
 
 void main() {
+  //Beamer.setPathUrlStrategy();
   return runApp(ChangeNotifierProvider<ThemeNotifier>(
     create: (_) => ThemeNotifier(),
-    child: const MyApp(),
+    child: MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+  final routerDelegate = BeamerDelegate(
+    locationBuilder: simpleLocationBuilder,
+  );
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeNotifier>(
-      builder: (context, theme, _) => MaterialApp(
+      builder: (context, theme, _) => 
+      // MaterialApp(
+      //   theme: theme.getTheme(),
+      //   debugShowCheckedModeBanner: false,
+      //   // home: const MyHomePage(
+      //   //   title: "test",
+      //   // ),
+      //   initialRoute: '/feed',
+      //   routes: {
+      //     // '/': (context) => SignUpScreen(),
+      //     // '/login': (context) => LoginScreen(),
+      //     // '/video': (context) => ChapterVideoPlayer(),
+      //     // '/welcome': (context) => WelcomeScreen(),
+      //     // '/responsive': (context) => ResponsiveTestScreen(),
+      //     // '/isauth': (context) => const ShowUserData(),
+      //     '/feed': (context) => const FeedScreen(),
+      //     // '/uploadvideo': (context) => const UploadVideoScreen(),
+      //   },
+      // ),
+        MaterialApp.router(
         theme: theme.getTheme(),
         debugShowCheckedModeBanner: false,
-        // home: const MyHomePage(
-        //   title: "test",
-        // ),
-        initialRoute: '/feed',
-        routes: {
-          // '/': (context) => SignUpScreen(),
-          // '/login': (context) => LoginScreen(),
-          // '/video': (context) => ChapterVideoPlayer(),
-          // '/welcome': (context) => WelcomeScreen(),
-          // '/responsive': (context) => ResponsiveTestScreen(),
-          // '/isauth': (context) => const ShowUserData(),
-          '/feed': (context) => const FeedScreen(),
-          // '/uploadvideo': (context) => const UploadVideoScreen(),
-        },
-      ),
+        routerDelegate: routerDelegate,
+        routeInformationParser: BeamerParser(),
+      )
     );
   }
 }
