@@ -1,30 +1,39 @@
 import 'dart:convert';
 
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:uidraft1/widgets/feed/video_preview_widget.dart';
+import 'package:uidraft1/widgets/feed/videoPreview/video_preview_widget.dart';
 
-class FeedGridScreen extends StatelessWidget {
+class FeedGridLargeScreen extends StatelessWidget {
+  const FeedGridLargeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[200],
-      child: Align(
+      child: const Align(
           alignment: Alignment.topCenter,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(150, 10, 150, 0),
-            child: FeedGrid(),
-          )),
+          // child: Padding(
+          //   padding: EdgeInsets.fromLTRB(150, 10, 150, 0),
+          //   child: FeedGrid(),
+          // )),
+          child: FeedGrid()),
     );
   }
 }
 
 class FeedGrid extends StatefulWidget {
+  const FeedGrid({Key? key}) : super(key: key);
+
   @override
   _FeedGridState createState() => _FeedGridState();
 }
 
 class _FeedGridState extends State<FeedGrid> {
+  bool _loading = true;
+
+
   List<int> postIds = <int>[];
 
   //https://picsum.photos/1280/720
@@ -36,39 +45,54 @@ class _FeedGridState extends State<FeedGrid> {
 
   //Get PostIds List
   Future<void> fetchPostIds() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
+    try {
+        final response =
+            await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
 
-    if (response.statusCode == 200) {
-      //List<int> _postIds = <int>[];
-      // If the call to the server was successful, parse the JSON
-      List<dynamic> values = <dynamic>[];
-      values = json.decode(response.body);
-      if (values.isNotEmpty) {
-        for (int i = 0; i < values.length; i++) {
-          if (values[i] != null) {
-            Map<String, dynamic> map = values[i];
-            postIds.add(map['postId']);
-            print('Id-------${map['postId']}');
+        if (response.statusCode == 200) {
+          //List<int> _postIds = <int>[];
+          // If the call to the server was successful, parse the JSON
+          List<dynamic> values = <dynamic>[];
+          values = json.decode(response.body);
+          if (values.isNotEmpty) {
+            for (int i = 0; i < values.length; i++) {
+              if (values[i] != null) {
+                Map<String, dynamic> map = values[i];
+                postIds.add(map['postId']);
+                print('Id-------${map['postId']}');
+              }
+            }
           }
+          print(postIds);
+          _loading = false;
+          //return postIds;
+        } else {
+          // If that call was not successful, throw an error.
+          Beamer.of(context).beamToNamed("/error/feed");
+          throw Exception('Failed to load post');
         }
-      }
-      print(postIds);
-      //return postIds;
-    } else {
-      // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+    } catch (e) {
+      print("Error: " + e.toString());
+      Beamer.of(context).beamToNamed("/error/feed");
     }
+    
   }
 
   @override
   void initState() {
     super.initState();
 
-    fetchPostIds().then((value) {
+    // try {
+     fetchPostIds().then((value) {
       ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
+    // } catch (e) {
+    //   print("Error: " + e.toString());
+    //   Beamer.of(context).beamToNamed("/error/feed");
+    // }
+
+    
 
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
@@ -77,7 +101,7 @@ class _FeedGridState extends State<FeedGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
+    return _loading ? Container(color: Theme.of(context).canvasColor, child: const Center(child: CircularProgressIndicator())) : GridView.count(
       shrinkWrap: true,
       childAspectRatio: (1280 / 820),
       controller: _scrollController,

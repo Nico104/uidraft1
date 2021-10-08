@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
-class NavBar extends StatelessWidget implements PreferredSizeWidget {
-  const NavBar({Key? key}) : super(key: key);
+class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
+  const NavBarLarge({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: SizedBox(
-                    width: 1000,
+                    width: MediaQuery.of(context).size.width <= 1500 ? 700 : 1000,
                     //height: 30,
                     child: TextFormField(
                       style: const TextStyle(

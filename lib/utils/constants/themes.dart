@@ -9,12 +9,14 @@ final ThemeData constDarkTheme = ThemeData(
   //     .copyWith(secondary: Colors.white, brightness: Brightness.dark),
   canvasColor: const Color(0xFF020304),
   appBarTheme: const AppBarTheme(backgroundColor: Colors.yellow, elevation: 0),
+  scaffoldBackgroundColor: const Color(0xFF020304),
 );
 
 final ThemeData constLightTheme = ThemeData(
   primaryColor: Colors.white,
   brightness: Brightness.light,
   backgroundColor: const Color(0xFFE5E5E5),
+  // backgroundColor: const Color(0xFF020304),
   dividerColor: Colors.white54,
   // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(
   //   secondary: Colors.black,

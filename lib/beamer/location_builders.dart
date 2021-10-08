@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
+import 'package:uidraft1/error/error_feed_widget.dart';
 import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 
@@ -17,6 +18,13 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           key: const ValueKey('feed'),
           title: 'feed',
           child: const FeedScreen(),
+        ),
+
+
+      '/error/feed': (context, state) => BeamPage(
+          key: const ValueKey('error-feed'),
+          title: 'feed',
+          child: const ErrorFeed(),
         ),
     // '/books/:bookId': (context, state) {
     //   final book = books.firstWhere((book) =>
