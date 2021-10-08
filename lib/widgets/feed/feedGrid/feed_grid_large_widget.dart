@@ -33,7 +33,6 @@ class FeedGrid extends StatefulWidget {
 class _FeedGridState extends State<FeedGrid> {
   bool _loading = true;
 
-
   List<int> postIds = <int>[];
 
   //https://picsum.photos/1280/720
@@ -46,36 +45,37 @@ class _FeedGridState extends State<FeedGrid> {
   //Get PostIds List
   Future<void> fetchPostIds() async {
     try {
-        final response =
-            await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
+      final response =
+          await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
 
-        if (response.statusCode == 200) {
-          //List<int> _postIds = <int>[];
-          // If the call to the server was successful, parse the JSON
-          List<dynamic> values = <dynamic>[];
-          values = json.decode(response.body);
-          if (values.isNotEmpty) {
-            for (int i = 0; i < values.length; i++) {
-              if (values[i] != null) {
-                Map<String, dynamic> map = values[i];
-                postIds.add(map['postId']);
-                print('Id-------${map['postId']}');
-              }
+      if (response.statusCode == 200) {
+        //List<int> _postIds = <int>[];
+        // If the call to the server was successful, parse the JSON
+        List<dynamic> values = <dynamic>[];
+        values = json.decode(response.body);
+        if (values.isNotEmpty) {
+          for (int i = 0; i < values.length; i++) {
+            if (values[i] != null) {
+              Map<String, dynamic> map = values[i];
+              postIds.add(map['postId']);
+              print('Id-------${map['postId']}');
             }
           }
-          print(postIds);
-          _loading = false;
-          //return postIds;
-        } else {
-          // If that call was not successful, throw an error.
-          Beamer.of(context).beamToNamed("/error/feed");
-          throw Exception('Failed to load post');
         }
+        print(postIds);
+        setState(() {
+          _loading = false;
+        });
+        //return postIds;
+      } else {
+        // If that call was not successful, throw an error.
+        Beamer.of(context).beamToNamed("/error/feed");
+        throw Exception('Failed to load post');
+      }
     } catch (e) {
       print("Error: " + e.toString());
       Beamer.of(context).beamToNamed("/error/feed");
     }
-    
   }
 
   @override
@@ -83,7 +83,7 @@ class _FeedGridState extends State<FeedGrid> {
     super.initState();
 
     // try {
-     fetchPostIds().then((value) {
+    fetchPostIds().then((value) {
       ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
@@ -92,8 +92,6 @@ class _FeedGridState extends State<FeedGrid> {
     //   Beamer.of(context).beamToNamed("/error/feed");
     // }
 
-    
-
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
     //print(postIds);
@@ -101,24 +99,42 @@ class _FeedGridState extends State<FeedGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading ? Container(color: Theme.of(context).canvasColor, child: const Center(child: CircularProgressIndicator())) : GridView.count(
-      shrinkWrap: true,
-      childAspectRatio: (1280 / 820),
-      controller: _scrollController,
-      scrollDirection: Axis.vertical,
-      // Create a grid with 2 columns. If you change the scrollDirection to
-      // horizontal, this produces 2 rows.
-      crossAxisCount: 3,
-      // Generate 100 widgets that display their index in the List.
-      mainAxisSpacing: 10.0,
-      crossAxisSpacing: 10.0,
-      children: dataList.map((value) {
-        print("In Preview");
-        return VideoPreview(
-          postId: value,
-        );
-      }).toList(),
-    );
+    return _loading
+        ? Container(
+            color: Theme.of(context).canvasColor,
+            child: const Center(child: CircularProgressIndicator()))
+        : ScrollConfiguration(
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            child: SingleChildScrollView(
+              child: Container(
+                color: Theme.of(context).canvasColor,
+                child: Padding(
+                  padding: MediaQuery.of(context).size.width <= 1500
+                      ? const EdgeInsets.fromLTRB(160, 40, 160, 0)
+                      : const EdgeInsets.fromLTRB(310, 60, 310, 0),
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    childAspectRatio: (1280 / 1020),
+                    controller: _scrollController,
+                    scrollDirection: Axis.vertical,
+                    // Create a grid with 2 columns. If you change the scrollDirection to
+                    // horizontal, this produces 2 rows.
+                    crossAxisCount: 3,
+                    // Generate 100 widgets that display their index in the List.
+                    mainAxisSpacing: 20.0,
+                    crossAxisSpacing: 40.0,
+                    children: dataList.map((value) {
+                      print("In Preview");
+                      return VideoPreview(
+                        postId: value,
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          );
   }
 
   //// ADDING THE SCROLL LISTINER

@@ -32,7 +32,8 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width <= 1500 ? 700 : 1000,
+                    width:
+                        MediaQuery.of(context).size.width <= 1500 ? 700 : 1000,
                     //height: 30,
                     child: TextFormField(
                       style: const TextStyle(

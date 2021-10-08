@@ -16,4 +16,8 @@ extension CustomColorScheme on ColorScheme {
   Color get navBarIconColor => brightness == Brightness.light
       ? const Color(0xFFD3D3D3)
       : const Color(0xFFD3D3D3);
+
+  Color get videoPreviewTextColor => brightness == Brightness.light
+      ? const Color(0xFFF5F5F5)
+      : const Color(0xFFF5F5F5);
 }
