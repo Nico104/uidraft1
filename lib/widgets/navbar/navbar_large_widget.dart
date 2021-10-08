@@ -17,6 +17,7 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
+                //Logo
                 child: Text(
                   "LOGO",
                   style: TextStyle(
@@ -25,6 +26,7 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                       color: Theme.of(context).colorScheme.brandColor),
                 ),
               ),
+              //SearchBar
               Align(
                 alignment: Alignment.center,
                 child: Padding(
@@ -70,6 +72,7 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ),
+              //Icons and PB
               Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
@@ -78,6 +81,7 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        //Notifications
                         Icon(
                           Icons.notifications_none_outlined,
                           color: Theme.of(context).colorScheme.navBarIconColor,
@@ -86,6 +90,7 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                         const SizedBox(
                           width: 18,
                         ),
+                        //Dark Light Mode Switch
                         Icon(
                           Icons.dark_mode_outlined,
                           color: Theme.of(context).colorScheme.navBarIconColor,
@@ -94,6 +99,7 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                         const SizedBox(
                           width: 18,
                         ),
+                        //FeedSelection
                         Icon(
                           Icons.filter_list_outlined,
                           color: Theme.of(context).colorScheme.navBarIconColor,
@@ -102,6 +108,7 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                         const SizedBox(
                           width: 32,
                         ),
+                        //ProfilePicture
                         ClipRRect(
                           borderRadius: BorderRadius.circular(14.0),
                           child: Image.network(
@@ -119,47 +126,6 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
-    // Row(
-    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //   children: [
-    //     Text(
-    //       "LOGO",
-    //       style: getLogoTextStyle(Theme.of(context).colorScheme.brandColor),
-    //     ),
-    //     Padding(
-    //       padding: const EdgeInsets.all(16.0),
-    //       child: MaterialButton(
-    //         onPressed: () => Navigator.of(context).pushNamed('/welcome'),
-    //         color: Colors.blue,
-    //         child: const Text("Welcome"),
-    //       ),
-    //     ),
-    //     Padding(
-    //       padding: const EdgeInsets.all(16.0),
-    //       child: MaterialButton(
-    //         onPressed: () => Navigator.of(context).pushNamed('/signup'),
-    //         color: Colors.blue,
-    //         child: const Text("SignUp"),
-    //       ),
-    //     ),
-    //     Padding(
-    //       padding: const EdgeInsets.all(16.0),
-    //       child: MaterialButton(
-    //         onPressed: () => Navigator.of(context).pushNamed('/login'),
-    //         color: Colors.blue,
-    //         child: const Text("Login"),
-    //       ),
-    //     ),
-    //     Padding(
-    //       padding: const EdgeInsets.all(16.0),
-    //       child: MaterialButton(
-    //         onPressed: () => Navigator.of(context).pushNamed('/uploadvideo'),
-    //         color: Colors.blue,
-    //         child: const Text("Upload"),
-    //       ),
-    //     )
-    //   ],
-    // );
   }
 
   @override
