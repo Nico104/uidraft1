@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:uidraft1/error/error_feed_widget.dart';
 import 'package:uidraft1/main.dart';
+import 'package:uidraft1/screens/auth/login_screen.dart';
+import 'package:uidraft1/screens/auth/sign_up_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 
 // OPTION A:
@@ -20,12 +22,24 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           child: const FeedScreen(),
         ),
 
-
-      '/error/feed': (context, state) => BeamPage(
+    '/error/feed': (context, state) => BeamPage(
           key: const ValueKey('error-feed'),
           title: 'feed',
           child: const ErrorFeed(),
         ),
+
+    '/signup': (context, state) => BeamPage(
+          key: const ValueKey('signup'),
+          title: 'Sign Up',
+          child: const SignUpScreen(),
+        ),
+
+    '/login': (context, state) => BeamPage(
+          key: const ValueKey('signup'),
+          title: 'Login',
+          child: const LoginScreen(),
+        ),
+
     // '/books/:bookId': (context, state) {
     //   final book = books.firstWhere((book) =>
     //       book['id'] ==

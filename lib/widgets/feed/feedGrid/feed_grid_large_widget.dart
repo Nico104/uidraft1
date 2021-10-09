@@ -10,16 +10,13 @@ class FeedGridLargeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[200],
-      child: const Align(
-          alignment: Alignment.topCenter,
-          // child: Padding(
-          //   padding: EdgeInsets.fromLTRB(150, 10, 150, 0),
-          //   child: FeedGrid(),
-          // )),
-          child: FeedGrid()),
-    );
+    return const Align(
+        alignment: Alignment.topCenter,
+        // child: Padding(
+        //   padding: EdgeInsets.fromLTRB(150, 10, 150, 0),
+        //   child: FeedGrid(),
+        // )),
+        child: FeedGrid());
   }
 }
 
@@ -100,37 +97,32 @@ class _FeedGridState extends State<FeedGrid> {
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? Container(
-            color: Theme.of(context).canvasColor,
-            child: const Center(child: CircularProgressIndicator()))
+        ? const Center(child: CircularProgressIndicator())
         : ScrollConfiguration(
             behavior:
                 ScrollConfiguration.of(context).copyWith(scrollbars: false),
             child: SingleChildScrollView(
-              child: Container(
-                color: Theme.of(context).canvasColor,
-                child: Padding(
-                  padding: MediaQuery.of(context).size.width <= 1500
-                      ? const EdgeInsets.fromLTRB(160, 40, 160, 0)
-                      : const EdgeInsets.fromLTRB(310, 60, 310, 0),
-                  child: GridView.count(
-                    shrinkWrap: true,
-                    childAspectRatio: (1280 / 1020),
-                    controller: _scrollController,
-                    scrollDirection: Axis.vertical,
-                    // Create a grid with 2 columns. If you change the scrollDirection to
-                    // horizontal, this produces 2 rows.
-                    crossAxisCount: 3,
-                    // Generate 100 widgets that display their index in the List.
-                    mainAxisSpacing: 20.0,
-                    crossAxisSpacing: 40.0,
-                    children: dataList.map((value) {
-                      print("In Preview");
-                      return VideoPreview(
-                        postId: value,
-                      );
-                    }).toList(),
-                  ),
+              child: Padding(
+                padding: MediaQuery.of(context).size.width <= 1500
+                    ? const EdgeInsets.fromLTRB(160, 40, 160, 0)
+                    : const EdgeInsets.fromLTRB(310, 60, 310, 0),
+                child: GridView.count(
+                  shrinkWrap: true,
+                  childAspectRatio: (1280 / 1020),
+                  controller: _scrollController,
+                  scrollDirection: Axis.vertical,
+                  // Create a grid with 2 columns. If you change the scrollDirection to
+                  // horizontal, this produces 2 rows.
+                  crossAxisCount: 3,
+                  // Generate 100 widgets that display their index in the List.
+                  mainAxisSpacing: 20.0,
+                  crossAxisSpacing: 40.0,
+                  children: dataList.map((value) {
+                    print("In Preview");
+                    return VideoPreview(
+                      postId: value,
+                    );
+                  }).toList(),
                 ),
               ),
             ),

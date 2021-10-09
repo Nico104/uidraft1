@@ -42,33 +42,59 @@ class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
                           letterSpacing: 0.3),
                       cursorColor: Colors.white,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: const BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            width: 0,
+                            style: BorderStyle.none,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.brandColor,
+                              width: 0.5),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        filled: true,
+                        fillColor: Theme.of(context).colorScheme.searchBarColor,
+                        //fillColor: Colors.yellow,
+                        hintText: 'Search...',
+                        hintStyle: TextStyle(
+                            fontFamily: 'Segoe UI',
+                            fontSize: 16,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .searchBarTextColor),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.only(
+                            bottom: 11, top: 11, left: 15, right: 10),
+                        //SearchButton
+                        suffixIcon: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              print("search Button clicked");
+                            },
+                            splashColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(
+                                      width: 2,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .brandColor)),
                             ),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.brandColor,
-                                width: 0.5),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          filled: true,
-                          fillColor:
-                              Theme.of(context).colorScheme.searchBarColor,
-                          //fillColor: Colors.yellow,
-                          hintText: 'Search...',
-                          hintStyle: TextStyle(
-                              fontFamily: 'Segoe UI',
-                              fontSize: 16,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .searchBarTextColor),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.only(
-                              bottom: 11, top: 11, left: 15, right: 10)),
+                        ),
+                        suffixIconConstraints: const BoxConstraints(
+                            maxHeight: 24,
+                            minWidth: 20,
+                            minHeight: 20,
+                            maxWidth: 24 + 10),
+                      ),
                     ),
                   ),
                 ),

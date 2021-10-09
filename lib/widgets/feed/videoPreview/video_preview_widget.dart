@@ -117,14 +117,12 @@ class _VideoPreviewState extends State<VideoPreview> {
                         const SizedBox(
                           height: 7,
                         ),
+                        //User and Subchannel Information
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            // const SizedBox(
-                            //   width: 6,
-                            // ),
-                            //User PB
+                            //User Person icon
                             Icon(
                               Icons.person_outline_outlined,
                               color: Theme.of(context)
@@ -137,6 +135,119 @@ class _VideoPreviewState extends State<VideoPreview> {
                             ),
                             //Username
                             Text("username"),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            //Dot in the middle
+                            Container(
+                              width: 5,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .videoPreviewTextColor,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            //Subchannel icon
+                            Icon(
+                              Icons.smart_display_outlined,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .videoPreviewTextColor,
+                              size: 17,
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            //Subchannelname
+                            Text("c/CoolSamuraiStuff"),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 7,
+                        ),
+                        //Metrics
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            //Score - trending icon
+                            Icon(
+                              Icons.trending_up_outlined,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .videoPreviewTextColor,
+                              size: 17,
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            //Score
+                            Text("699"),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            //Dot in the middle
+                            Container(
+                              width: 5,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .videoPreviewTextColor,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            //Comments Icon
+                            Icon(
+                              Icons.mode_comment_outlined,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .videoPreviewTextColor,
+                              size: 17,
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            //Comment Count
+                            Text("304"),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            //Dot in the middle
+                            Container(
+                              width: 5,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .videoPreviewTextColor,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            //Views Icon
+                            Icon(
+                              Icons.visibility_outlined,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .videoPreviewTextColor,
+                              size: 17,
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            //Views
+                            Text("42044"),
                           ],
                         )
                       ],
