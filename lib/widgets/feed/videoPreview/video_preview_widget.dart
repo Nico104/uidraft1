@@ -73,187 +73,207 @@ class _VideoPreviewState extends State<VideoPreview> {
                   height: 18,
                 ),
                 //Data Preview
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      width: 3,
-                    ),
-                    //Profile Pictrue / Subchannel Profile Picture
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14.0),
-                      child: Image.network(
-                        "https://picsum.photos/700",
-                        fit: BoxFit.contain,
-                        width: 40,
-                        height: 40,
+                LayoutBuilder(builder:
+                    (BuildContext context, BoxConstraints constraints) {
+                  return SizedBox(
+                    width: constraints.maxWidth,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.topLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          //Profile Pictrue / Subchannel Profile Picture
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(14.0),
+                            child: Image.network(
+                              "https://picsum.photos/700",
+                              fit: BoxFit.contain,
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          //Metrics
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    width: 2,
+                                  ),
+                                  //Title
+                                  Container(
+                                    width: 320,
+                                    child: Text(
+                                      widget.postId.isOdd
+                                          ? 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.' +
+                                              snapshot.data!['postTitle']
+                                          : snapshot.data!['postTitle'],
+                                      //overflow: TextOverflow.fade,
+                                      //softWrap: false,
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                          fontFamily: 'Segoe UI',
+                                          fontSize: 17,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .videoPreviewTextColor,
+                                          letterSpacing: 1),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                              //User and Subchannel Information
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  //User Person icon
+                                  Icon(
+                                    Icons.person_outline_outlined,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .navBarIconColor,
+                                    size: 17,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  //Username
+                                  Text("username"),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  //Dot in the middle
+                                  Container(
+                                    width: 5,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .navBarIconColor,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  //Subchannel icon
+                                  Icon(
+                                    Icons.smart_display_outlined,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .navBarIconColor,
+                                    size: 17,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  //Subchannelname
+                                  Text("c/CoolSamuraiStuff"),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                              //Metrics
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  //Score - trending icon
+                                  Icon(
+                                    Icons.trending_up_outlined,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .navBarIconColor,
+                                    size: 17,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  //Score
+                                  Text("699"),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  //Dot in the middle
+                                  Container(
+                                    width: 5,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .navBarIconColor,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  //Comments Icon
+                                  Icon(
+                                    Icons.mode_comment_outlined,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .navBarIconColor,
+                                    size: 17,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  //Comment Count
+                                  Text("304"),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  //Dot in the middle
+                                  Container(
+                                    width: 5,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .navBarIconColor,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  //Views Icon
+                                  Icon(
+                                    Icons.visibility_outlined,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .navBarIconColor,
+                                    size: 17,
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  //Views
+                                  Text("42044"),
+                                ],
+                              )
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    //Metrics
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            //Title
-                            Text(
-                              snapshot.data!['postTitle'],
-                              style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize: 18,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .videoPreviewTextColor,
-                                  letterSpacing: 1),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 7,
-                        ),
-                        //User and Subchannel Information
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            //User Person icon
-                            Icon(
-                              Icons.person_outline_outlined,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .videoPreviewTextColor,
-                              size: 17,
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            //Username
-                            Text("username"),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            //Dot in the middle
-                            Container(
-                              width: 5,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .videoPreviewTextColor,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            //Subchannel icon
-                            Icon(
-                              Icons.smart_display_outlined,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .videoPreviewTextColor,
-                              size: 17,
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            //Subchannelname
-                            Text("c/CoolSamuraiStuff"),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 7,
-                        ),
-                        //Metrics
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            //Score - trending icon
-                            Icon(
-                              Icons.trending_up_outlined,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .videoPreviewTextColor,
-                              size: 17,
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            //Score
-                            Text("699"),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            //Dot in the middle
-                            Container(
-                              width: 5,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .videoPreviewTextColor,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            //Comments Icon
-                            Icon(
-                              Icons.mode_comment_outlined,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .videoPreviewTextColor,
-                              size: 17,
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            //Comment Count
-                            Text("304"),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            //Dot in the middle
-                            Container(
-                              width: 5,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .videoPreviewTextColor,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            //Views Icon
-                            Icon(
-                              Icons.visibility_outlined,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .videoPreviewTextColor,
-                              size: 17,
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            //Views
-                            Text("42044"),
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                )
+                  );
+                })
               ],
             );
           } else {

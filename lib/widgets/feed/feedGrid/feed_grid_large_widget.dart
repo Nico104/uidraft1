@@ -104,18 +104,27 @@ class _FeedGridState extends State<FeedGrid> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: MediaQuery.of(context).size.width <= 1500
-                    ? const EdgeInsets.fromLTRB(160, 40, 160, 0)
-                    : const EdgeInsets.fromLTRB(310, 60, 310, 0),
+                    ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
+                    : const EdgeInsets.fromLTRB(310, 120, 310, 0),
                 child: GridView.count(
                   shrinkWrap: true,
-                  childAspectRatio: (1280 / 1020),
+                  // childAspectRatio: MediaQuery.of(context).size.width >= 1700
+                  //     ? (1280 / 1174)
+                  //     : MediaQuery.of(context).size.width >= 1600
+                  //         ? (1280 / 1240)
+                  //         : MediaQuery.of(context).size.width >= 1300
+                  //             ? (1280 / 1240)
+                  //             : (1280 / 1240),
+                  childAspectRatio: MediaQuery.of(context).size.width >= 1700
+                      ? (1280 / 1174)
+                      : (1280 / 1240),
                   controller: _scrollController,
                   scrollDirection: Axis.vertical,
                   // Create a grid with 2 columns. If you change the scrollDirection to
                   // horizontal, this produces 2 rows.
                   crossAxisCount: 3,
                   // Generate 100 widgets that display their index in the List.
-                  mainAxisSpacing: 20.0,
+                  mainAxisSpacing: 10.0,
                   crossAxisSpacing: 40.0,
                   children: dataList.map((value) {
                     print("In Preview");

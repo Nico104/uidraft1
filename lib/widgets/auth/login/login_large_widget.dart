@@ -202,7 +202,7 @@ class _LoginFormState extends State<LoginForm> {
                   validator: (value) {
                     //check if password is right
                     if (value == null || value.isEmpty || value.length < 6) {
-                      return 'Password wrong, sir';
+                      return 'Password wrong or you took someone elses username, sir';
                     }
                     return null;
                   },

@@ -13,13 +13,20 @@ class FeedScreen extends StatefulWidget {
 class _FeedState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
-    return const ResponsiveWidget(
+    return ResponsiveWidget(
       smallScreen: Text("smallScreen"),
       mediumScreen: Text("mediumScreen"),
-      largeScreen: Scaffold(
-        appBar: NavBarLarge(),
-        body: FeedGridLargeScreen	(),
-        // body: Text("FeedGridScreen"),
+      // largeScreen: Scaffold(
+      //   extendBodyBehindAppBar: true,
+      //   appBar: NavBarLarge(),
+      //   body: FeedGridLargeScreen(),
+      //   // body: Text("FeedGridScreen"),
+      // ),
+      largeScreen: Material(
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: const [FeedGridLargeScreen(), NavBarLarge()],
+        ),
       ),
       veryLargeScreen: Text("veryLargeScreen"),
     );
