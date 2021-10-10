@@ -24,4 +24,8 @@ extension CustomColorScheme on ColorScheme {
   Color get textInputCursorColor => brightness == Brightness.light
       ? const Color(0xFFF5F5F5)
       : const Color(0xFFF5F5F5);
+
+  Color get userBioColor => brightness == Brightness.light
+      ? const Color(0xFF707070)
+      : const Color(0xFF707070);
 }

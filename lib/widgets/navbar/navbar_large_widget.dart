@@ -85,7 +85,7 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                       .searchBarTextColor),
                               isDense: true,
                               contentPadding: const EdgeInsets.only(
-                                  bottom: 11, top: 11, left: 15, right: 10),
+                                  bottom: 11, top: 11, left: 25, right: 10),
                               //SearchButton
                               suffixIcon: Material(
                                 color: Colors.transparent,

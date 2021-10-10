@@ -5,6 +5,8 @@ import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/auth/login_screen.dart';
 import 'package:uidraft1/screens/auth/sign_up_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
+import 'package:uidraft1/screens/profile/profile_screen.dart';
+import 'package:uidraft1/screens/subchannel/subchannel_screen.dart';
 
 // OPTION A:
 final simpleLocationBuilder = SimpleLocationBuilder(
@@ -35,9 +37,21 @@ final simpleLocationBuilder = SimpleLocationBuilder(
         ),
 
     '/login': (context, state) => BeamPage(
-          key: const ValueKey('signup'),
+          key: const ValueKey('login'),
           title: 'Login',
           child: const LoginScreen(),
+        ),
+
+    '/profile': (context, state) => BeamPage(
+          key: const ValueKey('profile'),
+          title: 'Profile',
+          child: const ProfileScreen(),
+        ),
+
+    '/subchannel': (context, state) => BeamPage(
+          key: const ValueKey('subchannel'),
+          title: 'Subchannel',
+          child: const SubchannelScreen(),
         ),
 
     // '/books/:bookId': (context, state) {

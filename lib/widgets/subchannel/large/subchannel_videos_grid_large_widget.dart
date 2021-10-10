@@ -3,40 +3,35 @@ import 'dart:convert';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:uidraft1/widgets/feed/videoPreview/video_preview_large_widget.dart';
+import 'package:uidraft1/widgets/profile/large/profile_video_preview_large_widget.dart';
+import 'package:uidraft1/widgets/subchannel/large/subchannel_video_preview_large_widget.dart';
 
-class FeedGridLargeScreen extends StatelessWidget {
-  const FeedGridLargeScreen({Key? key}) : super(key: key);
+class SubchannelVideosGridLargeScreen extends StatelessWidget {
+  const SubchannelVideosGridLargeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Align(
+    return Container(
+        width: 1500,
         alignment: Alignment.topCenter,
-        // child: Padding(
-        //   padding: EdgeInsets.fromLTRB(150, 10, 150, 0),
-        //   child: FeedGrid(),
-        // )),
-        child: FeedGrid());
+        child: const SubchannelVideos());
   }
 }
 
-class FeedGrid extends StatefulWidget {
-  const FeedGrid({Key? key}) : super(key: key);
+class SubchannelVideos extends StatefulWidget {
+  const SubchannelVideos({Key? key}) : super(key: key);
 
   @override
-  _FeedGridState createState() => _FeedGridState();
+  _SubchannelVideosState createState() => _SubchannelVideosState();
 }
 
-class _FeedGridState extends State<FeedGrid> {
+class _SubchannelVideosState extends State<SubchannelVideos> {
   bool _loading = true;
 
   List<int> postIds = <int>[];
-
-  //https://picsum.photos/1280/720
   List<int> dataList = <int>[];
   bool isLoading = false;
   int pageCount = 1;
-  //int pageCount = 0;
   late ScrollController _scrollController;
 
   //Get PostIds List
@@ -46,7 +41,6 @@ class _FeedGridState extends State<FeedGrid> {
           await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
 
       if (response.statusCode == 200) {
-        //List<int> _postIds = <int>[];
         // If the call to the server was successful, parse the JSON
         List<dynamic> values = <dynamic>[];
         values = json.decode(response.body);
@@ -63,7 +57,6 @@ class _FeedGridState extends State<FeedGrid> {
         setState(() {
           _loading = false;
         });
-        //return postIds;
       } else {
         // If that call was not successful, throw an error.
         Beamer.of(context).beamToNamed("/error/feed");
@@ -79,61 +72,40 @@ class _FeedGridState extends State<FeedGrid> {
   void initState() {
     super.initState();
 
-    // try {
     fetchPostIds().then((value) {
       ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
-    // } catch (e) {
-    //   print("Error: " + e.toString());
-    //   Beamer.of(context).beamToNamed("/error/feed");
-    // }
 
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
-    //print(postIds);
   }
 
   @override
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : ScrollConfiguration(
-            behavior:
-                ScrollConfiguration.of(context).copyWith(scrollbars: false),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: MediaQuery.of(context).size.width <= 1500
-                    ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
-                    : const EdgeInsets.fromLTRB(310, 120, 310, 0),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  // childAspectRatio: MediaQuery.of(context).size.width >= 1700
-                  //     ? (1280 / 1174)
-                  //     : MediaQuery.of(context).size.width >= 1600
-                  //         ? (1280 / 1240)
-                  //         : MediaQuery.of(context).size.width >= 1300
-                  //             ? (1280 / 1240)
-                  //             : (1280 / 1240),
-                  childAspectRatio: MediaQuery.of(context).size.width >= 1700
-                      ? (1280 / 1174)
-                      : (1280 / 1240),
-                  controller: _scrollController,
-                  scrollDirection: Axis.vertical,
-                  // Create a grid with 2 columns. If you change the scrollDirection to
-                  // horizontal, this produces 2 rows.
-                  crossAxisCount: 3,
-                  // Generate 100 widgets that display their index in the List.
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 40.0,
-                  children: dataList.map((value) {
-                    print("In Preview");
-                    return VideoPreview(
-                      postId: value,
-                    );
-                  }).toList(),
-                ),
-              ),
+        : Padding(
+            padding: const EdgeInsets.fromLTRB(160, 100, 160, 0),
+            child: GridView.count(
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              childAspectRatio: (1280 / 1174),
+              controller: _scrollController,
+              scrollDirection: Axis.vertical,
+              // Create a grid with 2 columns. If you change the scrollDirection to
+              // horizontal, this produces 2 rows.
+              crossAxisCount: 3,
+              // Generate 100 widgets that display their index in the List.
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 40.0,
+              children: dataList.map((value) {
+                print("In Preview");
+                return SubchannelVideoPreview(
+                  postId: value,
+                );
+                // return (Text(value.toString()));
+              }).toList(),
             ),
           );
   }
