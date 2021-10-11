@@ -7,6 +7,7 @@ import 'package:uidraft1/screens/auth/sign_up_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/screens/profile/profile_screen.dart';
 import 'package:uidraft1/screens/subchannel/subchannel_screen.dart';
+import 'package:uidraft1/screens/videoplayer/videoplayer_screen.dart';
 
 // OPTION A:
 final simpleLocationBuilder = SimpleLocationBuilder(
@@ -53,6 +54,12 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           title: 'Subchannel',
           child: const SubchannelScreen(),
         ),
+
+    '/whatch': (context, state) => BeamPage(
+      key: const ValueKey('videoplayer'),
+      title: 'VideoPlayer',
+      child: const VideoPlayerScreen(),
+    ),
 
     // '/books/:bookId': (context, state) {
     //   final book = books.firstWhere((book) =>
