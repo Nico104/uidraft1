@@ -42,8 +42,8 @@ class MyApp extends StatelessWidget {
             //   },
             // ),
             MaterialApp.router(
-              theme: theme.getTheme(),
               debugShowCheckedModeBanner: false,
+              theme: theme.getTheme(),
               routerDelegate: routerDelegate,
               routeInformationParser: BeamerParser(),
             ));
@@ -82,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => {
                 print('Set Dark theme'),
                 theme.setDarkMode(),
+                Beamer.of(context).beamToNamed('/whatch'),
               },
               child: const Text('Set Dark theme'),
             ),

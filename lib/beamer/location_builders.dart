@@ -56,10 +56,10 @@ final simpleLocationBuilder = SimpleLocationBuilder(
         ),
 
     '/whatch': (context, state) => BeamPage(
-      key: const ValueKey('videoplayer'),
-      title: 'VideoPlayer',
-      child: const VideoPlayerScreen(),
-    ),
+          key: const ValueKey('videoplayer'),
+          title: 'VideoPlayer',
+          child: const VideoPlayerScreen(),
+        ),
 
     // '/books/:bookId': (context, state) {
     //   final book = books.firstWhere((book) =>

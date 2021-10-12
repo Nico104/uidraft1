@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 extension CustomColorScheme on ColorScheme {
   Color get brandColor => brightness == Brightness.light
       ? const Color(0xFFF9005D)
+      // ? const Color(0xFFffe135)
       : const Color(0xFFffe135);
 
   Color get searchBarColor => brightness == Brightness.light

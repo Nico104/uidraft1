@@ -7,6 +7,7 @@ void main() => runApp(const VideoPlayerApp());
 
 class VideoPlayerApp extends StatelessWidget {
   const VideoPlayerApp({Key? key}) : super(key: key);
+  // final bool externAccess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,8 @@ class VideoPlayerApp extends StatelessWidget {
 
 class VideoPlayerScreen extends StatefulWidget {
   const VideoPlayerScreen({Key? key}) : super(key: key);
+
+  final bool externAccess = false;
 
   @override
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
@@ -34,29 +37,34 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     // offers several different constructors to play videos from assets, files,
     // or the internet.
     _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-      // 'http://localhost:3000/post/video',
+      // 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+      'http://localhost:3000/post/video',
     );
 
     // Initialize the controller and store the Future for later use.
-    _initializeVideoPlayerFuture = _controller.initialize();
+    _initializeVideoPlayerFuture = _controller.initialize().then((value) {
+      if (!widget.externAccess) {
+        _controller.play();
+      }
+      //_controller.play();
+    });
 
     // Use the controller to loop the video.
     _controller.setLooping(true);
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      await _controller.setVolume(0);
-      // _controller.play().then((value) {
-      //   _controller.setVolume(0.5);
-      // });
-      await _controller.play();
+    // WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    //   //await _controller.setVolume(0);
+    //   // _controller.play().then((value) {
+    //   //   _controller.setVolume(0.5);
+    //   // });
+    //   _controller.play();
 
-      // if (_controller.value.isPlaying && _controller.value.volume == 0) {
-      //   print("volume0");
-      //   _controller.setVolume(1);
-      //   print("volume1");
-      // }
-    });
+    //   // if (_controller.value.isPlaying && _controller.value.volume == 0) {
+    //   //   print("volume0");
+    //   //   _controller.setVolume(1);
+    //   //   print("volume1");
+    //   // }
+    // });
 
     super.initState();
   }
@@ -90,10 +98,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             //   // print("played");
             // }
             // _controller.setVolume(0.5);
-            return AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              // Use the VideoPlayer widget to display the video.
-              child: VideoPlayer(_controller),
+            return SizedBox(
+              width: 360,
+              height: 480,
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                // Use the VideoPlayer widget to display the video.
+                child: VideoPlayer(_controller),
+              ),
             );
           } else {
             // If the VideoPlayerController is still initializing, show a
