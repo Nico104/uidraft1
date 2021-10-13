@@ -29,4 +29,8 @@ extension CustomColorScheme on ColorScheme {
   Color get userBioColor => brightness == Brightness.light
       ? const Color(0xFF707070)
       : const Color(0xFF707070);
+
+  Color get highlightColor => brightness == Brightness.light
+      ? const Color(0xFFffffff)
+      : const Color(0xFFffffff);
 }

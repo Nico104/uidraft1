@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
@@ -41,12 +43,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   bool _isFullScreen = false;
   bool _showMenu = false;
+  bool _onHoverStop = false;
 
   @override
   void initState() {
     _controller = VideoPlayerController.network(
-      // 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-      'http://localhost:3000/post/video',
+      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+      // 'http://localhost:3000/post/video',
     );
 
     // Initialize the controller and store the Future for later use.
@@ -90,6 +93,49 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                         Padding(
                             padding: const EdgeInsets.only(top: 100),
                             child: MouseRegion(
+                              //On Player Exit
+                              onExit: (PointerExitEvent event) {
+                                if (_showMenu) {
+                                  setState(() {
+                                    _showMenu = false;
+                                    print("_showMenu set to false");
+                                  });
+                                }
+                              },
+                              onEnter: (PointerEnterEvent event) {
+                                if (!_showMenu) {
+                                  setState(() {
+                                    _showMenu = true;
+                                    print("_showMenu set to true");
+                                  });
+                                }
+                                Future.delayed(const Duration(seconds: 10), () {
+                                  if (_showMenu) {
+                                    setState(() {
+                                      _showMenu = false;
+                                      print("_showMenu set to false");
+                                    });
+                                  }
+                                });
+                              },
+                              onHover: (PointerHoverEvent event) {
+                                if (!_showMenu) {
+                                  setState(() {
+                                    _onHoverStop = false;
+                                    _showMenu = true;
+                                    print("_showMenu set to true");
+                                  });
+                                  Future.delayed(const Duration(seconds: 5),
+                                      () {
+                                    if (_showMenu) {
+                                      setState(() {
+                                        _showMenu = false;
+                                        print("_showMenu set to false");
+                                      });
+                                    }
+                                  });
+                                }
+                              },
                               child: Container(
                                 width: 1415,
                                 height: 796,
@@ -104,97 +150,206 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                           borderRadius:
                                               BorderRadius.circular(15),
                                           child: VideoPlayer(_controller)),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              RotatedBox(
-                                                quarterTurns: 3,
-                                                child: SliderTheme(
-                                                  data: const SliderThemeData(
-                                                    //thumbColor: Colors.green,
-                                                    thumbShape:
-                                                        RoundSliderThumbShape(
-                                                            enabledThumbRadius:
-                                                                7),
-                                                    //showValueIndicator: ShowValueIndicator.never,
-                                                  ),
-                                                  child: Slider(
-                                                    value: _controller
-                                                            .value.volume *
-                                                        100,
-                                                    min: 0,
-                                                    max: 100,
-                                                    //divisions: 20,
-                                                    //label: (_controller!.value.volume * 100).round().toString(),
-                                                    onChanged: (double value) {
+                                      // _showMenu
+                                      (true)
+                                          ? Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    RotatedBox(
+                                                      quarterTurns: 3,
+                                                      child: SliderTheme(
+                                                        data:
+                                                            const SliderThemeData(
+                                                          //thumbColor: Colors.green,
+                                                          thumbShape:
+                                                              RoundSliderThumbShape(
+                                                                  enabledThumbRadius:
+                                                                      7),
+                                                          //showValueIndicator: ShowValueIndicator.never,
+                                                        ),
+                                                        child: Slider(
+                                                          value: _controller
+                                                                  .value
+                                                                  .volume *
+                                                              100,
+                                                          min: 0,
+                                                          max: 100,
+                                                          //divisions: 20,
+                                                          //label: (_controller!.value.volume * 100).round().toString(),
+                                                          onChanged:
+                                                              (double value) {
+                                                            setState(() {
+                                                              _controller
+                                                                  .setVolume(
+                                                                      value /
+                                                                          100);
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    const SizedBox(
+                                                      width: 24,
+                                                    ),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        color: Theme.of(context)
+                                                            .canvasColor,
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4.0),
+                                                        child: Icon(
+                                                          Icons.play_arrow,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .highlightColor,
+                                                          size: 32,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        color: Theme.of(context)
+                                                            .canvasColor,
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4.0),
+                                                        child: Icon(
+                                                          Icons.skip_next,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .highlightColor,
+                                                          size: 24,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Flexible(
+                                                      child: SizedBox(
+                                                        height: 20,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                          child: VideoProgressIndicator(
+                                                              _controller,
+                                                              colors: const VideoProgressColors(
+                                                                  playedColor:
+                                                                      Colors
+                                                                          .red,
+                                                                  bufferedColor:
+                                                                      Colors
+                                                                          .purple,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .green),
+                                                              allowScrubbing:
+                                                                  true),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        color: Theme.of(context)
+                                                            .canvasColor,
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4.0),
+                                                        child: Icon(
+                                                          Icons
+                                                              .fullscreen_rounded,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .highlightColor,
+                                                          size: 28,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 12,
+                                                    ),
+                                                  ],
+                                                ),
+                                                FloatingActionButton(
+                                                  onPressed: () {
+                                                    if (_controller
+                                                        .value.isPlaying) {
                                                       setState(() {
-                                                        _controller.setVolume(
-                                                            value / 100);
+                                                        _controller.pause();
+                                                        print("paused");
                                                       });
-                                                    },
+                                                    } else {
+                                                      // If the video is paused, play it.
+                                                      setState(() {
+                                                        _controller.play();
+                                                        print("playing");
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Icon(
+                                                    _controller.value.isPlaying
+                                                        ? Icons.pause
+                                                        : Icons.play_arrow,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          VideoProgressIndicator(_controller,
-                                              colors: const VideoProgressColors(
-                                                  playedColor: Colors.red,
-                                                  bufferedColor: Colors.purple,
-                                                  backgroundColor:
-                                                      Colors.green),
-                                              allowScrubbing: true),
-                                          FloatingActionButton(
-                                            onPressed: () {
-                                              if (_controller.value.isPlaying) {
-                                                setState(() {
-                                                  _controller.pause();
-                                                  print("paused");
-                                                });
-                                              } else {
-                                                // If the video is paused, play it.
-                                                setState(() {
-                                                  _controller.play();
-                                                  print("playing");
-                                                });
-                                              }
-                                            },
-                                            child: Icon(
-                                              _controller.value.isPlaying
-                                                  ? Icons.pause
-                                                  : Icons.play_arrow,
-                                            ),
-                                          ),
-                                          FloatingActionButton(
-                                            onPressed: () {
-                                              if (!_isFullScreen) {
-                                                setState(() {
-                                                  _isFullScreen = true;
-                                                  goFullScreen();
-                                                });
-                                              } else {
-                                                setState(() {
-                                                  _isFullScreen = false;
-                                                  exitFullScreen();
-                                                });
-                                              }
-                                            },
-                                            child: Icon(
-                                              _isFullScreen
-                                                  ? Icons.fullscreen
-                                                  : Icons.fullscreen_exit,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                                FloatingActionButton(
+                                                  onPressed: () {
+                                                    if (!_isFullScreen) {
+                                                      setState(() {
+                                                        _isFullScreen = true;
+                                                        goFullScreen();
+                                                      });
+                                                    } else {
+                                                      setState(() {
+                                                        _isFullScreen = false;
+                                                        exitFullScreen();
+                                                      });
+                                                    }
+                                                  },
+                                                  child: const Icon(
+                                                      Icons.fullscreen),
+                                                ),
+                                              ],
+                                            )
+                                          : const SizedBox(),
                                     ],
                                   ),
                                 ),
@@ -206,107 +361,132 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                         Stack(
                             alignment: Alignment.bottomCenter,
                             children: [
-                              AspectRatio(
-                                aspectRatio: _controller.value.aspectRatio,
-                                child: SizedBox.expand(
-                                  child: FittedBox(
-                                    alignment: Alignment.center,
-                                    fit: BoxFit.cover,
-                                    child: SizedBox(
-                                      // width: _controller.value.size.width,
-                                      // height: _controller.value.size.height,
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height,
-                                      child: VideoPlayer(_controller),
+                              MouseRegion(
+                                onHover: (PointerHoverEvent event) {
+                                  if (!_showMenu) {
+                                    setState(() {
+                                      _onHoverStop = false;
+                                      _showMenu = true;
+                                      print("_showMenu set to true");
+                                    });
+                                    Future.delayed(const Duration(seconds: 10),
+                                        () {
+                                      if (_showMenu) {
+                                        setState(() {
+                                          _showMenu = false;
+                                          print("_showMenu set to false");
+                                        });
+                                      }
+                                    });
+                                  }
+                                },
+                                child: AspectRatio(
+                                  aspectRatio: _controller.value.aspectRatio,
+                                  child: SizedBox.expand(
+                                    child: FittedBox(
+                                      alignment: Alignment.center,
+                                      fit: BoxFit.cover,
+                                      child: SizedBox(
+                                        // width: _controller.value.size.width,
+                                        // height: _controller.value.size.height,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        child: VideoPlayer(_controller),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      RotatedBox(
-                                        quarterTurns: 3,
-                                        child: SliderTheme(
-                                          data: const SliderThemeData(
-                                            //thumbColor: Colors.green,
-                                            thumbShape: RoundSliderThumbShape(
-                                                enabledThumbRadius: 7),
-                                            //showValueIndicator: ShowValueIndicator.never,
-                                          ),
-                                          child: Slider(
-                                            value:
-                                                _controller.value.volume * 100,
-                                            min: 0,
-                                            max: 100,
-                                            //divisions: 20,
-                                            //label: (_controller!.value.volume * 100).round().toString(),
-                                            onChanged: (double value) {
+                              _showMenu
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            RotatedBox(
+                                              quarterTurns: 3,
+                                              child: SliderTheme(
+                                                data: const SliderThemeData(
+                                                  //thumbColor: Colors.green,
+                                                  thumbShape:
+                                                      RoundSliderThumbShape(
+                                                          enabledThumbRadius:
+                                                              7),
+                                                  //showValueIndicator: ShowValueIndicator.never,
+                                                ),
+                                                child: Slider(
+                                                  value:
+                                                      _controller.value.volume *
+                                                          100,
+                                                  min: 0,
+                                                  max: 100,
+                                                  //divisions: 20,
+                                                  //label: (_controller!.value.volume * 100).round().toString(),
+                                                  onChanged: (double value) {
+                                                    setState(() {
+                                                      _controller.setVolume(
+                                                          value / 100);
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        VideoProgressIndicator(_controller,
+                                            colors: const VideoProgressColors(
+                                                playedColor: Colors.red,
+                                                bufferedColor: Colors.purple,
+                                                backgroundColor: Colors.green),
+                                            allowScrubbing: true),
+                                        FloatingActionButton(
+                                          onPressed: () {
+                                            if (_controller.value.isPlaying) {
                                               setState(() {
-                                                _controller
-                                                    .setVolume(value / 100);
+                                                _controller.pause();
+                                                print("paused");
                                               });
-                                            },
+                                            } else {
+                                              // If the video is paused, play it.
+                                              setState(() {
+                                                _controller.play();
+                                                print("playing");
+                                              });
+                                            }
+                                          },
+                                          child: Icon(
+                                            _controller.value.isPlaying
+                                                ? Icons.pause
+                                                : Icons.play_arrow,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  VideoProgressIndicator(_controller,
-                                      colors: const VideoProgressColors(
-                                          playedColor: Colors.red,
-                                          bufferedColor: Colors.purple,
-                                          backgroundColor: Colors.green),
-                                      allowScrubbing: true),
-                                  FloatingActionButton(
-                                    onPressed: () {
-                                      if (_controller.value.isPlaying) {
-                                        setState(() {
-                                          _controller.pause();
-                                          print("paused");
-                                        });
-                                      } else {
-                                        // If the video is paused, play it.
-                                        setState(() {
-                                          _controller.play();
-                                          print("playing");
-                                        });
-                                      }
-                                    },
-                                    child: Icon(
-                                      _controller.value.isPlaying
-                                          ? Icons.pause
-                                          : Icons.play_arrow,
-                                    ),
-                                  ),
-                                  FloatingActionButton(
-                                    onPressed: () {
-                                      if (!_isFullScreen) {
-                                        setState(() {
-                                          _isFullScreen = true;
-                                          goFullScreen();
-                                        });
-                                      } else {
-                                        setState(() {
-                                          _isFullScreen = false;
-                                          exitFullScreen();
-                                        });
-                                      }
-                                    },
-                                    child: Icon(
-                                      _isFullScreen
-                                          ? Icons.fullscreen
-                                          : Icons.fullscreen_exit,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                        FloatingActionButton(
+                                          onPressed: () {
+                                            if (!_isFullScreen) {
+                                              setState(() {
+                                                _isFullScreen = true;
+                                                goFullScreen();
+                                              });
+                                            } else {
+                                              setState(() {
+                                                _isFullScreen = false;
+                                                exitFullScreen();
+                                              });
+                                            }
+                                          },
+                                          child:
+                                              const Icon(Icons.fullscreen_exit),
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox(),
                             ],
                           );
                   } else {
