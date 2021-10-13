@@ -199,6 +199,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                   ],
                                                 ),
                                                 Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     const SizedBox(
                                                       width: 24,
@@ -255,23 +257,33 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                     ),
                                                     Flexible(
                                                       child: SizedBox(
-                                                        height: 20,
+                                                        height: 15,
                                                         child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
+                                                          borderRadius: const BorderRadius
+                                                                  .only(
+                                                              topLeft: Radius
+                                                                  .circular(28),
+                                                              topRight: Radius
+                                                                  .circular(28),
+                                                              bottomLeft: Radius
                                                                   .circular(12),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          12)),
                                                           child: VideoProgressIndicator(
                                                               _controller,
-                                                              colors: const VideoProgressColors(
-                                                                  playedColor:
-                                                                      Colors
-                                                                          .red,
+                                                              colors: VideoProgressColors(
+                                                                  playedColor: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .highlightColor,
                                                                   bufferedColor:
                                                                       Colors
-                                                                          .purple,
+                                                                          .grey,
                                                                   backgroundColor:
                                                                       Colors
-                                                                          .green),
+                                                                          .transparent),
                                                               allowScrubbing:
                                                                   true),
                                                         ),
