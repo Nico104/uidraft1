@@ -277,10 +277,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                                   playedColor: Theme.of(
                                                                           context)
                                                                       .colorScheme
-                                                                      .highlightColor,
+                                                                      .brandColor,
                                                                   bufferedColor:
                                                                       Colors
-                                                                          .grey,
+                                                                          .grey.withOpacity(0.7),
                                                                   backgroundColor:
                                                                       Colors
                                                                           .transparent),
@@ -292,29 +292,37 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                     const SizedBox(
                                                       width: 10,
                                                     ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
+                                                    MaterialButton(   
+                                                      focusColor: Colors.transparent,
+                                                      minWidth: 0,       
+                                                                 padding: const EdgeInsets.all(0),                                
+                                                      onPressed: () { if (!_isFullScreen) {
+                                                      setState(() {
+                                                      _isFullScreen = true;
+                                                      goFullScreen();
+                                                      });
+                                                      } else {
+                                                      setState(() {
+                                                      _isFullScreen = false;
+                                                      exitFullScreen();
+                                                      });
+                                                      }
+                                                      },
+                                                      child: Container(decoration: BoxDecoration(
+                                                        
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(12),
                                                         color: Theme.of(context)
-                                                            .canvasColor,
+                                                            .canvasColor.withOpacity(0.8),
+                                                      ),child: Padding(
+                                                        padding: const EdgeInsets.all(2.0),
+                                                        child: Icon(Icons.fullscreen, size: 32, color: Theme.of(context).colorScheme.brandColor,),
+                                                      )),
+                                                      
                                                       ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(4.0),
-                                                        child: Icon(
-                                                          Icons
-                                                              .fullscreen_rounded,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .highlightColor,
-                                                          size: 28,
-                                                        ),
-                                                      ),
-                                                    ),
+
+                                                   
                                                     const SizedBox(
                                                       width: 12,
                                                     ),
