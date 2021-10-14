@@ -33,4 +33,8 @@ extension CustomColorScheme on ColorScheme {
   Color get highlightColor => brightness == Brightness.light
       ? const Color(0xFFffffff)
       : const Color(0xFFffffff);
+
+  Color get videoPlayerIconBackgroundColor => brightness == Brightness.light
+      ? const Color(0xFF262525)
+      : const Color(0xFF262525);
 }
