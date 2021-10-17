@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
+import 'package:uidraft1/admin%20tools/create_tag.dart';
 import 'package:uidraft1/error/error_feed_widget.dart';
 import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/auth/login_screen.dart';
@@ -59,6 +60,12 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           key: const ValueKey('videoplayer'),
           title: 'VideoPlayer',
           child: const VideoPlayerScreen(),
+        ),
+
+    '/createtag': (context, state) => BeamPage(
+          key: const ValueKey('createtag'),
+          title: 'createtag',
+          child: const CreateTagLargeScreen(),
         ),
 
     // '/books/:bookId': (context, state) {

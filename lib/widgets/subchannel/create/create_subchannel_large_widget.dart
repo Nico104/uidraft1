@@ -1,86 +1,90 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginLargeScreen extends StatelessWidget {
-  const LoginLargeScreen({Key? key}) : super(key: key);
+class CreateSubchannelLargeScreen extends StatelessWidget {
+  const CreateSubchannelLargeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
-            child: Text(
-              "LOGO",
-              style: TextStyle(
-                  fontFamily: 'Segoe UI Black',
-                  fontSize: 28,
-                  color: Theme.of(context).colorScheme.brandColor),
+    return Material(
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
+              child: Text(
+                "LOGO",
+                style: TextStyle(
+                    fontFamily: 'Segoe UI Black',
+                    fontSize: 28,
+                    color: Theme.of(context).colorScheme.brandColor),
+              ),
             ),
           ),
-        ),
-        const Center(
-          child: SizedBox(height: 440, width: 400, child: LoginForm()),
-        )
-      ],
+          const Center(
+            child: SizedBox(
+                height: 670, width: 400, child: CreateSubchannelForm()),
+          )
+        ],
+      ),
     );
   }
 }
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+class CreateSubchannelForm extends StatefulWidget {
+  const CreateSubchannelForm({Key? key}) : super(key: key);
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _CreateSubchannelFormState createState() => _CreateSubchannelFormState();
 }
 
-//LoginForm
-class _LoginFormState extends State<LoginForm> {
+//CreateSubchannelForm
+class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
   final _formKey = GlobalKey<FormState>();
-  bool _obscureTextPasswor1 = true;
 
-  final _usernameTextController = TextEditingController();
-  final _userpasswordTextController = TextEditingController();
-
-  String buttonText = "Login";
-
-  String? errorText;
+  final _tagNameTextController = TextEditingController();
+  final _tagParentNameTextController = TextEditingController();
 
   @override
   void dispose() {
-    _usernameTextController.dispose();
-    _userpasswordTextController.dispose();
+    _tagNameTextController.dispose();
+    _tagParentNameTextController.dispose();
     super.dispose();
   }
 
-  //LoginMethod
-  Future<bool> _login(String username, String password) async {
-    var url = Uri.parse('http://localhost:3000/login');
-    var response = await http
-        .post(url, body: {'username': '$username', 'password': '$password'});
+  Future<void> _createSubchannel(String tagname) async {
+    var url = Uri.parse('http://localhost:3000/tag/createSubchannel');
+    var response = await http.post(url, body: {'tagname': '$tagname'});
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 
     if (response.statusCode == 201) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          'access_token', json.decode(response.body)["access_token"]);
-      print("Acess Token: ${prefs.getString('access_token')}");
-
-      // Navigator.of(context).pushNamed('/');
-      // Beamer.of(context).beamToNamed('/');
-      return true;
+      print("CREATING TAG WITH TAGNAME: $tagname WAS SUCCESSFULL");
+    } else {
+      print("CREATING TAG WITH TAGNAME: $tagname WAS !!!NOT!!! SUCCESSFULL");
     }
+  }
 
-    return false;
-    //Navigator.of(context).pushNamed('/welcome');
+  Future<void> _createSubchannelWithParent(
+      String tagname, String parenttagname) async {
+    var url =
+        Uri.parse('http://localhost:3000/tag/createSubchannelWithParentTag');
+    var response = await http.post(url,
+        body: {'tagname': '$tagname', 'parenttagname': '$parenttagname'});
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      print(
+          "CREATING TAG WITH TAGNAME: $tagname and Parent $parenttagname WAS SUCCESSFULL");
+    } else {
+      print(
+          "CREATING TAG WITH TAGNAME: $tagname and Parent $parenttagname WAS !!!NOT!!! SUCCESSFULL");
+    }
   }
 
   @override
@@ -96,15 +100,16 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              //LOGO
+              //Thank you for signing up text
               SizedBox(
                 width: 270,
                 child: Text(
-                  "LOGO",
+                  "Enter Tag and Parent Tag",
                   style: TextStyle(
-                      fontFamily: 'Segoe UI Black',
-                      fontSize: 28,
-                      color: Theme.of(context).colorScheme.brandColor),
+                    fontFamily: 'Segoe UI',
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.textInputCursorColor,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -115,7 +120,7 @@ class _LoginFormState extends State<LoginForm> {
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: _usernameTextController,
+                  controller: _tagNameTextController,
                   style: const TextStyle(
                       fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
                   cursorColor:
@@ -135,7 +140,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Username...',
+                    hintText: 'Tagname...',
                     hintStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -155,12 +160,11 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     errorStyle:
                         const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    errorText: errorText,
                   ),
                   validator: (value) {
-                    //check if username exists
+                    //Check if username is free
                     if (value == null || value.isEmpty) {
-                      return 'You may enter your username, sir';
+                      return 'You may enter a tagname, master';
                     }
                     return null;
                   },
@@ -169,13 +173,12 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(
                 height: 40,
               ),
-              //Password
+              //Useremail
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: _userpasswordTextController,
-                  obscureText: _obscureTextPasswor1,
-                  // autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _tagParentNameTextController,
+                  keyboardType: TextInputType.emailAddress,
                   style: const TextStyle(
                       fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
                   cursorColor:
@@ -195,7 +198,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Password...',
+                    hintText: 'ParentTag...',
                     hintStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -215,27 +218,10 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     errorStyle:
                         const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    errorText: errorText,
-
-                    //Visibility Icon
-                    suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      onPressed: () => setState(() {
-                        _obscureTextPasswor1 = !_obscureTextPasswor1;
-                      }),
-                      icon: _obscureTextPasswor1
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined),
-                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'please enter a password';
-                    }
-                    return null;
-                  },
                 ),
               ),
+
               const SizedBox(
                 height: 60,
               ),
@@ -251,28 +237,34 @@ class _LoginFormState extends State<LoginForm> {
                       backgroundColor:
                           Theme.of(context).colorScheme.brandColor),
                   child: Text(
-                    'Login',
+                    'Create Tag',
                     style: TextStyle(
                         fontFamily: 'Segoe UI Black',
                         fontSize: 18,
-                        color:
-                            Theme.of(context).colorScheme.textInputCursorColor),
+                        color: Theme.of(context).canvasColor),
                   ),
-                  onPressed: () async {
+                  onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      if (await _login(_usernameTextController.text,
-                          _userpasswordTextController.text)) {
-                        setState(() {
-                          errorText = null;
-                        });
-                        print("success");
-                        Beamer.of(context).beamToNamed('/feed');
+                      // If the form is valid, display a snackbar. In the real world,
+                      // you'd often call a server or save the information in a database.
+
+                      if (_tagNameTextController.text.isNotEmpty &&
+                          _tagParentNameTextController.text.isNotEmpty) {
+                        _createSubchannelWithParent(
+                            _tagNameTextController.text.toLowerCase(),
+                            _tagParentNameTextController.text.toLowerCase());
+                      } else if (_tagNameTextController.text.isNotEmpty &&
+                          _tagParentNameTextController.text.isEmpty) {
+                        _createSubchannel(
+                            _tagNameTextController.text.toLowerCase());
                       } else {
-                        setState(() {
-                          errorText = "Username or Password wrong";
-                        });
+                        print("No if is true");
                       }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Processing Data')),
+                      );
                     }
                   },
                 ),

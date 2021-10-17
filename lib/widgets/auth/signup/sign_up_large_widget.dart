@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SignUpLargeScreen extends StatelessWidget {
   const SignUpLargeScreen({Key? key}) : super(key: key);
@@ -50,6 +54,9 @@ class _SignUpFormState extends State<SignUpForm> {
   // //final _profileDisplayNameTextController = TextEditingController();
   // final _profileBioTextController = TextEditingController();
 
+  String titleText =
+      "It is a long established fact that a reader will be distracted by the readable content of a page when Looking";
+
   double _formProgress = 0;
 
   @override
@@ -59,6 +66,40 @@ class _SignUpFormState extends State<SignUpForm> {
     _userpasswordTextController.dispose();
     _userpasswordControlTextController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signUp(
+      String username, String useremail, String userpassword) async {
+    DateTime signUpDate = DateTime.now();
+
+    var url = Uri.parse('http://localhost:3000/user/signup');
+    var response = await http.post(url, body: {
+      "username": "$username",
+      "useremail": "$useremail",
+      "userpassword": "$userpassword",
+      "userSignUpDateTime": "$signUpDate",
+      // "$DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(DateTime.now())}",
+      // "2012-04-23T18:25:43.511Z",
+      "userLanguage": "en"
+    });
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      print("yes");
+      Navigator.of(context).pushNamed('/login');
+    } else {
+      print("nope");
+      //Navigator.of(context).pushNamed('/login');
+      setState(() {
+        _usernameTextController.text = "";
+        _useremailTextController.text = "";
+        _userpasswordTextController.text = "";
+        _userpasswordControlTextController.text = "";
+        titleText = "Something went wrong, please retry";
+      });
+    }
   }
 
   @override
@@ -78,7 +119,7 @@ class _SignUpFormState extends State<SignUpForm> {
               SizedBox(
                 width: 270,
                 child: Text(
-                  "It is a long established fact that a reader will be distracted by the readable content of a page when Looking",
+                  titleText,
                   style: TextStyle(
                     fontFamily: 'Segoe UI',
                     fontSize: 16,
@@ -374,6 +415,12 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (_formKey.currentState!.validate()) {
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
+
+                      _signUp(
+                          _usernameTextController.text,
+                          _useremailTextController.text,
+                          _userpasswordControlTextController.text);
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Processing Data')),
                       );

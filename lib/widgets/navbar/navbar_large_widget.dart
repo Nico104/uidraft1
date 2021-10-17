@@ -1,4 +1,6 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 // class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
@@ -120,69 +122,155 @@ class _NavBarLargeState extends State<NavBarLarge> {
                     ),
                     //Icons and PB
                     Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              //Notifications
-                              Icon(
-                                Icons.notifications_none_outlined,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .navBarIconColor,
-                                size: 26,
-                              ),
-                              const SizedBox(
-                                width: 18,
-                              ),
-                              //Dark Light Mode Switch
-                              Icon(
-                                Icons.dark_mode_outlined,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .navBarIconColor,
-                                size: 24,
-                              ),
-                              const SizedBox(
-                                width: 18,
-                              ),
-                              //FeedSelection
-                              Icon(
-                                Icons.filter_list_outlined,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .navBarIconColor,
-                                size: 30,
-                              ),
-                              const SizedBox(
-                                width: 32,
-                              ),
-                              //ProfilePicture
-                              InkWell(
-                                splashColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () {
-                                  setState(() {
-                                    _showMenu = !_showMenu;
-                                  });
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(14.0),
-                                  child: Image.network(
-                                    "https://picsum.photos/700",
-                                    fit: BoxFit.contain,
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ))
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: FutureBuilder(
+                            future: isAuthenticated(),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.data == 200) {
+                                //If User Is Logged in
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    //Notifications
+                                    Icon(
+                                      Icons.notifications_none_outlined,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .navBarIconColor,
+                                      size: 26,
+                                    ),
+                                    const SizedBox(
+                                      width: 18,
+                                    ),
+                                    //Dark Light Mode Switch
+                                    Icon(
+                                      Icons.dark_mode_outlined,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .navBarIconColor,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(
+                                      width: 18,
+                                    ),
+                                    //FeedSelection
+                                    Icon(
+                                      Icons.filter_list_outlined,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .navBarIconColor,
+                                      size: 30,
+                                    ),
+                                    const SizedBox(
+                                      width: 32,
+                                    ),
+                                    //ProfilePicture
+                                    InkWell(
+                                      splashColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () {
+                                        setState(() {
+                                          _showMenu = !_showMenu;
+                                        });
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(14.0),
+                                        child: Image.network(
+                                          "https://picsum.photos/700",
+                                          fit: BoxFit.contain,
+                                          width: 40,
+                                          height: 40,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                //If User Is NOT logged in
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    //Dark Light Mode Switch
+                                    Icon(
+                                      Icons.dark_mode_outlined,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .navBarIconColor,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(
+                                      width: 18,
+                                    ),
+                                    //Login Button
+                                    OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                        ),
+                                        side: BorderSide(
+                                            width: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .brandColor),
+                                      ),
+                                      onPressed: () => Beamer.of(context)
+                                          .beamToNamed('/login'),
+                                      child: Text(
+                                        'Login',
+                                        style: TextStyle(
+                                            fontFamily: 'Segoe UI',
+                                            fontSize: 15,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .brandColor),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Text("or"),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    //SignUp Button
+                                    OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                        ),
+                                        side: BorderSide(
+                                            width: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .brandColor),
+                                      ),
+                                      onPressed: () => Beamer.of(context)
+                                          .beamToNamed('/signup'),
+                                      child: Text(
+                                        'Sign Up',
+                                        style: TextStyle(
+                                            fontFamily: 'Segoe UI',
+                                            fontSize: 15,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .brandColor),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                            }),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -194,12 +282,19 @@ class _NavBarLargeState extends State<NavBarLarge> {
             alignment: Alignment.topRight,
             child: Padding(
               padding: const EdgeInsets.only(right: 25),
-              child: Container(
-                height: 300,
-                width: 200,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(14)),
-                  color: Theme.of(context).colorScheme.searchBarColor,
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _showMenu = false;
+                  });
+                },
+                child: Container(
+                  height: 300,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(14)),
+                    color: Theme.of(context).colorScheme.searchBarColor,
+                  ),
                 ),
               ),
             ),
@@ -208,3 +303,70 @@ class _NavBarLargeState extends State<NavBarLarge> {
     );
   }
 }
+
+
+
+// Align(
+//                         alignment: Alignment.centerRight,
+//                         child: Padding(
+//                           padding: const EdgeInsets.only(top: 5),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.end,
+//                             crossAxisAlignment: CrossAxisAlignment.center,
+//                             children: [
+//                               //Notifications
+//                               Icon(
+//                                 Icons.notifications_none_outlined,
+//                                 color: Theme.of(context)
+//                                     .colorScheme
+//                                     .navBarIconColor,
+//                                 size: 26,
+//                               ),
+//                               const SizedBox(
+//                                 width: 18,
+//                               ),
+//                               //Dark Light Mode Switch
+//                               Icon(
+//                                 Icons.dark_mode_outlined,
+//                                 color: Theme.of(context)
+//                                     .colorScheme
+//                                     .navBarIconColor,
+//                                 size: 24,
+//                               ),
+//                               const SizedBox(
+//                                 width: 18,
+//                               ),
+//                               //FeedSelection
+//                               Icon(
+//                                 Icons.filter_list_outlined,
+//                                 color: Theme.of(context)
+//                                     .colorScheme
+//                                     .navBarIconColor,
+//                                 size: 30,
+//                               ),
+//                               const SizedBox(
+//                                 width: 32,
+//                               ),
+//                               //ProfilePicture
+//                               InkWell(
+//                                 splashColor: Colors.transparent,
+//                                 hoverColor: Colors.transparent,
+//                                 highlightColor: Colors.transparent,
+//                                 onTap: () {
+//                                   setState(() {
+//                                     _showMenu = !_showMenu;
+//                                   });
+//                                 },
+//                                 child: ClipRRect(
+//                                   borderRadius: BorderRadius.circular(14.0),
+//                                   child: Image.network(
+//                                     "https://picsum.photos/700",
+//                                     fit: BoxFit.contain,
+//                                     width: 40,
+//                                     height: 40,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ))

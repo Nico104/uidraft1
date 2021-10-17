@@ -1,6 +1,8 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/tests/video_player_with_quality_test.dart';
+import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'beamer/location_builders.dart';
 import 'utils/theme/theme_notifier.dart';
 
@@ -11,6 +13,9 @@ void main() {
     child: MyApp(),
   ));
 }
+
+//Just for test
+// void main() => runApp(VideoPlayerApp());
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
@@ -85,6 +90,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 Beamer.of(context).beamToNamed('/whatch'),
               },
               child: const Text('Set Dark theme'),
+            ),
+            TextButton(
+              onPressed: () => {
+                print('openTagMenu'),
+                showDialog(
+                  context: context,
+                  builder: (context) => const TagGridLargeScreen(),
+                ).then((value) => print(value))
+              },
+              child: const Text('Open Tag Menu'),
             ),
           ],
         ),
