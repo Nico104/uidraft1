@@ -4,7 +4,7 @@ extension CustomColorScheme on ColorScheme {
   Color get brandColor => brightness == Brightness.light
       ? const Color(0xFFF9005D)
       // ? const Color(0xFFffe135)
-      : const Color(0xFFffe135);
+      : const Color(0xFFF9005D);
 
   Color get searchBarColor => brightness == Brightness.light
       ? const Color(0xFF181818)
@@ -38,3 +38,6 @@ extension CustomColorScheme on ColorScheme {
       ? const Color(0xFF262525)
       : const Color(0xFF262525);
 }
+
+
+// 060507

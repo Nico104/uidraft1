@@ -1,8 +1,8 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uidraft1/tests/video_player_with_quality_test.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
+import 'package:uidraft1/widgets/uploadVideo/upload_video_dialog_widget.dart';
 import 'beamer/location_builders.dart';
 import 'utils/theme/theme_notifier.dart';
 
@@ -100,6 +100,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ).then((value) => print(value))
               },
               child: const Text('Open Tag Menu'),
+            ),
+            TextButton(
+              onPressed: () => {
+                print('uploadVideo'),
+                Beamer.of(context).beamToNamed('uploadvideotest')
+              },
+              child: const Text('Upload Video'),
             ),
           ],
         ),
