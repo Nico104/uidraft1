@@ -80,6 +80,7 @@ late DropzoneViewController controller;
     return Stack(
   children: [
     DropzoneView(
+      mime: const ["video/mp4"],
   operation: DragOperation.copy,
   cursor: CursorType.grab,
   onCreated: (DropzoneViewController ctrl) => controller = ctrl,
