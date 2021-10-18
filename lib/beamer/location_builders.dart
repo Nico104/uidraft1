@@ -9,6 +9,7 @@ import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/screens/profile/profile_screen.dart';
 import 'package:uidraft1/screens/subchannel/subchannel_screen.dart';
 import 'package:uidraft1/screens/videoplayer/videoplayer_screen.dart';
+import 'package:uidraft1/widgets/post/test/upload_video_widget.dart';
 
 // OPTION A:
 final simpleLocationBuilder = SimpleLocationBuilder(
@@ -66,6 +67,12 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           key: const ValueKey('createtag'),
           title: 'createtag',
           child: const CreateTagLargeScreen(),
+        ),
+
+        '/uploadvideotest': (context, state) => BeamPage(
+          key: const ValueKey('uploadvideotest'),
+          title: 'uploadvideotest',
+          child: const UploadVideoScreen(),
         ),
 
     // '/books/:bookId': (context, state) {
