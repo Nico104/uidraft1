@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/post/test/process_and_send_widget.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -41,6 +43,9 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
   // int pageIndex = 0;
   int pageIndex = 1;
 
+  //TagList
+  List<String> tagList = ['musicooo', 'fish'];
+
   //Upload File
   late DropzoneViewController controller;
   Uint8List? videoBytes;
@@ -61,7 +66,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                 decoration: const BoxDecoration(
                   color: Colors.lightBlue,
                   // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
-                   borderRadius: const BorderRadius.all(Radius.circular(80)),
+                   borderRadius: BorderRadius.all(Radius.circular(80)),
                   //  boxShadow: [
                   //     BoxShadow(
                   //       color: Colors.blue.withOpacity(0.4),
@@ -113,43 +118,106 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                             const SizedBox(height: 30,),
                       //Description
                       TextFormField(
-                              // controller: myUsernameController,
-                              // enableSuggestions: false,
-                              cursorColor: Colors.black,
-                              autocorrect: false,
-                              keyboardType: TextInputType.multiline,
-                              maxLength: 256,
-                              minLines: 1,
-                              maxLines: 50,
-                              decoration: InputDecoration(
-                                labelText: "Description...",
-                                labelStyle: const TextStyle(
-                                fontFamily: "Segoe UI",
-                                color: Colors.black
-                              ),
-                              
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.pink),
-                                ),
-                              ),
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Field cannot be empty";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              style: const TextStyle(
-                                fontFamily: "Segoe UI",
-                                color: Colors.black
+                        // controller: myUsernameController,
+                        // enableSuggestions: false,
+                        cursorColor: Colors.black,
+                        autocorrect: false,
+                        keyboardType: TextInputType.multiline,
+                        maxLength: 512,
+                        minLines: 1,
+                        maxLines: 20,
+                        decoration: InputDecoration(
+                          labelText: "Description...",
+                          labelStyle: const TextStyle(
+                          fontFamily: "Segoe UI",
+                          color: Colors.black
+                        ),
+                        
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(color: Colors.pink),
+                          ),
+                        ),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "Field cannot be empty";
+                          } else {
+                            return null;
+                          }
+                        },
+                        style: const TextStyle(
+                          fontFamily: "Segoe UI",
+                          color: Colors.black
+                        ),
+                      ),
+                      const SizedBox(height: 30,),
+                      //Tags
+                      Wrap(
+                      runSpacing: 5,
+                      spacing: 5,
+                      children: _getVideoTagWidgets(tagList),
+                      ),
+                      const SizedBox(height: 30,),
+                      //Thumbnail Dropzone
+                      Container(
+                        decoration: BoxDecoration(
+                            // color: Colors.lightBlue,
+                            borderRadius: const BorderRadius.all(Radius.circular(20)),
+                            border: Border.all(color: Colors.pink, width: 2)
+                          ),
+                        // color: Colors.pink,
+                        height: 170,
+                        child: InkWell(
+                          onTap: () async {
+                          result = await FilePicker.platform.pickFiles(
+                                      type: FileType.image, allowMultiple: false);
+                      
+                                  setState(() {
+                                    thumbnailPreview = result!.files.first.bytes;
+                                  });
+                      
+                                  print("testprint1");
+                                  //_processThumbnail(result);
+                        },
+                          child: Stack(
+                          children: [
+                            IgnorePointer(
+                              child: DropzoneView(
+                                mime: const ["image/png", "image/jpeg"],
+                                operation: DragOperation.copy,
+                                cursor: CursorType.grab,
+                                onCreated: (DropzoneViewController ctrl) => controller = ctrl,
+                                onLoaded: () => print('Zone loaded'),
+                                onError: (String? ev) => print('Error: $ev'),
+                                onHover: () => print('Zone hovered'),
+                                onDrop: (dynamic ev) async {
+                                  setState(() {
+                                    print("Dropped: $ev");
+                                  });
+                                  // if (ev != null) {
+                                  //   print("FileName: " + await controller.getFilename(ev));
+                                  //   Uint8List fileData = await controller.getFileData(ev);
+                                  //   setState(() {
+                                  //     print("weiter");
+                                  //     videoBytes = fileData;
+                                  //     pageIndex = 1;
+                                  //   });
+                                  // }
+                                },
+                                onLeave: () => print('Zone left'),
                               ),
                             ),
-                            // const SizedBox(height: 50,),
+                            Center(
+                              child: Text(thumbnailPreview != null ? "Drop or Click to change Thumbnail" : "Drop or Click to choose Thumbnail"),
+                            ),
+                          ],
+                                          ),
+                        ),
+                      ),                 
                   ],),
                 ),
               ),
@@ -370,6 +438,41 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
       pageIndex = 1;
     });
   }
+
+
+  List<Widget> _getVideoTagWidgets (List<String> list){
+
+    List<Widget> widgetList = List.generate(tagList.length, (index) {
+                        return Chip(label: Text(capitalizeOnlyFirstLater(tagList.elementAt(index)), style: const TextStyle(
+                          fontFamily: "Segoe UI",
+                          fontSize: 16
+                        ),
+                        ),
+                        
+                        onDeleted: () {
+                          setState(() {
+                            // myList.removeAt(index);
+                            print("onDelete");
+                          });
+                        },);
+                      });
+
+    if(list.length < 3){
+      widgetList.add(InkWell(
+
+        onTap: () {
+          print("openTagDialog");
+        },
+        child: const Chip(label: Text("Add Tag +", style: TextStyle(
+                            fontFamily: "Segoe UI",
+                            fontSize: 16
+                          ),),),
+      ));
+    }
+
+    return widgetList;
+    
+  } 
 }
 
 
