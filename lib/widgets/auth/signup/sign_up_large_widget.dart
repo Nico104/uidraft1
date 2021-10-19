@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class SignUpLargeScreen extends StatelessWidget {
@@ -155,8 +153,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Username...',
-                    hintStyle: TextStyle(
+                    // hintText: 'Username...',
+                    // hintStyle: TextStyle(
+                    //     fontFamily: 'Segoe UI',
+                    //     fontSize: 15,
+                    //     color:
+                    //         Theme.of(context).colorScheme.searchBarTextColor),
+                    labelText: 'Username...',
+                    labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
                         color:
@@ -213,8 +217,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Email...',
-                    hintStyle: TextStyle(
+                    // hintText: 'Email...',
+                    // hintStyle: TextStyle(
+                    //     fontFamily: 'Segoe UI',
+                    //     fontSize: 15,
+                    //     color:
+                    //         Theme.of(context).colorScheme.searchBarTextColor),
+                    labelText: 'Email...',
+                    labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
                         color:
@@ -278,8 +288,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Password...',
-                    hintStyle: TextStyle(
+                    // hintText: 'Password...',
+                    // hintStyle: TextStyle(
+                    //     fontFamily: 'Segoe UI',
+                    //     fontSize: 15,
+                    //     color:
+                    //         Theme.of(context).colorScheme.searchBarTextColor),
+                    labelText: 'Password...',
+                    labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
                         color:
@@ -346,8 +362,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Re-enter your Password...',
-                    hintStyle: TextStyle(
+                    // hintText: 'Re-enter your Password...',
+                    // hintStyle: TextStyle(
+                    //     fontFamily: 'Segoe UI',
+                    //     fontSize: 15,
+                    //     color:
+                    //         Theme.of(context).colorScheme.searchBarTextColor),
+                    labelText: 'Re-enter your Password...',
+                    labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
                         color:

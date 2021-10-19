@@ -135,8 +135,14 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Username...',
-                    hintStyle: TextStyle(
+                    // hintText: 'Username...',
+                    // hintStyle: TextStyle(
+                    //     fontFamily: 'Segoe UI',
+                    //     fontSize: 15,
+                    //     color:
+                    //         Theme.of(context).colorScheme.searchBarTextColor),
+                    labelText: 'Username...',
+                    labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
                         color:
@@ -195,8 +201,14 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    hintText: 'Password...',
-                    hintStyle: TextStyle(
+                    // hintText: 'Password...',
+                    // hintStyle: TextStyle(
+                    //     fontFamily: 'Segoe UI',
+                    //     fontSize: 15,
+                    //     color:
+                    //         Theme.of(context).colorScheme.searchBarTextColor),
+                    labelText: 'Password...',
+                    labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
                         color:

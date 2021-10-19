@@ -21,6 +21,12 @@ class _UploadVideoState extends State<UploadVideoScreen> {
           alignment: Alignment.topCenter,
           children: const [UploadVideoDataLargeScreen(), NavBarLargeProfile()],
         ),
+        // child: Column(
+        //   mainAxisAlignment: MainAxisAlignment.start,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   // alignment: Alignment.topCenter,
+        //   children: const [NavBarLargeProfile(), Expanded(child: UploadVideoDataLargeScreen())],
+        // ),
       ),
       veryLargeScreen: Text("veryLargeScreen"),
     );

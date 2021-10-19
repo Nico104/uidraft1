@@ -38,7 +38,8 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
 
   FilePickerResult? result;
 
-  int pageIndex = 0;
+  // int pageIndex = 0;
+  int pageIndex = 1;
 
   //Upload File
   late DropzoneViewController controller;
@@ -49,122 +50,232 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
     switch (pageIndex) {
       case 1:
         //Post Creation
-        return Container(
-          width: 400,
-          child: Form(
-            // onChanged: _updateFormProgress, // NEW
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // AnimatedProgressIndicator(value: _formProgress),
-                Text('Video go', style: Theme.of(context).textTheme.headline4),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _postTitleTextController,
-                    decoration: const InputDecoration(hintText: 'Post Title'),
-                  ),
+        
+        return Row(
+          children: [
+            Flexible(flex: 1,child: Container()),
+            //DataForm
+            Flexible(flex: 3,child: Padding(
+              padding: const EdgeInsets.only(top: 110, bottom: 50),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.lightBlue,
+                  // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
+                   borderRadius: const BorderRadius.all(Radius.circular(80)),
+                  //  boxShadow: [
+                  //     BoxShadow(
+                  //       color: Colors.blue.withOpacity(0.4),
+                  //       spreadRadius: 2,
+                  //       blurRadius: 25,
+                  //       offset: const Offset(0, 7), // changes position of shadow
+                  //     ),
+                  //   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _postDescriptionTextController,
-                    decoration:
-                        const InputDecoration(hintText: 'Post Description'),
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 50),
+                  child: ListView(children: [
+                    // const SizedBox(height: 50,),
+                    //Title
+                    TextFormField(
+                              // controller: myUsernameController,
+                              // enableSuggestions: false,
+                              cursorColor: Colors.black,
+                              autocorrect: false,
+                              decoration: InputDecoration(
+                                labelText: "Title...",
+                                labelStyle: const TextStyle(
+                                fontFamily: "Segoe UI",
+                                color: Colors.black
+                              ),
+                              
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(color: Colors.pink),
+                                ),
+                              ),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return "Field cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.text,
+                              style: const TextStyle(
+                                fontFamily: "Segoe UI",
+                                color: Colors.black
+                              ),
+                            ),
+                            const SizedBox(height: 30,),
+                      //Description
+                      TextFormField(
+                              // controller: myUsernameController,
+                              // enableSuggestions: false,
+                              cursorColor: Colors.black,
+                              autocorrect: false,
+                              keyboardType: TextInputType.multiline,
+                              maxLength: 256,
+                              minLines: 1,
+                              maxLines: 50,
+                              decoration: InputDecoration(
+                                labelText: "Description...",
+                                labelStyle: const TextStyle(
+                                fontFamily: "Segoe UI",
+                                color: Colors.black
+                              ),
+                              
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(color: Colors.pink),
+                                ),
+                              ),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return "Field cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              style: const TextStyle(
+                                fontFamily: "Segoe UI",
+                                color: Colors.black
+                              ),
+                            ),
+                            // const SizedBox(height: 50,),
+                  ],),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ButtonTheme(
-                    height: 100,
-                    minWidth: 200,
-                    child: OutlinedButton(
-                      style: ButtonStyle(
-                        side: MaterialStateProperty.resolveWith((states) {
-                          Color _borderColor;
-                          if (states.contains(MaterialState.disabled)) {
-                            _borderColor = Colors.greenAccent;
-                          } else if (states.contains(MaterialState.pressed)) {
-                            _borderColor = Colors.yellow;
-                          } else {
-                            _borderColor = Colors.pinkAccent;
-                          }
-
-                          return BorderSide(color: _borderColor, width: 3);
-                        }),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0))),
-                      ),
-                      onPressed: () async {
-                        result = await FilePicker.platform.pickFiles(
-                            type: FileType.image, allowMultiple: false);
-
-                        setState(() {
-                          thumbnailPreview = result!.files.first.bytes;
-                        });
-
-                        print("testprint1");
-                        //_processThumbnail(result);
-                      },
-                      child: const Text("Choose Thumbnail"),
-                    ),
-                  ),
-                ),
-                isLoading
-                    ? const CircularProgressIndicator()
-                    : (thumbnailPreview != null
-                        ? Image.memory(Uint8List.fromList(thumbnailPreview!))
-                        : const Text("is empty")),
-                TextButton(
-                  style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.resolveWith(
-                        (Set<MaterialState> states) {
-                      return states.contains(MaterialState.disabled)
-                          ? null
-                          : Colors.white;
-                    }),
-                    backgroundColor: MaterialStateProperty.resolveWith(
-                        (Set<MaterialState> states) {
-                      return states.contains(MaterialState.disabled)
-                          ? null
-                          : Colors.blue;
-                    }),
-                  ),
-                  onPressed: (_formProgress >= 0 &&
-                          result != null &&
-                          videoBytes != null)
-                      ? () {
-                          setState(() {
-                            print("showProcess");
-                            pageIndex = 2;
-                          });
-                        }
-                      : null,
-                  child: isLoading
-                      ? const Text('Wait for Thumbnail to be processed')
-                      : const Text('Post Video'),
-                ),
-                TextButton(
-                    style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.resolveWith(
-                          (Set<MaterialState> states) {
-                        return states.contains(MaterialState.disabled)
-                            ? null
-                            : Colors.white;
-                      }),
-                      backgroundColor: MaterialStateProperty.resolveWith(
-                          (Set<MaterialState> states) {
-                        return states.contains(MaterialState.disabled)
-                            ? null
-                            : Colors.blue;
-                      }),
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Cancel X')),
-              ],
-            ),
-          ),
+              ),
+            )),
+            //Preview
+            Flexible(flex: 6,child: Container()),
+          ],
         );
+
+        // return Container(
+        //   width: 400,
+
+        //   child: Form(
+        //     // onChanged: _updateFormProgress, // NEW
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         // AnimatedProgressIndicator(value: _formProgress),
+        //         Text('Video go', style: Theme.of(context).textTheme.headline4),
+        //         Padding(
+        //           padding: const EdgeInsets.all(8.0),
+        //           child: TextFormField(
+        //             controller: _postTitleTextController,
+        //             decoration: const InputDecoration(hintText: 'Post Title'),
+        //           ),
+        //         ),
+        //         Padding(
+        //           padding: const EdgeInsets.all(8.0),
+        //           child: TextFormField(
+        //             controller: _postDescriptionTextController,
+        //             decoration:
+        //                 const InputDecoration(hintText: 'Post Description'),
+        //           ),
+        //         ),
+        //         Padding(
+        //           padding: const EdgeInsets.all(8.0),
+        //           child: ButtonTheme(
+        //             height: 100,
+        //             minWidth: 200,
+        //             child: OutlinedButton(
+        //               style: ButtonStyle(
+        //                 side: MaterialStateProperty.resolveWith((states) {
+        //                   Color _borderColor;
+        //                   if (states.contains(MaterialState.disabled)) {
+        //                     _borderColor = Colors.greenAccent;
+        //                   } else if (states.contains(MaterialState.pressed)) {
+        //                     _borderColor = Colors.yellow;
+        //                   } else {
+        //                     _borderColor = Colors.pinkAccent;
+        //                   }
+
+        //                   return BorderSide(color: _borderColor, width: 3);
+        //                 }),
+        //                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
+        //                     borderRadius: BorderRadius.circular(30.0))),
+        //               ),
+        //               onPressed: () async {
+        //                 result = await FilePicker.platform.pickFiles(
+        //                     type: FileType.image, allowMultiple: false);
+
+        //                 setState(() {
+        //                   thumbnailPreview = result!.files.first.bytes;
+        //                 });
+
+        //                 print("testprint1");
+        //                 //_processThumbnail(result);
+        //               },
+        //               child: const Text("Choose Thumbnail"),
+        //             ),
+        //           ),
+        //         ),
+        //         isLoading
+        //             ? const CircularProgressIndicator()
+        //             : (thumbnailPreview != null
+        //                 ? Image.memory(Uint8List.fromList(thumbnailPreview!))
+        //                 : const Text("is empty")),
+        //         TextButton(
+        //           style: ButtonStyle(
+        //             foregroundColor: MaterialStateProperty.resolveWith(
+        //                 (Set<MaterialState> states) {
+        //               return states.contains(MaterialState.disabled)
+        //                   ? null
+        //                   : Colors.white;
+        //             }),
+        //             backgroundColor: MaterialStateProperty.resolveWith(
+        //                 (Set<MaterialState> states) {
+        //               return states.contains(MaterialState.disabled)
+        //                   ? null
+        //                   : Colors.blue;
+        //             }),
+        //           ),
+        //           onPressed: (_formProgress >= 0 &&
+        //                   result != null &&
+        //                   videoBytes != null)
+        //               ? () {
+        //                   setState(() {
+        //                     print("showProcess");
+        //                     pageIndex = 2;
+        //                   });
+        //                 }
+        //               : null,
+        //           child: isLoading
+        //               ? const Text('Wait for Thumbnail to be processed')
+        //               : const Text('Post Video'),
+        //         ),
+        //         TextButton(
+        //             style: ButtonStyle(
+        //               foregroundColor: MaterialStateProperty.resolveWith(
+        //                   (Set<MaterialState> states) {
+        //                 return states.contains(MaterialState.disabled)
+        //                     ? null
+        //                     : Colors.white;
+        //               }),
+        //               backgroundColor: MaterialStateProperty.resolveWith(
+        //                   (Set<MaterialState> states) {
+        //                 return states.contains(MaterialState.disabled)
+        //                     ? null
+        //                     : Colors.blue;
+        //               }),
+        //             ),
+        //             onPressed: () => Navigator.of(context).pop(),
+        //             child: const Text('Cancel X')),
+        //       ],
+        //     ),
+        //   ),
+        // );
 
       case 2:
         print("case 2");
@@ -229,7 +340,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                         } else {
                           _borderColor = Colors.pinkAccent;
                         }
-
+        
                         return BorderSide(color: _borderColor, width: 3);
                       }),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
