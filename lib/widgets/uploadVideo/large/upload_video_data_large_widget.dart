@@ -9,6 +9,8 @@ import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/post/test/process_and_send_widget.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
+import 'package:uidraft1/widgets/uploadVideo/upload_video_feed_preview.dart';
 
 class UploadVideoDataLargeScreen extends StatelessWidget {
   const UploadVideoDataLargeScreen({Key? key}) : super(key: key);
@@ -44,7 +46,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
   int pageIndex = 1;
 
   //TagList
-  List<String> tagList = ['musicooo', 'fish'];
+  List<String> tagList = [];
 
   //Upload File
   late DropzoneViewController controller;
@@ -55,295 +57,323 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
     switch (pageIndex) {
       case 1:
         //Post Creation
-        
+
         return Row(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Flexible(flex: 1,child: Container()),
+            Flexible(flex: 1, child: Container()),
             //DataForm
-            Flexible(flex: 3,child: Padding(
-              padding: const EdgeInsets.only(top: 110, bottom: 50),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.lightBlue,
-                  // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
-                   borderRadius: BorderRadius.all(Radius.circular(80)),
-                  //  boxShadow: [
-                  //     BoxShadow(
-                  //       color: Colors.blue.withOpacity(0.4),
-                  //       spreadRadius: 2,
-                  //       blurRadius: 25,
-                  //       offset: const Offset(0, 7), // changes position of shadow
-                  //     ),
-                  //   ],
-                ),
+            Flexible(
+                flex: 3,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 50),
-                  child: ListView(children: [
-                    // const SizedBox(height: 50,),
-                    //Title
-                    TextFormField(
-                              // controller: myUsernameController,
-                              // enableSuggestions: false,
-                              cursorColor: Colors.black,
-                              autocorrect: false,
-                              decoration: InputDecoration(
-                                labelText: "Title...",
-                                labelStyle: const TextStyle(
-                                fontFamily: "Segoe UI",
-                                color: Colors.black
+                  padding: const EdgeInsets.only(top: 110, bottom: 50),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.lightBlue,
+                      // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
+                      borderRadius: BorderRadius.all(Radius.circular(80)),
+                      //  boxShadow: [
+                      //     BoxShadow(
+                      //       color: Colors.blue.withOpacity(0.4),
+                      //       spreadRadius: 2,
+                      //       blurRadius: 25,
+                      //       offset: const Offset(0, 7), // changes position of shadow
+                      //     ),
+                      //   ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, top: 50, bottom: 50),
+                      child: ListView(
+                        children: [
+                          //Title
+                          TextFormField(
+                            controller: _postTitleTextController,
+                            // enableSuggestions: false,
+                            maxLength: 70,
+                            cursorColor: Colors.black,
+                            autocorrect: false,
+                            decoration: InputDecoration(
+                              labelText: "Title...",
+                              labelStyle: const TextStyle(
+                                  fontFamily: "Segoe UI", color: Colors.black),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(color: Colors.black),
                               ),
-                              
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.pink),
-                                ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(color: Colors.pink),
                               ),
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Field cannot be empty";
-                                } else {
-                                  return null;
-                                }
+                            ),
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Field cannot be empty";
+                              } else {
+                                return null;
+                              }
+                            },
+                            keyboardType: TextInputType.text,
+                            style: const TextStyle(
+                                fontFamily: "Segoe UI", color: Colors.black),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          //Description
+                          TextFormField(
+                            controller: _postDescriptionTextController,
+                            // enableSuggestions: false,
+                            cursorColor: Colors.black,
+                            autocorrect: false,
+                            keyboardType: TextInputType.multiline,
+                            maxLength: 512,
+                            minLines: 1,
+                            maxLines: 20,
+                            decoration: InputDecoration(
+                              labelText: "Description...",
+                              labelStyle: const TextStyle(
+                                  fontFamily: "Segoe UI", color: Colors.black),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(color: Colors.pink),
+                              ),
+                            ),
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Field cannot be empty";
+                              } else {
+                                return null;
+                              }
+                            },
+                            style: const TextStyle(
+                                fontFamily: "Segoe UI", color: Colors.black),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          //Tags
+                          Wrap(
+                            runSpacing: 5,
+                            spacing: 5,
+                            children: _getVideoTagWidgets(tagList),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          //Thumbnail Dropzone
+                          Container(
+                            decoration: BoxDecoration(
+                                // color: Colors.lightBlue,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(20)),
+                                border:
+                                    Border.all(color: Colors.pink, width: 2)),
+                            // color: Colors.pink,
+                            height: 170,
+                            child: InkWell(
+                              onTap: () async {
+                                result = await FilePicker.platform.pickFiles(
+                                    type: FileType.image, allowMultiple: false);
+
+                                setState(() {
+                                  thumbnailPreview = result!.files.first.bytes;
+                                });
+
+                                print("testprint1");
+                                //_processThumbnail(result);
                               },
-                              keyboardType: TextInputType.text,
-                              style: const TextStyle(
-                                fontFamily: "Segoe UI",
-                                color: Colors.black
+                              child: Stack(
+                                children: [
+                                  IgnorePointer(
+                                    child: DropzoneView(
+                                      mime: const ["image/png", "image/jpeg"],
+                                      operation: DragOperation.copy,
+                                      cursor: CursorType.grab,
+                                      onCreated:
+                                          (DropzoneViewController ctrl) =>
+                                              controller = ctrl,
+                                      onLoaded: () => print('Zone loaded'),
+                                      onError: (String? ev) =>
+                                          print('Error: $ev'),
+                                      onHover: () => print('Zone hovered'),
+                                      onDrop: (dynamic ev) async {
+                                        setState(() {
+                                          print("Dropped: $ev");
+                                        });
+                                        // if (ev != null) {
+                                        //   print("FileName: " + await controller.getFilename(ev));
+                                        //   Uint8List fileData = await controller.getFileData(ev);
+                                        //   setState(() {
+                                        //     print("weiter");
+                                        //     videoBytes = fileData;
+                                        //     pageIndex = 1;
+                                        //   });
+                                        // }
+                                      },
+                                      onLeave: () => print('Zone left'),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(thumbnailPreview != null
+                                        ? "Drop or Click to change Thumbnail"
+                                        : "Drop or Click to choose Thumbnail"),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 30,),
-                      //Description
-                      TextFormField(
-                        // controller: myUsernameController,
-                        // enableSuggestions: false,
-                        cursorColor: Colors.black,
-                        autocorrect: false,
-                        keyboardType: TextInputType.multiline,
-                        maxLength: 512,
-                        minLines: 1,
-                        maxLines: 20,
-                        decoration: InputDecoration(
-                          labelText: "Description...",
-                          labelStyle: const TextStyle(
-                          fontFamily: "Segoe UI",
-                          color: Colors.black
-                        ),
-                        
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(color: Colors.black),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(color: Colors.pink),
-                          ),
-                        ),
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return "Field cannot be empty";
-                          } else {
-                            return null;
-                          }
-                        },
-                        style: const TextStyle(
-                          fontFamily: "Segoe UI",
-                          color: Colors.black
-                        ),
+                        ],
                       ),
-                      const SizedBox(height: 30,),
-                      //Tags
-                      Wrap(
-                      runSpacing: 5,
-                      spacing: 5,
-                      children: _getVideoTagWidgets(tagList),
-                      ),
-                      const SizedBox(height: 30,),
-                      //Thumbnail Dropzone
-                      Container(
-                        decoration: BoxDecoration(
-                            // color: Colors.lightBlue,
-                            borderRadius: const BorderRadius.all(Radius.circular(20)),
-                            border: Border.all(color: Colors.pink, width: 2)
-                          ),
-                        // color: Colors.pink,
-                        height: 170,
-                        child: InkWell(
-                          onTap: () async {
-                          result = await FilePicker.platform.pickFiles(
-                                      type: FileType.image, allowMultiple: false);
-                      
-                                  setState(() {
-                                    thumbnailPreview = result!.files.first.bytes;
-                                  });
-                      
-                                  print("testprint1");
-                                  //_processThumbnail(result);
-                        },
-                          child: Stack(
-                          children: [
-                            IgnorePointer(
-                              child: DropzoneView(
-                                mime: const ["image/png", "image/jpeg"],
-                                operation: DragOperation.copy,
-                                cursor: CursorType.grab,
-                                onCreated: (DropzoneViewController ctrl) => controller = ctrl,
-                                onLoaded: () => print('Zone loaded'),
-                                onError: (String? ev) => print('Error: $ev'),
-                                onHover: () => print('Zone hovered'),
-                                onDrop: (dynamic ev) async {
-                                  setState(() {
-                                    print("Dropped: $ev");
-                                  });
-                                  // if (ev != null) {
-                                  //   print("FileName: " + await controller.getFilename(ev));
-                                  //   Uint8List fileData = await controller.getFileData(ev);
-                                  //   setState(() {
-                                  //     print("weiter");
-                                  //     videoBytes = fileData;
-                                  //     pageIndex = 1;
-                                  //   });
-                                  // }
-                                },
-                                onLeave: () => print('Zone left'),
-                              ),
-                            ),
-                            Center(
-                              child: Text(thumbnailPreview != null ? "Drop or Click to change Thumbnail" : "Drop or Click to choose Thumbnail"),
-                            ),
-                          ],
-                                          ),
-                        ),
-                      ),                 
-                  ],),
-                ),
-              ),
-            )),
+                    ),
+                  ),
+                )),
             //Preview
-            Flexible(flex: 6,child: Container()),
+            Flexible(
+                flex: 6,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 400,
+                        child: UploadVideoFeedPreview(
+                          postTitle: _postTitleTextController.text.isNotEmpty
+                              ? _postTitleTextController.text
+                              : "You good, username?",
+                          postSubchannel: "c/isgut",
+                          postUsername: "username",
+                          thumbnailPreview: thumbnailPreview,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
           ],
         );
 
-        // return Container(
-        //   width: 400,
+      // return Container(
+      //   width: 400,
 
-        //   child: Form(
-        //     // onChanged: _updateFormProgress, // NEW
-        //     child: Column(
-        //       mainAxisSize: MainAxisSize.min,
-        //       children: [
-        //         // AnimatedProgressIndicator(value: _formProgress),
-        //         Text('Video go', style: Theme.of(context).textTheme.headline4),
-        //         Padding(
-        //           padding: const EdgeInsets.all(8.0),
-        //           child: TextFormField(
-        //             controller: _postTitleTextController,
-        //             decoration: const InputDecoration(hintText: 'Post Title'),
-        //           ),
-        //         ),
-        //         Padding(
-        //           padding: const EdgeInsets.all(8.0),
-        //           child: TextFormField(
-        //             controller: _postDescriptionTextController,
-        //             decoration:
-        //                 const InputDecoration(hintText: 'Post Description'),
-        //           ),
-        //         ),
-        //         Padding(
-        //           padding: const EdgeInsets.all(8.0),
-        //           child: ButtonTheme(
-        //             height: 100,
-        //             minWidth: 200,
-        //             child: OutlinedButton(
-        //               style: ButtonStyle(
-        //                 side: MaterialStateProperty.resolveWith((states) {
-        //                   Color _borderColor;
-        //                   if (states.contains(MaterialState.disabled)) {
-        //                     _borderColor = Colors.greenAccent;
-        //                   } else if (states.contains(MaterialState.pressed)) {
-        //                     _borderColor = Colors.yellow;
-        //                   } else {
-        //                     _borderColor = Colors.pinkAccent;
-        //                   }
+      //   child: Form(
+      //     // onChanged: _updateFormProgress, // NEW
+      //     child: Column(
+      //       mainAxisSize: MainAxisSize.min,
+      //       children: [
+      //         // AnimatedProgressIndicator(value: _formProgress),
+      //         Text('Video go', style: Theme.of(context).textTheme.headline4),
+      //         Padding(
+      //           padding: const EdgeInsets.all(8.0),
+      //           child: TextFormField(
+      //             controller: _postTitleTextController,
+      //             decoration: const InputDecoration(hintText: 'Post Title'),
+      //           ),
+      //         ),
+      //         Padding(
+      //           padding: const EdgeInsets.all(8.0),
+      //           child: TextFormField(
+      //             controller: _postDescriptionTextController,
+      //             decoration:
+      //                 const InputDecoration(hintText: 'Post Description'),
+      //           ),
+      //         ),
+      //         Padding(
+      //           padding: const EdgeInsets.all(8.0),
+      //           child: ButtonTheme(
+      //             height: 100,
+      //             minWidth: 200,
+      //             child: OutlinedButton(
+      //               style: ButtonStyle(
+      //                 side: MaterialStateProperty.resolveWith((states) {
+      //                   Color _borderColor;
+      //                   if (states.contains(MaterialState.disabled)) {
+      //                     _borderColor = Colors.greenAccent;
+      //                   } else if (states.contains(MaterialState.pressed)) {
+      //                     _borderColor = Colors.yellow;
+      //                   } else {
+      //                     _borderColor = Colors.pinkAccent;
+      //                   }
 
-        //                   return BorderSide(color: _borderColor, width: 3);
-        //                 }),
-        //                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
-        //                     borderRadius: BorderRadius.circular(30.0))),
-        //               ),
-        //               onPressed: () async {
-        //                 result = await FilePicker.platform.pickFiles(
-        //                     type: FileType.image, allowMultiple: false);
+      //                   return BorderSide(color: _borderColor, width: 3);
+      //                 }),
+      //                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
+      //                     borderRadius: BorderRadius.circular(30.0))),
+      //               ),
+      //               onPressed: () async {
+      //                 result = await FilePicker.platform.pickFiles(
+      //                     type: FileType.image, allowMultiple: false);
 
-        //                 setState(() {
-        //                   thumbnailPreview = result!.files.first.bytes;
-        //                 });
+      //                 setState(() {
+      //                   thumbnailPreview = result!.files.first.bytes;
+      //                 });
 
-        //                 print("testprint1");
-        //                 //_processThumbnail(result);
-        //               },
-        //               child: const Text("Choose Thumbnail"),
-        //             ),
-        //           ),
-        //         ),
-        //         isLoading
-        //             ? const CircularProgressIndicator()
-        //             : (thumbnailPreview != null
-        //                 ? Image.memory(Uint8List.fromList(thumbnailPreview!))
-        //                 : const Text("is empty")),
-        //         TextButton(
-        //           style: ButtonStyle(
-        //             foregroundColor: MaterialStateProperty.resolveWith(
-        //                 (Set<MaterialState> states) {
-        //               return states.contains(MaterialState.disabled)
-        //                   ? null
-        //                   : Colors.white;
-        //             }),
-        //             backgroundColor: MaterialStateProperty.resolveWith(
-        //                 (Set<MaterialState> states) {
-        //               return states.contains(MaterialState.disabled)
-        //                   ? null
-        //                   : Colors.blue;
-        //             }),
-        //           ),
-        //           onPressed: (_formProgress >= 0 &&
-        //                   result != null &&
-        //                   videoBytes != null)
-        //               ? () {
-        //                   setState(() {
-        //                     print("showProcess");
-        //                     pageIndex = 2;
-        //                   });
-        //                 }
-        //               : null,
-        //           child: isLoading
-        //               ? const Text('Wait for Thumbnail to be processed')
-        //               : const Text('Post Video'),
-        //         ),
-        //         TextButton(
-        //             style: ButtonStyle(
-        //               foregroundColor: MaterialStateProperty.resolveWith(
-        //                   (Set<MaterialState> states) {
-        //                 return states.contains(MaterialState.disabled)
-        //                     ? null
-        //                     : Colors.white;
-        //               }),
-        //               backgroundColor: MaterialStateProperty.resolveWith(
-        //                   (Set<MaterialState> states) {
-        //                 return states.contains(MaterialState.disabled)
-        //                     ? null
-        //                     : Colors.blue;
-        //               }),
-        //             ),
-        //             onPressed: () => Navigator.of(context).pop(),
-        //             child: const Text('Cancel X')),
-        //       ],
-        //     ),
-        //   ),
-        // );
+      //                 print("testprint1");
+      //                 //_processThumbnail(result);
+      //               },
+      //               child: const Text("Choose Thumbnail"),
+      //             ),
+      //           ),
+      //         ),
+      //         isLoading
+      //             ? const CircularProgressIndicator()
+      //             : (thumbnailPreview != null
+      //                 ? Image.memory(Uint8List.fromList(thumbnailPreview!))
+      //                 : const Text("is empty")),
+      //         TextButton(
+      //           style: ButtonStyle(
+      //             foregroundColor: MaterialStateProperty.resolveWith(
+      //                 (Set<MaterialState> states) {
+      //               return states.contains(MaterialState.disabled)
+      //                   ? null
+      //                   : Colors.white;
+      //             }),
+      //             backgroundColor: MaterialStateProperty.resolveWith(
+      //                 (Set<MaterialState> states) {
+      //               return states.contains(MaterialState.disabled)
+      //                   ? null
+      //                   : Colors.blue;
+      //             }),
+      //           ),
+      //           onPressed: (_formProgress >= 0 &&
+      //                   result != null &&
+      //                   videoBytes != null)
+      //               ? () {
+      //                   setState(() {
+      //                     print("showProcess");
+      //                     pageIndex = 2;
+      //                   });
+      //                 }
+      //               : null,
+      //           child: isLoading
+      //               ? const Text('Wait for Thumbnail to be processed')
+      //               : const Text('Post Video'),
+      //         ),
+      //         TextButton(
+      //             style: ButtonStyle(
+      //               foregroundColor: MaterialStateProperty.resolveWith(
+      //                   (Set<MaterialState> states) {
+      //                 return states.contains(MaterialState.disabled)
+      //                     ? null
+      //                     : Colors.white;
+      //               }),
+      //               backgroundColor: MaterialStateProperty.resolveWith(
+      //                   (Set<MaterialState> states) {
+      //                 return states.contains(MaterialState.disabled)
+      //                     ? null
+      //                     : Colors.blue;
+      //               }),
+      //             ),
+      //             onPressed: () => Navigator.of(context).pop(),
+      //             child: const Text('Cancel X')),
+      //       ],
+      //     ),
+      //   ),
+      // );
 
       case 2:
         print("case 2");
@@ -408,7 +438,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                         } else {
                           _borderColor = Colors.pinkAccent;
                         }
-        
+
                         return BorderSide(color: _borderColor, width: 3);
                       }),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
@@ -439,40 +469,50 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
     });
   }
 
-
-  List<Widget> _getVideoTagWidgets (List<String> list){
-
+  List<Widget> _getVideoTagWidgets(List<String> list) {
     List<Widget> widgetList = List.generate(tagList.length, (index) {
-                        return Chip(label: Text(capitalizeOnlyFirstLater(tagList.elementAt(index)), style: const TextStyle(
-                          fontFamily: "Segoe UI",
-                          fontSize: 16
-                        ),
-                        ),
-                        
-                        onDeleted: () {
-                          setState(() {
-                            // myList.removeAt(index);
-                            print("onDelete");
-                          });
-                        },);
-                      });
-
-    if(list.length < 3){
-      widgetList.add(InkWell(
-
-        onTap: () {
-          print("openTagDialog");
+      return Chip(
+        label: Text(
+          capitalizeOnlyFirstLater(tagList.elementAt(index)),
+          style: const TextStyle(fontFamily: "Segoe UI", fontSize: 16),
+        ),
+        onDeleted: () {
+          setState(() {
+            print("onDelete");
+            tagList.removeAt(index);
+          });
         },
-        child: const Chip(label: Text("Add Tag +", style: TextStyle(
-                            fontFamily: "Segoe UI",
-                            fontSize: 16
-                          ),),),
+      );
+    });
+
+    if (list.length < 3) {
+      widgetList.add(InkWell(
+        onTap: () {
+          print('openTagMenu');
+          showDialog(
+            context: context,
+            builder: (context) => const TagGridLargeScreen(),
+          ).then((value) {
+            if (!tagList.contains(value.toString()) && value != null) {
+              setState(() {
+                tagList.add(value.toString());
+              });
+            } else {
+              print("List alredy contains $value or is null");
+            }
+          });
+        },
+        child: const Chip(
+          label: Text(
+            "Add Tag +",
+            style: TextStyle(fontFamily: "Segoe UI", fontSize: 16),
+          ),
+        ),
       ));
     }
 
     return widgetList;
-    
-  } 
+  }
 }
 
 
