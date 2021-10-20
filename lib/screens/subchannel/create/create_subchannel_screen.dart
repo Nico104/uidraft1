@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
-import 'package:uidraft1/widgets/subchannel/large/subchannel_large_widget.dart';
+import 'package:uidraft1/widgets/subchannel/create/create_subchannel_large_widget.dart';
 
-class SubchannelScreen extends StatefulWidget {
-  const SubchannelScreen({Key? key}) : super(key: key);
+class CreateSubchannelScreen extends StatefulWidget {
+  const CreateSubchannelScreen({Key? key}) : super(key: key);
 
   @override
   _SubchannelState createState() => _SubchannelState();
 }
 
-class _SubchannelState extends State<SubchannelScreen> {
+class _SubchannelState extends State<CreateSubchannelScreen> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
@@ -19,7 +19,7 @@ class _SubchannelState extends State<SubchannelScreen> {
       largeScreen: Material(
         child: Stack(
           alignment: Alignment.topCenter,
-          children: const [SubchannelLargeScreen(), NavBarLargeProfile()],
+          children: const [CreateSubchannelLargeScreen(), NavBarLargeProfile()],
         ),
       ),
       veryLargeScreen: Text("veryLargeScreen"),
