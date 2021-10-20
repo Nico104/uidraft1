@@ -453,71 +453,23 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                     ),
                   ),
                 )),
+                Flexible(flex: 1 ,child: Container()),
             //Preview
             Flexible(
-                flex: 6,
+                flex: 4,
                 child: Center(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        // SizedBox(width: 10, height: 10,),
+                      children: const [         
                         CreateSubchannelPreviewLargeScreen(),
-                        // SizedBox(
-                        //   height: MediaQuery.of(context).size.height < 670
-                        //       ? 150
-                        //       : 50,
-                        // ),
-                        // const Text(
-                        //   "Preview",
-                        //   style: TextStyle(
-                        //       fontFamily: 'Segoe UI Black',
-                        //       fontSize: 24,
-                        //       letterSpacing: 1),
-                        // ),
-                        // const SizedBox(
-                        //   height: 80,
-                        // ),
-                        // //Feed Preview
-                        // SizedBox(
-                        //   height: 150,
-                        //   child: AspectRatio(
-                        //     aspectRatio: 600 / 180,
-                        //     child: UploadVideoPlayerVideoPreview(
-                        //       postTitle:
-                        //           _postTitleTextController.text.isNotEmpty
-                        //               ? _postTitleTextController.text
-                        //               : "You good, username?",
-                        //       postSubchannel: "c/isgut",
-                        //       postUsername: "username",
-                        //       thumbnailPreview: thumbnailPreview,
-                        //     ),
-                        //   ),
-                        // ),
-                        // const SizedBox(
-                        //   height: 80,
-                        // ),
-                        // //Player Preview
-                        // SizedBox(
-                        //   width: 400,
-                        //   child: UploadVideoFeedPreview(
-                        //     postTitle: _postTitleTextController.text.isNotEmpty
-                        //         ? _postTitleTextController.text
-                        //         : "You good, username?",
-                        //     postSubchannel: "c/isgut",
-                        //     postUsername: "username",
-                        //     thumbnailPreview: thumbnailPreview,
-                        //   ),
-                        // ),
-                        // const SizedBox(
-                        //   height: 50,
-                        // ),
                       ],
                     ),
                   ),
                 )),
+                const Flexible(flex: 1 ,child: SizedBox()),
           ],
         );
     }
