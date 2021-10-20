@@ -6,14 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/util_methods.dart';
-import 'package:uidraft1/widgets/post/test/process_and_send_widget.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:uidraft1/widgets/profile/large/profile_large_widget.dart';
+import 'package:uidraft1/widgets/subchannel/create/create_subchannel_preview_widget.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
-import 'package:uidraft1/widgets/uploadVideo/upload_video_feed_preview.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:uidraft1/widgets/uploadVideo/upload_video_player_preview.dart';
 
 class CreateSubchannelLargeScreen extends StatelessWidget {
   const CreateSubchannelLargeScreen({Key? key}) : super(key: key);
@@ -376,7 +372,7 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                                   cursorColor: Colors.black,
                                   autocorrect: false,
                                   keyboardType: TextInputType.multiline,
-                                  maxLength: 70,
+                                  maxLength: 512,
                                   minLines: 1,
                                   maxLines: 20,
                                   decoration: InputDecoration(
@@ -465,9 +461,10 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                     fit: BoxFit.scaleDown,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 10, height: 10,)
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        // SizedBox(width: 10, height: 10,),
+                        CreateSubchannelPreviewLargeScreen(),
                         // SizedBox(
                         //   height: MediaQuery.of(context).size.height < 670
                         //       ? 150
