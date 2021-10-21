@@ -29,6 +29,7 @@ class FeedGrid extends StatefulWidget {
 
 class _FeedGridState extends State<FeedGrid> {
   bool _loading = true;
+  bool _error = false;
 
   List<int> postIds = <int>[];
 
@@ -42,6 +43,13 @@ class _FeedGridState extends State<FeedGrid> {
   //Get PostIds List
   Future<void> fetchPostIds() async {
     try {
+      if(!_loading){
+        setState(() {
+          _loading = true;
+        });
+      }
+
+
       final response =
           await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
 
@@ -66,12 +74,21 @@ class _FeedGridState extends State<FeedGrid> {
         //return postIds;
       } else {
         // If that call was not successful, throw an error.
-        Beamer.of(context).beamToNamed("/error/feed");
+        // Beamer.of(context).beamToNamed("/error/feed");
+        setState(() {
+          _loading = false;
+          _error = true;
+        });
         throw Exception('Failed to load post');
       }
     } catch (e) {
-      print("Error: " + e.toString());
-      Beamer.of(context).beamToNamed("/error/feed");
+      setState(() {
+          _loading = false;
+          _error = true;
+        });
+        // throw Exception("Error: " + e.toString());
+        print("Error: " + e.toString());
+      // Beamer.of(context).beamToNamed("/error/feed");
     }
   }
 
@@ -98,7 +115,16 @@ class _FeedGridState extends State<FeedGrid> {
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : ScrollConfiguration(
+        : _error ?
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("There was an error while loading your Feed"),
+              OutlinedButton(onPressed: () => fetchPostIds(), child: const Text("Reload Feed"))
+            ],
+          ) :
+        ScrollConfiguration(
             behavior:
                 ScrollConfiguration.of(context).copyWith(scrollbars: false),
             child: SingleChildScrollView(

@@ -27,6 +27,7 @@ class ProfileUserVideos extends StatefulWidget {
 
 class _ProfileUserVideosState extends State<ProfileUserVideos> {
   bool _loading = true;
+  bool _error = false;
 
   List<int> postIds = <int>[];
   List<int> dataList = <int>[];
@@ -36,7 +37,14 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
 
   //Get PostIds List
   Future<void> fetchPostIds() async {
+    print("button tapped");
     try {
+      if(!_loading){
+        setState(() {
+          _loading = true;
+        });
+      }
+
       final response =
           await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
 
@@ -59,12 +67,20 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
         });
       } else {
         // If that call was not successful, throw an error.
-        Beamer.of(context).beamToNamed("/error/feed");
+        setState(() {
+          _loading = false;
+          _error = true;
+        });
         throw Exception('Failed to load post');
       }
     } catch (e) {
-      print("Error: " + e.toString());
-      Beamer.of(context).beamToNamed("/error/feed");
+      setState(() {
+          _loading = false;
+          _error = true;
+        });
+        // throw Exception("Error: " + e.toString());
+        print("Error: " + e.toString());
+      // Beamer.of(context).beamToNamed("/error/feed");
     }
   }
 
@@ -84,8 +100,21 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? const Center(child: CircularProgressIndicator())
-        : Padding(
+        ? Column(
+          children: const [
+            SizedBox(height: 150,),
+            CircularProgressIndicator(),
+          ],
+        )
+        : _error ?
+        Column(
+            children: [
+              const SizedBox(height: 150,),
+              const Text("There was an error while loading this Users Video"),
+              OutlinedButton(onPressed: () => fetchPostIds(), child: const Text("Reload Videos"))
+            ],
+          ) : 
+        Padding(
             padding: const EdgeInsets.fromLTRB(160, 100, 160, 0),
             child: GridView.count(
               shrinkWrap: true,

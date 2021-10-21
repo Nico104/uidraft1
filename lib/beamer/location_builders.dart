@@ -6,6 +6,7 @@ import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/auth/login_screen.dart';
 import 'package:uidraft1/screens/auth/sign_up_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
+import 'package:uidraft1/screens/profile/create/create_profile_screen.dart';
 import 'package:uidraft1/screens/profile/profile_screen.dart';
 import 'package:uidraft1/screens/subchannel/create/create_subchannel_screen.dart';
 import 'package:uidraft1/screens/subchannel/subchannel_screen.dart';
@@ -77,10 +78,17 @@ final simpleLocationBuilder = SimpleLocationBuilder(
         ),
 
     'createsubchannel': (context, state) => BeamPage(
-      key: const ValueKey('uploadvideotest'),
-      title: 'uploadvideotest',
+      key: const ValueKey('createsubchannel'),
+      title: 'createsubchannel',
       child: const CreateSubchannelScreen(),
     ),
+
+    'updateprofile': (context, state) => BeamPage(
+      key: const ValueKey('updateProfile'),
+      title: 'updateProfile',
+      child: const UpdateProfileScreen(),
+    ),
+
 
     // '/books/:bookId': (context, state) {
     //   final book = books.firstWhere((book) =>
