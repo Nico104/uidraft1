@@ -440,8 +440,8 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                               _subchannelShortDescriptionTextController.text,
                               _subchannelAboutTextController.text,
                               false,
-                              subchannelPicturePreview!,
-                              bannerPreview!),
+                              subchannelPicturePreview,
+                              bannerPreview),
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
@@ -563,7 +563,113 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
     return widgetList;
   }
 
-  Future<void> _sendSubchannel(
+//SendMethods
+//No Media Files
+  Future<void> _sendSubchannelNoMediaFiles(
+    String subchannelName,
+    String subchannelShortDescription,
+    String subchannelAboutText,
+    bool subchannelCommunityPostsAllowed,
+  ) async {
+    var url = Uri.parse(
+        'http://localhost:3000/subchannel/createSubchannelWithDataWithoutPictureAndBAnner');
+    String? token = await getToken();
+
+    var request = http.MultipartRequest('POST', url);
+
+    request.headers['Authorization'] = 'Bearer $token';
+    request.fields['subchannelName'] = subchannelName;
+    request.fields['subchannelAboutText'] = subchannelAboutText;
+    request.fields['subchannelShortDescriptiveText'] =
+        subchannelShortDescription;
+    request.fields['communitypostsAllowed'] =
+        subchannelCommunityPostsAllowed.toString();
+
+    var response = await request.send();
+    print(response.statusCode);
+    if (response.statusCode == 201) {
+      print('Uploaded!');
+    } else {
+      print('Upload Error!');
+    }
+
+    Beamer.of(context).beamToNamed('/feed');
+  }
+
+//OnlyBanner
+  Future<void> _sendSubchannelOnlyBanner(
+    String subchannelName,
+    String subchannelShortDescription,
+    String subchannelAboutText,
+    bool subchannelCommunityPostsAllowed,
+    List<int> banner,
+  ) async {
+    var url = Uri.parse(
+        'http://localhost:3000/subchannel/createSubchannelWithDataOnlyBanner');
+    String? token = await getToken();
+
+    var request = http.MultipartRequest('POST', url);
+
+    request.headers['Authorization'] = 'Bearer $token';
+    request.fields['subchannelName'] = subchannelName;
+    request.fields['subchannelAboutText'] = subchannelAboutText;
+    request.fields['subchannelShortDescriptiveText'] =
+        subchannelShortDescription;
+    request.fields['communitypostsAllowed'] =
+        subchannelCommunityPostsAllowed.toString();
+
+    request.files.add(http.MultipartFile.fromBytes('banner', banner,
+        filename: "banner", contentType: MediaType('image', 'png')));
+
+    var response = await request.send();
+    print(response.statusCode);
+    if (response.statusCode == 201) {
+      print('Uploaded!');
+    } else {
+      print('Upload Error!');
+    }
+
+    Beamer.of(context).beamToNamed('/feed');
+  }
+
+//OnlyPicture
+  Future<void> _sendSubchannelOnlyPicture(
+    String subchannelName,
+    String subchannelShortDescription,
+    String subchannelAboutText,
+    bool subchannelCommunityPostsAllowed,
+    List<int> subchannelPicture,
+  ) async {
+    var url = Uri.parse(
+        'http://localhost:3000/subchannel/createSubchannelWithDataOnlyPicture');
+    String? token = await getToken();
+
+    var request = http.MultipartRequest('POST', url);
+
+    request.headers['Authorization'] = 'Bearer $token';
+    request.fields['subchannelName'] = subchannelName;
+    request.fields['subchannelAboutText'] = subchannelAboutText;
+    request.fields['subchannelShortDescriptiveText'] =
+        subchannelShortDescription;
+    request.fields['communitypostsAllowed'] =
+        subchannelCommunityPostsAllowed.toString();
+
+    request.files.add(http.MultipartFile.fromBytes('picture', subchannelPicture,
+        filename: "picture", contentType: MediaType('image', 'png')));
+
+    var response = await request.send();
+    print(response.statusCode);
+    if (response.statusCode == 201) {
+      print('Uploaded!');
+    } else {
+      print('Upload Error!');
+    }
+
+    Beamer.of(context).beamToNamed('/feed');
+  }
+
+//All Media Files
+  Future<void> _sendSubchannelWithAllData(
     String subchannelName,
     String subchannelShortDescription,
     String subchannelAboutText,
@@ -599,5 +705,42 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
     }
 
     Beamer.of(context).beamToNamed('/feed');
+  }
+
+  //Decide Sending Method
+  Future<void> _sendSubchannel(
+    String subchannelName,
+    String subchannelShortDescription,
+    String subchannelAboutText,
+    bool subchannelCommunityPostsAllowed,
+    List<int>? subchannelPicture,
+    List<int>? banner,
+  ) async {
+    if (subchannelPicture != null && banner != null) {
+      print("nothing null, good job");
+      _sendSubchannelWithAllData(
+          subchannelName,
+          subchannelShortDescription,
+          subchannelAboutText,
+          subchannelCommunityPostsAllowed,
+          subchannelPicture,
+          banner);
+    } else if (subchannelPicture != null) {
+      print("onlyPicture");
+      _sendSubchannelOnlyPicture(
+          subchannelName,
+          subchannelShortDescription,
+          subchannelAboutText,
+          subchannelCommunityPostsAllowed,
+          subchannelPicture);
+    } else if (banner != null) {
+      print("onlyBanner");
+      _sendSubchannelOnlyBanner(subchannelName, subchannelShortDescription,
+          subchannelAboutText, subchannelCommunityPostsAllowed, banner);
+    } else {
+      print("like literally no media files");
+      _sendSubchannelNoMediaFiles(subchannelName, subchannelShortDescription,
+          subchannelAboutText, subchannelCommunityPostsAllowed);
+    }
   }
 }

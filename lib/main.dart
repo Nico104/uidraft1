@@ -20,7 +20,7 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
   final routerDelegate = BeamerDelegate(
-    initialPath: '/',
+    initialPath: '/feed',
     locationBuilder: simpleLocationBuilder,
   );
 

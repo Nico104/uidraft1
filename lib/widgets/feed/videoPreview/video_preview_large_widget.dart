@@ -151,7 +151,7 @@ class _VideoPreviewState extends State<VideoPreview> {
                                     width: 4,
                                   ),
                                   //Username
-                                  Text("username"),
+                                  Text(snapshot.data!['username']),
                                   const SizedBox(
                                     width: 10,
                                   ),
@@ -181,7 +181,8 @@ class _VideoPreviewState extends State<VideoPreview> {
                                     width: 4,
                                   ),
                                   //Subchannelname
-                                  Text("c/CoolSamuraiStuff"),
+                                  Text('c/' +
+                                      snapshot.data!['postSubchannelName']),
                                 ],
                               ),
                               const SizedBox(

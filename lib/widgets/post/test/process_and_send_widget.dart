@@ -76,9 +76,9 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
         const Duration(seconds: 1),
         () => _sendPost(
             widget.postTitle,
-            "postDescription",
-            "postSubchannelName",
-            _processThumbnail(widget.thumbnail),
+            widget.postDescription,
+            widget.postSubchannelName,
+            widget.thumbnail!.files.first.bytes!,
             widget.video));
   }
 
@@ -86,7 +86,7 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     String postTitle,
     String postDescription,
     String postSubchannelName,
-    List<int> thumbnail,
+    Uint8List thumbnail,
     List<int> video,
     //List<int> video,
   ) async {
@@ -97,7 +97,7 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
 
     request.headers['Authorization'] = 'Bearer $token';
     request.fields['postDescription'] = postTitle;
-    request.fields['postSubchannelName'] = 'izgut';
+    request.fields['postSubchannelName'] = postSubchannelName;
     request.fields['postTitle'] = postTitle;
 
     request.files.add(http.MultipartFile.fromBytes('picture', thumbnail,

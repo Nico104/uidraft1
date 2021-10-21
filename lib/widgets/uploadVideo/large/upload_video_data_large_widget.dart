@@ -44,8 +44,8 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
 
   FilePickerResult? result;
 
-  // int pageIndex = 0;
-  int pageIndex = 1;
+  int pageIndex = 0;
+  // int pageIndex = 1;
 
   //TagList
   List<String> tagList = [];
@@ -310,7 +310,12 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                         borderRadius:
                                             BorderRadius.circular(30.0))),
                               ),
-                              onPressed: () => _saveVideoFile(),
+                              onPressed: () {
+                                setState(() {
+                                  print("submit");
+                                  pageIndex = 2;
+                                });
+                              },
                               child: const Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
@@ -394,15 +399,14 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
           ],
         );
 
-
       case 2:
         print("case 2");
         //Upload and Porcess Video
         return ProcessAndSendScreen(
           postTitle: _postTitleTextController.text,
           postDescription: _postDescriptionTextController.text,
-          postSubchannelName: "izgut",
-          thumbnail: result,
+          postSubchannelName: "isgut",
+          thumbnail: result!,
           video: videoBytes!,
         );
 
@@ -460,8 +464,6 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
             ),
           ),
         );
-
-      
     }
   }
 
@@ -524,5 +526,3 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
     return widgetList;
   }
 }
-
-

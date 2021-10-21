@@ -282,19 +282,97 @@ class _NavBarLargeState extends State<NavBarLarge> {
             alignment: Alignment.topRight,
             child: Padding(
               padding: const EdgeInsets.only(right: 25),
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    _showMenu = false;
-                  });
-                },
-                child: Container(
-                  height: 300,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(14)),
-                    color: Theme.of(context).colorScheme.searchBarColor,
-                  ),
+              child: Container(
+                // height: 300,
+                width: 200,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(14)),
+                  color: Theme.of(context).colorScheme.searchBarColor,
+                ),
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/profile');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("My Profile")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.navBarIconColor,
+                      indent: 9,
+                      endIndent: 9,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/uploadvideotest');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("Upload Video")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.navBarIconColor,
+                      indent: 9,
+                      endIndent: 9,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/createsubchannel');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("Create Subchannel")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.navBarIconColor,
+                      indent: 9,
+                      endIndent: 9,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("Logout")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
