@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
@@ -86,7 +87,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
     if (response.statusCode == 201) {
       print("yes");
-      Navigator.of(context).pushNamed('/login');
+      Beamer.of(context).beamToNamed('/login');
     } else {
       print("nope");
       //Navigator.of(context).pushNamed('/login');
@@ -443,9 +444,9 @@ class _SignUpFormState extends State<SignUpForm> {
                           _useremailTextController.text,
                           _userpasswordControlTextController.text);
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
-                      );
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(content: Text('Processing Data')),
+                      // );
                     }
                   },
                 ),
