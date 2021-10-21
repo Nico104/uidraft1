@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,6 +49,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   bool _isFullScreen = false;
   bool _showMenu = false;
+  bool _showQuality = false;
 
   bool isExpanded = false;
 
@@ -157,10 +159,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                     //On Player Exit
                                     onExit: (PointerExitEvent event) {
                                       if (_showMenu) {
-                                        setState(() {
-                                          _showMenu = false;
-                                          print("_showMenu set to false");
-                                        });
+                                        EasyDebounce.debounce(
+                                        'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                        const Duration(
+                                            seconds: 2), // <-- The debounce duration
+                                        () {
+                                          if (_showMenu) {
+                                            setState(() {
+                                              _showMenu = false;
+                                              _showQuality = false;
+                                              print("_showMenu set to false");
+                                            });
+                                          }
+                                        }); 
                                       }
                                     },
                                     onEnter: (PointerEnterEvent event) {
@@ -169,16 +180,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                           _showMenu = true;
                                           print("_showMenu set to true");
                                         });
-                                      }
-                                      Future.delayed(
-                                          const Duration(seconds: 10), () {
-                                        if (_showMenu) {
-                                          setState(() {
-                                            _showMenu = false;
-                                            print("_showMenu set to false");
-                                          });
-                                        }
-                                      });
+                                        EasyDebounce.debounce(
+                                        'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                        const Duration(
+                                            seconds: 5), // <-- The debounce duration
+                                        () {
+                                          if (_showMenu) {
+                                            setState(() {
+                                              _showMenu = false;
+                                              _showQuality = false;
+                                              print("_showMenu set to false");
+                                            });
+                                          }
+                                        }); // <-- The target method
+                                      }  
                                     },
                                     onHover: (PointerHoverEvent event) {
                                       if (!_showMenu) {
@@ -186,16 +201,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                           _showMenu = true;
                                           print("_showMenu set to true");
                                         });
-                                        Future.delayed(
-                                            const Duration(seconds: 10), () {
+                                        EasyDebounce.debounce(
+                                        'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                        const Duration(
+                                            seconds: 5), // <-- The debounce duration
+                                        () {
                                           if (_showMenu) {
                                             setState(() {
                                               _showMenu = false;
+                                              _showQuality = false;
                                               print("_showMenu set to false");
                                             });
                                           }
-                                        });
-                                      }
+                                        }); // <-- The target method
+                                      }        
                                     },
                                     child: AspectRatio(
                                       aspectRatio:
@@ -215,13 +234,50 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                 setState(() {
                                                   _controller.pause();
                                                   print("paused");
+
+                                                  _showMenu = true;
+                                                    print("_showMenu set to true");
                                                 });
+                                                
+                                                  EasyDebounce.debounce(
+                                                  'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                                  const Duration(
+                                                      seconds: 2), // <-- The debounce duration
+                                                  () {
+                                                    if (_showMenu) {
+                                                      setState(() {
+                                                        _showMenu = false;
+                                                       _showQuality = false;
+                                                        print("_showMenu set to false");
+                                                      });
+                                                    }
+                                                  }); // <-- The target method
+                                                
                                               } else {
                                                 // If the video is paused, play it.
                                                 setState(() {
                                                   _controller.play();
                                                   print("playing");
+
+                                                  _showMenu = true;
+                                                  print("_showMenu set to true");
                                                 });
+                                                
+                                                    
+                                                    EasyDebounce.debounce(
+                                                    'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                                    const Duration(
+                                                        seconds: 2), // <-- The debounce duration
+                                                    () {
+                                                      if (_showMenu) {
+                                                        setState(() {
+                                                          _showMenu = false;
+                                              _showQuality = false;
+                                                          print("_showMenu set to false");
+                                                        });
+                                                      }
+                                                    }); // <-- The target method
+                                                    
                                               }
                                             },
                                             child: IgnorePointer(
@@ -234,7 +290,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                           ),
                                           _showMenu
                                               //VideoPlayerMenu Normal
-                                              // (true)
                                               ? Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
@@ -246,29 +301,47 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                     Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.end,
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
                                                       children: [
-                                                        TextButton(
-                                                            onPressed: () {
-                                                              setState(() {
+                                                        _showQuality ? Container(
+                                                          decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .videoPlayerIconBackgroundColor
+                                                                    .withOpacity(
+                                                                        0.6)),
+                                                          child: Column(
+                                                            children: [
+                                                              TextButton(
+                                                                  onPressed: () {
+                                                                    setState(() {
+                                                                      _initializePlay(
+                                                                          defaultStream,
+                                                                          _controller
+                                                                              .value
+                                                                              .position);
+                                                                    });
+                                                                  },
+                                                                  child: const Text(
+                                                                      "default")),
+                                                              TextButton(
+                                                              onPressed: () {
                                                                 _initializePlay(
-                                                                    defaultStream,
+                                                                    stream2,
                                                                     _controller
                                                                         .value
                                                                         .position);
-                                                              });
-                                                            },
-                                                            child: Text(
-                                                                "default")),
-                                                        TextButton(
-                                                            onPressed: () {
-                                                              _initializePlay(
-                                                                  stream2,
-                                                                  _controller
-                                                                      .value
-                                                                      .position);
-                                                            },
-                                                            child: Text(
-                                                                "stream2")),
+                                                              },
+                                                              child: const Text(
+                                                                  "stream2")),
+                                                            ],
+                                                          ),
+                                                        ) : const SizedBox(),                                                       
                                                         RotatedBox(
                                                           quarterTurns: 3,
                                                           child: SliderTheme(
@@ -381,7 +454,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                                 _controller
                                                                     .pause();
                                                                 print("paused");
-                                                              });
+                                                              });                                              
                                                             } else {
                                                               // If the video is paused, play it.
                                                               setState(() {
@@ -389,7 +462,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                                     .play();
                                                                 print(
                                                                     "playing");
-                                                              });
+                                                              }); 
                                                             }
                                                           },
                                                           child: Container(
@@ -540,6 +613,68 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                         const SizedBox(
                                                           width: 10,
                                                         ),
+                                                        //Show Qualities Button
+                                                        MaterialButton(
+                                                          focusColor: Colors
+                                                              .transparent,
+                                                          minWidth: 0,
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(0),
+                                                          onPressed: () {
+                                                              setState(() {
+                                                                _showQuality =
+                                                                    !_showQuality;
+                                                                _showMenu = true;
+                                                              });        
+                                                              EasyDebounce.debounce(
+                                                                'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                                                const Duration(
+                                                                    seconds: 5), // <-- The debounce duration
+                                                                () {
+                                                                  if (_showMenu) {
+                                                                    setState(() {
+                                                                      _showMenu = false;
+                                              _showQuality = false;
+                                                                      print("_showMenu set to false");
+                                                                    });
+                                                                  }
+                                                                });                                                    
+                                                          },
+                                                          child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            12),
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .videoPlayerIconBackgroundColor
+                                                                    .withOpacity(
+                                                                        0.6),
+                                                              ),
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        2.0),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .fullscreen,
+                                                                  size: 32,
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .highlightColor,
+                                                                ),
+                                                              )),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        //Fullscreen Button Normal PLayer
                                                         MaterialButton(
                                                           focusColor: Colors
                                                               .transparent,
@@ -732,6 +867,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                           if (_showMenu) {
                                             setState(() {
                                               _showMenu = false;
+                                              _showQuality = false;
                                               print("_showMenu set to false");
                                             });
                                           }

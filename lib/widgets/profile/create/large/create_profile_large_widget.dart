@@ -220,9 +220,16 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
                               style: const TextStyle(
                                   fontFamily: "Segoe UI", color: Colors.black),
                               onChanged: (value) {
-                                setState(() {
-                                  print("Bio changed");
-                                });
+                                EasyDebounce.debounce(
+                                        'profileBioTextField-debouncer', // <-- An ID for this particular debouncer
+                                        const Duration(
+                                            milliseconds:
+                                                300), // <-- The debounce duration
+                                        () => setState(() {
+                                             print("Bio changed");
+                                          }) // <-- The target method
+                               );
+                                
                               },
                             ),
                             

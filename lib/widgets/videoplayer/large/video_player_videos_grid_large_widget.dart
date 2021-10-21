@@ -26,6 +26,7 @@ class VideoPlayerVideos extends StatefulWidget {
 
 class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
   bool _loading = true;
+  bool _error = false;
 
   List<int> postIds = <int>[];
   List<int> dataList = <int>[];
@@ -36,6 +37,12 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
   //Get PostIds List
   Future<void> fetchPostIds() async {
     try {
+      if(!_loading){
+        setState(() {
+          _loading = true;
+        });
+      }
+
       final response =
           await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
 
@@ -58,12 +65,20 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
         });
       } else {
         // If that call was not successful, throw an error.
-        Beamer.of(context).beamToNamed("/error/feed");
+        setState(() {
+          _loading = false;
+          _error = true;
+        });
         throw Exception('Failed to load post');
       }
     } catch (e) {
-      print("Error: " + e.toString());
-      Beamer.of(context).beamToNamed("/error/feed");
+      setState(() {
+          _loading = false;
+          _error = true;
+        });
+        // throw Exception("Error: " + e.toString());
+        print("Error: " + e.toString());
+      // Beamer.of(context).beamToNamed("/error/feed");
     }
   }
 
@@ -84,7 +99,15 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : Padding(
+        : _error ?
+        Column(
+            children: [
+              const SizedBox(height: 150,),
+              const Text("There was an error while loading this Users Video"),
+              OutlinedButton(onPressed: () => fetchPostIds(), child: const Text("Reload Videos"))
+            ],
+          ) :  
+        Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             child: GridView.count(
               shrinkWrap: true,

@@ -138,7 +138,7 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                                   fontFamily: "Segoe UI", color: Colors.black),
                               onChanged: (text) {
                                 EasyDebounce.debounce(
-                                    'titleTextField-debouncer', // <-- An ID for this particular debouncer
+                                    'subchannelNameTextField-debouncer', // <-- An ID for this particular debouncer
                                     const Duration(
                                         milliseconds:
                                             300), // <-- The debounce duration
