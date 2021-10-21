@@ -4,7 +4,6 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 // class NavBarLargeProfile extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLargeProfile extends StatefulWidget {
   const NavBarLargeProfile({Key? key}) : super(key: key);
-
   @override
   State<NavBarLargeProfile> createState() => _NavBarLargeProfileState();
 }
