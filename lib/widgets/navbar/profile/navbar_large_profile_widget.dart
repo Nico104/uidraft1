@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
@@ -27,12 +28,21 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
                   Align(
                     alignment: Alignment.centerLeft,
                     //Logo
-                    child: Text(
-                      "LOGO",
-                      style: TextStyle(
-                          fontFamily: 'Segoe UI Black',
-                          fontSize: 28,
-                          color: Theme.of(context).colorScheme.brandColor),
+                    child: InkWell(
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/feed');
+                      },
+                      child: Text(
+                        "LOGO",
+                        style: TextStyle(
+                            fontFamily: 'Segoe UI Black',
+                            fontSize: 28,
+                            color: Theme.of(context).colorScheme.brandColor),
+                      ),
                     ),
                   ),
                   //SearchBar
@@ -174,11 +184,96 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
             child: Padding(
               padding: const EdgeInsets.only(right: 25),
               child: Container(
-                height: 300,
+                // height: 300,
                 width: 200,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(14)),
                   color: Theme.of(context).colorScheme.searchBarColor,
+                ),
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/profile');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("My Profile")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.navBarIconColor,
+                      indent: 9,
+                      endIndent: 9,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/uploadvideotest');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("Upload Video")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.navBarIconColor,
+                      indent: 9,
+                      endIndent: 9,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/createsubchannel');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("Create Subchannel")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.navBarIconColor,
+                      indent: 9,
+                      endIndent: 9,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(child: Text("Logout")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

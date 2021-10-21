@@ -325,17 +325,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                                           _controller
                                                                               .value
                                                                               .position);
+                                                                      _showMenu = false;
+                                                                      _showQuality = false;
                                                                     });
                                                                   },
                                                                   child: const Text(
                                                                       "default")),
                                                               TextButton(
                                                               onPressed: () {
-                                                                _initializePlay(
-                                                                    stream2,
-                                                                    _controller
-                                                                        .value
-                                                                        .position);
+                                                                setState(() {
+                                                                      _initializePlay(
+                                                                          stream2,
+                                                                          _controller
+                                                                              .value
+                                                                              .position);
+                                                                      _showMenu = false;
+                                                                      _showQuality = false;
+                                                                    });
+
                                                               },
                                                               child: const Text(
                                                                   "stream2")),
