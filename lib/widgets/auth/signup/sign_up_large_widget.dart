@@ -9,25 +9,48 @@ class SignUpLargeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
-            child: Text(
-              "LOGO",
-              style: TextStyle(
-                  fontFamily: 'Segoe UI Black',
-                  fontSize: 28,
-                  color: Theme.of(context).colorScheme.brandColor),
-            ),
-          ),
-        ),
-        const Center(
-          child: SizedBox(height: 670, width: 400, child: SignUpForm()),
-        )
-      ],
+    // return Stack(
+    //   children: [
+    //     Align(
+    //       alignment: Alignment.topLeft,
+    //       child: Padding(
+    //         padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
+    //         child: Text(
+    //           "LOGO",
+    //           style: TextStyle(
+    //               fontFamily: 'Segoe UI Black',
+    //               fontSize: 28,
+    //               color: Theme.of(context).colorScheme.brandColor),
+    //         ),
+    //       ),
+    //     ),
+    //     Align(
+    //       alignment: Alignment.topRight,
+    //       child: Padding(
+    //         padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
+    //         child: SizedBox(
+    //           width: 220,
+    //           height: 120,
+    //           child: FittedBox(
+    //             fit: BoxFit.scaleDown,
+    //             child: AnimatedToggle(
+    //               values: const ['Fit', 'Real'],
+    //               onToggleCallback: (value) {},
+    //               buttonColor: Theme.of(context).colorScheme.brandColor,
+    //               backgroundColor: Theme.of(context).colorScheme.searchBarColor,
+    //               textColor: Theme.of(context).colorScheme.highlightColor,
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //     const Center(
+    //       child: SizedBox(height: 670, width: 400, child: SignUpForm()),
+    //     )
+    //   ],
+    // );
+    return const Center(
+      child: SizedBox(height: 670, width: 400, child: SignUpForm()),
     );
   }
 }

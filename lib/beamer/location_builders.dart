@@ -3,6 +3,7 @@ import 'package:beamer/beamer.dart';
 import 'package:uidraft1/admin%20tools/create_tag.dart';
 import 'package:uidraft1/error/error_feed_widget.dart';
 import 'package:uidraft1/main.dart';
+import 'package:uidraft1/screens/auth/auth_screen.dart';
 import 'package:uidraft1/screens/auth/login_screen.dart';
 import 'package:uidraft1/screens/auth/sign_up_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
@@ -37,14 +38,20 @@ final simpleLocationBuilder = SimpleLocationBuilder(
 
     '/signup': (context, state) => BeamPage(
           key: const ValueKey('signup'),
-          title: 'Sign Up',
-          child: const SignUpScreen(),
+          title: 'Who are you?',
+          // child: const SignUpScreen(),
+          child: const AuthScreen(
+            isLoginInitial: false,
+          ),
         ),
 
     '/login': (context, state) => BeamPage(
           key: const ValueKey('login'),
-          title: 'Login',
-          child: const LoginScreen(),
+          title: 'Who are you?',
+          // child: const LoginScreen(),
+          child: const AuthScreen(
+            isLoginInitial: true,
+          ),
         ),
 
     '/profile': (context, state) => BeamPage(
@@ -78,17 +85,24 @@ final simpleLocationBuilder = SimpleLocationBuilder(
         ),
 
     'createsubchannel': (context, state) => BeamPage(
-      key: const ValueKey('createsubchannel'),
-      title: 'createsubchannel',
-      child: const CreateSubchannelScreen(),
-    ),
+          key: const ValueKey('createsubchannel'),
+          title: 'createsubchannel',
+          child: const CreateSubchannelScreen(),
+        ),
 
     'updateprofile': (context, state) => BeamPage(
-      key: const ValueKey('updateProfile'),
-      title: 'updateProfile',
-      child: const UpdateProfileScreen(),
-    ),
+          key: const ValueKey('updateProfile'),
+          title: 'updateProfile',
+          child: const UpdateProfileScreen(),
+        ),
 
+    // 'auth': (context, state) => BeamPage(
+    //       key: const ValueKey('auth'),
+    //       title: 'auth',
+    //       child: const AuthScreen(
+    //         isLoginInitial: false,
+    //       ),
+    //     ),
 
     // '/books/:bookId': (context, state) {
     //   final book = books.firstWhere((book) =>

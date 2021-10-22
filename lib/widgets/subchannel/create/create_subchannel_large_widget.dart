@@ -476,6 +476,7 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: AnimatedToggle(
+                      firstInitialPosition: true,
                       values: const ['Fit', 'Real'],
                       onToggleCallback: (value) {
                         setState(() {

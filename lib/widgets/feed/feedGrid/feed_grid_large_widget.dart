@@ -43,12 +43,11 @@ class _FeedGridState extends State<FeedGrid> {
   //Get PostIds List
   Future<void> fetchPostIds() async {
     try {
-      if(!_loading){
+      if (!_loading) {
         setState(() {
           _loading = true;
         });
       }
-
 
       final response =
           await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
@@ -75,20 +74,27 @@ class _FeedGridState extends State<FeedGrid> {
       } else {
         // If that call was not successful, throw an error.
         // Beamer.of(context).beamToNamed("/error/feed");
-        setState(() {
-          _loading = false;
-          _error = true;
-        });
-        throw Exception('Failed to load post');
+
+        //mounted to not call SetState after dispose()
+        if (mounted) {
+          setState(() {
+            _loading = false;
+            _error = true;
+          });
+          throw Exception('Failed to load post');
+        }
       }
     } catch (e) {
-      setState(() {
+      //mounted to not call SetState after dispose()
+      if (mounted) {
+        setState(() {
           _loading = false;
           _error = true;
         });
         // throw Exception("Error: " + e.toString());
         print("Error: " + e.toString());
-      // Beamer.of(context).beamToNamed("/error/feed");
+        // Beamer.of(context).beamToNamed("/error/feed");
+      }
     }
   }
 
@@ -115,53 +121,56 @@ class _FeedGridState extends State<FeedGrid> {
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : _error ?
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text("There was an error while loading your Feed"),
-              OutlinedButton(onPressed: () => fetchPostIds(), child: const Text("Reload Feed"))
-            ],
-          ) :
-        ScrollConfiguration(
-            behavior:
-                ScrollConfiguration.of(context).copyWith(scrollbars: false),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: MediaQuery.of(context).size.width <= 1500
-                    ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
-                    : const EdgeInsets.fromLTRB(310, 120, 310, 0),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  // childAspectRatio: MediaQuery.of(context).size.width >= 1700
-                  //     ? (1280 / 1174)
-                  //     : MediaQuery.of(context).size.width >= 1600
-                  //         ? (1280 / 1240)
-                  //         : MediaQuery.of(context).size.width >= 1300
-                  //             ? (1280 / 1240)
-                  //             : (1280 / 1240),
-                  childAspectRatio: MediaQuery.of(context).size.width >= 1700
-                      ? (1280 / 1174)
-                      : (1280 / 1240),
-                  controller: _scrollController,
-                  scrollDirection: Axis.vertical,
-                  // Create a grid with 2 columns. If you change the scrollDirection to
-                  // horizontal, this produces 2 rows.
-                  crossAxisCount: 3,
-                  // Generate 100 widgets that display their index in the List.
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 40.0,
-                  children: dataList.map((value) {
-                    print("In Preview");
-                    return VideoPreview(
-                      postId: value,
-                    );
-                  }).toList(),
+        : _error
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text("There was an error while loading your Feed"),
+                  OutlinedButton(
+                      onPressed: () => fetchPostIds(),
+                      child: const Text("Reload Feed"))
+                ],
+              )
+            : ScrollConfiguration(
+                behavior:
+                    ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: MediaQuery.of(context).size.width <= 1500
+                        ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
+                        : const EdgeInsets.fromLTRB(310, 120, 310, 0),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      // childAspectRatio: MediaQuery.of(context).size.width >= 1700
+                      //     ? (1280 / 1174)
+                      //     : MediaQuery.of(context).size.width >= 1600
+                      //         ? (1280 / 1240)
+                      //         : MediaQuery.of(context).size.width >= 1300
+                      //             ? (1280 / 1240)
+                      //             : (1280 / 1240),
+                      childAspectRatio:
+                          MediaQuery.of(context).size.width >= 1700
+                              ? (1280 / 1174)
+                              : (1280 / 1240),
+                      controller: _scrollController,
+                      scrollDirection: Axis.vertical,
+                      // Create a grid with 2 columns. If you change the scrollDirection to
+                      // horizontal, this produces 2 rows.
+                      crossAxisCount: 3,
+                      // Generate 100 widgets that display their index in the List.
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 40.0,
+                      children: dataList.map((value) {
+                        print("In Preview");
+                        return VideoPreview(
+                          postId: value,
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
+              );
   }
 
   //// ADDING THE SCROLL LISTINER
