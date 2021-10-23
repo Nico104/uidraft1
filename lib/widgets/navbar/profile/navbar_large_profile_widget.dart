@@ -29,12 +29,13 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
                     alignment: Alignment.centerLeft,
                     //Logo
                     child: InkWell(
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
+                      // focusColor: Colors.transparent,
+                      // hoverColor: Colors.transparent,
+                      // highlightColor: Colors.transparent,
+                      // splashColor: Colors.transparent,
                       onTap: () {
                         Beamer.of(context).beamToNamed('/feed');
+                        print("taped");
                       },
                       child: Text(
                         "LOGO",

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:http/http.dart' as http;
@@ -9,46 +12,6 @@ class SignUpLargeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Stack(
-    //   children: [
-    //     Align(
-    //       alignment: Alignment.topLeft,
-    //       child: Padding(
-    //         padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
-    //         child: Text(
-    //           "LOGO",
-    //           style: TextStyle(
-    //               fontFamily: 'Segoe UI Black',
-    //               fontSize: 28,
-    //               color: Theme.of(context).colorScheme.brandColor),
-    //         ),
-    //       ),
-    //     ),
-    //     Align(
-    //       alignment: Alignment.topRight,
-    //       child: Padding(
-    //         padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
-    //         child: SizedBox(
-    //           width: 220,
-    //           height: 120,
-    //           child: FittedBox(
-    //             fit: BoxFit.scaleDown,
-    //             child: AnimatedToggle(
-    //               values: const ['Fit', 'Real'],
-    //               onToggleCallback: (value) {},
-    //               buttonColor: Theme.of(context).colorScheme.brandColor,
-    //               backgroundColor: Theme.of(context).colorScheme.searchBarColor,
-    //               textColor: Theme.of(context).colorScheme.highlightColor,
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //     const Center(
-    //       child: SizedBox(height: 670, width: 400, child: SignUpForm()),
-    //     )
-    //   ],
-    // );
     return const Center(
       child: SizedBox(height: 670, width: 400, child: SignUpForm()),
     );
@@ -90,6 +53,29 @@ class _SignUpFormState extends State<SignUpForm> {
     super.dispose();
   }
 
+//LoginMethod
+  Future<bool> _login(String username, String password) async {
+    var url = Uri.parse('http://localhost:3000/login');
+    var response = await http
+        .post(url, body: {'username': '$username', 'password': '$password'});
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          'access_token', json.decode(response.body)["access_token"]);
+      print("Acess Token: ${prefs.getString('access_token')}");
+
+      // Navigator.of(context).pushNamed('/');
+      // Beamer.of(context).beamToNamed('/');
+      return true;
+    }
+
+    return false;
+    //Navigator.of(context).pushNamed('/welcome');
+  }
+
   Future<void> _signUp(
       String username, String useremail, String userpassword) async {
     DateTime signUpDate = DateTime.now();
@@ -110,7 +96,9 @@ class _SignUpFormState extends State<SignUpForm> {
 
     if (response.statusCode == 201) {
       print("yes");
-      Beamer.of(context).beamToNamed('/login');
+      await _login(
+          _usernameTextController.text, _userpasswordTextController.text);
+      // Beamer.of(context).beamToNamed('/login');
     } else {
       print("nope");
       //Navigator.of(context).pushNamed('/login');
@@ -456,16 +444,26 @@ class _SignUpFormState extends State<SignUpForm> {
                         color:
                             Theme.of(context).colorScheme.textInputCursorColor),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
 
-                      _signUp(
+                      await _signUp(
                           _usernameTextController.text,
                           _useremailTextController.text,
                           _userpasswordControlTextController.text);
+
+                      if (await _login(_usernameTextController.text,
+                          _userpasswordTextController.text)) {
+                        print("logged in");
+                        Beamer.of(context).beamToNamed('/feed');
+                      } else {
+                        setState(() {
+                          print("Username or Password wrong");
+                        });
+                      }
 
                       // ScaffoldMessenger.of(context).showSnackBar(
                       //   const SnackBar(content: Text('Processing Data')),

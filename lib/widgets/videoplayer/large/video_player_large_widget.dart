@@ -9,6 +9,7 @@ import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
+// import 'dart:html' as html;
 
 void goFullScreen() {
   document.documentElement!.requestFullscreen();
@@ -18,21 +19,14 @@ void exitFullScreen() {
   document.exitFullscreen();
 }
 
-void main() => runApp(const VideoPlayerHome());
-
 //Latest Player
-class VideoPlayerHome extends StatelessWidget {
-  const VideoPlayerHome({Key? key}) : super(key: key);
-  // final bool externAccess = false;
+class VideoPlayerHome extends StatefulWidget {
+  const VideoPlayerHome(
+      {Key? key, required this.postData, required this.firtTimeExternAccess})
+      : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return const VideoPlayerScreen();
-  }
-}
-
-class VideoPlayerScreen extends StatefulWidget {
-  const VideoPlayerScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic> postData;
+  final bool firtTimeExternAccess;
 
   final String text =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n Tempus iaculis urna id volutpat lacus laoreet non. Aenean vel elit scelerisque mauris.\n Pharetra massa massa ultricies mi. Ut sem viverra aliquet eget sit amet.";
@@ -41,11 +35,11 @@ class VideoPlayerScreen extends StatefulWidget {
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
 
-  bool _firtTimeExternAccess = true;
+  late bool _firtTimeExternAccess;
 
   bool _isFullScreen = false;
   bool _showMenu = false;
@@ -53,40 +47,63 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   bool isExpanded = false;
 
-  //Quality Test
-  String defaultStream =
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4';
-  String stream2 = 'http://localhost:3000/post/video';
-  String stream3 = 'https://archive.org/download/mblbhs/mblbhs.mp4';
+  Map<int, String> streamQualityURL = {};
+  List<int> streamQualityKeysSorted = [];
+  late int activeQualityStream;
 
   Duration pos = const Duration();
-  //Quality Test End
+
+  String baseURL = 'http://localhost:3000/';
 
   @override
   void initState() {
-    _controller = VideoPlayerController.network(
-        // 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        // 'http://localhost:3000/post/video',
-        defaultStream);
+    _firtTimeExternAccess = widget.firtTimeExternAccess;
+
+    streamQualityURL[240] = baseURL + widget.postData['postVideoPath240'];
+    if (widget.postData['postVideoPath480'].toString().isNotEmpty) {
+      streamQualityURL[480] = baseURL + widget.postData['postVideoPath480'];
+    }
+    if (widget.postData['postVideoPath720'].toString().isNotEmpty) {
+      streamQualityURL[720] = baseURL + widget.postData['postVideoPath720'];
+    }
+    if (widget.postData['postVideoPath1080'].toString().isNotEmpty) {
+      streamQualityURL[1080] = baseURL + widget.postData['postVideoPath1080'];
+    }
+
+    streamQualityKeysSorted = streamQualityURL.keys.toList()
+      ..sort((b, a) => a.compareTo(b));
+
+    activeQualityStream = streamQualityKeysSorted.first;
+
+    _controller =
+        VideoPlayerController.network(streamQualityURL[activeQualityStream]!);
 
     // Initialize the controller and store the Future for later use.
     _initializeVideoPlayerFuture = _controller.initialize().then((value) {
       _controller.addListener(() {
-        setState(() {
-          pos = _controller.value.position;
-        });
+        if (mounted) {
+          setState(() {
+            pos = _controller.value.position;
+          });
+        }
       });
 
       if (!_firtTimeExternAccess) {
         _controller.play();
       }
-      //_controller.play();
     });
 
     // Use the controller to loop the video.
     _controller.setLooping(true);
 
     super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (!widget.firtTimeExternAccess) {
+        window.history.replaceState(null, 'VideoPlayer',
+            '#/whatch/' + widget.postData['postId'].toString());
+      }
+    });
   }
 
   @override
@@ -111,9 +128,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       _controller.seekTo(pos);
       _controller.play();
       _controller.addListener(() {
-        setState(() {
-          pos = _controller.value.position;
-        });
+        if (mounted) {
+          setState(() {
+            pos = _controller.value.position;
+          });
+        }
       });
     });
     _controller.setLooping(true);
@@ -160,61 +179,76 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                     onExit: (PointerExitEvent event) {
                                       if (_showMenu) {
                                         EasyDebounce.debounce(
-                                        'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                        const Duration(
-                                            seconds: 2), // <-- The debounce duration
-                                        () {
+                                            'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                            const Duration(
+                                                seconds:
+                                                    2), // <-- The debounce duration
+                                            () {
                                           if (_showMenu) {
-                                            setState(() {
-                                              _showMenu = false;
-                                              _showQuality = false;
-                                              print("_showMenu set to false");
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                _showMenu = false;
+                                                _showQuality = false;
+                                                print("_showMenu set to false");
+                                              });
+                                            }
                                           }
-                                        }); 
+                                        });
                                       }
                                     },
                                     onEnter: (PointerEnterEvent event) {
                                       if (!_showMenu) {
-                                        setState(() {
-                                          _showMenu = true;
-                                          print("_showMenu set to true");
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            _showMenu = true;
+                                            print("_showMenu set to true");
+                                          });
+                                        }
+
                                         EasyDebounce.debounce(
-                                        'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                        const Duration(
-                                            seconds: 5), // <-- The debounce duration
-                                        () {
+                                            'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                            const Duration(
+                                                seconds:
+                                                    5), // <-- The debounce duration
+                                            () {
                                           if (_showMenu) {
-                                            setState(() {
-                                              _showMenu = false;
-                                              _showQuality = false;
-                                              print("_showMenu set to false");
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                _showMenu = false;
+                                                _showQuality = false;
+                                                print("_showMenu set to false");
+                                              });
+                                            }
                                           }
                                         }); // <-- The target method
-                                      }  
+                                      }
                                     },
                                     onHover: (PointerHoverEvent event) {
                                       if (!_showMenu) {
-                                        setState(() {
-                                          _showMenu = true;
-                                          print("_showMenu set to true");
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            _showMenu = true;
+                                            print("_showMenu set to true");
+                                          });
+                                        }
+
                                         EasyDebounce.debounce(
-                                        'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                        const Duration(
-                                            seconds: 5), // <-- The debounce duration
-                                        () {
+                                            'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                            const Duration(
+                                                seconds:
+                                                    5), // <-- The debounce duration
+                                            () {
                                           if (_showMenu) {
-                                            setState(() {
-                                              _showMenu = false;
-                                              _showQuality = false;
-                                              print("_showMenu set to false");
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                _showMenu = false;
+                                                _showQuality = false;
+                                                print("_showMenu set to false");
+                                              });
+                                            }
                                           }
                                         }); // <-- The target method
-                                      }        
+                                      }
                                     },
                                     child: AspectRatio(
                                       aspectRatio:
@@ -231,53 +265,66 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                               print("tap");
                                               _firtTimeExternAccess = false;
                                               if (_controller.value.isPlaying) {
-                                                setState(() {
-                                                  _controller.pause();
-                                                  print("paused");
+                                                if (mounted) {
+                                                  setState(() {
+                                                    _controller.pause();
+                                                    print("paused");
 
-                                                  _showMenu = true;
-                                                    print("_showMenu set to true");
-                                                });
-                                                
-                                                  EasyDebounce.debounce(
-                                                  'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                                  const Duration(
-                                                      seconds: 2), // <-- The debounce duration
-                                                  () {
-                                                    if (_showMenu) {
-                                                      setState(() {
-                                                        _showMenu = false;
-                                                       _showQuality = false;
-                                                        print("_showMenu set to false");
-                                                      });
-                                                    }
-                                                  }); // <-- The target method
-                                                
-                                              } else {
-                                                // If the video is paused, play it.
-                                                setState(() {
-                                                  _controller.play();
-                                                  print("playing");
+                                                    _showMenu = true;
+                                                    print(
+                                                        "_showMenu set to true");
+                                                  });
+                                                }
 
-                                                  _showMenu = true;
-                                                  print("_showMenu set to true");
-                                                });
-                                                
-                                                    
-                                                    EasyDebounce.debounce(
+                                                EasyDebounce.debounce(
                                                     'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
                                                     const Duration(
-                                                        seconds: 2), // <-- The debounce duration
+                                                        seconds:
+                                                            2), // <-- The debounce duration
                                                     () {
-                                                      if (_showMenu) {
-                                                        setState(() {
-                                                          _showMenu = false;
-                                              _showQuality = false;
-                                                          print("_showMenu set to false");
-                                                        });
-                                                      }
-                                                    }); // <-- The target method
-                                                    
+                                                  if (_showMenu) {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        _showMenu = false;
+                                                        _showQuality = false;
+                                                        print(
+                                                            "_showMenu set to false");
+                                                      });
+                                                    }
+                                                  }
+                                                }); // <-- The target method
+
+                                              } else {
+                                                // If the video is paused, play it.
+                                                if (mounted) {
+                                                  setState(() {
+                                                    _controller.play();
+                                                    print("playing");
+
+                                                    _showMenu = true;
+                                                    print(
+                                                        "_showMenu set to true");
+                                                  });
+                                                }
+
+                                                EasyDebounce.debounce(
+                                                    'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                                    const Duration(
+                                                        seconds:
+                                                            2), // <-- The debounce duration
+                                                    () {
+                                                  if (_showMenu) {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        _showMenu = false;
+                                                        _showQuality = false;
+                                                        print(
+                                                            "_showMenu set to false");
+                                                      });
+                                                    }
+                                                  }
+                                                }); // <-- The target method
+
                                               }
                                             },
                                             child: IgnorePointer(
@@ -301,54 +348,53 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                     Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.end,
-                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
                                                       children: [
-                                                        _showQuality ? Container(
-                                                          decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            8),
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .videoPlayerIconBackgroundColor
-                                                                    .withOpacity(
-                                                                        0.6)),
-                                                          child: Column(
-                                                            children: [
-                                                              TextButton(
-                                                                  onPressed: () {
-                                                                    setState(() {
-                                                                      _initializePlay(
-                                                                          defaultStream,
-                                                                          _controller
-                                                                              .value
-                                                                              .position);
-                                                                      _showMenu = false;
-                                                                      _showQuality = false;
-                                                                    });
-                                                                  },
-                                                                  child: const Text(
-                                                                      "default")),
-                                                              TextButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                      _initializePlay(
-                                                                          stream2,
-                                                                          _controller
-                                                                              .value
-                                                                              .position);
-                                                                      _showMenu = false;
-                                                                      _showQuality = false;
-                                                                    });
-
-                                                              },
-                                                              child: const Text(
-                                                                  "stream2")),
-                                                            ],
-                                                          ),
-                                                        ) : const SizedBox(),                                                       
+                                                        _showQuality
+                                                            ? Container(
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                8),
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .videoPlayerIconBackgroundColor
+                                                                        .withOpacity(
+                                                                            0.6)),
+                                                                child: Column(
+                                                                    //Generate Quality Menu
+                                                                    children: List.generate(
+                                                                        streamQualityKeysSorted
+                                                                            .length,
+                                                                        (index) {
+                                                                  return Container(
+                                                                    color: streamQualityKeysSorted.elementAt(index) ==
+                                                                            activeQualityStream
+                                                                        ? Theme.of(context)
+                                                                            .colorScheme
+                                                                            .brandColor
+                                                                        : Colors
+                                                                            .transparent,
+                                                                    child: TextButton(
+                                                                        onPressed: () {
+                                                                          if (mounted) {
+                                                                            setState(() {
+                                                                              activeQualityStream = streamQualityKeysSorted.elementAt(index);
+                                                                              _initializePlay(streamQualityURL[activeQualityStream]!, _controller.value.position);
+                                                                              _showMenu = false;
+                                                                              _showQuality = false;
+                                                                            });
+                                                                          }
+                                                                        },
+                                                                        child: Text(streamQualityKeysSorted.elementAt(index).toString() + 'p')),
+                                                                  );
+                                                                })),
+                                                              )
+                                                            : const SizedBox(),
                                                         RotatedBox(
                                                           quarterTurns: 3,
                                                           child: SliderTheme(
@@ -401,32 +447,40 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                               //label: (_controller!.value.volume * 100).round().toString(),
                                                               onChanged: (double
                                                                   value) {
-                                                                setState(() {
-                                                                  _controller
-                                                                      .setVolume(
-                                                                          value /
-                                                                              100);
-                                                                });
-                                                                if (!_showMenu) {
+                                                                if (mounted) {
                                                                   setState(() {
-                                                                    _showMenu =
-                                                                        true;
-                                                                    print(
-                                                                        "_showMenu set to true");
+                                                                    _controller.setVolume(
+                                                                        value /
+                                                                            100);
                                                                   });
+                                                                }
+
+                                                                if (!_showMenu) {
+                                                                  if (mounted) {
+                                                                    setState(
+                                                                        () {
+                                                                      _showMenu =
+                                                                          true;
+                                                                      print(
+                                                                          "_showMenu set to true");
+                                                                    });
+                                                                  }
+
                                                                   Future.delayed(
                                                                       const Duration(
                                                                           seconds:
                                                                               5),
                                                                       () {
                                                                     if (_showMenu) {
-                                                                      setState(
-                                                                          () {
-                                                                        _showMenu =
-                                                                            false;
-                                                                        print(
-                                                                            "_showMenu set to false");
-                                                                      });
+                                                                      if (mounted) {
+                                                                        setState(
+                                                                            () {
+                                                                          _showMenu =
+                                                                              false;
+                                                                          print(
+                                                                              "_showMenu set to false");
+                                                                        });
+                                                                      }
                                                                     }
                                                                   });
                                                                 }
@@ -457,19 +511,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                             if (_controller
                                                                 .value
                                                                 .isPlaying) {
-                                                              setState(() {
-                                                                _controller
-                                                                    .pause();
-                                                                print("paused");
-                                                              });                                              
+                                                              if (mounted) {
+                                                                setState(() {
+                                                                  _controller
+                                                                      .pause();
+                                                                  print(
+                                                                      "paused");
+                                                                });
+                                                              }
                                                             } else {
                                                               // If the video is paused, play it.
-                                                              setState(() {
-                                                                _controller
-                                                                    .play();
-                                                                print(
-                                                                    "playing");
-                                                              }); 
+                                                              if (mounted) {
+                                                                setState(() {
+                                                                  _controller
+                                                                      .play();
+                                                                  print(
+                                                                      "playing");
+                                                                });
+                                                              }
                                                             }
                                                           },
                                                           child: Container(
@@ -521,19 +580,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                             if (_controller
                                                                 .value
                                                                 .isPlaying) {
-                                                              setState(() {
-                                                                _controller
-                                                                    .pause();
-                                                                print("paused");
-                                                              });
+                                                              if (mounted) {
+                                                                setState(() {
+                                                                  _controller
+                                                                      .pause();
+                                                                  print(
+                                                                      "paused");
+                                                                });
+                                                              }
                                                             } else {
                                                               // If the video is paused, play it.
-                                                              setState(() {
-                                                                _controller
-                                                                    .play();
-                                                                print(
-                                                                    "playing");
-                                                              });
+                                                              if (mounted) {
+                                                                setState(() {
+                                                                  _controller
+                                                                      .play();
+                                                                  print(
+                                                                      "playing");
+                                                                });
+                                                              }
                                                             }
                                                           },
                                                           child: Container(
@@ -629,24 +693,35 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                               const EdgeInsets
                                                                   .all(0),
                                                           onPressed: () {
+                                                            if (mounted) {
                                                               setState(() {
                                                                 _showQuality =
                                                                     !_showQuality;
-                                                                _showMenu = true;
-                                                              });        
-                                                              EasyDebounce.debounce(
-                                                                'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                                                const Duration(
-                                                                    seconds: 5), // <-- The debounce duration
-                                                                () {
-                                                                  if (_showMenu) {
-                                                                    setState(() {
-                                                                      _showMenu = false;
-                                              _showQuality = false;
-                                                                      print("_showMenu set to false");
-                                                                    });
-                                                                  }
-                                                                });                                                    
+                                                                _showMenu =
+                                                                    true;
+                                                              });
+                                                            }
+
+                                                            EasyDebounce
+                                                                .debounce(
+                                                                    'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                                                    const Duration(
+                                                                        seconds:
+                                                                            5), // <-- The debounce duration
+                                                                    () {
+                                                              if (_showMenu) {
+                                                                if (mounted) {
+                                                                  setState(() {
+                                                                    _showMenu =
+                                                                        false;
+                                                                    _showQuality =
+                                                                        false;
+                                                                    print(
+                                                                        "_showMenu set to false");
+                                                                  });
+                                                                }
+                                                              }
+                                                            });
                                                           },
                                                           child: Container(
                                                               decoration:
@@ -691,17 +766,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                                   .all(0),
                                                           onPressed: () {
                                                             if (!_isFullScreen) {
-                                                              setState(() {
-                                                                _isFullScreen =
-                                                                    true;
-                                                                goFullScreen();
-                                                              });
+                                                              if (mounted) {
+                                                                setState(() {
+                                                                  _isFullScreen =
+                                                                      true;
+                                                                  goFullScreen();
+                                                                });
+                                                              }
                                                             } else {
-                                                              setState(() {
-                                                                _isFullScreen =
-                                                                    false;
-                                                                exitFullScreen();
-                                                              });
+                                                              if (mounted) {
+                                                                setState(() {
+                                                                  _isFullScreen =
+                                                                      false;
+                                                                  exitFullScreen();
+                                                                });
+                                                              }
                                                             }
                                                           },
                                                           child: Container(
@@ -759,16 +838,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                           false;
                                                       if (_controller
                                                           .value.isPlaying) {
-                                                        setState(() {
-                                                          _controller.pause();
-                                                          print("paused");
-                                                        });
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            _controller.pause();
+                                                            print("paused");
+                                                          });
+                                                        }
                                                       } else {
                                                         // If the video is paused, play it.
-                                                        setState(() {
-                                                          _controller.play();
-                                                          print("playing");
-                                                        });
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            _controller.play();
+                                                            print("playing");
+                                                          });
+                                                        }
                                                       }
                                                     },
                                                     child: Container(
@@ -804,25 +887,36 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 30),
+                                  //Post Title
+                                  Text(widget.postData['postTitle']),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                   //Video Data and Comments Normal
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    children: const [
-                                      Text("SubchannelName"),
-                                      SizedBox(
+                                    children: [
+                                      //Post SubchannelName
+                                      Text(widget
+                                          .postData['postSubchannelName']),
+                                      const SizedBox(
                                         width: 10,
                                       ),
-                                      Text("Username"),
+                                      //Post Username
+                                      Text(widget.postData['username']),
                                     ],
                                   ),
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  const Text("published 15. October 2021"),
+                                  //Post Published Date Time
+                                  Text(widget
+                                          .postData['postPublishedDateTime'] ??
+                                      "published 15. October 2021"),
                                   const SizedBox(
                                     height: 50,
                                   ),
-                                  // const Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n Tempus iaculis urna id volutpat lacus laoreet non. Aenean vel elit scelerisque mauris.\n Pharetra massa massa ultricies mi. Ut sem viverra aliquet eget sit amet."),
+                                  //Post Description
                                   Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -833,7 +927,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                 : const BoxConstraints(
                                                     maxHeight: 50.0),
                                             child: Text(
-                                              widget.text,
+                                              widget
+                                                  .postData['postDescription'],
                                               softWrap: true,
                                               overflow: TextOverflow.fade,
                                             )),
@@ -865,18 +960,23 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                   MouseRegion(
                                     onHover: (PointerHoverEvent event) {
                                       if (!_showMenu) {
-                                        setState(() {
-                                          _showMenu = true;
-                                          print("_showMenu set to true");
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            _showMenu = true;
+                                            print("_showMenu set to true");
+                                          });
+                                        }
+
                                         Future.delayed(
                                             const Duration(seconds: 10), () {
                                           if (_showMenu) {
-                                            setState(() {
-                                              _showMenu = false;
-                                              _showQuality = false;
-                                              print("_showMenu set to false");
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                _showMenu = false;
+                                                _showQuality = false;
+                                                print("_showMenu set to false");
+                                              });
+                                            }
                                           }
                                         });
                                       }
@@ -886,16 +986,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                       onTap: () {
                                         print("tap");
                                         if (_controller.value.isPlaying) {
-                                          setState(() {
-                                            _controller.pause();
-                                            print("paused");
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              _controller.pause();
+                                              print("paused");
+                                            });
+                                          }
                                         } else {
                                           // If the video is paused, play it.
-                                          setState(() {
-                                            _controller.play();
-                                            print("playing");
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              _controller.play();
+                                              print("playing");
+                                            });
+                                          }
                                         }
                                       },
                                       child: IgnorePointer(
@@ -957,10 +1061,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                       //label: (_controller!.value.volume * 100).round().toString(),
                                                       onChanged:
                                                           (double value) {
-                                                        setState(() {
-                                                          _controller.setVolume(
-                                                              value / 100);
-                                                        });
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            _controller
+                                                                .setVolume(
+                                                                    value /
+                                                                        100);
+                                                          });
+                                                        }
                                                       },
                                                     ),
                                                   ),
@@ -983,16 +1091,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                   onPressed: () {
                                                     if (_controller
                                                         .value.isPlaying) {
-                                                      setState(() {
-                                                        _controller.pause();
-                                                        print("paused");
-                                                      });
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          _controller.pause();
+                                                          print("paused");
+                                                        });
+                                                      }
                                                     } else {
                                                       // If the video is paused, play it.
-                                                      setState(() {
-                                                        _controller.play();
-                                                        print("playing");
-                                                      });
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          _controller.play();
+                                                          print("playing");
+                                                        });
+                                                      }
                                                     }
                                                   },
                                                   child: Container(
@@ -1035,16 +1147,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                   onPressed: () {
                                                     if (_controller
                                                         .value.isPlaying) {
-                                                      setState(() {
-                                                        _controller.pause();
-                                                        print("paused");
-                                                      });
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          _controller.pause();
+                                                          print("paused");
+                                                        });
+                                                      }
                                                     } else {
                                                       // If the video is paused, play it.
-                                                      setState(() {
-                                                        _controller.play();
-                                                        print("playing");
-                                                      });
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          _controller.play();
+                                                          print("playing");
+                                                        });
+                                                      }
                                                     }
                                                   },
                                                   child: Container(
@@ -1123,15 +1239,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                                       const EdgeInsets.all(0),
                                                   onPressed: () {
                                                     if (!_isFullScreen) {
-                                                      setState(() {
-                                                        _isFullScreen = true;
-                                                        goFullScreen();
-                                                      });
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          _isFullScreen = true;
+                                                          goFullScreen();
+                                                        });
+                                                      }
                                                     } else {
-                                                      setState(() {
-                                                        _isFullScreen = false;
-                                                        exitFullScreen();
-                                                      });
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          _isFullScreen = false;
+                                                          exitFullScreen();
+                                                        });
+                                                      }
                                                     }
                                                   },
                                                   child: Container(

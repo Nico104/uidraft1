@@ -4,8 +4,6 @@ import 'package:uidraft1/admin%20tools/create_tag.dart';
 import 'package:uidraft1/error/error_feed_widget.dart';
 import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/auth/auth_screen.dart';
-import 'package:uidraft1/screens/auth/login_screen.dart';
-import 'package:uidraft1/screens/auth/sign_up_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/screens/profile/create/create_profile_screen.dart';
 import 'package:uidraft1/screens/profile/profile_screen.dart';
@@ -66,11 +64,35 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           child: const SubchannelScreen(),
         ),
 
-    '/whatch': (context, state) => BeamPage(
-          key: const ValueKey('videoplayer'),
-          title: 'VideoPlayer',
-          child: const VideoPlayerScreen(),
+    //For extern calls
+    '/whatch/:postId': (context, state) {
+      String postId =
+          (context.currentBeamLocation.state).pathParameters['postId']!;
+
+      return BeamPage(
+        key: ValueKey('videoplayer-$postId'),
+        title: 'VideoPlayer',
+        child: VideoPlayerScreen(
+          postId: int.parse(postId),
+          firtTimeExternAccess: true,
         ),
+      );
+    },
+
+    //For intern calls
+    '/whatchintern/:postId': (context, state) {
+      String postId =
+          (context.currentBeamLocation.state).pathParameters['postId']!;
+
+      return BeamPage(
+        key: ValueKey('videoplayer-$postId'),
+        title: 'VideoPlayer',
+        child: VideoPlayerScreen(
+          postId: int.parse(postId),
+          firtTimeExternAccess: false,
+        ),
+      );
+    },
 
     '/createtag': (context, state) => BeamPage(
           key: const ValueKey('createtag'),
