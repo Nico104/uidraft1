@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 class CreateProfilePreviewLargeScreen extends StatelessWidget {
-  const CreateProfilePreviewLargeScreen({Key? key, required this.bio, required this.profilePicture}) : super(key: key);
+  const CreateProfilePreviewLargeScreen(
+      {Key? key,
+      required this.bio,
+      required this.profilePicture,
+      required this.username})
+      : super(key: key);
 
   final String bio;
   final Uint8List? profilePicture;
-
+  final String username;
 
   //Profile
   @override
@@ -18,19 +23,21 @@ class CreateProfilePreviewLargeScreen extends StatelessWidget {
         //Profile Picture
         ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(37)),
-          child: profilePicture != null ? 
-          Image.memory(
-            profilePicture!,
-            fit: BoxFit.cover, alignment: Alignment.center,
-            width: 500,
-            height: 500,
-          ) :
-          Image.network(
-            "https://picsum.photos/800",
-            fit: BoxFit.cover, alignment: Alignment.center,
-            width: 500,
-            height: 500,
-          ),
+          child: profilePicture != null
+              ? Image.memory(
+                  profilePicture!,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  width: 500,
+                  height: 500,
+                )
+              : Image.network(
+                  'http://localhost:3000/uploads/default/defaultProfilePicture.png',
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  width: 500,
+                  height: 500,
+                ),
         ),
         const SizedBox(
           height: 37,
@@ -52,33 +59,28 @@ class CreateProfilePreviewLargeScreen extends StatelessWidget {
                       style: TextStyle(
                           fontFamily: 'Segoe UI',
                           fontSize: 26,
-                          color:
-                              Theme.of(context).colorScheme.brandColor),
+                          color: Theme.of(context).colorScheme.brandColor),
                     ),
                     //Follow Button
                     SizedBox(
                         width: 160,
                         height: 35,
                         child: TextButton(
-                                style: TextButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(30.0),
-                                    ),
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                                onPressed: () {},
-                                child: Text(
-                                  'Follow',
-                                  style: TextStyle(
-                                      fontFamily: 'Segoe UI Black',
-                                      fontSize: 18,
-                                      color: Theme.of(context)
-                                          .canvasColor),
-                                ),
-                              )
-                            ),
+                          style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.brandColor),
+                          onPressed: () {},
+                          child: Text(
+                            'Follow',
+                            style: TextStyle(
+                                fontFamily: 'Segoe UI Black',
+                                fontSize: 18,
+                                color: Theme.of(context).canvasColor),
+                          ),
+                        )),
                   ],
                 ),
                 const SizedBox(height: 13),
@@ -97,8 +99,7 @@ class CreateProfilePreviewLargeScreen extends StatelessWidget {
                   style: TextStyle(
                       fontFamily: 'Segoe UI',
                       fontSize: 16,
-                      color:
-                          Theme.of(context).colorScheme.userBioColor),
+                      color: Theme.of(context).colorScheme.userBioColor),
                 ),
               ],
             ),
