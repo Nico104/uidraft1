@@ -17,11 +17,13 @@ class VideoPreview extends StatefulWidget {
 }
 
 class _VideoPreviewState extends State<VideoPreview> {
+  String baseURL = 'http://localhost:3000/';
+
   //Get PostPreview Data by Id
   Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
-    print("In Preview 2");
-    final response = await http
-        .get(Uri.parse('http://localhost:3000/post/getPostPreviewData/$id'));
+    // print("In Preview 2");
+    final response =
+        await http.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);
@@ -49,6 +51,9 @@ class _VideoPreviewState extends State<VideoPreview> {
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
             return InkWell(
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               onTap: () {
                 Beamer.of(context)
                     .beamToNamed('whatchintern/' + widget.postId.toString());
@@ -60,7 +65,8 @@ class _VideoPreviewState extends State<VideoPreview> {
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
                       "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
                     ),
                   ),
                   const SizedBox(
@@ -82,13 +88,30 @@ class _VideoPreviewState extends State<VideoPreview> {
                               width: 3,
                             ),
                             //Profile Pictrue / Subchannel Profile Picture
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(14.0),
-                              child: Image.network(
-                                "https://picsum.photos/700",
-                                fit: BoxFit.contain,
-                                width: 40,
-                                height: 40,
+                            InkWell(
+                              excludeFromSemantics: true,
+                              hoverColor: Colors.transparent,
+                              focusColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              onTap: () {
+                                Beamer.of(context).beamToNamed('subchannel/' +
+                                    snapshot.data!['postSubchannel']
+                                            ['subchannelName']
+                                        .toString());
+                                print("go to subchnanel or profile");
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(14.0),
+                                child: Image.network(
+                                  baseURL +
+                                      snapshot.data!['postSubchannel']
+                                              ['subchannelPreview']
+                                          ['subchannelSubchannelPicturePath'],
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                  width: 40,
+                                  height: 40,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -173,7 +196,8 @@ class _VideoPreviewState extends State<VideoPreview> {
                                     ),
                                     //Subchannelname
                                     Text('c/' +
-                                        snapshot.data!['postSubchannelName']),
+                                        snapshot.data!['postSubchannel']
+                                            ['subchannelName']),
                                   ],
                                 ),
                                 const SizedBox(

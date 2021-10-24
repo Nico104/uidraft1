@@ -52,17 +52,31 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           ),
         ),
 
-    '/profile': (context, state) => BeamPage(
-          key: const ValueKey('profile'),
-          title: 'Profile',
-          child: const ProfileScreen(),
-        ),
+    '/profile/:username': (context, state) {
+      String username =
+          (context.currentBeamLocation.state).pathParameters['username']!;
 
-    '/subchannel': (context, state) => BeamPage(
-          key: const ValueKey('subchannel'),
-          title: 'Subchannel',
-          child: const SubchannelScreen(),
+      return BeamPage(
+        key: ValueKey('profile-$username'),
+        title: 'Profile',
+        child: ProfileScreen(
+          username: username,
         ),
+      );
+    },
+
+    '/subchannel/:subchannelname': (context, state) {
+      String subchannelName =
+          (context.currentBeamLocation.state).pathParameters['subchannelname']!;
+
+      return BeamPage(
+        key: ValueKey('subchannel-$subchannelName'),
+        title: 'Subchannel',
+        child: SubchannelScreen(
+          subchannelName: subchannelName,
+        ),
+      );
+    },
 
     //For extern calls
     '/whatch/:postId': (context, state) {
@@ -100,7 +114,7 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           child: const CreateTagLargeScreen(),
         ),
 
-    'uploadvideotest': (context, state) => BeamPage(
+    'uploadvideo': (context, state) => BeamPage(
           key: const ValueKey('uploadvideotest'),
           title: 'uploadvideotest',
           child: const UploadVideoScreen(),

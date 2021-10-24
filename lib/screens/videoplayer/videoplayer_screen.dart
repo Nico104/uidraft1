@@ -47,30 +47,32 @@ class _VideoPlayerState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: fetchPostData(widget.postId),
-        builder: (BuildContext context,
-            AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          if (snapshot.hasData) {
-            return ResponsiveWidget(
-              smallScreen: const Text("smallScreen"),
-              mediumScreen: const Text("mediumScreen"),
-              largeScreen: Material(
-                // child: Stack(
-                //   alignment: Alignment.topCenter,
-                //   // children: [ChapterVideoPlayer(), const NavBarLargeProfile()],
-                //   children: const [VideoPlayerHome(), NavBarLargeProfile()],
-                // ),
-                child: VideoPlayerHome(
-                  postData: snapshot.data!,
-                  firtTimeExternAccess: widget.firtTimeExternAccess,
+    return Material(
+      child: FutureBuilder(
+          future: fetchPostData(widget.postId),
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if (snapshot.hasData) {
+              return ResponsiveWidget(
+                smallScreen: const Text("smallScreen"),
+                mediumScreen: const Text("mediumScreen"),
+                largeScreen: Material(
+                  // child: Stack(
+                  //   alignment: Alignment.topCenter,
+                  //   // children: [ChapterVideoPlayer(), const NavBarLargeProfile()],
+                  //   children: const [VideoPlayerHome(), NavBarLargeProfile()],
+                  // ),
+                  child: VideoPlayerHome(
+                    postData: snapshot.data!,
+                    firtTimeExternAccess: widget.firtTimeExternAccess,
+                  ),
                 ),
-              ),
-              veryLargeScreen: const Text("veryLargeScreen"),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+                veryLargeScreen: const Text("veryLargeScreen"),
+              );
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          }),
+    );
   }
 }

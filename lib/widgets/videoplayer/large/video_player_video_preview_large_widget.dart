@@ -17,9 +17,9 @@ class VideoPlayerVideoPreview extends StatefulWidget {
 }
 
 class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
+  String baseURL = 'http://localhost:3000/';
   //Get PostPreview Data by Id
   Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
-    print("In Preview 2");
     final response = await http
         .get(Uri.parse('http://localhost:3000/post/getPostPreviewData/$id'));
 
@@ -49,6 +49,9 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
             return InkWell(
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               onTap: () {
                 Beamer.of(context)
                     .beamToNamed('whatchintern/' + widget.postId.toString());
@@ -67,7 +70,8 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                         borderRadius: BorderRadius.circular(12.0),
                         child: Image.network(
                           "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",
-                          fit: BoxFit.contain,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
                         ),
                       ),
                     ),
@@ -128,7 +132,9 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                                   ),
                                   //Subchannelname
                                   Text(
-                                    "c/" + snapshot.data!['postSubchannelName'],
+                                    "c/" +
+                                        snapshot.data!['postSubchannel']
+                                            ['subchannelName'],
                                     style: TextStyle(
                                         fontFamily: 'Segoe UI',
                                         fontSize:

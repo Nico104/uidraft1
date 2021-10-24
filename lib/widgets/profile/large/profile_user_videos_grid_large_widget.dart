@@ -39,7 +39,7 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
   Future<void> fetchPostIds() async {
     print("button tapped");
     try {
-      if(!_loading){
+      if (!_loading) {
         setState(() {
           _loading = true;
         });
@@ -75,11 +75,11 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
       }
     } catch (e) {
       setState(() {
-          _loading = false;
-          _error = true;
-        });
-        // throw Exception("Error: " + e.toString());
-        print("Error: " + e.toString());
+        _loading = false;
+        _error = true;
+      });
+      // throw Exception("Error: " + e.toString());
+      print("Error: " + e.toString());
       // Beamer.of(context).beamToNamed("/error/feed");
     }
   }
@@ -101,41 +101,48 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
   Widget build(BuildContext context) {
     return _loading
         ? Column(
-          children: const [
-            SizedBox(height: 150,),
-            CircularProgressIndicator(),
-          ],
-        )
-        : _error ?
-        Column(
-            children: [
-              const SizedBox(height: 150,),
-              const Text("There was an error while loading this Users Video"),
-              OutlinedButton(onPressed: () => fetchPostIds(), child: const Text("Reload Videos"))
+            children: const [
+              SizedBox(
+                height: 150,
+              ),
+              CircularProgressIndicator(),
             ],
-          ) : 
-        Padding(
-            padding: const EdgeInsets.fromLTRB(160, 100, 160, 0),
-            child: GridView.count(
-              shrinkWrap: true,
-              childAspectRatio: (1280 / 1174),
-              controller: _scrollController,
-              scrollDirection: Axis.vertical,
-              // Create a grid with 2 columns. If you change the scrollDirection to
-              // horizontal, this produces 2 rows.
-              crossAxisCount: 2,
-              // Generate 100 widgets that display their index in the List.
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 40.0,
-              children: dataList.map((value) {
-                print("In Preview");
-                return ProfileVideoPreview(
-                  postId: value,
-                );
-                // return (Text(value.toString()));
-              }).toList(),
-            ),
-          );
+          )
+        : _error
+            ? Column(
+                children: [
+                  const SizedBox(
+                    height: 150,
+                  ),
+                  const Text(
+                      "There was an error while loading this Users Video"),
+                  OutlinedButton(
+                      onPressed: () => fetchPostIds(),
+                      child: const Text("Reload Videos"))
+                ],
+              )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(160, 100, 160, 0),
+                child: GridView.count(
+                  shrinkWrap: true,
+                  childAspectRatio: (1280 / 1174),
+                  controller: _scrollController,
+                  scrollDirection: Axis.vertical,
+                  // Create a grid with 2 columns. If you change the scrollDirection to
+                  // horizontal, this produces 2 rows.
+                  crossAxisCount: 2,
+                  // Generate 100 widgets that display their index in the List.
+                  mainAxisSpacing: 10.0,
+                  crossAxisSpacing: 40.0,
+                  children: dataList.map((value) {
+                    print("In Preview");
+                    return ProfileVideoPreview(
+                      postId: value,
+                    );
+                    // return (Text(value.toString()));
+                  }).toList(),
+                ),
+              );
   }
 
   //// ADDING THE SCROLL LISTINER
@@ -161,11 +168,14 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
   ////ADDING DATA INTO ARRAYLIST
   void addItemIntoLisT(var pageCount) {
     print("test");
-    for (int i = (pageCount * 10) - 10; i < pageCount * 10; i++) {
+    int itemsLoading = 6;
+    for (int i = (pageCount * itemsLoading) - itemsLoading;
+        i < pageCount * itemsLoading;
+        i++) {
       if (postIds.length > i) {
         dataList.add(postIds[i]);
       }
-      print(i);
+      // print(i);
       // try {
       //   dataList.add(postIds[i]);
       // } catch (error) {

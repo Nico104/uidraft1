@@ -88,7 +88,7 @@ class _SubchannelVideosState extends State<SubchannelVideos> {
         : Padding(
             padding: const EdgeInsets.fromLTRB(160, 100, 160, 0),
             child: GridView.count(
-              physics: BouncingScrollPhysics(),
+              // physics: BouncingScrollPhysics(),
               shrinkWrap: true,
               childAspectRatio: (1280 / 1174),
               controller: _scrollController,

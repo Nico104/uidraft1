@@ -34,7 +34,8 @@ class UploadVideoFeedPreview extends StatelessWidget {
                 )
               : Image.network(
                   "http://localhost:3000/uploads/default/defaultUploadVideoThumbnailPreview.png",
-                  fit: BoxFit.contain,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
                 ),
         ),
         const SizedBox(
@@ -61,7 +62,8 @@ class UploadVideoFeedPreview extends StatelessWidget {
                     child: Image.network(
                       //UserProfilePicture
                       "https://picsum.photos/700",
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
                       width: 40,
                       height: 40,
                     ),

@@ -16,6 +16,7 @@ class SubchannelVideoPreview extends StatefulWidget {
 }
 
 class _SubchannelVideoPreviewState extends State<SubchannelVideoPreview> {
+  String baseURL = 'http://localhost:3000/';
   //Get PostPreview Data by Id
   Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
     print("In Preview 2");
@@ -48,6 +49,9 @@ class _SubchannelVideoPreviewState extends State<SubchannelVideoPreview> {
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
             return InkWell(
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               onTap: () {
                 Beamer.of(context)
                     .beamToNamed('whatchintern/' + widget.postId.toString());
@@ -59,7 +63,8 @@ class _SubchannelVideoPreviewState extends State<SubchannelVideoPreview> {
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
                       "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
                     ),
                   ),
                   const SizedBox(
@@ -81,13 +86,27 @@ class _SubchannelVideoPreviewState extends State<SubchannelVideoPreview> {
                               width: 3,
                             ),
                             //Subchannel Pictrue / Subchannel Subchannel Picture
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(14.0),
-                              child: Image.network(
-                                "https://picsum.photos/700",
-                                fit: BoxFit.contain,
-                                width: 40,
-                                height: 40,
+                            InkWell(
+                              excludeFromSemantics: true,
+                              hoverColor: Colors.transparent,
+                              focusColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              onTap: () {
+                                Beamer.of(context).beamToNamed('profile/' +
+                                    snapshot.data!['username'].toString());
+                                print("go to profile");
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(14.0),
+                                child: Image.network(
+                                  baseURL +
+                                      snapshot.data!['user']['userProfile']
+                                          ['profilePicturePath'],
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                  width: 40,
+                                  height: 40,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -145,7 +164,7 @@ class _SubchannelVideoPreviewState extends State<SubchannelVideoPreview> {
                                         width: 4,
                                       ),
                                       //Username
-                                      snapshot.data!['username'],
+                                      Text(snapshot.data!['username']),
                                       const SizedBox(
                                         width: 10,
                                       ),

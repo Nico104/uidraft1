@@ -1,8 +1,8 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
-import 'package:uidraft1/widgets/uploadVideo/upload_video_dialog_widget.dart';
 import 'beamer/location_builders.dart';
 import 'utils/theme/theme_notifier.dart';
 
@@ -12,6 +12,12 @@ void main() {
     create: (_) => ThemeNotifier(),
     child: MyApp(),
   ));
+}
+
+Map<ShortcutActivator, Intent> getShortcut() {
+  var shortcuts = WidgetsApp.defaultShortcuts;
+  shortcuts[LogicalKeySet(LogicalKeyboardKey.space)] = const ActivateIntent();
+  return shortcuts;
 }
 
 //Just for test
@@ -26,32 +32,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeNotifier>(
-        builder: (context, theme, _) =>
-            // MaterialApp(
-            //   theme: theme.getTheme(),
-            //   debugShowCheckedModeBanner: false,
-            //   // home: const MyHomePage(
-            //   //   title: "test",
-            //   // ),
-            //   initialRoute: '/feed',
-            //   routes: {
-            //     // '/': (context) => SignUpScreen(),
-            //     // '/login': (context) => LoginScreen(),
-            //     // '/video': (context) => ChapterVideoPlayer(),
-            //     // '/welcome': (context) => WelcomeScreen(),
-            //     // '/responsive': (context) => ResponsiveTestScreen(),
-            //     // '/isauth': (context) => const ShowUserData(),
-            //     '/feed': (context) => const FeedScreen(),
-            //     // '/uploadvideo': (context) => const UploadVideoScreen(),
-            //   },
-            // ),
-            MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              theme: theme.getTheme(),
-              routerDelegate: routerDelegate,
-              routeInformationParser: BeamerParser(),
-            ));
+    // Map<ShortcutActivator, Intent> shortcuts =
+    //     Map.from(WidgetsApp.defaultShortcuts);
+
+    return Consumer<ThemeNotifier>(builder: (context, theme, _) {
+      Map<ShortcutActivator, Intent> shortcuts = {
+        ...WidgetsApp.defaultShortcuts
+      };
+      // shortcuts[LogicalKeySet(LogicalKeyboardKey.space)] = const ActivateIntent();
+      shortcuts.remove(LogicalKeySet(LogicalKeyboardKey.space));
+      return MaterialApp.router(
+        shortcuts: shortcuts,
+        debugShowCheckedModeBanner: false,
+        theme: theme.getTheme(),
+        routerDelegate: routerDelegate,
+        routeInformationParser: BeamerParser(),
+      );
+    });
   }
 }
 

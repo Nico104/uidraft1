@@ -121,13 +121,14 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
 
     var response = await request.send();
     print(response.statusCode);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       print('Updated!');
     } else {
       print('Update Error!');
     }
 
-    Beamer.of(context).beamToNamed('/profile');
+    String? un = await getMyUsername();
+    Beamer.of(context).beamToNamed('/profile/$un');
   }
 
   @override
@@ -428,42 +429,4 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
       ],
     );
   }
-
-  // Future<void> _sendSubchannel(
-  //   String subchannelName,
-  //   String subchannelShortDescription,
-  //   String subchannelAboutText,
-  //   bool subchannelCommunityPostsAllowed,
-  //   List<int> subchannelPicture,
-  //   List<int> banner,
-  // ) async {
-  //   var url =
-  //       Uri.parse('http://localhost:3000/subchannel/createSubchannelWithData');
-  //   String? token = await getToken();
-
-  //   var request = http.MultipartRequest('POST', url);
-
-  //   request.headers['Authorization'] = 'Bearer $token';
-  //   request.fields['subchannelName'] = subchannelName;
-  //   request.fields['subchannelAboutText'] = subchannelAboutText;
-  //   request.fields['subchannelShortDescriptiveText'] =
-  //       subchannelShortDescription;
-  //   request.fields['communitypostsAllowed'] =
-  //       subchannelCommunityPostsAllowed.toString();
-
-  //   request.files.add(http.MultipartFile.fromBytes('picture', subchannelPicture,
-  //       filename: "picture", contentType: MediaType('image', 'png')));
-  //   request.files.add(http.MultipartFile.fromBytes('banner', banner,
-  //       filename: "banner", contentType: MediaType('image', 'png')));
-
-  //   var response = await request.send();
-  //   print(response.statusCode);
-  //   if (response.statusCode == 201) {
-  //     print('Uploaded!');
-  //   } else {
-  //     print('Upload Error!');
-  //   }
-
-  //   Beamer.of(context).beamToNamed('/feed');
-  // }
 }

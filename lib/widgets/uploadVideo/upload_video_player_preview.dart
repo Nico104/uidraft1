@@ -37,7 +37,8 @@ class UploadVideoPlayerVideoPreview extends StatelessWidget {
                     )
                   : Image.network(
                       "http://localhost:3000/uploads/default/defaultUploadVideoThumbnailPreview.png",
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
                     ),
             ),
           ),

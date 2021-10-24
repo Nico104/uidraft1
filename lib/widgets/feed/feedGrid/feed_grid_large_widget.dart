@@ -33,11 +33,10 @@ class _FeedGridState extends State<FeedGrid> {
 
   List<int> postIds = <int>[];
 
-  //https://picsum.photos/1280/720
   List<int> dataList = <int>[];
   bool isLoading = false;
   int pageCount = 1;
-  //int pageCount = 0;
+  // int pageCount = 0;
   late ScrollController _scrollController;
 
   //Get PostIds List
@@ -136,33 +135,25 @@ class _FeedGridState extends State<FeedGrid> {
                 behavior:
                     ScrollConfiguration.of(context).copyWith(scrollbars: false),
                 child: SingleChildScrollView(
+                  controller: _scrollController,
+                  // physics: const AlwaysScrollableScrollPhysics(),
                   child: Padding(
                     padding: MediaQuery.of(context).size.width <= 1500
                         ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
                         : const EdgeInsets.fromLTRB(310, 120, 310, 0),
                     child: GridView.count(
+                      // physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      // childAspectRatio: MediaQuery.of(context).size.width >= 1700
-                      //     ? (1280 / 1174)
-                      //     : MediaQuery.of(context).size.width >= 1600
-                      //         ? (1280 / 1240)
-                      //         : MediaQuery.of(context).size.width >= 1300
-                      //             ? (1280 / 1240)
-                      //             : (1280 / 1240),
                       childAspectRatio:
                           MediaQuery.of(context).size.width >= 1700
                               ? (1280 / 1174)
                               : (1280 / 1240),
-                      controller: _scrollController,
+                      // controller: _scrollController,
                       scrollDirection: Axis.vertical,
-                      // Create a grid with 2 columns. If you change the scrollDirection to
-                      // horizontal, this produces 2 rows.
                       crossAxisCount: 3,
-                      // Generate 100 widgets that display their index in the List.
                       mainAxisSpacing: 10.0,
                       crossAxisSpacing: 40.0,
                       children: dataList.map((value) {
-                        print("In Preview");
                         return VideoPreview(
                           postId: value,
                         );
@@ -175,6 +166,11 @@ class _FeedGridState extends State<FeedGrid> {
 
   //// ADDING THE SCROLL LISTINER
   _scrollListener() {
+    print("Offset: " + _scrollController.offset.toString());
+    print("MaxScrollExtent: " +
+        _scrollController.position.maxScrollExtent.toString());
+    print("outOfRange: " + (!_scrollController.position.outOfRange).toString());
+
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
@@ -195,12 +191,16 @@ class _FeedGridState extends State<FeedGrid> {
 
   ////ADDING DATA INTO ARRAYLIST
   void addItemIntoLisT(var pageCount) {
-    print("test");
-    for (int i = (pageCount * 10) - 10; i < pageCount * 10; i++) {
+    print("addItemIntoLisT");
+    int itemsLoading = 6;
+    for (int i = (pageCount * itemsLoading) - itemsLoading;
+        i < pageCount * itemsLoading;
+        i++) {
       if (postIds.length > i) {
         dataList.add(postIds[i]);
       }
-      print(i);
+      // dataList.add(postIds[i]);
+      // print(i);
       // try {
       //   dataList.add(postIds[i]);
       // } catch (error) {
