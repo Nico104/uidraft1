@@ -32,15 +32,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Map<ShortcutActivator, Intent> shortcuts =
-    //     Map.from(WidgetsApp.defaultShortcuts);
+    Map<ShortcutActivator, Intent> shortcuts =
+        Map.of(WidgetsApp.defaultShortcuts);
+    var spaceKey;
+    var escapeKey;
+    shortcuts.forEach((key, value) {
+      if (key.toString().contains('Space')) {
+        print("Key contains Space: " + key.toString());
+        spaceKey = key;
+      } else if (key.toString().contains('Escape')) {
+        print("Key contains Escape: " + key.toString());
+        escapeKey = key;
+      }
+    });
+    if (spaceKey != null) {
+      shortcuts.remove(spaceKey);
+    }
+    if (escapeKey != null) {
+      shortcuts.remove(escapeKey);
+    }
 
+    for (final name in shortcuts.keys) {
+      print("Key: $name, Value: ${shortcuts[name]}");
+    }
     return Consumer<ThemeNotifier>(builder: (context, theme, _) {
-      Map<ShortcutActivator, Intent> shortcuts = {
-        ...WidgetsApp.defaultShortcuts
-      };
-      // shortcuts[LogicalKeySet(LogicalKeyboardKey.space)] = const ActivateIntent();
-      shortcuts.remove(LogicalKeySet(LogicalKeyboardKey.space));
       return MaterialApp.router(
         shortcuts: shortcuts,
         debugShowCheckedModeBanner: false,

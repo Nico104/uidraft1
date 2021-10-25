@@ -84,7 +84,7 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
               padding: const EdgeInsets.only(top: 110, bottom: 50),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Colors.lightBlue,
+                  color: Color.fromRGBO(20, 36, 58, 1),
                   // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
                   borderRadius: BorderRadius.all(Radius.circular(80)),
                   //  boxShadow: [
@@ -110,16 +110,17 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                               controller: _subchannelNameTextController,
                               // enableSuggestions: false,
                               maxLength: 21,
-                              cursorColor: Colors.black,
+                              // cursorColor: Colors.black,
+                              cursorColor: Colors.white,
                               autocorrect: false,
                               decoration: InputDecoration(
                                 labelText: "Subchannel Name...",
                                 labelStyle: const TextStyle(
                                     fontFamily: "Segoe UI",
-                                    color: Colors.black),
+                                    color: Colors.white),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.black),
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25.0),
@@ -330,7 +331,7 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                               controller:
                                   _subchannelShortDescriptionTextController,
                               // enableSuggestions: false,
-                              cursorColor: Colors.black,
+                              cursorColor: Colors.white,
                               autocorrect: false,
                               keyboardType: TextInputType.multiline,
                               maxLength: 70,
@@ -340,10 +341,10 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                                 labelText: "Short Description...",
                                 labelStyle: const TextStyle(
                                     fontFamily: "Segoe UI",
-                                    color: Colors.black),
+                                    color: Colors.white),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.black),
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25.0),
@@ -376,7 +377,7 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                             TextFormField(
                               controller: _subchannelAboutTextController,
                               // enableSuggestions: false,
-                              cursorColor: Colors.black,
+                              cursorColor: Colors.white,
                               autocorrect: false,
                               keyboardType: TextInputType.multiline,
                               maxLength: 512,
@@ -386,10 +387,10 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
                                 labelText: "About...",
                                 labelStyle: const TextStyle(
                                     fontFamily: "Segoe UI",
-                                    color: Colors.black),
+                                    color: Colors.white),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(color: Colors.black),
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25.0),

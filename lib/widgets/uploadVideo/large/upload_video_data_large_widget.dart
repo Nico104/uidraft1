@@ -41,6 +41,11 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
   bool isLoading = false;
 
   double _formProgress = 0;
+  Map<String, bool> _formError = {
+    "title": false,
+    "thumbnail": false,
+    "tag": false,
+  };
 
   FilePickerResult? result;
 
@@ -127,7 +132,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                   ),
                                   validator: (val) {
                                     if (val!.isEmpty) {
-                                      return "Field cannot be empty";
+                                      return "Title cannot be empty";
                                     } else {
                                       return null;
                                     }
@@ -148,6 +153,19 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                         );
                                   },
                                 ),
+                                //ShowError
+                                !_formError['title']!
+                                    ? const SizedBox()
+                                    : const SizedBox(
+                                        height: 10,
+                                      ),
+                                !_formError['title']!
+                                    ? const SizedBox()
+                                    : const Text(
+                                        "Title cannot be empty",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                //ShowErrorFinished
                                 const SizedBox(
                                   height: 40,
                                 ),
@@ -228,6 +246,19 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                     ),
                                   ),
                                 ),
+                                //ShowError
+                                !_formError['thumbnail']!
+                                    ? const SizedBox()
+                                    : const SizedBox(
+                                        height: 10,
+                                      ),
+                                !_formError['thumbnail']!
+                                    ? const SizedBox()
+                                    : const Text(
+                                        "Thumbnail cannot be empty",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                //ShowErrorFinished
                                 const SizedBox(
                                   height: 40,
                                 ),
@@ -237,6 +268,19 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                   spacing: 5,
                                   children: _getVideoTagWidgets(tagList),
                                 ),
+                                //ShowError
+                                !_formError['tag']!
+                                    ? const SizedBox()
+                                    : const SizedBox(
+                                        height: 10,
+                                      ),
+                                !_formError['tag']!
+                                    ? const SizedBox()
+                                    : const Text(
+                                        "Tags cannot be empty",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                //ShowErrorFinished
                                 const SizedBox(
                                   height: 40,
                                 ),
@@ -311,10 +355,15 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                             BorderRadius.circular(30.0))),
                               ),
                               onPressed: () {
-                                setState(() {
-                                  print("submit");
-                                  pageIndex = 2;
-                                });
+                                print("pressed Submit");
+                                validateForm()
+                                    ? setState(() {
+                                        print("submit");
+                                        pageIndex = 2;
+                                      })
+                                    : setState(() {
+                                        print("form has error");
+                                      });
                               },
                               child: const Padding(
                                 padding: EdgeInsets.all(8.0),
@@ -406,7 +455,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
           postTitle: _postTitleTextController.text,
           postDescription: _postDescriptionTextController.text,
           postSubchannelName: "isgut",
-          thumbnail: result!,
+          thumbnail: result,
           video: videoBytes!,
         );
 
@@ -464,6 +513,31 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
             ),
           ),
         );
+    }
+  }
+
+  bool validateForm() {
+    if (_postTitleTextController.text.isEmpty ||
+        thumbnailPreview == null ||
+        tagList.isEmpty) {
+      if (_postTitleTextController.text.isEmpty) {
+        _formError['title'] = true;
+      } else {
+        _formError['title'] = false;
+      }
+      if (thumbnailPreview == null) {
+        _formError['thumbnail'] = true;
+      } else {
+        _formError['thumbnail'] = false;
+      }
+      if (tagList.isEmpty) {
+        _formError['tag'] = true;
+      } else {
+        _formError['tag'] = false;
+      }
+      return false;
+    } else {
+      return true;
     }
   }
 

@@ -21,7 +21,6 @@ class _VideoPreviewState extends State<VideoPreview> {
 
   //Get PostPreview Data by Id
   Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
-    // print("In Preview 2");
     final response =
         await http.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
 
@@ -62,6 +61,7 @@ class _VideoPreviewState extends State<VideoPreview> {
                 children: [
                   //Thumbnail
                   ClipRRect(
+                    // borderRadius: BorderRadius.circular(12.0),
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
                       "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",

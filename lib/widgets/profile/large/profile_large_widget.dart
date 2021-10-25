@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
@@ -148,11 +150,12 @@ class _ProfileState extends State<Profile> {
                         height: 600,
                       ),
                     ),
+                    //Update Profile Function
                     FutureBuilder(
-                        future: isAuthenticated(),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.data == 200) {
+                        future: isThisMe(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<bool> snapshot) {
+                          if (snapshot.data!) {
                             return Padding(
                               padding:
                                   const EdgeInsets.only(bottom: 16, right: 16),
@@ -365,6 +368,22 @@ class _ProfileState extends State<Profile> {
       //   print('run out of Ids master');
       // }
       isLoading = false;
+    }
+  }
+
+  ////ADDING DATA INTO ARRAYLIST
+  Future<bool> isThisMe() async {
+    if (await isAuthenticated() == 200) {
+      if (await getMyUsername() == widget.profileData['username']) {
+        print("This is me");
+        return true;
+      } else {
+        print("This is not me");
+        return false;
+      }
+    } else {
+      print("You are not even signed in");
+      return false;
     }
   }
 }

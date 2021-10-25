@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:beamer/beamer.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -1023,24 +1024,136 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                       ),
                                     ),
                                     const SizedBox(height: 30),
-                                    //Post Title
-                                    Text(widget.postData['postTitle']),
+                                    //Post Title and Metric
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        //Post Title
+                                        Text(widget.postData['postTitle'],
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                fontFamily: 'Segoe UI')),
+                                        //Post Metrics
+                                        Row(
+                                          children: [
+                                            const SizedBox(
+                                              width: 40,
+                                            ),
+                                            const Icon(
+                                              Icons.visibility,
+                                              size: 24,
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(widget.postData['postViews']
+                                                .toString()),
+                                            const SizedBox(
+                                              width: 12,
+                                            ),
+                                            const Icon(
+                                              Icons.trending_up,
+                                              size: 24,
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(widget
+                                                .postData['postRatingScore']
+                                                .toString()),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(
-                                      height: 20,
+                                      height: 30,
                                     ),
                                     //Video Data and Comments Normal
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         //Post SubchannelName
-                                        Text(widget
-                                            .postData['postSubchannelName']),
+                                        InkWell(
+                                          excludeFromSemantics: true,
+                                          hoverColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () {
+                                            Beamer.of(context).beamToNamed(
+                                                'subchannel/' +
+                                                    widget.postData[
+                                                        'postSubchannelName']);
+                                            print("go to subchnanel");
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                            child: Image.network(
+                                              baseURL +
+                                                  widget.postData[
+                                                              'postSubchannel']
+                                                          ['subchannelPreview'][
+                                                      'subchannelSubchannelPicturePath'],
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                              width: 40,
+                                              height: 40,
+                                            ),
+                                          ),
+                                        ),
                                         const SizedBox(
                                           width: 10,
                                         ),
+                                        Text("c/" +
+                                            widget.postData[
+                                                'postSubchannelName']),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+
                                         //Post Username
-                                        Text(widget.postData['username']),
+                                        InkWell(
+                                          excludeFromSemantics: true,
+                                          hoverColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () {
+                                            Beamer.of(context).beamToNamed(
+                                                'profile/' +
+                                                    widget
+                                                        .postData['username']);
+                                            print("go to profile");
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(14.0),
+                                            child: Image.network(
+                                              baseURL +
+                                                  widget.postData['user']
+                                                          ['userProfile']
+                                                      ['profilePicturePath'],
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                              width: 40,
+                                              height: 40,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          widget.postData['username'],
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(
