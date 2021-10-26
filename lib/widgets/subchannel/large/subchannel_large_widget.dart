@@ -37,6 +37,9 @@ class Subchannel extends StatefulWidget {
 class _SubchannelState extends State<Subchannel> {
   String baseURL = 'http://localhost:3000/';
 
+  //About Text
+  bool _showAboutText = false;
+
   //Profil
   bool _isFollowing = false;
 
@@ -158,43 +161,6 @@ class _SubchannelState extends State<Subchannel> {
                 const SizedBox(
                   height: 12,
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     //Subchannelname
-                //     Text(
-                //       "1432 followers",
-                //       style: TextStyle(
-                //           fontFamily: 'Segoe UI',
-                //           fontSize: 18,
-                //           color: Theme.of(context).colorScheme.navBarIconColor),
-                //     ),
-                //     const SizedBox(
-                //       width: 10,
-                //     ),
-                //     //Dot in the middle
-                //     Container(
-                //       width: 6,
-                //       height: 6,
-                //       decoration: BoxDecoration(
-                //         shape: BoxShape.circle,
-                //         color: Theme.of(context).colorScheme.navBarIconColor,
-                //       ),
-                //     ),
-                //     const SizedBox(
-                //       width: 10,
-                //     ),
-                //     //Views
-                //     Text(
-                //       "420 online",
-                //       style: TextStyle(
-                //           fontFamily: 'Segoe UI',
-                //           fontSize: 18,
-                //           color: Theme.of(context).colorScheme.navBarIconColor),
-                //     ),
-                //   ],
-                // ),
-
                 //Short Description
                 SizedBox(
                   width: 400,
@@ -237,7 +203,10 @@ class _SubchannelState extends State<Subchannel> {
                               width: 2,
                               color: Theme.of(context).colorScheme.brandColor),
                         ),
-                        onPressed: () {},
+                        onPressed: () => setState(() {
+                          print("About pressed");
+                          _showAboutText = !_showAboutText;
+                        }),
                         child: Text(
                           'About',
                           style: TextStyle(
@@ -298,35 +267,43 @@ class _SubchannelState extends State<Subchannel> {
                 const SizedBox(
                   height: 40,
                 ),
-                // SubchannelVideosGridLargeScreen(),
-                Container(
-                    width: 1500,
-                    alignment: Alignment.topCenter,
-                    child: _loading
-                        ? const Center(child: CircularProgressIndicator())
-                        : Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(160, 100, 160, 0),
-                            child: GridView.count(
-                              // physics: BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              childAspectRatio: (1280 / 1174),
-                              // controller: _scrollController,
-                              scrollDirection: Axis.vertical,
-                              // Create a grid with 2 columns. If you change the scrollDirection to
-                              // horizontal, this produces 2 rows.
-                              crossAxisCount: 3,
-                              // Generate 100 widgets that display their index in the List.
-                              mainAxisSpacing: 10.0,
-                              crossAxisSpacing: 40.0,
-                              children: dataList.map((value) {
-                                print("In Preview");
-                                return SubchannelVideoPreview(
-                                  postId: value,
-                                );
-                              }).toList(),
-                            ),
-                          ))
+                // SubchannelVideosGrid Or SubchannelAboutText,
+                _showAboutText
+                    //About Text
+                    ? Container(
+                        width: 1000,
+                        alignment: Alignment.topCenter,
+                        child: const Text("About Text"),
+                      )
+                    //Videos Grid
+                    : Container(
+                        width: 1500,
+                        alignment: Alignment.topCenter,
+                        child: _loading
+                            ? const Center(child: CircularProgressIndicator())
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(160, 100, 160, 0),
+                                child: GridView.count(
+                                  // physics: BouncingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  childAspectRatio: (1280 / 1174),
+                                  // controller: _scrollController,
+                                  scrollDirection: Axis.vertical,
+                                  // Create a grid with 2 columns. If you change the scrollDirection to
+                                  // horizontal, this produces 2 rows.
+                                  crossAxisCount: 3,
+                                  // Generate 100 widgets that display their index in the List.
+                                  mainAxisSpacing: 10.0,
+                                  crossAxisSpacing: 40.0,
+                                  children: dataList.map((value) {
+                                    print("In Preview");
+                                    return SubchannelVideoPreview(
+                                      postId: value,
+                                    );
+                                  }).toList(),
+                                ),
+                              ))
               ],
             ),
           ),

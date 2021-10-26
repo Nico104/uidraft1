@@ -116,6 +116,7 @@ final simpleLocationBuilder = SimpleLocationBuilder(
 
     'uploadvideo': (context, state) => BeamPage(
           key: const ValueKey('uploadvideotest'),
+          type: BeamPageType.fadeTransition,
           title: 'uploadvideotest',
           child: const UploadVideoScreen(),
         ),

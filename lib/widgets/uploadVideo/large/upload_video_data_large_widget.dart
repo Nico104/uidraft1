@@ -9,6 +9,7 @@ import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/post/test/process_and_send_widget.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:uidraft1/widgets/subchannel/choose/choose_subchannel_dialog_large.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'package:uidraft1/widgets/uploadVideo/upload_video_feed_preview.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -45,12 +46,13 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
     "title": false,
     "thumbnail": false,
     "tag": false,
+    "subchannel": false
   };
 
   FilePickerResult? result;
 
-  int pageIndex = 0;
-  // int pageIndex = 1;
+  // int pageIndex = 0;
+  int pageIndex = 1;
 
   //TagList
   List<String> tagList = [];
@@ -107,6 +109,71 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                             child: ListView(
                               // shrinkWrap: true,
                               children: [
+                                //SubchannelName
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(20)),
+                                          child: Image.network(
+                                            "https://picsum.photos/100",
+                                            fit: BoxFit.cover,
+                                            alignment: Alignment.center,
+                                            width: 52,
+                                            height: 52,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 15,
+                                        ),
+                                        const Text(
+                                          "c/SubchannelName",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black),
+                                        )
+                                      ],
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.arrow_right_outlined,
+                                        color: Colors.black,
+                                        size: 28,
+                                      ),
+                                      onPressed: () {
+                                        print("pressed Change Subchannel");
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              const ChooseSubchannelLargeScreen(),
+                                        ).then((value) {
+                                          print("Value: " + value);
+                                        });
+                                      },
+                                    )
+                                  ],
+                                ),
+                                //ShowError
+                                !_formError['subchannel']!
+                                    ? const SizedBox()
+                                    : const SizedBox(
+                                        height: 10,
+                                      ),
+                                !_formError['subchannel']!
+                                    ? const SizedBox()
+                                    : const Text(
+                                        "Must choose a Subchannel",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                //ShowErrorFinished
+                                const SizedBox(
+                                  height: 40,
+                                ),
                                 //Title
                                 TextFormField(
                                   controller: _postTitleTextController,
