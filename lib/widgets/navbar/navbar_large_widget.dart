@@ -25,7 +25,7 @@ class _NavBarLargeState extends State<NavBarLarge> {
 
   //Get Profile Data by Username
   Future<Map<String, dynamic>> fetchMyProfileData() async {
-    var url = Uri.parse('http://localhost:3000/user/getMyProfile');
+    var url = Uri.parse(baseURL + 'user/getMyProfile');
     String? token = await getToken();
 
     final response = await http.get(url, headers: {
