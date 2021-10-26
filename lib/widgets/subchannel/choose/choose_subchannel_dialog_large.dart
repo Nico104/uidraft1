@@ -38,47 +38,62 @@ class ChooseSubchannel extends StatefulWidget {
 }
 
 class _ChooseSubchannelState extends State<ChooseSubchannel> {
+  final String baseURL = 'http://localhost:3000/';
+
   bool _loading = true;
 
-  List<String> subchannelNames = <String>[];
+  // List<String> subchannelNames = <String>[];
+  // Map<String, List<String>> subchannelNames = {};
+  List<List<String>> subchannelNames = [];
   bool isLoading = false;
 
-  // String parentTag = "none";
-  // String grandpaTag = "none";
+  final TextEditingController _searchText = TextEditingController();
 
   //Get PostIds List
-  // Future<void> fetchTags(String parentTagName) async {
-  //   try {
-  //     final response = await http.get(Uri.parse(
-  //         'http://localhost:3000/tag/getTagsByParent/$parentTagName'));
+  Future<void> fetchSubchannels(String search) async {
+    // subchannelNames = [];
+    try {
+      final response = await http
+          .get(Uri.parse(baseURL + 'subchannel/searchSubchannel/$search'));
 
-  //     if (response.statusCode == 200) {
-  //       // If the call to the server was successful, parse the JSON
-  //       List<dynamic> values = <dynamic>[];
-  //       values = json.decode(response.body);
-  //       if (values.isNotEmpty) {
-  //         for (int i = 0; i < values.length; i++) {
-  //           if (values[i] != null) {
-  //             Map<String, dynamic> map = values[i];
-  //             tagNames.add(map['tagName']);
-  //             print('Tagname-------${map['tagName']}');
-  //           }
-  //         }
-  //       }
-  //       // print(postIds);
-  //       setState(() {
-  //         _loading = false;
-  //       });
-  //     } else {
-  //       // If that call was not successful, throw an error.
-  //       //Beamer.of(context).beamToNamed("/error/feed");
-  //       throw Exception('Failed to load tags');
-  //     }
-  //   } catch (e) {
-  //     print("Error: " + e.toString());
-  //     //Beamer.of(context).beamToNamed("/error/feed");
-  //   }
-  // }
+      // print("URL: " + baseURL + 'subchannel/searchSubchannel/$search');
+
+      if (response.statusCode == 200) {
+        subchannelNames.clear();
+        // print("subchannelist in fetch: " + subchannelNames.toString());
+        // If the call to the server was successful, parse the JSON
+        List<dynamic> values = <dynamic>[];
+        values = json.decode(response.body);
+        if (values.isNotEmpty) {
+          for (int i = 0; i < values.length; i++) {
+            if (values[i] != null) {
+              Map<String, dynamic> map = values[i];
+              // subchannelNames.add(map['isgut']);
+              // subchannelNames['${map['subchannelName']}'] = [
+              //   '${map['subchannelPreview']['subchannelSubchannelPicturePath']}'
+              // ];
+              subchannelNames.add([
+                '${map['subchannelName']}',
+                '${map['subchannelPreview']['subchannelSubchannelPicturePath']}'
+              ]);
+              // print('Tagname-------${map['tagName']}');
+            }
+          }
+        }
+        // print(postIds);
+        setState(() {
+          _loading = false;
+        });
+      } else {
+        // If that call was not successful, throw an error.
+        //Beamer.of(context).beamToNamed("/error/feed");
+        throw Exception('Failed to load tags');
+      }
+    } catch (e) {
+      print("Error: " + e.toString());
+      //Beamer.of(context).beamToNamed("/error/feed");
+    }
+  }
 
   // //Check if Tag has Subtags
   // Future<bool> _hasSubtags(String parentTagName) async {
@@ -136,18 +151,20 @@ class _ChooseSubchannelState extends State<ChooseSubchannel> {
 
   @override
   void initState() {
-    subchannelNames.add('CoolSamuraiStuff');
-    subchannelNames.add('Nature');
-    subchannelNames.add('Ballplay');
-    subchannelNames.add('Rocktes');
-    subchannelNames.add('Animals');
-    subchannelNames.add('goon');
-    subchannelNames.add('Chicago');
+    // subchannelNames.add('CoolSamuraiStuff');
+    // subchannelNames.add('Nature');
+    // subchannelNames.add('Ballplay');
+    // subchannelNames.add('Rocktes');
+    // subchannelNames.add('Animals');
+    // subchannelNames.add('goon');
+    // subchannelNames.add('Chicago');
 
     _loading = false;
 
     super.initState();
     // fetchTags("none");
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => fetchSubchannels(_searchText.text));
   }
 
   @override
@@ -198,9 +215,13 @@ class _ChooseSubchannelState extends State<ChooseSubchannel> {
                         'titleTextField-debouncer', // <-- An ID for this particular debouncer
                         const Duration(
                             milliseconds: 300), // <-- The debounce duration
-                        () => setState(() {
-                              print("subchannel searched for $text");
-                            }) // <-- The target method
+                        () async {
+                      await fetchSubchannels(text);
+                      setState(() {
+                        print("subchannel searched for $text");
+                        print("subchannelList: " + subchannelNames.toString());
+                      });
+                    } // <-- The target method
                         );
                   },
                 ),
@@ -233,7 +254,7 @@ class _ChooseSubchannelState extends State<ChooseSubchannel> {
                             width: 15,
                           ),
                           Text(
-                            "c/" + subchannelNames.elementAt(index),
+                            "c/" + subchannelNames.elementAt(index).first,
                             style: const TextStyle(
                                 fontSize: 18, color: Colors.black),
                           ),
@@ -255,39 +276,6 @@ class _ChooseSubchannelState extends State<ChooseSubchannel> {
                     );
                   },
                 ),
-                // ListView(
-                //   children: List.generate(subchannelNames.length, (index) {
-                //     return InkWell(
-                //       onTap: () => Navigator.pop(
-                //           context, subchannelNames.elementAt(index)),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.start,
-                //         crossAxisAlignment: CrossAxisAlignment.center,
-                //         children: [
-                //           ClipRRect(
-                //             borderRadius:
-                //                 const BorderRadius.all(Radius.circular(20)),
-                //             child: Image.network(
-                //               "https://picsum.photos/100",
-                //               fit: BoxFit.cover,
-                //               alignment: Alignment.center,
-                //               width: 32,
-                //               height: 32,
-                //             ),
-                //           ),
-                //           const SizedBox(
-                //             width: 15,
-                //           ),
-                //           const Text(
-                //             "c/SubchannelName",
-                //             style: TextStyle(
-                //                 fontSize: 18, color: Colors.black),
-                //           ),
-                //         ],
-                //       ),
-                //     );
-                //   }),
-                // ),
               ),
             ],
           );
@@ -295,7 +283,8 @@ class _ChooseSubchannelState extends State<ChooseSubchannel> {
 
   @override
   void dispose() {
-    // _scrollController.dispose();
+    // _scrollController.dispose()
+    _searchText.dispose();
     super.dispose();
   }
 }

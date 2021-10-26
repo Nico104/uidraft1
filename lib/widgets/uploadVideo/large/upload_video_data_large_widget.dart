@@ -42,7 +42,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
   bool isLoading = false;
 
   double _formProgress = 0;
-  Map<String, bool> _formError = {
+  final Map<String, bool> _formError = {
     "title": false,
     "thumbnail": false,
     "tag": false,
@@ -60,6 +60,10 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
   //Upload File
   late DropzoneViewController controller;
   Uint8List? videoBytes;
+
+  //Subchannel
+  late String subchannelName = '';
+  late String subchannelPicturePath;
 
   @override
   void dispose() {
@@ -131,14 +135,17 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                         const SizedBox(
                                           width: 15,
                                         ),
-                                        const Text(
-                                          "c/SubchannelName",
-                                          style: TextStyle(
+                                        Text(
+                                          subchannelName.isNotEmpty
+                                              ? subchannelName
+                                              : "Please choose a Subchannel",
+                                          style: const TextStyle(
                                               fontSize: 18,
                                               color: Colors.black),
                                         )
                                       ],
                                     ),
+                                    //Choose a Subchannel
                                     IconButton(
                                       icon: const Icon(
                                         Icons.arrow_right_outlined,
@@ -152,7 +159,13 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                           builder: (context) =>
                                               const ChooseSubchannelLargeScreen(),
                                         ).then((value) {
-                                          print("Value: " + value);
+                                          print("Value: " + value.toString());
+                                          List<String> temp = value;
+                                          setState(() {
+                                            subchannelName = temp.elementAt(0);
+                                            subchannelPicturePath =
+                                                temp.elementAt(1);
+                                          });
                                         });
                                       },
                                     )

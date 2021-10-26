@@ -273,7 +273,8 @@ class _SubchannelState extends State<Subchannel> {
                     ? Container(
                         width: 1000,
                         alignment: Alignment.topCenter,
-                        child: const Text("About Text"),
+                        child:
+                            Text(widget.subchannelData['subchannelAboutText']),
                       )
                     //Videos Grid
                     : Container(
