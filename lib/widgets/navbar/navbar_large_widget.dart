@@ -16,6 +16,9 @@ class NavBarLarge extends StatefulWidget {
 class _NavBarLargeState extends State<NavBarLarge> {
   bool _showMenu = false;
 
+  bool _isLeftHand = false;
+  // bool _isLeftHand = true;
+
   String baseURL = 'http://localhost:3000/';
 
   late String username;
@@ -69,7 +72,9 @@ class _NavBarLargeState extends State<NavBarLarge> {
                   alignment: Alignment.center,
                   children: [
                     Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: _isLeftHand
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                       //Logo
                       child: Text(
                         "LOGO",
@@ -159,7 +164,9 @@ class _NavBarLargeState extends State<NavBarLarge> {
                     ),
                     //Icons and PB
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment: _isLeftHand
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: FutureBuilder(
@@ -174,11 +181,32 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                         AsyncSnapshot snapshot) {
                                       if (snapshot.hasData) {
                                         return Row(
+                                          textDirection: _isLeftHand
+                                              ? TextDirection.rtl
+                                              : TextDirection.ltr,
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
+                                            //LeftHand Switch
+                                            IconButton(
+                                              icon: Icon(
+                                                _isLeftHand
+                                                    ? Icons.switch_left
+                                                    : Icons.switch_right,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .navBarIconColor,
+                                                size: 24,
+                                              ),
+                                              onPressed: () => setState(() {
+                                                _isLeftHand = !_isLeftHand;
+                                              }),
+                                            ),
+                                            const SizedBox(
+                                              width: 18,
+                                            ),
                                             //Notifications
                                             Icon(
                                               Icons.notifications_none_outlined,
@@ -246,9 +274,30 @@ class _NavBarLargeState extends State<NavBarLarge> {
                               } else {
                                 //If User Is NOT logged in
                                 return Row(
+                                  textDirection: _isLeftHand
+                                      ? TextDirection.rtl
+                                      : TextDirection.ltr,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    //LeftHand Switch
+                                    IconButton(
+                                      icon: Icon(
+                                        _isLeftHand
+                                            ? Icons.switch_left
+                                            : Icons.switch_right,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .navBarIconColor,
+                                        size: 24,
+                                      ),
+                                      onPressed: () => setState(() {
+                                        _isLeftHand = !_isLeftHand;
+                                      }),
+                                    ),
+                                    const SizedBox(
+                                      width: 18,
+                                    ),
                                     //Dark Light Mode Switch
                                     Icon(
                                       Icons.dark_mode_outlined,
