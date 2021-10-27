@@ -104,11 +104,20 @@ Future<void> likeComment(int commentId) async {
 //Dislikes a Comment
 Future<void> dislikeComment(int commentId) async {
   try {
-    http.post(Uri.parse(baseURL + 'comment/createCommentRating'),
-        body: jsonEncode(<String, String>{
-          'commentId': '$commentId',
-          'ratingType': 'dislike',
-        }));
+    String? token = await getToken();
+    final response =
+        await http.post(Uri.parse(baseURL + 'comment/createCommentRating'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode(<String, String>{
+              'commentId': '$commentId',
+              'ratingType': 'dislike',
+            }));
+    print(response.body);
+    print(response.statusCode);
   } catch (e) {
     print("Error: " + e.toString());
     throw Exception('Failed to like comment');
