@@ -49,3 +49,53 @@ Future<void> sendReplyComment(
     throw Error();
   }
 }
+
+//Get Comment Data by Id
+Future<List<int>> getSubCommentIds(int commentId) async {
+  try {
+    final response = await http
+        .get(Uri.parse(baseURL + 'comment/getCommentChildren/$commentId'));
+
+    if (response.statusCode == 200) {
+      List<int> comments = <int>[];
+      List<dynamic> values = <dynamic>[];
+      values = json.decode(response.body);
+      if (values.isNotEmpty) {
+        for (int i = 0; i < values.length; i++) {
+          if (values[i] != null) {
+            Map<String, dynamic> map = values[i];
+            comments.add(map['commentId']);
+          }
+        }
+      }
+      return comments;
+    } else {
+      throw Exception('Failed to load comments');
+    }
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to load comments2');
+  }
+}
+
+//Likes a Comment
+Future<void> likeComment(int commentId) async {
+  try {
+    http.patch(
+        Uri.parse(baseURL + 'comment/incrementCommentLikeCounter/$commentId'));
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to like comment');
+  }
+}
+
+//Dislikes a Comment
+Future<void> dislikeComment(int commentId) async {
+  try {
+    http.patch(Uri.parse(
+        baseURL + 'comment/incrementCommentDislikeCounter/$commentId'));
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to dislike comment');
+  }
+}

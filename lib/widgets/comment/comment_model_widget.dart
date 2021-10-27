@@ -1,4 +1,5 @@
 import 'package:beamer/beamer.dart';
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_util_methods.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,9 @@ class CommentModel extends StatefulWidget {
 
 class _CommentModelState extends State<CommentModel> {
   bool _showReplyTextField = false;
+  bool _showSubComments = true;
+
+  // bool _isHover
 
   final TextEditingController _commentTextController = TextEditingController();
 
@@ -23,6 +27,19 @@ class _CommentModelState extends State<CommentModel> {
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
+            //Calculate Subcomments
+            List<int> subCommentIds = <int>[];
+            List<dynamic> values = snapshot.data!['subcomments'];
+            if (values.isNotEmpty) {
+              for (int i = 0; i < values.length; i++) {
+                if (values[i] != null) {
+                  Map<String, dynamic> map = values[i];
+                  subCommentIds.add(map['commentId']);
+                }
+              }
+            }
+            print("Subcomments: " + subCommentIds.toString());
+            //Comment
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -56,9 +73,9 @@ class _CommentModelState extends State<CommentModel> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "username",
-                        style: TextStyle(color: Colors.white38),
+                      Text(
+                        snapshot.data!['commentUsername'],
+                        style: const TextStyle(color: Colors.white38),
                       ),
                       const SizedBox(
                         height: 3,
@@ -67,9 +84,18 @@ class _CommentModelState extends State<CommentModel> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                              "sssssssssssssssssssssss\nssssssssssssssssssssssssssssssssssssssssss\nsssssssssssssssssssssssssssssssss"),
-                          Text("show answers"),
+                          Text(snapshot.data!['commentText']),
+                          subCommentIds.isNotEmpty
+                              ? TextButton.icon(
+                                  onPressed: () => setState(() {
+                                    _showSubComments = !_showSubComments;
+                                  }),
+                                  label: const Text("Replies"),
+                                  icon: Icon(_showSubComments
+                                      ? Icons.arrow_drop_up
+                                      : Icons.arrow_drop_down),
+                                )
+                              : const SizedBox(),
                         ],
                       ),
                       const SizedBox(
@@ -77,22 +103,52 @@ class _CommentModelState extends State<CommentModel> {
                       ),
                       Row(
                         children: [
-                          TextButton(
-                              onPressed: () => setState(() =>
-                                  _showReplyTextField = !_showReplyTextField),
-                              child: Text("Reply")),
+                          FutureBuilder(
+                              future: isAuthenticated(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<int> snapshot) {
+                                if (snapshot.data == 200) {
+                                  return TextButton(
+                                      onPressed: () => setState(() =>
+                                          _showReplyTextField =
+                                              !_showReplyTextField),
+                                      child: Text("Reply"));
+                                } else {
+                                  return const SizedBox();
+                                }
+                              }),
+                          // Text("like"),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.thumb_up,
+                              size: 16,
+                              color: Colors.white60,
+                            ),
+                            onPressed: () {
+                              likeComment(widget.commentId);
+                            },
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text("69"),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          // Text("dislike"),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.thumb_down,
+                              size: 16,
+                              color: Colors.white60,
+                            ),
+                            onPressed: () {
+                              dislikeComment(widget.commentId);
+                            },
+                          ),
                           const SizedBox(
                             width: 10,
                           ),
-                          Text("like"),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text("score"),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text("dislike")
                         ],
                       ),
                       //Reply TextField
@@ -100,7 +156,7 @@ class _CommentModelState extends State<CommentModel> {
                           ? Padding(
                               padding: const EdgeInsets.fromLTRB(20, 10, 5, 0),
                               child: TextFormField(
-                                // controller: _postCommentTextController,
+                                controller: _commentTextController,
                                 cursorColor: Colors.white,
                                 autocorrect: false,
                                 keyboardType: TextInputType.multiline,
@@ -154,6 +210,37 @@ class _CommentModelState extends State<CommentModel> {
                                     fontSize: 14),
                               ),
                             )
+                          : const SizedBox(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //Show Subcomments/Comment Reply
+                      subCommentIds.isNotEmpty
+                          ? _showSubComments
+                              ? FutureBuilder(
+                                  future: getSubCommentIds(widget.commentId),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<List<int>> snapshot) {
+                                    if (snapshot.hasData) {
+                                      return ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: snapshot.data!.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      20, 20, 5, 0),
+                                              child: CommentModel(
+                                                  commentId: snapshot.data!
+                                                      .elementAt(index)),
+                                            );
+                                          });
+                                    } else {
+                                      return const CircularProgressIndicator();
+                                    }
+                                  },
+                                )
+                              : const SizedBox()
                           : const SizedBox(),
                     ],
                   ),
