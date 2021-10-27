@@ -123,3 +123,38 @@ Future<void> dislikeComment(int commentId) async {
     throw Exception('Failed to like comment');
   }
 }
+
+//Get User Comment Rating
+Future<void> getUserCommentRating(int commentId) async {
+  try {
+    String? token = await getToken();
+    final response = await http.get(
+        Uri.parse(baseURL + 'comment/getUserCommentRating/$commentId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+
+    if (response.statusCode == 200) {
+      // List<int> comments = <int>[];
+      // List<dynamic> values = <dynamic>[];
+      // values = json.decode(response.body);
+      // if (values.isNotEmpty) {
+      //   for (int i = 0; i < values.length; i++) {
+      //     if (values[i] != null) {
+      //       Map<String, dynamic> map = values[i];
+      //       comments.add(map['commentId']);
+      //     }
+      //   }
+      // }
+      // return comments;
+      print(response.body);
+    } else {
+      throw Exception('Failed to load comments');
+    }
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to load comments3');
+  }
+}

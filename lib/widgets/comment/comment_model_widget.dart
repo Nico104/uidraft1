@@ -108,6 +108,7 @@ class _CommentModelState extends State<CommentModel> {
                               builder: (BuildContext context,
                                   AsyncSnapshot<int> snapshot) {
                                 if (snapshot.data == 200) {
+                                  getUserCommentRating(widget.commentId);
                                   return TextButton(
                                       onPressed: () => setState(() =>
                                           _showReplyTextField =
