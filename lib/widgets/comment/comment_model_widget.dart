@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_util_methods.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 class CommentModel extends StatefulWidget {
   final int commentId;
@@ -101,58 +102,135 @@ class _CommentModelState extends State<CommentModel> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          FutureBuilder(
-                              future: isAuthenticated(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<int> snapshot) {
-                                if (snapshot.data == 200) {
-                                  getUserCommentRating(widget.commentId);
-                                  return TextButton(
-                                      onPressed: () => setState(() =>
-                                          _showReplyTextField =
-                                              !_showReplyTextField),
-                                      child: Text("Reply"));
-                                } else {
-                                  return const SizedBox();
-                                }
-                              }),
-                          // Text("like"),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.thumb_up,
-                              size: 16,
-                              color: Colors.white60,
-                            ),
-                            onPressed: () {
-                              print("pressed");
-                              likeComment(widget.commentId);
-                            },
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          const Text("69"),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          // Text("dislike"),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.thumb_down,
-                              size: 16,
-                              color: Colors.white60,
-                            ),
-                            onPressed: () {
-                              dislikeComment(widget.commentId);
-                            },
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                        ],
-                      ),
+                      FutureBuilder(
+                          future: isAuthenticated(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<int> snapshot) {
+                            if (snapshot.hasData) {
+                              return Row(
+                                children: [
+                                  snapshot.data == 200
+                                      ? TextButton(
+                                          onPressed: () => setState(() =>
+                                              _showReplyTextField =
+                                                  !_showReplyTextField),
+                                          child: Text("Reply"))
+                                      : const SizedBox(),
+                                  // Text("like"),
+
+                                  //Only load rating if auth
+                                  snapshot.data == 200
+                                      ? FutureBuilder(
+                                          future: getUserCommentRating(
+                                              widget.commentId),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<int>
+                                                  snapshotRating) {
+                                            return Row(
+                                              children: [
+                                                //LIKE
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.thumb_up,
+                                                    size: 16,
+                                                    color:
+                                                        snapshotRating.data == 1
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .brandColor
+                                                            : Colors.white60,
+                                                  ),
+                                                  onPressed: () {
+                                                    if (snapshotRating.data !=
+                                                        1) {
+                                                      likeComment(
+                                                              widget.commentId)
+                                                          .then((_) =>
+                                                              setState(() {}));
+                                                    } else {
+                                                      print("remove like");
+                                                    }
+                                                  },
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                //RATING
+                                                const Text("69"),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                // Text("dislike"),
+                                                //DISLIKE
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.thumb_down,
+                                                    size: 16,
+                                                    color:
+                                                        snapshotRating.data == 2
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .brandColor
+                                                            : Colors.white60,
+                                                  ),
+                                                  onPressed: () {
+                                                    if (snapshotRating.data !=
+                                                        2) {
+                                                      dislikeComment(
+                                                              widget.commentId)
+                                                          .then((_) =>
+                                                              setState(() {}));
+                                                    } else {
+                                                      print("remove dislike");
+                                                    }
+                                                  },
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                              ],
+                                            );
+                                          })
+                                      : Row(
+                                          children: const [
+                                            //LIKE
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.thumb_up,
+                                                size: 16,
+                                                color: Colors.white60,
+                                              ),
+                                              onPressed: null,
+                                            ),
+                                            SizedBox(
+                                              width: 8,
+                                            ),
+                                            //RATING
+                                            Text("69"),
+                                            SizedBox(
+                                              width: 8,
+                                            ),
+                                            // Text("dislike"),
+                                            //DISLIKE
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.thumb_down,
+                                                size: 16,
+                                                color: Colors.white60,
+                                              ),
+                                              onPressed: null,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                          ],
+                                        ),
+                                ],
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          }),
                       //Reply TextField
                       _showReplyTextField
                           ? Padding(

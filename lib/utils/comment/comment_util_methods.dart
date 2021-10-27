@@ -125,7 +125,7 @@ Future<void> dislikeComment(int commentId) async {
 }
 
 //Get User Comment Rating
-Future<void> getUserCommentRating(int commentId) async {
+Future<int> getUserCommentRating(int commentId) async {
   try {
     String? token = await getToken();
     final response = await http.get(
@@ -137,19 +137,19 @@ Future<void> getUserCommentRating(int commentId) async {
         });
 
     if (response.statusCode == 200) {
-      // List<int> comments = <int>[];
-      // List<dynamic> values = <dynamic>[];
-      // values = json.decode(response.body);
-      // if (values.isNotEmpty) {
-      //   for (int i = 0; i < values.length; i++) {
-      //     if (values[i] != null) {
-      //       Map<String, dynamic> map = values[i];
-      //       comments.add(map['commentId']);
-      //     }
-      //   }
-      // }
-      // return comments;
       print(response.body);
+      if (response.body.isNotEmpty) {
+        if (json.decode(response.body)['commentRating'] == 'LIKE') {
+          return 1;
+        } else if (json.decode(response.body)['commentRating'] == 'DISLIKE') {
+          return 2;
+        } else {
+          return 0;
+        }
+      } else {
+        // print("empty rating");
+        return 0;
+      }
     } else {
       throw Exception('Failed to load comments');
     }
