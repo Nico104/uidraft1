@@ -125,6 +125,7 @@ class _CommentModelState extends State<CommentModel> {
                               color: Colors.white60,
                             ),
                             onPressed: () {
+                              print("pressed");
                               likeComment(widget.commentId);
                             },
                           ),

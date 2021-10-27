@@ -81,8 +81,20 @@ Future<List<int>> getSubCommentIds(int commentId) async {
 //Likes a Comment
 Future<void> likeComment(int commentId) async {
   try {
-    http.patch(
-        Uri.parse(baseURL + 'comment/incrementCommentLikeCounter/$commentId'));
+    String? token = await getToken();
+    final response =
+        await http.post(Uri.parse(baseURL + 'comment/createCommentRating'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode(<String, String>{
+              'commentId': '$commentId',
+              'ratingType': 'like',
+            }));
+    print(response.body);
+    print(response.statusCode);
   } catch (e) {
     print("Error: " + e.toString());
     throw Exception('Failed to like comment');
@@ -92,10 +104,13 @@ Future<void> likeComment(int commentId) async {
 //Dislikes a Comment
 Future<void> dislikeComment(int commentId) async {
   try {
-    http.patch(Uri.parse(
-        baseURL + 'comment/incrementCommentDislikeCounter/$commentId'));
+    http.post(Uri.parse(baseURL + 'comment/createCommentRating'),
+        body: jsonEncode(<String, String>{
+          'commentId': '$commentId',
+          'ratingType': 'dislike',
+        }));
   } catch (e) {
     print("Error: " + e.toString());
-    throw Exception('Failed to dislike comment');
+    throw Exception('Failed to like comment');
   }
 }
