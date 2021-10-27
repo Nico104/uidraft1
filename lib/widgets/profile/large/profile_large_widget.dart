@@ -56,19 +56,21 @@ class _ProfileState extends State<Profile> {
   Future<void> fetchPostIds() async {
     print("button tapped");
     try {
+      print("UNV Debug 1");
       if (!_loading) {
         setState(() {
           _loading = true;
         });
       }
-
+      print("UNV Debug 2");
       final response =
           await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
-
+      print("UNV Debug 3");
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON
         List<dynamic> values = <dynamic>[];
         values = json.decode(response.body);
+        print("UNV Debug 4");
         if (values.isNotEmpty) {
           for (int i = 0; i < values.length; i++) {
             if (values[i] != null) {
@@ -105,13 +107,17 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
 
+    print("UNV Debug 6");
     fetchPostIds().then((value) {
       ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
+    print("UNV Debug 5");
 
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
+
+    print("UNV Debug 7");
   }
 
   @override
@@ -155,23 +161,30 @@ class _ProfileState extends State<Profile> {
                         future: isThisMe(),
                         builder: (BuildContext context,
                             AsyncSnapshot<bool> snapshot) {
-                          if (snapshot.data!) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 16, right: 16),
-                              child: IconButton(
-                                  hoverColor: Colors.transparent,
-                                  onPressed: () {
-                                    Beamer.of(context)
-                                        .beamToNamed("/updateprofile");
-                                  },
-                                  icon: Icon(
-                                    Icons.edit,
-                                    size: 28,
-                                    color: Theme.of(context).canvasColor,
-                                  )),
-                            );
+                          print("FutureBuilde Debug 1");
+                          if (snapshot.hasData) {
+                            print("FutureBuilde Debug 2");
+                            if (snapshot.data!) {
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 16, right: 16),
+                                child: IconButton(
+                                    hoverColor: Colors.transparent,
+                                    onPressed: () {
+                                      Beamer.of(context)
+                                          .beamToNamed("/updateprofile");
+                                    },
+                                    icon: Icon(
+                                      Icons.edit,
+                                      size: 28,
+                                      color: Theme.of(context).canvasColor,
+                                    )),
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
                           } else {
+                            print("FutureBuilde Debug 3r");
                             return const SizedBox();
                           }
                         })
@@ -372,6 +385,7 @@ class _ProfileState extends State<Profile> {
   }
 
   ////ADDING DATA INTO ARRAYLIST
+  ///
   Future<bool> isThisMe() async {
     if (await isAuthenticated() == 200) {
       if (await getMyUsername() == widget.profileData['username']) {

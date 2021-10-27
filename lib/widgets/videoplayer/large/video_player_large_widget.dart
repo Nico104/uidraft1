@@ -5,7 +5,10 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uidraft1/utils/auth/authentication_global.dart';
+import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:video_player/video_player.dart';
@@ -37,26 +40,37 @@ class VideoPlayerHome extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerHome> {
+  //Play Video vars
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
 
+  //Pause video in the beginning
   late bool _firtTimeExternAccess;
 
+  //Menu vars
   bool _isFullScreen = false;
   bool _showMenu = false;
   bool _showQuality = false;
 
+  //Description
   bool isExpanded = false;
 
+  //Change Quality
   Map<int, String> streamQualityURL = {};
   List<int> streamQualityKeysSorted = [];
   late int activeQualityStream;
 
   Duration pos = const Duration();
 
+  //Serverconnection
   String baseURL = 'http://localhost:3000/';
 
+  //Shortcuts
   var focusNode = FocusNode();
+
+  //Comment
+  final TextEditingController _postCommentTextController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -122,11 +136,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   Future<void> _initializePlay(String videoPath, Duration position) async {
     print("start initialisation");
     _controller = VideoPlayerController.network(videoPath);
-    // _controller.addListener(() {
-    //   setState(() {
-    //     _playBackTime = _controller.value.position.inSeconds;
-    //   });
-    // });
     _initializeVideoPlayerFuture = _controller.initialize().then((_) {
       _controller.seekTo(pos);
       _controller.play();
@@ -162,85 +171,87 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                   // print("Physical: " + event.physicalKey.toString());
                   // print("Logical: " + event.logicalKey.toString());
                   // print("Character: " + event.character.toString());
-                  if (event.logicalKey.keyLabel == 'F') {
-                    print("F pressed");
-                    if (_isFullScreen) {
-                      exitFullScreen();
-                      setState(() {
-                        _isFullScreen = false;
-                      });
-                    } else {
-                      goFullScreen();
-                      setState(() {
-                        _isFullScreen = true;
-                      });
-                    }
-                  } else if (event.logicalKey.keyLabel == ' ') {
-                    print("Space pressed");
-                    if (_controller.value.isPlaying) {
-                      if (mounted) {
-                        setState(() {
-                          _controller.pause();
-                          print("paused");
 
-                          _showMenu = true;
-                          print("_showMenu set to true");
-                        });
-                      }
+                  // prevent from writing comment
+                  // if (event.logicalKey.keyLabel == 'F') {
+                  //   print("F pressed");
+                  //   if (_isFullScreen) {
+                  //     exitFullScreen();
+                  //     setState(() {
+                  //       _isFullScreen = false;
+                  //     });
+                  //   } else {
+                  //     goFullScreen();
+                  //     setState(() {
+                  //       _isFullScreen = true;
+                  //     });
+                  //   }
+                  // } else if (event.logicalKey.keyLabel == ' ') {
+                  //   print("Space pressed");
+                  //   if (_controller.value.isPlaying) {
+                  //     if (mounted) {
+                  //       setState(() {
+                  //         _controller.pause();
+                  //         print("paused");
 
-                      EasyDebounce.debounce(
-                          'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                          const Duration(
-                              seconds: 2), // <-- The debounce duration
-                          () {
-                        if (_showMenu) {
-                          if (mounted) {
-                            setState(() {
-                              _showMenu = false;
-                              _showQuality = false;
-                              print("_showMenu set to false");
-                            });
-                          }
-                        }
-                      }); // <-- The target method
+                  //         _showMenu = true;
+                  //         print("_showMenu set to true");
+                  //       });
+                  //     }
 
-                    } else {
-                      // If the video is paused, play it.
-                      if (mounted) {
-                        setState(() {
-                          _controller.play();
-                          print("playing");
+                  //     EasyDebounce.debounce(
+                  //         'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                  //         const Duration(
+                  //             seconds: 2), // <-- The debounce duration
+                  //         () {
+                  //       if (_showMenu) {
+                  //         if (mounted) {
+                  //           setState(() {
+                  //             _showMenu = false;
+                  //             _showQuality = false;
+                  //             print("_showMenu set to false");
+                  //           });
+                  //         }
+                  //       }
+                  //     }); // <-- The target method
 
-                          _showMenu = true;
-                          print("_showMenu set to true");
-                        });
-                      }
+                  //   } else {
+                  //     // If the video is paused, play it.
+                  //     if (mounted) {
+                  //       setState(() {
+                  //         _controller.play();
+                  //         print("playing");
 
-                      EasyDebounce.debounce(
-                          'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                          const Duration(
-                              seconds: 2), // <-- The debounce duration
-                          () {
-                        if (_showMenu) {
-                          if (mounted) {
-                            setState(() {
-                              _showMenu = false;
-                              _showQuality = false;
-                              print("_showMenu set to false");
-                            });
-                          }
-                        }
-                      }); // <-- The target method
+                  //         _showMenu = true;
+                  //         print("_showMenu set to true");
+                  //       });
+                  //     }
 
-                    }
-                  } else if (event.logicalKey.keyLabel == 'Escape') {
-                    if (_isFullScreen) {
-                      setState(() {
-                        _isFullScreen = false;
-                      });
-                      exitFullScreen();
-                    }
-                  }
+                  //     EasyDebounce.debounce(
+                  //         'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                  //         const Duration(
+                  //             seconds: 2), // <-- The debounce duration
+                  //         () {
+                  //       if (_showMenu) {
+                  //         if (mounted) {
+                  //           setState(() {
+                  //             _showMenu = false;
+                  //             _showQuality = false;
+                  //             print("_showMenu set to false");
+                  //           });
+                  //         }
+                  //       }
+                  //     }); // <-- The target method
+
+                  //   }
+                  // } else if (event.logicalKey.keyLabel == 'Escape') {
+                  //   if (_isFullScreen) {
+                  //     setState(() {
+                  //       _isFullScreen = false;
+                  //     });
+                  //     exitFullScreen();
+                  //   }
+                  // }
                 }
               },
               child: Row(
@@ -1198,7 +1209,194 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                     const SizedBox(
                                       height: 40,
                                     ),
+                                    //Comments
                                     const Text("Comments"),
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                    //Write Comment
+                                    FutureBuilder(
+                                        future: isAuthenticated(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<int> snapshot) {
+                                          if (snapshot.data == 200) {
+                                            //If User Is Logged in
+                                            return Column(
+                                              children: [
+                                                TextFormField(
+                                                  buildCounter: (_,
+                                                          {required currentLength,
+                                                          maxLength,
+                                                          required isFocused}) =>
+                                                      Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 16.0),
+                                                    child: Container(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(currentLength
+                                                                .toString() +
+                                                            "/" +
+                                                            maxLength
+                                                                .toString())),
+                                                  ),
+                                                  controller:
+                                                      _postCommentTextController,
+                                                  cursorColor: Colors.white,
+                                                  autocorrect: false,
+                                                  keyboardType:
+                                                      TextInputType.multiline,
+                                                  maxLength: 256,
+                                                  minLines: 1,
+                                                  maxLines: 20,
+                                                  decoration: InputDecoration(
+                                                    labelText:
+                                                        "Write a comment",
+                                                    labelStyle: const TextStyle(
+                                                        fontFamily: "Segoe UI",
+                                                        color: Colors.white54),
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                              color: Colors
+                                                                  .white70),
+                                                    ),
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                              color:
+                                                                  Colors.pink),
+                                                    ),
+                                                  ),
+                                                  validator: (val) {
+                                                    if (val!.isEmpty) {
+                                                      return "Field cannot be empty";
+                                                    } else {
+                                                      return null;
+                                                    }
+                                                  },
+                                                  style: const TextStyle(
+                                                      fontFamily: "Segoe UI",
+                                                      color: Colors.white70),
+                                                ),
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: OutlinedButton(
+                                                    style: ButtonStyle(
+                                                      side:
+                                                          MaterialStateProperty
+                                                              .resolveWith(
+                                                                  (states) {
+                                                        Color _borderColor;
+                                                        if (states.contains(
+                                                            MaterialState
+                                                                .pressed)) {
+                                                          _borderColor =
+                                                              Colors.white;
+                                                        } else if (states
+                                                            .contains(
+                                                                MaterialState
+                                                                    .hovered)) {
+                                                          _borderColor =
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .brandColor;
+                                                        } else {
+                                                          _borderColor =
+                                                              Colors.grey;
+                                                        }
+
+                                                        return BorderSide(
+                                                            color: _borderColor,
+                                                            width: 1);
+                                                      }),
+                                                      shape: MaterialStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0))),
+                                                    ),
+                                                    onPressed: () async {
+                                                      //send Comment
+                                                      await sendComment(
+                                                          widget.postData[
+                                                              'postId'],
+                                                          _postCommentTextController
+                                                              .text);
+                                                      setState(() {
+                                                        _postCommentTextController
+                                                            .clear();
+                                                      });
+                                                    },
+                                                    child: const Padding(
+                                                      padding:
+                                                          EdgeInsets.all(5.0),
+                                                      child: Text(
+                                                        "send",
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                'Sogeo UI',
+                                                            fontSize: 14,
+                                                            color:
+                                                                Colors.white70),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 40,
+                                                ),
+                                              ],
+                                            );
+                                          } else {
+                                            return const SizedBox();
+                                          }
+                                        }),
+                                    //Show Post Comments
+                                    FutureBuilder(
+                                        future: fetchPostComments(
+                                            widget.postData['postId']),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<List<int>> snapshot) {
+                                          if (snapshot.hasData) {
+                                            if (snapshot.data!.isNotEmpty) {
+                                              return ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount:
+                                                      snapshot.data!.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Column(
+                                                      children: [
+                                                        CommentModel(
+                                                            commentId: snapshot
+                                                                .data!
+                                                                .elementAt(
+                                                                    index)),
+                                                        const SizedBox(
+                                                          height: 15,
+                                                        )
+                                                      ],
+                                                    );
+                                                  });
+                                            } else {
+                                              return const Text(
+                                                  "no comments for video");
+                                            }
+                                          } else {
+                                            return const CircularProgressIndicator();
+                                          }
+                                        }),
                                     const SizedBox(
                                       height: 140,
                                     ),
@@ -1769,266 +1967,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    // ? Column(
-                                    //     crossAxisAlignment:
-                                    //         CrossAxisAlignment.center,
-                                    //     mainAxisSize: MainAxisSize.max,
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.end,
-                                    //     children: [
-                                    //       Row(
-                                    //         mainAxisAlignment:
-                                    //             MainAxisAlignment.end,
-                                    //         children: [
-                                    //           RotatedBox(
-                                    //             quarterTurns: 3,
-                                    //             child: SliderTheme(
-                                    //               data: const SliderThemeData(
-                                    //                 //thumbColor: Colors.green,
-                                    //                 thumbShape:
-                                    //                     RoundSliderThumbShape(
-                                    //                         enabledThumbRadius:
-                                    //                             7),
-                                    //                 //showValueIndicator: ShowValueIndicator.never,
-                                    //               ),
-                                    //               child: Slider(
-                                    //                 value: _controller
-                                    //                         .value.volume *
-                                    //                     100,
-                                    //                 min: 0,
-                                    //                 max: 100,
-                                    //                 //divisions: 20,
-                                    //                 //label: (_controller!.value.volume * 100).round().toString(),
-                                    //                 onChanged:
-                                    //                     (double value) {
-                                    //                   if (mounted) {
-                                    //                     setState(() {
-                                    //                       _controller
-                                    //                           .setVolume(
-                                    //                               value /
-                                    //                                   100);
-                                    //                     });
-                                    //                   }
-                                    //                 },
-                                    //               ),
-                                    //             ),
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //       Row(
-                                    //         crossAxisAlignment:
-                                    //             CrossAxisAlignment.center,
-                                    //         children: [
-                                    //           const SizedBox(
-                                    //             width: 24,
-                                    //           ),
-                                    //           MaterialButton(
-                                    //             focusColor:
-                                    //                 Colors.transparent,
-                                    //             minWidth: 0,
-                                    //             padding:
-                                    //                 const EdgeInsets.all(0),
-                                    //             onPressed: () {
-                                    //               if (_controller
-                                    //                   .value.isPlaying) {
-                                    //                 if (mounted) {
-                                    //                   setState(() {
-                                    //                     _controller.pause();
-                                    //                     print("paused");
-                                    //                   });
-                                    //                 }
-                                    //               } else {
-                                    //                 // If the video is paused, play it.
-                                    //                 if (mounted) {
-                                    //                   setState(() {
-                                    //                     _controller.play();
-                                    //                     print("playing");
-                                    //                   });
-                                    //                 }
-                                    //               }
-                                    //             },
-                                    //             child: Container(
-                                    //                 decoration: BoxDecoration(
-                                    //                   borderRadius:
-                                    //                       BorderRadius
-                                    //                           .circular(12),
-                                    //                   color: Theme.of(context)
-                                    //                       .colorScheme
-                                    //                       .videoPlayerIconBackgroundColor
-                                    //                       .withOpacity(0.6),
-                                    //                 ),
-                                    //                 child: Padding(
-                                    //                   padding:
-                                    //                       const EdgeInsets
-                                    //                           .all(4.0),
-                                    //                   child: Icon(
-                                    //                     _controller.value
-                                    //                             .isPlaying
-                                    //                         ? Icons.pause
-                                    //                         : Icons
-                                    //                             .play_arrow,
-                                    //                     size: 32,
-                                    //                     color: Theme.of(
-                                    //                             context)
-                                    //                         .colorScheme
-                                    //                         .highlightColor,
-                                    //                   ),
-                                    //                 )),
-                                    //           ),
-                                    //           const SizedBox(
-                                    //             width: 5,
-                                    //           ),
-                                    //           MaterialButton(
-                                    //             focusColor:
-                                    //                 Colors.transparent,
-                                    //             minWidth: 0,
-                                    //             padding:
-                                    //                 const EdgeInsets.all(0),
-                                    //             onPressed: () {
-                                    //               if (_controller
-                                    //                   .value.isPlaying) {
-                                    //                 if (mounted) {
-                                    //                   setState(() {
-                                    //                     _controller.pause();
-                                    //                     print("paused");
-                                    //                   });
-                                    //                 }
-                                    //               } else {
-                                    //                 // If the video is paused, play it.
-                                    //                 if (mounted) {
-                                    //                   setState(() {
-                                    //                     _controller.play();
-                                    //                     print("playing");
-                                    //                   });
-                                    //                 }
-                                    //               }
-                                    //             },
-                                    //             child: Container(
-                                    //                 decoration: BoxDecoration(
-                                    //                   borderRadius:
-                                    //                       BorderRadius
-                                    //                           .circular(12),
-                                    //                   color: Theme.of(context)
-                                    //                       .colorScheme
-                                    //                       .videoPlayerIconBackgroundColor
-                                    //                       .withOpacity(0.6),
-                                    //                 ),
-                                    //                 child: Padding(
-                                    //                   padding:
-                                    //                       const EdgeInsets
-                                    //                           .all(4.0),
-                                    //                   child: Icon(
-                                    //                     Icons.skip_next,
-                                    //                     size: 24,
-                                    //                     color: Theme.of(
-                                    //                             context)
-                                    //                         .colorScheme
-                                    //                         .highlightColor,
-                                    //                   ),
-                                    //                 )),
-                                    //           ),
-                                    //           const SizedBox(
-                                    //             width: 10,
-                                    //           ),
-                                    //           Flexible(
-                                    //             child: SizedBox(
-                                    //               height: 15,
-                                    //               child: ClipRRect(
-                                    //                 borderRadius:
-                                    //                     const BorderRadius
-                                    //                             .only(
-                                    //                         topLeft: Radius
-                                    //                             .circular(28),
-                                    //                         topRight: Radius
-                                    //                             .circular(28),
-                                    //                         bottomLeft: Radius
-                                    //                             .circular(12),
-                                    //                         bottomRight:
-                                    //                             Radius
-                                    //                                 .circular(
-                                    //                                     12)),
-                                    //                 child: VideoProgressIndicator(
-                                    //                     _controller,
-                                    //                     colors: VideoProgressColors(
-                                    //                         playedColor: Theme
-                                    //                                 .of(
-                                    //                                     context)
-                                    //                             .colorScheme
-                                    //                             .highlightColor,
-                                    //                         bufferedColor: Theme
-                                    //                                 .of(
-                                    //                                     context)
-                                    //                             .colorScheme
-                                    //                             .videoPlayerIconBackgroundColor
-                                    //                             .withOpacity(
-                                    //                                 0.6),
-                                    //                         backgroundColor:
-                                    //                             Colors.grey),
-                                    //                     allowScrubbing: true),
-                                    //               ),
-                                    //             ),
-                                    //           ),
-                                    //           const SizedBox(
-                                    //             width: 10,
-                                    //           ),
-                                    //           MaterialButton(
-                                    //             focusColor:
-                                    //                 Colors.transparent,
-                                    //             minWidth: 0,
-                                    //             padding:
-                                    //                 const EdgeInsets.all(0),
-                                    //             onPressed: () {
-                                    //               if (!_isFullScreen) {
-                                    //                 if (mounted) {
-                                    //                   setState(() {
-                                    //                     _isFullScreen = true;
-                                    //                     goFullScreen();
-                                    //                   });
-                                    //                 }
-                                    //               } else {
-                                    //                 if (mounted) {
-                                    //                   setState(() {
-                                    //                     _isFullScreen = false;
-                                    //                     exitFullScreen();
-                                    //                   });
-                                    //                 }
-                                    //               }
-                                    //             },
-                                    //             child: Container(
-                                    //                 decoration: BoxDecoration(
-                                    //                   borderRadius:
-                                    //                       BorderRadius
-                                    //                           .circular(12),
-                                    //                   color: Theme.of(context)
-                                    //                       .colorScheme
-                                    //                       .videoPlayerIconBackgroundColor
-                                    //                       .withOpacity(0.6),
-                                    //                 ),
-                                    //                 child: Padding(
-                                    //                   padding:
-                                    //                       const EdgeInsets
-                                    //                           .all(2.0),
-                                    //                   child: Icon(
-                                    //                     Icons.fullscreen,
-                                    //                     size: 32,
-                                    //                     color: Theme.of(
-                                    //                             context)
-                                    //                         .colorScheme
-                                    //                         .highlightColor,
-                                    //                   ),
-                                    //                 )),
-                                    //           ),
-                                    //           const SizedBox(
-                                    //             width: 12,
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //       const SizedBox(
-                                    //         height: 35,
-                                    //       )
-                                    //     ],
-                                    //   )
-                                    // : const SizedBox(),
                                   ],
                                 );
                         } else {
