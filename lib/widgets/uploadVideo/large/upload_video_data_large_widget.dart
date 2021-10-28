@@ -51,8 +51,8 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
 
   FilePickerResult? result;
 
-  // int pageIndex = 0;
-  int pageIndex = 1;
+  int pageIndex = 0;
+  // int pageIndex = 1;
 
   //TagList
   List<String> tagList = [];

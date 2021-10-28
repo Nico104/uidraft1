@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
@@ -1035,368 +1036,526 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                       ),
                                     ),
                                     const SizedBox(height: 30),
-                                    //Post Title and Metric
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        //Post Title
-                                        Text(widget.postData['postTitle'],
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                fontFamily: 'Segoe UI')),
-                                        //Post Metrics
-                                        Row(
-                                          children: [
-                                            const SizedBox(
-                                              width: 40,
-                                            ),
-                                            const Icon(
-                                              Icons.visibility,
-                                              size: 24,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(widget.postData['postViews']
-                                                .toString()),
-                                            const SizedBox(
-                                              width: 12,
-                                            ),
-                                            const Icon(
-                                              Icons.trending_up,
-                                              size: 24,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(widget
-                                                .postData['postRatingScore']
-                                                .toString()),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                    //Video Data and Comments Normal
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        //Post SubchannelName
-                                        InkWell(
-                                          excludeFromSemantics: true,
-                                          hoverColor: Colors.transparent,
-                                          focusColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          onTap: () {
-                                            Beamer.of(context).beamToNamed(
-                                                'subchannel/' +
-                                                    widget.postData[
-                                                        'postSubchannelName']);
-                                            print("go to subchnanel");
-                                          },
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(14.0),
-                                            child: Image.network(
-                                              baseURL +
-                                                  widget.postData[
-                                                              'postSubchannel']
-                                                          ['subchannelPreview'][
-                                                      'subchannelSubchannelPicturePath'],
-                                              fit: BoxFit.cover,
-                                              alignment: Alignment.center,
-                                              width: 40,
-                                              height: 40,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text("c/" +
-                                            widget.postData[
-                                                'postSubchannelName']),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-
-                                        //Post Username
-                                        InkWell(
-                                          excludeFromSemantics: true,
-                                          hoverColor: Colors.transparent,
-                                          focusColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          onTap: () {
-                                            Beamer.of(context).beamToNamed(
-                                                'profile/' +
-                                                    widget
-                                                        .postData['username']);
-                                            print("go to profile");
-                                          },
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(14.0),
-                                            child: Image.network(
-                                              baseURL +
-                                                  widget.postData['user']
-                                                          ['userProfile']
-                                                      ['profilePicturePath'],
-                                              fit: BoxFit.cover,
-                                              alignment: Alignment.center,
-                                              width: 40,
-                                              height: 40,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          widget.postData['username'],
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    //Post Published Date Time
-                                    Text(widget.postData[
-                                            'postPublishedDateTime'] ??
-                                        "published 15. October 2021"),
-                                    const SizedBox(
-                                      height: 50,
-                                    ),
-                                    //Post Description
-                                    Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          ConstrainedBox(
-                                              constraints: isExpanded
-                                                  ? const BoxConstraints()
-                                                  : const BoxConstraints(
-                                                      maxHeight: 50.0),
-                                              child: Text(
-                                                widget.postData[
-                                                    'postDescription'],
-                                                softWrap: true,
-                                                overflow: TextOverflow.fade,
-                                              )),
-                                          isExpanded
-                                              ? TextButton(
-                                                  child:
-                                                      const Text('show less'),
-                                                  onPressed: () => setState(
-                                                      () => isExpanded = false))
-                                              : TextButton(
-                                                  child:
-                                                      const Text('show more'),
-                                                  onPressed: () => setState(
-                                                      () => isExpanded = true))
-                                        ]),
-
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    //Comments
-                                    const Text("Comments"),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    //Write Comment
+                                    //Post Title and Metric, Comments, Description etc.
                                     FutureBuilder(
                                         future: isAuthenticated(),
                                         builder: (BuildContext context,
                                             AsyncSnapshot<int> snapshot) {
-                                          if (snapshot.data == 200) {
-                                            //If User Is Logged in
-                                            return Column(
-                                              children: [
-                                                TextFormField(
-                                                  buildCounter: (_,
-                                                          {required currentLength,
-                                                          maxLength,
-                                                          required isFocused}) =>
-                                                      Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 16.0),
-                                                    child: Container(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: Text(currentLength
-                                                                .toString() +
-                                                            "/" +
-                                                            maxLength
-                                                                .toString())),
-                                                  ),
-                                                  controller:
-                                                      _postCommentTextController,
-                                                  cursorColor: Colors.white,
-                                                  autocorrect: false,
-                                                  keyboardType:
-                                                      TextInputType.multiline,
-                                                  maxLength: 256,
-                                                  minLines: 1,
-                                                  maxLines: 20,
-                                                  decoration: InputDecoration(
-                                                    labelText:
-                                                        "Write a comment",
-                                                    labelStyle: const TextStyle(
-                                                        fontFamily: "Segoe UI",
-                                                        color: Colors.white54),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0),
-                                                      borderSide:
-                                                          const BorderSide(
-                                                              color: Colors
-                                                                  .white70),
-                                                    ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0),
-                                                      borderSide:
-                                                          const BorderSide(
-                                                              color:
-                                                                  Colors.pink),
-                                                    ),
-                                                  ),
-                                                  validator: (val) {
-                                                    if (val!.isEmpty) {
-                                                      return "Field cannot be empty";
-                                                    } else {
-                                                      return null;
-                                                    }
-                                                  },
-                                                  style: const TextStyle(
-                                                      fontFamily: "Segoe UI",
-                                                      color: Colors.white70),
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: OutlinedButton(
-                                                    style: ButtonStyle(
-                                                      side:
-                                                          MaterialStateProperty
-                                                              .resolveWith(
-                                                                  (states) {
-                                                        Color _borderColor;
-                                                        if (states.contains(
-                                                            MaterialState
-                                                                .pressed)) {
-                                                          _borderColor =
-                                                              Colors.white;
-                                                        } else if (states
-                                                            .contains(
-                                                                MaterialState
-                                                                    .hovered)) {
-                                                          _borderColor =
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .brandColor;
-                                                        } else {
-                                                          _borderColor =
-                                                              Colors.grey;
-                                                        }
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  //Post Title
+                                                  Text(
+                                                      widget.postData[
+                                                          'postTitle'],
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontFamily:
+                                                              'Segoe UI')),
+                                                  //Post Metrics and Ratings
+                                                  Row(
+                                                    children: [
+                                                      //Post Ratings
+                                                      snapshot.data == 200
+                                                          ? FutureBuilder(
+                                                              future: getUserPostRating(
+                                                                  widget.postData[
+                                                                      'postId']),
+                                                              builder: (BuildContext
+                                                                      context,
+                                                                  AsyncSnapshot<
+                                                                          int>
+                                                                      snapshotRating) {
+                                                                return Row(
+                                                                  children: [
+                                                                    //LIKE
+                                                                    IconButton(
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .thumb_up,
+                                                                        size:
+                                                                            16,
+                                                                        color: snapshotRating.data ==
+                                                                                1
+                                                                            ? Theme.of(context).colorScheme.brandColor
+                                                                            : Colors.white60,
+                                                                      ),
+                                                                      onPressed:
+                                                                          () {
+                                                                        switch (
+                                                                            snapshotRating.data) {
+                                                                          case 0:
+                                                                            ratePost(widget.postData['postId'], 'like').then((_) =>
+                                                                                setState(() {}));
+                                                                            break;
+                                                                          case 1:
+                                                                            deletePostRating(widget.postData['postId']).then((_) =>
+                                                                                setState(() {}));
+                                                                            break;
+                                                                          case 2:
+                                                                            updatePostRating(widget.postData['postId'], 'like').then((_) =>
+                                                                                setState(() {}));
+                                                                            break;
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 8,
+                                                                    ),
+                                                                    //RATING
+                                                                    const Text(
+                                                                        "69"),
+                                                                    const SizedBox(
+                                                                      width: 8,
+                                                                    ),
+                                                                    // Text("dislike"),
+                                                                    //DISLIKE
+                                                                    IconButton(
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .thumb_down,
+                                                                        size:
+                                                                            16,
+                                                                        color: snapshotRating.data ==
+                                                                                2
+                                                                            ? Theme.of(context).colorScheme.brandColor
+                                                                            : Colors.white60,
+                                                                      ),
+                                                                      onPressed:
+                                                                          () {
+                                                                        switch (
+                                                                            snapshotRating.data) {
+                                                                          case 0:
+                                                                            ratePost(widget.postData['postId'], 'dislike').then((_) =>
+                                                                                setState(() {}));
+                                                                            break;
+                                                                          case 1:
+                                                                            updatePostRating(widget.postData['postId'], 'dislike').then((_) =>
+                                                                                setState(() {}));
+                                                                            break;
+                                                                          case 2:
+                                                                            deletePostRating(widget.postData['postId']).then((_) =>
+                                                                                setState(() {}));
+                                                                            break;
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 40,
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              })
+                                                          : Row(
+                                                              children: const [
+                                                                Text(
+                                                                    "login to rate and comment post",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white38)),
+                                                                SizedBox(
+                                                                  width: 40,
+                                                                )
+                                                              ],
+                                                            ),
 
-                                                        return BorderSide(
-                                                            color: _borderColor,
-                                                            width: 1);
-                                                      }),
-                                                      shape: MaterialStateProperty.all(
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0))),
-                                                    ),
-                                                    onPressed: () async {
-                                                      //send Comment
-                                                      await sendComment(
-                                                          widget.postData[
-                                                              'postId'],
-                                                          _postCommentTextController
-                                                              .text);
-                                                      setState(() {
-                                                        _postCommentTextController
-                                                            .clear();
-                                                      });
+                                                      //Post Metrics
+                                                      const Icon(
+                                                        Icons.visibility,
+                                                        size: 24,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(widget
+                                                          .postData['postViews']
+                                                          .toString()),
+                                                      const SizedBox(
+                                                        width: 12,
+                                                      ),
+                                                      const Icon(
+                                                        Icons.trending_up,
+                                                        size: 24,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(widget.postData[
+                                                              'postRatingScore']
+                                                          .toString()),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 30,
+                                              ),
+                                              //Video Data and Comments Normal
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  //Post SubchannelName
+                                                  InkWell(
+                                                    excludeFromSemantics: true,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () {
+                                                      Beamer.of(context).beamToNamed(
+                                                          'subchannel/' +
+                                                              widget.postData[
+                                                                  'postSubchannelName']);
+                                                      print("go to subchnanel");
                                                     },
-                                                    child: const Padding(
-                                                      padding:
-                                                          EdgeInsets.all(5.0),
-                                                      child: Text(
-                                                        "send",
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Sogeo UI',
-                                                            fontSize: 14,
-                                                            color:
-                                                                Colors.white70),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              14.0),
+                                                      child: Image.network(
+                                                        baseURL +
+                                                            widget.postData[
+                                                                        'postSubchannel']
+                                                                    [
+                                                                    'subchannelPreview']
+                                                                [
+                                                                'subchannelSubchannelPicturePath'],
+                                                        fit: BoxFit.cover,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: 40,
+                                                        height: 40,
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 40,
-                                                ),
-                                              ],
-                                            );
-                                          } else {
-                                            return const SizedBox();
-                                          }
-                                        }),
-                                    //Show Post Comments
-                                    FutureBuilder(
-                                        future: fetchPostComments(
-                                            widget.postData['postId']),
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<List<int>> snapshot) {
-                                          if (snapshot.hasData) {
-                                            if (snapshot.data!.isNotEmpty) {
-                                              return ListView.builder(
-                                                  shrinkWrap: true,
-                                                  itemCount:
-                                                      snapshot.data!.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return Column(
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text("c/" +
+                                                      widget.postData[
+                                                          'postSubchannelName']),
+                                                  const SizedBox(
+                                                    width: 20,
+                                                  ),
+
+                                                  //Post Username
+                                                  InkWell(
+                                                    excludeFromSemantics: true,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () {
+                                                      Beamer.of(context)
+                                                          .beamToNamed('profile/' +
+                                                              widget.postData[
+                                                                  'username']);
+                                                      print("go to profile");
+                                                    },
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              14.0),
+                                                      child: Image.network(
+                                                        baseURL +
+                                                            widget.postData[
+                                                                        'user'][
+                                                                    'userProfile']
+                                                                [
+                                                                'profilePicturePath'],
+                                                        fit: BoxFit.cover,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    widget.postData['username'],
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 20,
+                                              ),
+                                              //Post Published Date Time
+                                              Text(widget.postData[
+                                                      'postPublishedDateTime'] ??
+                                                  "published 15. October 2021"),
+                                              const SizedBox(
+                                                height: 50,
+                                              ),
+                                              //Post Description
+                                              Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    ConstrainedBox(
+                                                        constraints: isExpanded
+                                                            ? const BoxConstraints()
+                                                            : const BoxConstraints(
+                                                                maxHeight:
+                                                                    50.0),
+                                                        child: Text(
+                                                          widget.postData[
+                                                              'postDescription'],
+                                                          softWrap: true,
+                                                          overflow:
+                                                              TextOverflow.fade,
+                                                        )),
+                                                    isExpanded
+                                                        ? TextButton(
+                                                            child: const Text(
+                                                                'show less'),
+                                                            onPressed: () =>
+                                                                setState(() =>
+                                                                    isExpanded =
+                                                                        false))
+                                                        : TextButton(
+                                                            child: const Text(
+                                                                'show more'),
+                                                            onPressed: () =>
+                                                                setState(() =>
+                                                                    isExpanded =
+                                                                        true))
+                                                  ]),
+
+                                              const SizedBox(
+                                                height: 40,
+                                              ),
+                                              //Comments
+                                              const Text("Comments"),
+                                              const SizedBox(
+                                                height: 40,
+                                              ),
+                                              //Write Comment only if User logged in
+                                              snapshot.data == 200
+                                                  ? Column(
                                                       children: [
-                                                        CommentModel(
-                                                            commentId: snapshot
-                                                                .data!
-                                                                .elementAt(
-                                                                    index)),
+                                                        TextFormField(
+                                                          buildCounter: (_,
+                                                                  {required currentLength,
+                                                                  maxLength,
+                                                                  required isFocused}) =>
+                                                              Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 16.0),
+                                                            child: Container(
+                                                                alignment: Alignment
+                                                                    .centerLeft,
+                                                                child: Text(currentLength
+                                                                        .toString() +
+                                                                    "/" +
+                                                                    maxLength
+                                                                        .toString())),
+                                                          ),
+                                                          controller:
+                                                              _postCommentTextController,
+                                                          cursorColor:
+                                                              Colors.white,
+                                                          autocorrect: false,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .multiline,
+                                                          maxLength: 256,
+                                                          minLines: 1,
+                                                          maxLines: 20,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            labelText:
+                                                                "Write a comment",
+                                                            labelStyle:
+                                                                const TextStyle(
+                                                                    fontFamily:
+                                                                        "Segoe UI",
+                                                                    color: Colors
+                                                                        .white54),
+                                                            enabledBorder:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                      color: Colors
+                                                                          .white70),
+                                                            ),
+                                                            focusedBorder:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                      color: Colors
+                                                                          .pink),
+                                                            ),
+                                                          ),
+                                                          validator: (val) {
+                                                            if (val!.isEmpty) {
+                                                              return "Field cannot be empty";
+                                                            } else {
+                                                              return null;
+                                                            }
+                                                          },
+                                                          style: const TextStyle(
+                                                              fontFamily:
+                                                                  "Segoe UI",
+                                                              color: Colors
+                                                                  .white70),
+                                                        ),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .topRight,
+                                                          child: OutlinedButton(
+                                                            style: ButtonStyle(
+                                                              side: MaterialStateProperty
+                                                                  .resolveWith(
+                                                                      (states) {
+                                                                Color
+                                                                    _borderColor;
+                                                                if (states.contains(
+                                                                    MaterialState
+                                                                        .pressed)) {
+                                                                  _borderColor =
+                                                                      Colors
+                                                                          .white;
+                                                                } else if (states
+                                                                    .contains(
+                                                                        MaterialState
+                                                                            .hovered)) {
+                                                                  _borderColor = Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .brandColor;
+                                                                } else {
+                                                                  _borderColor =
+                                                                      Colors
+                                                                          .grey;
+                                                                }
+
+                                                                return BorderSide(
+                                                                    color:
+                                                                        _borderColor,
+                                                                    width: 1);
+                                                              }),
+                                                              shape: MaterialStateProperty.all(
+                                                                  RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20.0))),
+                                                            ),
+                                                            onPressed:
+                                                                () async {
+                                                              //send Comment
+                                                              await sendComment(
+                                                                  widget.postData[
+                                                                      'postId'],
+                                                                  _postCommentTextController
+                                                                      .text);
+                                                              setState(() {
+                                                                _postCommentTextController
+                                                                    .clear();
+                                                              });
+                                                            },
+                                                            child:
+                                                                const Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(5.0),
+                                                              child: Text(
+                                                                "send",
+                                                                style: TextStyle(
+                                                                    fontFamily:
+                                                                        'Sogeo UI',
+                                                                    fontSize:
+                                                                        14,
+                                                                    color: Colors
+                                                                        .white70),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                         const SizedBox(
-                                                          height: 15,
-                                                        )
+                                                          height: 40,
+                                                        ),
                                                       ],
-                                                    );
-                                                  });
-                                            } else {
-                                              return const Text(
-                                                  "no comments for video");
-                                            }
-                                          } else {
-                                            return const CircularProgressIndicator();
-                                          }
+                                                    )
+                                                  : const SizedBox(),
+                                              //Show Post Comments
+                                              FutureBuilder(
+                                                  future: fetchPostComments(
+                                                      widget
+                                                          .postData['postId']),
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot<List<int>>
+                                                          snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      if (snapshot
+                                                          .data!.isNotEmpty) {
+                                                        return ListView.builder(
+                                                            shrinkWrap: true,
+                                                            itemCount: snapshot
+                                                                .data!.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return Column(
+                                                                children: [
+                                                                  CommentModel(
+                                                                      commentId: snapshot
+                                                                          .data!
+                                                                          .elementAt(
+                                                                              index)),
+                                                                  const SizedBox(
+                                                                    height: 15,
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      } else {
+                                                        return const Text(
+                                                            "no comments for video");
+                                                      }
+                                                    } else {
+                                                      return const CircularProgressIndicator();
+                                                    }
+                                                  }),
+                                            ],
+                                          );
                                         }),
+
                                     const SizedBox(
                                       height: 140,
                                     ),

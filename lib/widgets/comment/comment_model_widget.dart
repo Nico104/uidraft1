@@ -91,7 +91,10 @@ class _CommentModelState extends State<CommentModel> {
                                   onPressed: () => setState(() {
                                     _showSubComments = !_showSubComments;
                                   }),
-                                  label: const Text("Replies"),
+                                  label: Text(subCommentIds.length == 1
+                                      ? "1 Reply"
+                                      : subCommentIds.length.toString() +
+                                          " Replies"),
                                   icon: Icon(_showSubComments
                                       ? Icons.arrow_drop_up
                                       : Icons.arrow_drop_down),
@@ -240,40 +243,10 @@ class _CommentModelState extends State<CommentModel> {
                                               ],
                                             );
                                           })
-                                      : Row(
-                                          children: const [
-                                            //LIKE
-                                            IconButton(
-                                              icon: Icon(
-                                                Icons.thumb_up,
-                                                size: 16,
-                                                color: Colors.white60,
-                                              ),
-                                              onPressed: null,
-                                            ),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            //RATING
-                                            Text("69"),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            // Text("dislike"),
-                                            //DISLIKE
-                                            IconButton(
-                                              icon: Icon(
-                                                Icons.thumb_down,
-                                                size: 16,
-                                                color: Colors.white60,
-                                              ),
-                                              onPressed: null,
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                          ],
-                                        ),
+                                      : const Text(
+                                          "login to rate and reply to comments",
+                                          style:
+                                              TextStyle(color: Colors.white12)),
                                 ],
                               );
                             } else {
