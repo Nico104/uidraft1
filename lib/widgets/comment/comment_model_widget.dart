@@ -141,15 +141,44 @@ class _CommentModelState extends State<CommentModel> {
                                                             : Colors.white60,
                                                   ),
                                                   onPressed: () {
-                                                    if (snapshotRating.data !=
-                                                        1) {
-                                                      likeComment(
-                                                              widget.commentId)
-                                                          .then((_) =>
-                                                              setState(() {}));
-                                                    } else {
-                                                      print("remove like");
+                                                    switch (
+                                                        snapshotRating.data) {
+                                                      case 0:
+                                                        rateComment(
+                                                                widget
+                                                                    .commentId,
+                                                                'like')
+                                                            .then((_) =>
+                                                                setState(
+                                                                    () {}));
+                                                        break;
+                                                      case 1:
+                                                        deleteCommentRating(
+                                                                widget
+                                                                    .commentId)
+                                                            .then((_) =>
+                                                                setState(
+                                                                    () {}));
+                                                        break;
+                                                      case 2:
+                                                        updateCommentRating(
+                                                                widget
+                                                                    .commentId,
+                                                                'like')
+                                                            .then((_) =>
+                                                                setState(
+                                                                    () {}));
+                                                        break;
                                                     }
+                                                    // if (snapshotRating.data !=
+                                                    //     1) {
+                                                    //   likeComment(
+                                                    //           widget.commentId)
+                                                    //       .then((_) =>
+                                                    //           setState(() {}));
+                                                    // } else {
+                                                    //   print("remove like");
+                                                    // }
                                                   },
                                                 ),
                                                 const SizedBox(
@@ -174,14 +203,34 @@ class _CommentModelState extends State<CommentModel> {
                                                             : Colors.white60,
                                                   ),
                                                   onPressed: () {
-                                                    if (snapshotRating.data !=
-                                                        2) {
-                                                      dislikeComment(
-                                                              widget.commentId)
-                                                          .then((_) =>
-                                                              setState(() {}));
-                                                    } else {
-                                                      print("remove dislike");
+                                                    switch (
+                                                        snapshotRating.data) {
+                                                      case 0:
+                                                        rateComment(
+                                                                widget
+                                                                    .commentId,
+                                                                'dislike')
+                                                            .then((_) =>
+                                                                setState(
+                                                                    () {}));
+                                                        break;
+                                                      case 1:
+                                                        updateCommentRating(
+                                                                widget
+                                                                    .commentId,
+                                                                'dislike')
+                                                            .then((_) =>
+                                                                setState(
+                                                                    () {}));
+                                                        break;
+                                                      case 2:
+                                                        deleteCommentRating(
+                                                                widget
+                                                                    .commentId)
+                                                            .then((_) =>
+                                                                setState(
+                                                                    () {}));
+                                                        break;
                                                     }
                                                   },
                                                 ),

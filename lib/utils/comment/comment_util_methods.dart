@@ -78,8 +78,8 @@ Future<List<int>> getSubCommentIds(int commentId) async {
   }
 }
 
-//Likes a Comment
-Future<void> likeComment(int commentId) async {
+//rates a Comment (like, dislike, superlike, superdislike)
+Future<void> rateComment(int commentId, String rating) async {
   try {
     String? token = await getToken();
     final response =
@@ -91,7 +91,7 @@ Future<void> likeComment(int commentId) async {
             },
             body: jsonEncode(<String, String>{
               'commentId': '$commentId',
-              'ratingType': 'like',
+              'ratingType': rating,
             }));
     print(response.body);
     print(response.statusCode);
@@ -101,12 +101,12 @@ Future<void> likeComment(int commentId) async {
   }
 }
 
-//Dislikes a Comment
-Future<void> dislikeComment(int commentId) async {
+//Changes a Comment Rating
+Future<void> updateCommentRating(int commentId, String rating) async {
   try {
     String? token = await getToken();
     final response =
-        await http.post(Uri.parse(baseURL + 'comment/createCommentRating'),
+        await http.patch(Uri.parse(baseURL + 'comment/updateCommentRating'),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
@@ -114,8 +114,27 @@ Future<void> dislikeComment(int commentId) async {
             },
             body: jsonEncode(<String, String>{
               'commentId': '$commentId',
-              'ratingType': 'dislike',
+              'ratingType': rating,
             }));
+    print(response.body);
+    print(response.statusCode);
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to like comment');
+  }
+}
+
+//Deletes a Comment Rating
+Future<void> deleteCommentRating(int commentId) async {
+  try {
+    String? token = await getToken();
+    final response = await http.delete(
+        Uri.parse(baseURL + 'comment/deleteCommentRating/$commentId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
     print(response.body);
     print(response.statusCode);
   } catch (e) {
