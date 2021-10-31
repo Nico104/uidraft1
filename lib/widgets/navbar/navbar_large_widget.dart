@@ -5,6 +5,8 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:uidraft1/widgets/navbar/navbar_menu_large_widget.dart';
+
 // class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLarge extends StatefulWidget {
   const NavBarLarge({Key? key}) : super(key: key);
@@ -17,7 +19,6 @@ class _NavBarLargeState extends State<NavBarLarge> {
   bool _showMenu = false;
 
   bool _isLeftHand = false;
-  // bool _isLeftHand = true;
 
   String baseURL = 'http://localhost:3000/';
 
@@ -380,120 +381,20 @@ class _NavBarLargeState extends State<NavBarLarge> {
         ),
         if (_showMenu)
           Align(
-            alignment: Alignment.topRight,
+            alignment: _isLeftHand ? Alignment.topLeft : Alignment.topRight,
             child: Padding(
-              padding: const EdgeInsets.only(right: 25),
-              child: Container(
-                // height: 300,
-                width: 200,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(14)),
-                  color: Theme.of(context).colorScheme.searchBarColor,
-                ),
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (username.isNotEmpty) {
-                          Beamer.of(context).beamToNamed('/profile/$username');
-                        } else {
-                          Beamer.of(context).beamToNamed('/login');
-                        }
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("My Profile")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Theme.of(context).colorScheme.navBarIconColor,
-                      indent: 9,
-                      endIndent: 9,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        if (username.isNotEmpty) {
-                          Beamer.of(context).beamToNamed('/uploadvideo');
-                        } else {
-                          Beamer.of(context).beamToNamed('/login');
-                        }
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("Upload Video")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Theme.of(context).colorScheme.navBarIconColor,
-                      indent: 9,
-                      endIndent: 9,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        if (username.isNotEmpty) {
-                          Beamer.of(context).beamToNamed('/createsubchannel');
-                        } else {
-                          Beamer.of(context).beamToNamed('/login');
-                        }
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("Create Subchannel")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Theme.of(context).colorScheme.navBarIconColor,
-                      indent: 9,
-                      endIndent: 9,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("Logout")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              padding: _isLeftHand
+                  ? const EdgeInsets.only(left: 25)
+                  : const EdgeInsets.only(right: 25),
+              child: NavBarMenu(username: username),
             ),
           )
       ],
     );
   }
 }
+
+
 
 
 

@@ -5,6 +5,8 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:uidraft1/widgets/navbar/navbar_menu_large_widget.dart';
+
 // class NavBarLargeProfile extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLargeProfile extends StatefulWidget {
   const NavBarLargeProfile({Key? key}) : super(key: key);
@@ -15,7 +17,11 @@ class NavBarLargeProfile extends StatefulWidget {
 class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
   bool _showMenu = false;
 
+  bool _isLeftHand = false;
+
   String baseURL = 'http://localhost:3000/';
+
+  late String username;
 
   //Get Profile Data by Username
   Future<Map<String, dynamic>> fetchMyProfileData() async {
@@ -34,6 +40,7 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);
       if (map.isNotEmpty) {
+        username = map['username'];
         return map;
       } else {
         throw Exception('Failed to load post');
@@ -58,7 +65,9 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
                 alignment: Alignment.center,
                 children: [
                   Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: _isLeftHand
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
                     //Logo
                     child: InkWell(
                       focusColor: Colors.transparent,
@@ -156,7 +165,9 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
                   ),
                   //Icons and PB
                   Align(
-                      alignment: Alignment.centerRight,
+                      alignment: _isLeftHand
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: FutureBuilder(
@@ -171,11 +182,32 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
                                         AsyncSnapshot snapshot) {
                                       if (snapshot.hasData) {
                                         return Row(
+                                          textDirection: _isLeftHand
+                                              ? TextDirection.rtl
+                                              : TextDirection.ltr,
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
+                                            //LeftHand Switch
+                                            IconButton(
+                                              icon: Icon(
+                                                _isLeftHand
+                                                    ? Icons.switch_left
+                                                    : Icons.switch_right,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .navBarIconColor,
+                                                size: 24,
+                                              ),
+                                              onPressed: () => setState(() {
+                                                _isLeftHand = !_isLeftHand;
+                                              }),
+                                            ),
+                                            const SizedBox(
+                                              width: 18,
+                                            ),
                                             //Notifications
                                             Icon(
                                               Icons.notifications_none_outlined,
@@ -232,9 +264,30 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
                               } else {
                                 //If User Is NOT logged in
                                 return Row(
+                                  textDirection: _isLeftHand
+                                      ? TextDirection.rtl
+                                      : TextDirection.ltr,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    //LeftHand Switch
+                                    IconButton(
+                                      icon: Icon(
+                                        _isLeftHand
+                                            ? Icons.switch_left
+                                            : Icons.switch_right,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .navBarIconColor,
+                                        size: 24,
+                                      ),
+                                      onPressed: () => setState(() {
+                                        _isLeftHand = !_isLeftHand;
+                                      }),
+                                    ),
+                                    const SizedBox(
+                                      width: 18,
+                                    ),
                                     //Dark Light Mode Switch
                                     Icon(
                                       Icons.dark_mode_outlined,
@@ -315,103 +368,12 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
         ),
         if (_showMenu)
           Align(
-            alignment: Alignment.topRight,
+            alignment: _isLeftHand ? Alignment.topLeft : Alignment.topRight,
             child: Padding(
-              padding: const EdgeInsets.only(right: 25),
-              child: Container(
-                // height: 300,
-                width: 200,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(14)),
-                  color: Theme.of(context).colorScheme.searchBarColor,
-                ),
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Beamer.of(context).beamToNamed('/profile');
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("My Profile")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Theme.of(context).colorScheme.navBarIconColor,
-                      indent: 9,
-                      endIndent: 9,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Beamer.of(context).beamToNamed('/uploadvideo');
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("Upload Video")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Theme.of(context).colorScheme.navBarIconColor,
-                      indent: 9,
-                      endIndent: 9,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Beamer.of(context).beamToNamed('/createsubchannel');
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("Create Subchannel")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Theme.of(context).colorScheme.navBarIconColor,
-                      indent: 9,
-                      endIndent: 9,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(child: Text("Logout")),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                padding: _isLeftHand
+                    ? const EdgeInsets.only(left: 25)
+                    : const EdgeInsets.only(right: 25),
+                child: NavBarMenu(username: username)),
           )
       ],
     );

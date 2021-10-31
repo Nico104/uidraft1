@@ -136,6 +136,7 @@ class _SubchannelState extends State<Subchannel> {
                 const SizedBox(
                   height: 180,
                 ),
+                //SubchannelPicture
                 ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(14)),
                   child: Image.network(

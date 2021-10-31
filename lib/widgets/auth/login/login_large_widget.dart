@@ -279,7 +279,8 @@ class _LoginFormState extends State<LoginForm> {
                           errorText = null;
                         });
                         print("success");
-                        Beamer.of(context).beamToNamed('/feed');
+                        // Beamer.of(context).beamToNamed('/feed');
+                        Beamer.of(context).beamBack();
                       } else {
                         setState(() {
                           errorText = "Username or Password wrong";

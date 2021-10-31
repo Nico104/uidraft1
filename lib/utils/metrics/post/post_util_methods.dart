@@ -114,3 +114,28 @@ Future<int> getUserPostRating(int postId) async {
     throw Exception('Failed to load posts3');
   }
 }
+
+//Get Post Rating Data by Id
+Future<int> getPostRatingData(int id, String ratingType) async {
+  final http.Response response;
+
+  if (ratingType == "like") {
+    response =
+        await http.get(Uri.parse(baseURL + 'post/getPostRatingLikes/$id'));
+  } else {
+    response =
+        await http.get(Uri.parse(baseURL + 'post/getPostRatingDislikes/$id'));
+  }
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> map = json.decode(response.body);
+    if (map.isNotEmpty) {
+      return map['_count']['postRatingUsername'];
+    } else {
+      return 0;
+    }
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load postrating');
+  }
+}

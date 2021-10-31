@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:uidraft1/screens/studio/studioPosts/studio_posts_screen.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
-import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
-import 'package:uidraft1/widgets/videoplayer/large/video_player_large_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// import 'dart:html' as html;
+
+import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
+import 'package:uidraft1/widgets/navbar/studio/studio_large_navbar.dart';
 
 class StudioScreen extends StatefulWidget {
   const StudioScreen({Key? key}) : super(key: key);
@@ -64,92 +65,48 @@ class _StudioState extends State<StudioScreen> {
               //SmallScreenDrawer
               null
               : null,
-      body: SizedBox(
-        child: Text("body"),
-      ),
+      body: const StudioPostsScreen(),
     );
-
-    // return const Material(
-    //     // child: FutureBuilder(
-    //     //     future: fetchPostData(widget.postId),
-    //     //     builder: (BuildContext context,
-    //     //         AsyncSnapshot<Map<String, dynamic>> snapshot) {
-    //     //       if (snapshot.hasData) {
-    // return ResponsiveWidget(
-    //     //           smallScreen: const Text("smallScreen"),
-    //     //           mediumScreen: const Text("mediumScreen"),
-    //     //           largeScreen: Material(
-    //     //               // child: Stack(
-    //     //               //   alignment: Alignment.topCenter,
-    //     //               //   // children: [ChapterStudio(), const NavBarLargeProfile()],
-    //     //               //   children: const [StudioHome(), NavBarLargeProfile()],
-    //     //               // ),
-    //     //               // child: StudioHome(
-    //     //               //   postData: snapshot.data!,
-    //     //               //   firtTimeExternAccess: widget.firtTimeExternAccess,
-    //     //               // ),
-    //     //               ),
-    //     //           veryLargeScreen: const Text("veryLargeScreen"),
-    //     //         );
-    //     //       } else {
-    //     //         return const Center(child: CircularProgressIndicator());
-    //     //       }
-    //     //     }),
-    //     child: ResponsiveWidget(
-    //   smallScreen: const Text("smallScreen"),
-    //   mediumScreen: const Text("mediumScreen"),
-    //   largeScreen: Scaffold(
-    //       // child: Stack(
-    //       //   alignment: Alignment.topCenter,
-    //       //   // children: [ChapterStudio(), const NavBarLargeProfile()],
-    //       //   children: const [StudioHome(), NavBarLargeProfile()],
-    //       // ),
-    //       // child: StudioHome(
-    //       //   postData: snapshot.data!,
-    //       //   firtTimeExternAccess: widget.firtTimeExternAccess,
-    //       // ),
-    //       // body: ,
-    //       ),
-    //   veryLargeScreen: const Text("veryLargeScreen"),
-    // ));
   }
 
   //ExtractTest
   PreferredSize getLargeNavBar() {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(120),
-      child: Container(
-        child: Row(
-          textDirection: _isLeftHand ? TextDirection.rtl : TextDirection.ltr,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "LOGO",
-              style: TextStyle(
-                  fontFamily: 'Segoe UI Black',
-                  fontSize: 28,
-                  color: Theme.of(context).colorScheme.brandColor),
-            ),
-            Row(
-              children: [
-                //LeftHand Switch
-                IconButton(
-                  icon: Icon(
-                    _isLeftHand ? Icons.switch_left : Icons.switch_right,
-                    color: Theme.of(context).colorScheme.navBarIconColor,
-                    size: 24,
-                  ),
-                  onPressed: () => setState(() {
-                    _isLeftHand = !_isLeftHand;
-                  }),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+    return const PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        // child: Container(
+        //   child: Row(
+        //     textDirection: _isLeftHand ? TextDirection.rtl : TextDirection.ltr,
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     children: [
+        //       Text(
+        //         "LOGO",
+        //         style: TextStyle(
+        //             fontFamily: 'Segoe UI Black',
+        //             fontSize: 28,
+        //             color: Theme.of(context).colorScheme.brandColor),
+        //       ),
+        //       Row(
+        //         children: [
+        //           //LeftHand Switch
+        //           IconButton(
+        //             icon: Icon(
+        //               _isLeftHand ? Icons.switch_left : Icons.switch_right,
+        //               color: Theme.of(context).colorScheme.navBarIconColor,
+        //               size: 24,
+        //             ),
+        //             onPressed: () => setState(() {
+        //               _isLeftHand = !_isLeftHand;
+        //             }),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        // child: NavBarLargeProfile());
+        child:
+            Align(alignment: Alignment.topCenter, child: NavBarLargeStudio()));
   }
 }
 
