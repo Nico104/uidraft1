@@ -1,67 +1,51 @@
+import 'dart:convert';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:uidraft1/utils/auth/authentication_global.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uidraft1/screens/auth/auth_screen.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginLargeScreen extends StatelessWidget {
-  const LoginLargeScreen({Key? key}) : super(key: key);
+class SignUpV2LargeScreen extends StatelessWidget {
+  const SignUpV2LargeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
-            child: Text(
-              "LOGO",
-              style: TextStyle(
-                  fontFamily: 'Segoe UI Black',
-                  fontSize: 28,
-                  color: Theme.of(context).colorScheme.brandColor),
-            ),
-          ),
-        ),
-        const Center(
-          child: SizedBox(height: 440, width: 400, child: LoginForm()),
-        )
-      ],
+    return const Center(
+      child: SizedBox(height: 470, width: 400, child: SignUpV2Form()),
     );
   }
 }
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+class SignUpV2Form extends StatefulWidget {
+  const SignUpV2Form({Key? key}) : super(key: key);
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _SignUpV2FormState createState() => _SignUpV2FormState();
 }
 
-//LoginForm
-class _LoginFormState extends State<LoginForm> {
+//SignUPForm
+class _SignUpV2FormState extends State<SignUpV2Form> {
   final _formKey = GlobalKey<FormState>();
-  bool _obscureTextPasswor1 = true;
 
   final _usernameTextController = TextEditingController();
-  final _userpasswordTextController = TextEditingController();
+  final _useremailTextController = TextEditingController();
 
-  String buttonText = "Login";
+  String titleText =
+      "It is a long established fact that a reader will be distracted by the readable content of a page when Looking";
 
-  String? errorText;
+  double _formProgress = 0;
 
   @override
   void dispose() {
     _usernameTextController.dispose();
-    _userpasswordTextController.dispose();
+    _useremailTextController.dispose();
     super.dispose();
   }
 
-  //LoginMethod
+//LoginMethod
   Future<bool> _login(String username, String password) async {
     var url = Uri.parse('http://localhost:3000/login');
     var response = await http
@@ -84,6 +68,42 @@ class _LoginFormState extends State<LoginForm> {
     //Navigator.of(context).pushNamed('/welcome');
   }
 
+  Future<void> _signUp(String username, String useremail) async {
+    var url = Uri.parse('http://localhost:3000/user/signupv2');
+    var response = await http.post(url, body: {
+      "username": username,
+      "useremail": useremail,
+      "userLanguage": "en"
+    });
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      print("yes");
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AuthScreen(
+            isLoginInitial: true,
+            firstTimeLogin: true,
+          ),
+        ),
+      );
+    } else {
+      print("nope");
+      //Navigator.of(context).pushNamed('/login');
+      // setState(() {
+      //   _usernameTextController.text = "";
+      //   _useremailTextController.text = "";
+      //   _userpasswordTextController.text = "";
+      //   _userpasswordControlTextController.text = "";
+      //   titleText = "Something went wrong, please retry";
+      // });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -97,15 +117,16 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              //LOGO
+              //Thank you for signing up text
               SizedBox(
                 width: 270,
                 child: Text(
-                  "LOGO",
+                  titleText,
                   style: TextStyle(
-                      fontFamily: 'Segoe UI Black',
-                      fontSize: 28,
-                      color: Theme.of(context).colorScheme.brandColor),
+                    fontFamily: 'Segoe UI',
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.textInputCursorColor,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -162,12 +183,11 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     errorStyle:
                         const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    errorText: errorText,
                   ),
                   validator: (value) {
-                    //check if username exists
+                    //Check if username is free
                     if (value == null || value.isEmpty) {
-                      return 'You may enter your username, sir';
+                      return 'You may choose a username, sir';
                     }
                     return null;
                   },
@@ -176,13 +196,12 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(
                 height: 40,
               ),
-              //Password
+              //Useremail
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: _userpasswordTextController,
-                  obscureText: _obscureTextPasswor1,
-                  // autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _useremailTextController,
+                  keyboardType: TextInputType.emailAddress,
                   style: const TextStyle(
                       fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
                   cursorColor:
@@ -202,13 +221,13 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Password...',
+                    // hintText: 'Email...',
                     // hintStyle: TextStyle(
                     //     fontFamily: 'Segoe UI',
                     //     fontSize: 15,
                     //     color:
                     //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Password...',
+                    labelText: 'Email...',
                     labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -228,24 +247,19 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     errorStyle:
                         const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    errorText: errorText,
-
-                    //Visibility Icon
-                    suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      onPressed: () => setState(() {
-                        _obscureTextPasswor1 = !_obscureTextPasswor1;
-                      }),
-                      icon: _obscureTextPasswor1
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined),
-                    ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'please enter a password';
+                    //check if email is already used
+                    Pattern pattern =
+                        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                        r"{0,253}[a-zA-Z0-9])?)*$";
+                    RegExp regex = RegExp(pattern.toString());
+                    if (!regex.hasMatch(value!)) {
+                      return 'Enter a valid email address, sir';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
                 ),
               ),
@@ -264,7 +278,7 @@ class _LoginFormState extends State<LoginForm> {
                       backgroundColor:
                           Theme.of(context).colorScheme.brandColor),
                   child: Text(
-                    'Login',
+                    'Sign Up',
                     style: TextStyle(
                         fontFamily: 'Segoe UI Black',
                         fontSize: 18,
@@ -274,22 +288,25 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () async {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      if (await _login(_usernameTextController.text,
-                          _userpasswordTextController.text)) {
-                        setState(() {
-                          errorText = null;
-                        });
-                        print("success");
-                        if (await isFirstLogin()) {
-                          Beamer.of(context).beamToNamed('/changepassword');
-                        } else {
-                          Beamer.of(context).beamBack();
-                        }
-                      } else {
-                        setState(() {
-                          errorText = "Username or Password wrong";
-                        });
-                      }
+                      // If the form is valid, display a snackbar. In the real world,
+                      // you'd often call a server or save the information in a database.
+
+                      await _signUp(_usernameTextController.text,
+                          _useremailTextController.text);
+
+                      // if (await _login(_usernameTextController.text,
+                      //     _userpasswordTextController.text)) {
+                      //   print("logged in");
+                      //   Beamer.of(context).beamToNamed('/feed');
+                      // } else {
+                      //   setState(() {
+                      //     print("Username or Password wrong");
+                      //   });
+                      // }
+
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(content: Text('Processing Data')),
+                      // );
                     }
                   },
                 ),

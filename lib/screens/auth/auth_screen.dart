@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/utils/widgets/toggle/toggle_animated_button_widget.dart';
+import 'package:uidraft1/widgets/auth/login/initial_login_large_widget.dart';
 import 'package:uidraft1/widgets/auth/login/login_large_widget.dart';
 import 'package:uidraft1/widgets/auth/signup/sign_up_large_widget.dart';
+import 'package:uidraft1/widgets/auth/signup/sign_up_v2_large_widget.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key? key, required this.isLoginInitial}) : super(key: key);
+  const AuthScreen(
+      {Key? key, required this.isLoginInitial, required this.firstTimeLogin})
+      : super(key: key);
 
   final bool isLoginInitial;
+  final bool firstTimeLogin;
 
   @override
   _AuthState createState() => _AuthState();
@@ -35,7 +40,11 @@ class _AuthState extends State<AuthScreen> {
       largeScreen: Scaffold(
         body: Stack(
           children: [
-            isLogin ? const LoginLargeScreen() : const SignUpLargeScreen(),
+            isLogin
+                ? widget.firstTimeLogin
+                    ? const InitialLoginLargeScreen()
+                    : const LoginLargeScreen()
+                : const SignUpV2LargeScreen(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

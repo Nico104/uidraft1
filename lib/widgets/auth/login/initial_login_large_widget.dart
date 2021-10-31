@@ -7,8 +7,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginLargeScreen extends StatelessWidget {
-  const LoginLargeScreen({Key? key}) : super(key: key);
+class InitialLoginLargeScreen extends StatelessWidget {
+  const InitialLoginLargeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,27 +28,30 @@ class LoginLargeScreen extends StatelessWidget {
           ),
         ),
         const Center(
-          child: SizedBox(height: 440, width: 400, child: LoginForm()),
+          child: SizedBox(height: 620, width: 400, child: InitialLoginForm()),
         )
       ],
     );
   }
 }
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+class InitialLoginForm extends StatefulWidget {
+  const InitialLoginForm({Key? key}) : super(key: key);
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _InitialLoginFormState createState() => _InitialLoginFormState();
 }
 
-//LoginForm
-class _LoginFormState extends State<LoginForm> {
+//InitialLoginForm
+class _InitialLoginFormState extends State<InitialLoginForm> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureTextPasswor1 = true;
 
   final _usernameTextController = TextEditingController();
   final _userpasswordTextController = TextEditingController();
+
+  final _newUserpasswordTextController = TextEditingController();
+  final _newConfirmUserpasswordTextController = TextEditingController();
 
   String buttonText = "Login";
 
@@ -58,6 +61,8 @@ class _LoginFormState extends State<LoginForm> {
   void dispose() {
     _usernameTextController.dispose();
     _userpasswordTextController.dispose();
+    _newConfirmUserpasswordTextController.dispose();
+    _newUserpasswordTextController.dispose();
     super.dispose();
   }
 
@@ -249,6 +254,149 @@ class _LoginFormState extends State<LoginForm> {
                   },
                 ),
               ),
+
+              const SizedBox(
+                height: 40,
+              ),
+              //New Password
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: _newUserpasswordTextController,
+                  obscureText: _obscureTextPasswor1,
+                  style: const TextStyle(
+                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
+                  cursorColor:
+                      Theme.of(context).colorScheme.textInputCursorColor,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.brandColor,
+                          width: 0.5),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.brandColor,
+                          width: 2),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(context).canvasColor,
+                    labelText: 'Password...',
+                    labelStyle: TextStyle(
+                        fontFamily: 'Segoe UI',
+                        fontSize: 15,
+                        color:
+                            Theme.of(context).colorScheme.searchBarTextColor),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.only(
+                        bottom: 15, top: 15, left: 15, right: 10),
+                    //Error
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red, width: 1),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red, width: 3),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    errorStyle:
+                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
+                    // errorText: errorText,
+
+                    //Visibility Icon
+                    suffixIcon: IconButton(
+                      hoverColor: Colors.transparent,
+                      onPressed: () => setState(() {
+                        _obscureTextPasswor1 = !_obscureTextPasswor1;
+                      }),
+                      icon: _obscureTextPasswor1
+                          ? const Icon(Icons.visibility_outlined)
+                          : const Icon(Icons.visibility_off_outlined),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 6) {
+                      return 'Password has to be at least 6 characters, sir';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+
+              const SizedBox(
+                height: 40,
+              ),
+              //Confirm New Password
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: _newConfirmUserpasswordTextController,
+                  obscureText: _obscureTextPasswor1,
+                  style: const TextStyle(
+                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
+                  cursorColor:
+                      Theme.of(context).colorScheme.textInputCursorColor,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.brandColor,
+                          width: 0.5),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.brandColor,
+                          width: 2),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(context).canvasColor,
+                    labelText: 'Password...',
+                    labelStyle: TextStyle(
+                        fontFamily: 'Segoe UI',
+                        fontSize: 15,
+                        color:
+                            Theme.of(context).colorScheme.searchBarTextColor),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.only(
+                        bottom: 15, top: 15, left: 15, right: 10),
+                    //Error
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red, width: 1),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red, width: 3),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    errorStyle:
+                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
+                    // errorText: errorText,
+
+                    //Visibility Icon
+                    suffixIcon: IconButton(
+                      hoverColor: Colors.transparent,
+                      onPressed: () => setState(() {
+                        _obscureTextPasswor1 = !_obscureTextPasswor1;
+                      }),
+                      icon: _obscureTextPasswor1
+                          ? const Icon(Icons.visibility_outlined)
+                          : const Icon(Icons.visibility_off_outlined),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        value != _newUserpasswordTextController.text) {
+                      return 'Password does not match, sir';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+
               const SizedBox(
                 height: 60,
               ),
@@ -279,12 +427,17 @@ class _LoginFormState extends State<LoginForm> {
                         setState(() {
                           errorText = null;
                         });
-                        print("success");
-                        if (await isFirstLogin()) {
-                          Beamer.of(context).beamToNamed('/changepassword');
+                        print("login success");
+                        if (await changePassword(
+                                _newConfirmUserpasswordTextController.text) ==
+                            200) {
+                          print("password chnaged");
                         } else {
-                          Beamer.of(context).beamBack();
+                          print("problem while changing password");
                         }
+
+                        Beamer.of(context).beamToNamed('/feed');
+                        // Beamer.of(context).beamBack();
                       } else {
                         setState(() {
                           errorText = "Username or Password wrong";

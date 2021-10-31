@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:uidraft1/admin%20tools/create_tag.dart';
 import 'package:uidraft1/error/error_feed_widget.dart';
 import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/auth/auth_screen.dart';
+import 'package:uidraft1/screens/auth/change_password_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/screens/profile/create/create_profile_screen.dart';
 import 'package:uidraft1/screens/profile/profile_screen.dart';
@@ -12,6 +14,7 @@ import 'package:uidraft1/screens/subchannel/create/create_subchannel_screen.dart
 import 'package:uidraft1/screens/subchannel/subchannel_screen.dart';
 import 'package:uidraft1/screens/uploadVideo/upload_video_screen.dart';
 import 'package:uidraft1/screens/videoplayer/videoplayer_screen.dart';
+import 'package:uidraft1/widgets/auth/password/change_password_widget.dart';
 
 // OPTION A:
 final simpleLocationBuilder = SimpleLocationBuilder(
@@ -41,6 +44,7 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           // child: const SignUpScreen(),
           child: const AuthScreen(
             isLoginInitial: false,
+            firstTimeLogin: false,
           ),
         ),
 
@@ -50,7 +54,14 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           // child: const LoginScreen(),
           child: const AuthScreen(
             isLoginInitial: true,
+            firstTimeLogin: false,
           ),
+        ),
+
+    '/changepassword': (context, state) => BeamPage(
+          key: const ValueKey('update-password'),
+          title: 'Change Password',
+          child: const ChangePasswordScreen(),
         ),
 
     '/profile/:username': (context, state) {

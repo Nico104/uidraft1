@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,4 +46,48 @@ Future<String?> getMyUsername() async {
   }
 
   return response.body;
+}
+
+Future<int> changePassword(String password) async {
+  var url = Uri.parse('http://localhost:3000/user/updateUserPassword');
+  String? token = await getToken();
+
+  final response = await http.patch(url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{"userpassword": password}));
+
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
+  if (response.statusCode != 200) {
+    throw Error();
+  }
+
+  return response.statusCode;
+}
+
+Future<bool> isFirstLogin() async {
+  var url = Uri.parse('http://localhost:3000/user/getIsFirstLogin');
+  String? token = await getToken();
+
+  final response = await http.get(url, headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer $token',
+  });
+
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
+  if (response.statusCode != 200) {
+    throw Error();
+  } else {
+    print("Gen Password: " +
+        json.decode(response.body)['genPassword'].toString());
+    return json.decode(response.body)['genPassword'];
+  }
 }
