@@ -93,8 +93,10 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width <= 1500
-                            ? 700
+                        width: MediaQuery.of(context).size.width <= 1600
+                            ? MediaQuery.of(context).size.width <= 1350
+                                ? 500
+                                : 700
                             : 1000,
                         //height: 30,
                         child: TextFormField(

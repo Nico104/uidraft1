@@ -137,28 +137,39 @@ class _FeedGridState extends State<FeedGrid> {
                 child: SingleChildScrollView(
                   controller: _scrollController,
                   // physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: MediaQuery.of(context).size.width <= 1500
-                        ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
-                        : const EdgeInsets.fromLTRB(310, 120, 310, 0),
-                    child: GridView.count(
-                      // physics: const AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      childAspectRatio:
-                          MediaQuery.of(context).size.width >= 1700
-                              ? (1280 / 1174)
-                              : (1280 / 1240),
-                      // controller: _scrollController,
-                      scrollDirection: Axis.vertical,
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 40.0,
-                      children: dataList.map((value) {
-                        return VideoPreview(
-                          postId: value,
-                        );
-                      }).toList(),
-                    ),
+                  child: Column(
+                    children: [
+                      // const SizedBox(
+                      //   height: 100,
+                      // ),
+
+                      // const Divider(
+                      //   color: Colors.grey,
+                      // ),
+                      Padding(
+                        padding: MediaQuery.of(context).size.width <= 1500
+                            ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
+                            : const EdgeInsets.fromLTRB(310, 120, 310, 0),
+                        child: GridView.count(
+                          // physics: const AlwaysScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          childAspectRatio:
+                              MediaQuery.of(context).size.width >= 1700
+                                  ? (1280 / 1174)
+                                  : (1280 / 1240),
+                          // controller: _scrollController,
+                          scrollDirection: Axis.vertical,
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 40.0,
+                          children: dataList.map((value) {
+                            return VideoPreview(
+                              postId: value,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );

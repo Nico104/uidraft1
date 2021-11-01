@@ -39,7 +39,7 @@ class _CommentModelState extends State<CommentModel> {
                 }
               }
             }
-            print("Subcomments: " + subCommentIds.toString());
+            // print("Subcomments: " + subCommentIds.toString());
             //Comment
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,

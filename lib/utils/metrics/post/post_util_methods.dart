@@ -32,8 +32,8 @@ Future<void> ratePost(int postId, String rating) async {
               'postId': '$postId',
               'ratingType': rating,
             }));
-    print(response.body);
-    print(response.statusCode);
+    // print(response.body);
+    // print(response.statusCode);
   } catch (e) {
     print("Error: " + e.toString());
     throw Exception('Failed to like post');
@@ -169,5 +169,49 @@ Future<int> getPostRatingScore(int id) async {
   } else {
     // If that call was not successful, throw an error.
     throw Exception('Failed to load post rating');
+  }
+}
+
+//Create Whatchtime analytics
+Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
+  if (await isAuthenticated() == 200) {
+    try {
+      print("auth wt");
+      String? token = await getToken();
+      final response = await http.post(
+          Uri.parse(baseURL + 'post/createPostWhatchtimeAnalyticWithUser'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(<String, String>{
+            'postId': '$postId',
+            'postWhatchTime': '$postWT'
+          }));
+      // print(response.body);
+      // print(response.statusCode);
+    } catch (e) {
+      print("Error: " + e.toString());
+      throw Exception('Failed to create post whatchtime analytic AUTH');
+    }
+  } else {
+    try {
+      // print("no auth wt " + postId.toString());
+      final response = await http.post(
+          Uri.parse(baseURL + 'post/createPostWhatchtimeAnalytic'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'postId': '$postId',
+            'postWhatchTime': '$postWT'
+          }));
+      // print(response.body);
+      // print(response.statusCode);
+    } catch (e) {
+      print("Error: " + e.toString());
+      throw Exception('Failed to create post whatchtime analytic NOAUTH');
+    }
   }
 }

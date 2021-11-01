@@ -19,9 +19,16 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerState extends State<VideoPlayerScreen> {
   @override
   void initState() {
-    incrementPostViewsByOne(widget.postId);
+    // incrementPostViewsByOne(widget.postId);
+    // createWhatchtimeAnalyticPost(widget.postId);
     super.initState();
   }
+
+  // @override
+  // void dispose() {
+  //   print("dispose");
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

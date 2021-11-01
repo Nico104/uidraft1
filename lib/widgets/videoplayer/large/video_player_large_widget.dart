@@ -75,7 +75,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
       TextEditingController();
 
   //Tags
-  late List<String> taglist;
+  List<String> taglist = <String>[];
 
   @override
   void initState() {
@@ -142,6 +142,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
 
   @override
   void dispose() {
+    print("DISPOSE");
+    createWhatchtimeAnalyticPost(
+        widget.postData['postId'], _controller.value.position.inSeconds);
     // Ensure disposing of the VideoPlayerController to free up resources.
     _controller.dispose();
 
@@ -1072,6 +1075,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                 children: [
                                                   //Post Title
                                                   Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
                                                       //Title
                                                       Text(
@@ -1081,6 +1087,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                               fontSize: 20,
                                                               fontFamily:
                                                                   'Segoe UI')),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
                                                       //Tags
                                                       Wrap(
                                                         runSpacing: 5,
@@ -2206,7 +2215,7 @@ List<Widget> _getVideoTagWidgets(List<String> list) {
     return Chip(
       label: Text(
         capitalizeOnlyFirstLater(list.elementAt(index)),
-        style: const TextStyle(fontFamily: "Segoe UI", fontSize: 16),
+        style: const TextStyle(fontFamily: "Segoe UI", fontSize: 14),
       ),
     );
   });
