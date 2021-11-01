@@ -9,6 +9,7 @@ import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
+import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
@@ -73,8 +74,23 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   final TextEditingController _postCommentTextController =
       TextEditingController();
 
+  //Tags
+  late List<String> taglist;
+
   @override
   void initState() {
+    //Tagstart
+    List<dynamic> values = widget.postData['tags'];
+    if (values.isNotEmpty) {
+      for (int i = 0; i < values.length; i++) {
+        if (values[i] != null) {
+          Map<String, dynamic> map = values[i];
+          taglist.add(map['tagName']);
+        }
+      }
+    }
+    //tagend
+
     _firtTimeExternAccess = widget.firtTimeExternAccess;
 
     streamQualityURL[240] = baseURL + widget.postData['postVideoPath240'];
@@ -1055,108 +1071,130 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   //Post Title
-                                                  Text(
-                                                      widget.postData[
-                                                          'postTitle'],
-                                                      style: const TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily:
-                                                              'Segoe UI')),
+                                                  Row(
+                                                    children: [
+                                                      //Title
+                                                      Text(
+                                                          widget.postData[
+                                                              'postTitle'],
+                                                          style: const TextStyle(
+                                                              fontSize: 20,
+                                                              fontFamily:
+                                                                  'Segoe UI')),
+                                                      //Tags
+                                                      Wrap(
+                                                        runSpacing: 5,
+                                                        spacing: 5,
+                                                        children:
+                                                            _getVideoTagWidgets(
+                                                                taglist),
+                                                      ),
+                                                    ],
+                                                  ),
                                                   //Post Metrics and Ratings
                                                   Row(
                                                     children: [
                                                       //Post Ratings
                                                       snapshot.data == 200
                                                           ? FutureBuilder(
-                                                              future: getUserPostRating(
-                                                                  widget.postData[
-                                                                      'postId']),
+                                                              future:
+                                                                  Future.wait([
+                                                                getUserPostRating(
+                                                                    widget.postData[
+                                                                        'postId']),
+                                                                getPostRatingScore(
+                                                                    widget.postData[
+                                                                        'postId'])
+                                                              ]),
                                                               builder: (BuildContext
                                                                       context,
                                                                   AsyncSnapshot<
-                                                                          int>
+                                                                          List<
+                                                                              int>>
                                                                       snapshotRating) {
-                                                                return Row(
-                                                                  children: [
-                                                                    //LIKE
-                                                                    IconButton(
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .thumb_up,
-                                                                        size:
-                                                                            16,
-                                                                        color: snapshotRating.data ==
-                                                                                1
-                                                                            ? Theme.of(context).colorScheme.brandColor
-                                                                            : Colors.white60,
+                                                                if (snapshotRating
+                                                                    .hasData) {
+                                                                  return Row(
+                                                                    children: [
+                                                                      //LIKE
+                                                                      IconButton(
+                                                                        icon:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .thumb_up,
+                                                                          size:
+                                                                              16,
+                                                                          color: snapshotRating.data![0] == 1
+                                                                              ? Theme.of(context).colorScheme.brandColor
+                                                                              : Colors.white60,
+                                                                        ),
+                                                                        onPressed:
+                                                                            () {
+                                                                          switch (
+                                                                              snapshotRating.data![0]) {
+                                                                            case 0:
+                                                                              ratePost(widget.postData['postId'], 'like').then((_) => setState(() {}));
+                                                                              break;
+                                                                            case 1:
+                                                                              deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                              break;
+                                                                            case 2:
+                                                                              updatePostRating(widget.postData['postId'], 'like').then((_) => setState(() {}));
+                                                                              break;
+                                                                          }
+                                                                        },
                                                                       ),
-                                                                      onPressed:
-                                                                          () {
-                                                                        switch (
-                                                                            snapshotRating.data) {
-                                                                          case 0:
-                                                                            ratePost(widget.postData['postId'], 'like').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 1:
-                                                                            deletePostRating(widget.postData['postId']).then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 2:
-                                                                            updatePostRating(widget.postData['postId'], 'like').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 8,
-                                                                    ),
-                                                                    //RATING
-                                                                    const Text(
-                                                                        "69"),
-                                                                    const SizedBox(
-                                                                      width: 8,
-                                                                    ),
-                                                                    // Text("dislike"),
-                                                                    //DISLIKE
-                                                                    IconButton(
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .thumb_down,
-                                                                        size:
-                                                                            16,
-                                                                        color: snapshotRating.data ==
-                                                                                2
-                                                                            ? Theme.of(context).colorScheme.brandColor
-                                                                            : Colors.white60,
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            8,
                                                                       ),
-                                                                      onPressed:
-                                                                          () {
-                                                                        switch (
-                                                                            snapshotRating.data) {
-                                                                          case 0:
-                                                                            ratePost(widget.postData['postId'], 'dislike').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 1:
-                                                                            updatePostRating(widget.postData['postId'], 'dislike').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 2:
-                                                                            deletePostRating(widget.postData['postId']).then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 40,
-                                                                    ),
-                                                                  ],
-                                                                );
+                                                                      //RATING
+                                                                      Text(snapshotRating
+                                                                          .data![
+                                                                              1]
+                                                                          .toString()),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            8,
+                                                                      ),
+                                                                      // Text("dislike"),
+                                                                      //DISLIKE
+                                                                      IconButton(
+                                                                        icon:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .thumb_down,
+                                                                          size:
+                                                                              16,
+                                                                          color: snapshotRating.data![0] == 2
+                                                                              ? Theme.of(context).colorScheme.brandColor
+                                                                              : Colors.white60,
+                                                                        ),
+                                                                        onPressed:
+                                                                            () {
+                                                                          switch (
+                                                                              snapshotRating.data![0]) {
+                                                                            case 0:
+                                                                              ratePost(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
+                                                                              break;
+                                                                            case 1:
+                                                                              updatePostRating(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
+                                                                              break;
+                                                                            case 2:
+                                                                              deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                              break;
+                                                                          }
+                                                                        },
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            40,
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                } else {
+                                                                  return const SizedBox();
+                                                                }
                                                               })
                                                           : Row(
                                                               children: const [
@@ -2161,4 +2199,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
       ],
     );
   }
+}
+
+List<Widget> _getVideoTagWidgets(List<String> list) {
+  List<Widget> widgetList = List.generate(list.length, (index) {
+    return Chip(
+      label: Text(
+        capitalizeOnlyFirstLater(list.elementAt(index)),
+        style: const TextStyle(fontFamily: "Segoe UI", fontSize: 16),
+      ),
+    );
+  });
+
+  return widgetList;
 }

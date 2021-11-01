@@ -52,25 +52,20 @@ class _ProfileState extends State<Profile> {
   int pageCount = 1;
   late ScrollController _scrollController;
 
-  //Get PostIds List
-  Future<void> fetchPostIds() async {
-    print("button tapped");
+  //Get User PostIds List
+  Future<void> fetchUserPostIds(String username) async {
     try {
-      print("UNV Debug 1");
       if (!_loading) {
         setState(() {
           _loading = true;
         });
       }
-      print("UNV Debug 2");
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
-      print("UNV Debug 3");
+      final response = await http.get(Uri.parse(
+          'http://localhost:3000/post/getUserByUsernamePostIds/$username'));
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON
         List<dynamic> values = <dynamic>[];
         values = json.decode(response.body);
-        print("UNV Debug 4");
         if (values.isNotEmpty) {
           for (int i = 0; i < values.length; i++) {
             if (values[i] != null) {
@@ -80,7 +75,6 @@ class _ProfileState extends State<Profile> {
             }
           }
         }
-        print(postIds);
         setState(() {
           _loading = false;
         });
@@ -108,7 +102,7 @@ class _ProfileState extends State<Profile> {
     super.initState();
 
     print("UNV Debug 6");
-    fetchPostIds().then((value) {
+    fetchUserPostIds(widget.profileData['username']).then((value) {
       ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
@@ -174,10 +168,18 @@ class _ProfileState extends State<Profile> {
                                       Beamer.of(context)
                                           .beamToNamed("/updateprofile");
                                     },
-                                    icon: Icon(
-                                      Icons.edit,
-                                      size: 28,
-                                      color: Theme.of(context).canvasColor,
+                                    icon: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.black87, width: 4),
+                                        color: Colors.blueAccent.shade100,
+                                      ),
+                                      child: Icon(
+                                        Icons.edit,
+                                        size: 28,
+                                        color: Theme.of(context).canvasColor,
+                                      ),
                                     )),
                               );
                             } else {
@@ -311,7 +313,8 @@ class _ProfileState extends State<Profile> {
                                   const Text(
                                       "There was an error while loading this Users Video"),
                                   OutlinedButton(
-                                      onPressed: () => fetchPostIds(),
+                                      onPressed: () => fetchUserPostIds(
+                                          widget.profileData['username']),
                                       child: const Text("Reload Videos"))
                                 ],
                               )

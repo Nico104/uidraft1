@@ -46,6 +46,8 @@ class InitialLoginForm extends StatefulWidget {
 class _InitialLoginFormState extends State<InitialLoginForm> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureTextPasswor1 = true;
+  bool _obscureTextPasswor2 = true;
+  bool _obscureTextPasswor3 = true;
 
   final _usernameTextController = TextEditingController();
   final _userpasswordTextController = TextEditingController();
@@ -213,7 +215,7 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                     //     fontSize: 15,
                     //     color:
                     //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Password...',
+                    labelText: 'Current Password...',
                     labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -263,7 +265,7 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                 width: 350,
                 child: TextFormField(
                   controller: _newUserpasswordTextController,
-                  obscureText: _obscureTextPasswor1,
+                  obscureText: _obscureTextPasswor2,
                   style: const TextStyle(
                       fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
                   cursorColor:
@@ -283,7 +285,7 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    labelText: 'Password...',
+                    labelText: 'New Password...',
                     labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -309,9 +311,9 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                     suffixIcon: IconButton(
                       hoverColor: Colors.transparent,
                       onPressed: () => setState(() {
-                        _obscureTextPasswor1 = !_obscureTextPasswor1;
+                        _obscureTextPasswor2 = !_obscureTextPasswor2;
                       }),
-                      icon: _obscureTextPasswor1
+                      icon: _obscureTextPasswor2
                           ? const Icon(Icons.visibility_outlined)
                           : const Icon(Icons.visibility_off_outlined),
                     ),
@@ -333,7 +335,7 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                 width: 350,
                 child: TextFormField(
                   controller: _newConfirmUserpasswordTextController,
-                  obscureText: _obscureTextPasswor1,
+                  obscureText: _obscureTextPasswor3,
                   style: const TextStyle(
                       fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
                   cursorColor:
@@ -353,7 +355,7 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    labelText: 'Password...',
+                    labelText: 'Confirm New Password...',
                     labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -379,9 +381,9 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                     suffixIcon: IconButton(
                       hoverColor: Colors.transparent,
                       onPressed: () => setState(() {
-                        _obscureTextPasswor1 = !_obscureTextPasswor1;
+                        _obscureTextPasswor3 = !_obscureTextPasswor3;
                       }),
-                      icon: _obscureTextPasswor1
+                      icon: _obscureTextPasswor3
                           ? const Icon(Icons.visibility_outlined)
                           : const Icon(Icons.visibility_off_outlined),
                     ),

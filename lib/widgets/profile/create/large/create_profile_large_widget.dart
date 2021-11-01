@@ -383,7 +383,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              "Create Subchannel",
+                              "Update Profile",
                               style: TextStyle(
                                   fontFamily: 'Sogeo UI',
                                   fontSize: 18,

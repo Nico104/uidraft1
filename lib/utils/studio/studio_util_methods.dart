@@ -11,8 +11,8 @@ String baseURL = 'http://localhost:3000/';
 //Get Post  Data by Id
 Future<List<int>> fetchUserPosts() async {
   String? token = await getToken();
-  final response = await http
-      .get(Uri.parse(baseURL + 'post/getUserByUsernamePostsIds'), headers: {
+  final response =
+      await http.get(Uri.parse(baseURL + 'post/getUserPostIds'), headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',

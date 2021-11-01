@@ -124,124 +124,126 @@ class _CommentModelState extends State<CommentModel> {
                                   //Only load rating if auth
                                   snapshot.data == 200
                                       ? FutureBuilder(
-                                          future: getUserCommentRating(
-                                              widget.commentId),
+                                          future: Future.wait([
+                                            getUserCommentRating(
+                                                widget.commentId),
+                                            getCommentRatingScore(
+                                                widget.commentId)
+                                          ]),
                                           builder: (BuildContext context,
-                                              AsyncSnapshot<int>
+                                              AsyncSnapshot<List<int>>
                                                   snapshotRating) {
-                                            return Row(
-                                              children: [
-                                                //LIKE
-                                                IconButton(
-                                                  icon: Icon(
-                                                    Icons.thumb_up,
-                                                    size: 16,
-                                                    color:
-                                                        snapshotRating.data == 1
-                                                            ? Theme.of(context)
-                                                                .colorScheme
-                                                                .brandColor
-                                                            : Colors.white60,
+                                            if (snapshot.hasData) {
+                                              return Row(
+                                                children: [
+                                                  //LIKE
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.thumb_up,
+                                                      size: 16,
+                                                      color: snapshotRating
+                                                                  .data![0] ==
+                                                              1
+                                                          ? Theme.of(context)
+                                                              .colorScheme
+                                                              .brandColor
+                                                          : Colors.white60,
+                                                    ),
+                                                    onPressed: () {
+                                                      switch (snapshotRating
+                                                          .data![0]) {
+                                                        case 0:
+                                                          rateComment(
+                                                                  widget
+                                                                      .commentId,
+                                                                  'like')
+                                                              .then((_) =>
+                                                                  setState(
+                                                                      () {}));
+                                                          break;
+                                                        case 1:
+                                                          deleteCommentRating(
+                                                                  widget
+                                                                      .commentId)
+                                                              .then((_) =>
+                                                                  setState(
+                                                                      () {}));
+                                                          break;
+                                                        case 2:
+                                                          updateCommentRating(
+                                                                  widget
+                                                                      .commentId,
+                                                                  'like')
+                                                              .then((_) =>
+                                                                  setState(
+                                                                      () {}));
+                                                          break;
+                                                      }
+                                                    },
                                                   ),
-                                                  onPressed: () {
-                                                    switch (
-                                                        snapshotRating.data) {
-                                                      case 0:
-                                                        rateComment(
-                                                                widget
-                                                                    .commentId,
-                                                                'like')
-                                                            .then((_) =>
-                                                                setState(
-                                                                    () {}));
-                                                        break;
-                                                      case 1:
-                                                        deleteCommentRating(
-                                                                widget
-                                                                    .commentId)
-                                                            .then((_) =>
-                                                                setState(
-                                                                    () {}));
-                                                        break;
-                                                      case 2:
-                                                        updateCommentRating(
-                                                                widget
-                                                                    .commentId,
-                                                                'like')
-                                                            .then((_) =>
-                                                                setState(
-                                                                    () {}));
-                                                        break;
-                                                    }
-                                                    // if (snapshotRating.data !=
-                                                    //     1) {
-                                                    //   likeComment(
-                                                    //           widget.commentId)
-                                                    //       .then((_) =>
-                                                    //           setState(() {}));
-                                                    // } else {
-                                                    //   print("remove like");
-                                                    // }
-                                                  },
-                                                ),
-                                                const SizedBox(
-                                                  width: 8,
-                                                ),
-                                                //RATING
-                                                const Text("69"),
-                                                const SizedBox(
-                                                  width: 8,
-                                                ),
-                                                // Text("dislike"),
-                                                //DISLIKE
-                                                IconButton(
-                                                  icon: Icon(
-                                                    Icons.thumb_down,
-                                                    size: 16,
-                                                    color:
-                                                        snapshotRating.data == 2
-                                                            ? Theme.of(context)
-                                                                .colorScheme
-                                                                .brandColor
-                                                            : Colors.white60,
+                                                  const SizedBox(
+                                                    width: 8,
                                                   ),
-                                                  onPressed: () {
-                                                    switch (
-                                                        snapshotRating.data) {
-                                                      case 0:
-                                                        rateComment(
-                                                                widget
-                                                                    .commentId,
-                                                                'dislike')
-                                                            .then((_) =>
-                                                                setState(
-                                                                    () {}));
-                                                        break;
-                                                      case 1:
-                                                        updateCommentRating(
-                                                                widget
-                                                                    .commentId,
-                                                                'dislike')
-                                                            .then((_) =>
-                                                                setState(
-                                                                    () {}));
-                                                        break;
-                                                      case 2:
-                                                        deleteCommentRating(
-                                                                widget
-                                                                    .commentId)
-                                                            .then((_) =>
-                                                                setState(
-                                                                    () {}));
-                                                        break;
-                                                    }
-                                                  },
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                              ],
-                                            );
+                                                  //RATING
+                                                  Text(snapshotRating.data![1]
+                                                      .toString()),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  // Text("dislike"),
+                                                  //DISLIKE
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.thumb_down,
+                                                      size: 16,
+                                                      color: snapshotRating
+                                                                  .data![0] ==
+                                                              2
+                                                          ? Theme.of(context)
+                                                              .colorScheme
+                                                              .brandColor
+                                                          : Colors.white60,
+                                                    ),
+                                                    onPressed: () {
+                                                      switch (snapshotRating
+                                                          .data![0]) {
+                                                        case 0:
+                                                          rateComment(
+                                                                  widget
+                                                                      .commentId,
+                                                                  'dislike')
+                                                              .then((_) =>
+                                                                  setState(
+                                                                      () {}));
+                                                          break;
+                                                        case 1:
+                                                          updateCommentRating(
+                                                                  widget
+                                                                      .commentId,
+                                                                  'dislike')
+                                                              .then((_) =>
+                                                                  setState(
+                                                                      () {}));
+                                                          break;
+                                                        case 2:
+                                                          deleteCommentRating(
+                                                                  widget
+                                                                      .commentId)
+                                                              .then((_) =>
+                                                                  setState(
+                                                                      () {}));
+                                                          break;
+                                                      }
+                                                    },
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              return const SizedBox();
+                                            }
                                           })
                                       : const Text(
                                           "login to rate and reply to comments",

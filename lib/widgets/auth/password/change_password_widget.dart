@@ -138,7 +138,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    labelText: 'Password...',
+                    labelText: 'New Password...',
                     labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -188,7 +188,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                 width: 350,
                 child: TextFormField(
                   controller: _newConfirmUserpasswordTextController,
-                  obscureText: _obscureTextPasswor1,
+                  obscureText: _obscureTextPasswor2,
                   style: const TextStyle(
                       fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
                   cursorColor:
@@ -208,7 +208,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                     ),
                     filled: true,
                     fillColor: Theme.of(context).canvasColor,
-                    labelText: 'Password...',
+                    labelText: 'Confirm New Password...',
                     labelStyle: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 15,
@@ -234,9 +234,9 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                     suffixIcon: IconButton(
                       hoverColor: Colors.transparent,
                       onPressed: () => setState(() {
-                        _obscureTextPasswor1 = !_obscureTextPasswor1;
+                        _obscureTextPasswor2 = !_obscureTextPasswor2;
                       }),
-                      icon: _obscureTextPasswor1
+                      icon: _obscureTextPasswor2
                           ? const Icon(Icons.visibility_outlined)
                           : const Icon(Icons.visibility_off_outlined),
                     ),

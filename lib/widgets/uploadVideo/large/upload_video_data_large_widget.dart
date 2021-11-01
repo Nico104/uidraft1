@@ -113,63 +113,64 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                             child: ListView(
                               // shrinkWrap: true,
                               children: [
-                                //SubchannelName
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20)),
-                                          child: Image.network(
-                                            "https://picsum.photos/100",
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.center,
-                                            width: 52,
-                                            height: 52,
+                                //SubchannelName and Choose a Subchannel
+                                InkWell(
+                                  onTap: () {
+                                    print("pressed Change Subchannel");
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          const ChooseSubchannelLargeScreen(),
+                                    ).then((value) {
+                                      print("Value: " + value.toString());
+                                      List<String> temp = value;
+                                      setState(() {
+                                        subchannelName = temp.elementAt(0);
+                                        subchannelPicturePath =
+                                            temp.elementAt(1);
+                                      });
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(20)),
+                                            child: Image.network(
+                                              "https://picsum.photos/100",
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                              width: 52,
+                                              height: 52,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Text(
-                                          subchannelName.isNotEmpty
-                                              ? subchannelName
-                                              : "Please choose a Subchannel",
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black),
-                                        )
-                                      ],
-                                    ),
-                                    //Choose a Subchannel
-                                    IconButton(
-                                      icon: const Icon(
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text(
+                                            subchannelName.isNotEmpty
+                                                ? subchannelName
+                                                : "Please choose a Subchannel",
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.black),
+                                          )
+                                        ],
+                                      ),
+                                      const Icon(
                                         Icons.arrow_right_outlined,
                                         color: Colors.black,
                                         size: 28,
                                       ),
-                                      onPressed: () {
-                                        print("pressed Change Subchannel");
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              const ChooseSubchannelLargeScreen(),
-                                        ).then((value) {
-                                          print("Value: " + value.toString());
-                                          List<String> temp = value;
-                                          setState(() {
-                                            subchannelName = temp.elementAt(0);
-                                            subchannelPicturePath =
-                                                temp.elementAt(1);
-                                          });
-                                        });
-                                      },
-                                    )
-                                  ],
+                                    ],
+                                  ),
                                 ),
                                 //ShowError
                                 !_formError['subchannel']!
@@ -270,14 +271,13 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                           .pickFiles(
                                               type: FileType.image,
                                               allowMultiple: false);
-
+                                      if (result != null) {
+                                        _formError['thumbnail'] = false;
+                                      }
                                       setState(() {
                                         thumbnailPreview =
                                             result!.files.first.bytes;
                                       });
-
-                                      print("testprint1");
-                                      //_processThumbnail(result);
                                     },
                                     child: Stack(
                                       children: [
@@ -303,6 +303,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                                                 print("Dropped: $ev");
                                               });
                                               if (ev != null) {
+                                                _formError['thumbnail'] = false;
                                                 print("FileName: " +
                                                     await controller
                                                         .getFilename(ev));
@@ -534,9 +535,10 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
         return ProcessAndSendScreen(
           postTitle: _postTitleTextController.text,
           postDescription: _postDescriptionTextController.text,
-          postSubchannelName: "isgut",
+          postSubchannelName: subchannelName,
           thumbnail: result,
           video: videoBytes!,
+          tags: tagList,
         );
 
       default:
@@ -599,7 +601,8 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
   bool validateForm() {
     if (_postTitleTextController.text.isEmpty ||
         thumbnailPreview == null ||
-        tagList.isEmpty) {
+        tagList.isEmpty ||
+        subchannelName.isEmpty) {
       if (_postTitleTextController.text.isEmpty) {
         _formError['title'] = true;
       } else {
@@ -614,6 +617,11 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
         _formError['tag'] = true;
       } else {
         _formError['tag'] = false;
+      }
+      if (subchannelName.isEmpty) {
+        _formError['subchannel'] = true;
+      } else {
+        _formError['subchannel'] = false;
       }
       return false;
     } else {

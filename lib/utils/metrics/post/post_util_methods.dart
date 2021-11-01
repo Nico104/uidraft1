@@ -139,3 +139,35 @@ Future<int> getPostRatingData(int id, String ratingType) async {
     throw Exception('Failed to load postrating');
   }
 }
+
+//Get Post  Data by Id
+Future<Map<String, dynamic>> fetchPostData(int id) async {
+  final response =
+      await http.get(Uri.parse('http://localhost:3000/post/getPost/$id'));
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> map = json.decode(response.body);
+    if (map.isNotEmpty) {
+      return map;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post');
+  }
+}
+
+//Get Post RatingScore
+Future<int> getPostRatingScore(int id) async {
+  final response = await http
+      .get(Uri.parse('http://localhost:3000/post/getPostRatingScore/$id'));
+
+  if (response.statusCode == 200) {
+    print(int.parse(response.body));
+    return int.parse(response.body);
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post rating');
+  }
+}

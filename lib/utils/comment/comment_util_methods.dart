@@ -177,3 +177,17 @@ Future<int> getUserCommentRating(int commentId) async {
     throw Exception('Failed to load comments3');
   }
 }
+
+//Get Comment RatingScore
+Future<int> getCommentRatingScore(int commentId) async {
+  final response = await http.get(Uri.parse(
+      'http://localhost:3000/comment/getCommentRatingScore/$commentId'));
+
+  if (response.statusCode == 200) {
+    print(int.parse(response.body));
+    return int.parse(response.body);
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post rating');
+  }
+}

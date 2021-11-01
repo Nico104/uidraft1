@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:beamer/beamer.dart';
@@ -16,15 +17,16 @@ class ProcessAndSendScreen extends StatelessWidget {
       required this.postDescription,
       required this.postSubchannelName,
       required this.thumbnail,
-      required this.video})
+      required this.video,
+      required this.tags})
       : super(key: key);
 
   final String postTitle;
   final String postDescription;
   final String postSubchannelName;
   final FilePickerResult? thumbnail;
-  // final List<int> video;
   final Uint8List video;
+  final List<String> tags;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class ProcessAndSendScreen extends StatelessWidget {
             postTitle: postTitle,
             thumbnail: thumbnail,
             video: video,
+            tags: tags,
           ),
         ),
       ),
@@ -53,15 +56,16 @@ class ProcessAndSend extends StatefulWidget {
       required this.postDescription,
       required this.postSubchannelName,
       required this.thumbnail,
-      required this.video})
+      required this.video,
+      required this.tags})
       : super(key: key);
 
   final String postTitle;
   final String postDescription;
   final String postSubchannelName;
   final FilePickerResult? thumbnail;
-  // final List<int> video;
   final Uint8List video;
+  final List<String> tags;
 
   @override
   _ProcessAndSendFormState createState() => _ProcessAndSendFormState();
@@ -79,7 +83,8 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
             widget.postDescription,
             widget.postSubchannelName,
             widget.thumbnail!.files.first.bytes!,
-            widget.video));
+            widget.video,
+            widget.tags));
   }
 
   Future<void> _sendPost(
@@ -88,7 +93,7 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     String postSubchannelName,
     Uint8List thumbnail,
     List<int> video,
-    //List<int> video,
+    List<String> tags,
   ) async {
     var url = Uri.parse('http://localhost:3000/post/uploadPostWithData');
     String? token = await getToken();
@@ -105,43 +110,85 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     request.files.add(http.MultipartFile.fromBytes('video', video,
         filename: "videoname", contentType: MediaType('video', 'mp4')));
 
-    setState(() {
-      alreadyProcessed += 1;
-    });
-
-    var response = await request.send();
-    print(response.statusCode);
-    if (response.statusCode == 201) {
-      print('Uploaded!');
-    } else {
-      print('Upload Error!');
-    }
-
-    Beamer.of(context).beamToNamed('/feed');
-  }
-
-  List<int> _processThumbnail(FilePickerResult? result) {
-    var fileBytes = result!.files.first.bytes;
-    var fileName = result.files.first.name;
-
-    image.Image? raw = image.decodeImage(List.from(fileBytes!));
-
-    print("FileName: " + fileName);
-
-    if (raw!.width != 1280 && raw.height != 720) {
-      print("Image not 1280x720");
-      image.Image? resized = image.copyResize(raw, width: 1280, height: 720);
+    if (mounted) {
       setState(() {
         alreadyProcessed += 1;
       });
-      return image.encodePng(resized);
     }
-    print("Image is 1280x720");
-    setState(() {
-      alreadyProcessed += 1;
-    });
-    return fileBytes;
+
+    // var response = await request.send();
+    // print(response.statusCode);
+    // print("Response: " + http.Response.fromStream(response).toString());
+    // if (response.statusCode == 201) {
+    //   print('Uploaded!');
+    // } else {
+    //   print('Upload Error!');
+    // }
+
+    //test
+    await request
+        .send()
+        .then((result) async {
+          http.Response.fromStream(result).then((response) {
+            if (response.statusCode == 201) {
+              print("Uploaded! ");
+              // print('response.body ' + response.body);
+
+              int postId = jsonDecode(response.body)['postId'];
+
+              //Add posttags
+              for (var element in tags) {
+                http.patch(
+                    Uri.parse('http://localhost:3000/post/addPostTag/$postId'),
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json',
+                      'Authorization': 'Bearer $token',
+                    },
+                    body: jsonEncode(<String, String>{"tagname": element}));
+              }
+            }
+
+            // return response.body;
+          });
+        })
+        .catchError((err) => print('error : ' + err.toString()))
+        .whenComplete(() {
+          print("upload fertig1");
+        });
+    //test
+
+    // Beamer.of(context).beamToNamed('/feed');
   }
+
+  // List<int> _processThumbnail(FilePickerResult? result) {
+  //   var fileBytes = result!.files.first.bytes;
+  //   var fileName = result.files.first.name;
+
+  //   image.Image? raw = image.decodeImage(List.from(fileBytes!));
+
+  //   print("FileName: " + fileName);
+
+  //   if (raw!.width != 1280 && raw.height != 720) {
+  //     print("Image not 1280x720");
+  //     image.Image? resized = image.copyResize(raw, width: 1280, height: 720);
+  //     if (mounted) {
+  //       setState(() {
+  //         alreadyProcessed += 1;
+  //       });
+  //     }
+
+  //     return image.encodePng(resized);
+  //   }
+  //   print("Image is 1280x720");
+  //   if (mounted) {
+  //     setState(() {
+  //       alreadyProcessed += 1;
+  //     });
+  //   }
+
+  //   return fileBytes;
+  // }
 
   @override
   void initState() {
@@ -149,6 +196,8 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       print("lesgo");
       uploadPost();
+
+      Beamer.of(context).beamToNamed('/feed');
     });
   }
 
