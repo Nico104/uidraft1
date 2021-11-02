@@ -91,3 +91,8 @@ Future<bool> isFirstLogin() async {
     return json.decode(response.body)['genPassword'];
   }
 }
+
+Future<void> logout() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove('access_token');
+}

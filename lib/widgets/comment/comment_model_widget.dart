@@ -133,7 +133,7 @@ class _CommentModelState extends State<CommentModel> {
                                           builder: (BuildContext context,
                                               AsyncSnapshot<List<int>>
                                                   snapshotRating) {
-                                            if (snapshot.hasData) {
+                                            if (snapshotRating.hasData) {
                                               return Row(
                                                 children: [
                                                   //LIKE

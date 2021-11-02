@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 class NavBarMenu extends StatelessWidget {
@@ -126,7 +127,11 @@ class NavBarMenu extends StatelessWidget {
             endIndent: 9,
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              logout().then((value) {
+                Beamer.of(context).beamToNamed('/login');
+              });
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: const [
