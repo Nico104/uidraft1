@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
@@ -59,12 +60,22 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
 
   String? errorText;
 
+  //FocusNodes
+  FocusNode fnUsername = FocusNode();
+  FocusNode fnPassword = FocusNode();
+  FocusNode fnNewPassword = FocusNode();
+  FocusNode fnNewConfirmPAssword = FocusNode();
+
   @override
   void dispose() {
     _usernameTextController.dispose();
     _userpasswordTextController.dispose();
     _newConfirmUserpasswordTextController.dispose();
     _newUserpasswordTextController.dispose();
+    fnUsername.dispose();
+    fnPassword.dispose();
+    fnNewConfirmPAssword.dispose();
+    fnNewPassword.dispose();
     super.dispose();
   }
 
@@ -122,62 +133,78 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
               //Username
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _usernameTextController,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Username...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Username...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    errorText: errorText,
-                  ),
-                  validator: (value) {
-                    //check if username exists
-                    if (value == null || value.isEmpty) {
-                      return 'You may enter your username, sir';
+                child: KeyboardListener(
+                  focusNode: fnUsername,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnPassword.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: TextFormField(
+                    controller: _usernameTextController,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      // hintText: 'Username...',
+                      // hintStyle: TextStyle(
+                      //     fontFamily: 'Segoe UI',
+                      //     fontSize: 15,
+                      //     color:
+                      //         Theme.of(context).colorScheme.searchBarTextColor),
+                      labelText: 'Username...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                      errorText: errorText,
+                    ),
+                    validator: (value) {
+                      //check if username exists
+                      if (value == null || value.isEmpty) {
+                        return 'You may enter your username, sir';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -186,74 +213,90 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
               //Password
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _userpasswordTextController,
-                  obscureText: _obscureTextPasswor1,
-                  // autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Password...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Current Password...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    errorText: errorText,
-
-                    //Visibility Icon
-                    suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      onPressed: () => setState(() {
-                        _obscureTextPasswor1 = !_obscureTextPasswor1;
-                      }),
-                      icon: _obscureTextPasswor1
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'please enter a password';
+                child: KeyboardListener(
+                  focusNode: fnPassword,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnNewPassword.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: TextFormField(
+                    controller: _userpasswordTextController,
+                    obscureText: _obscureTextPasswor1,
+                    // autovalidateMode: AutovalidateMode.onUserInteraction,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      // hintText: 'Password...',
+                      // hintStyle: TextStyle(
+                      //     fontFamily: 'Segoe UI',
+                      //     fontSize: 15,
+                      //     color:
+                      //         Theme.of(context).colorScheme.searchBarTextColor),
+                      labelText: 'Current Password...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                      errorText: errorText,
+
+                      //Visibility Icon
+                      suffixIcon: IconButton(
+                        hoverColor: Colors.transparent,
+                        onPressed: () => setState(() {
+                          _obscureTextPasswor1 = !_obscureTextPasswor1;
+                        }),
+                        icon: _obscureTextPasswor1
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'please enter a password';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
 
@@ -263,67 +306,83 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
               //New Password
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _newUserpasswordTextController,
-                  obscureText: _obscureTextPasswor2,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    labelText: 'New Password...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    // errorText: errorText,
-
-                    //Visibility Icon
-                    suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      onPressed: () => setState(() {
-                        _obscureTextPasswor2 = !_obscureTextPasswor2;
-                      }),
-                      icon: _obscureTextPasswor2
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 6) {
-                      return 'Password has to be at least 6 characters, sir';
+                child: KeyboardListener(
+                  focusNode: fnNewPassword,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnNewConfirmPAssword.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: TextFormField(
+                    controller: _newUserpasswordTextController,
+                    obscureText: _obscureTextPasswor2,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      labelText: 'New Password...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                      // errorText: errorText,
+
+                      //Visibility Icon
+                      suffixIcon: IconButton(
+                        hoverColor: Colors.transparent,
+                        onPressed: () => setState(() {
+                          _obscureTextPasswor2 = !_obscureTextPasswor2;
+                        }),
+                        icon: _obscureTextPasswor2
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 6) {
+                        return 'Password has to be at least 6 characters, sir';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
 
@@ -333,69 +392,85 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
               //Confirm New Password
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _newConfirmUserpasswordTextController,
-                  obscureText: _obscureTextPasswor3,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    labelText: 'Confirm New Password...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                    // errorText: errorText,
-
-                    //Visibility Icon
-                    suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      onPressed: () => setState(() {
-                        _obscureTextPasswor3 = !_obscureTextPasswor3;
-                      }),
-                      icon: _obscureTextPasswor3
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null ||
-                        value.isEmpty ||
-                        value != _newUserpasswordTextController.text) {
-                      return 'Password does not match, sir';
+                child: KeyboardListener(
+                  focusNode: fnNewConfirmPAssword,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnUsername.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: TextFormField(
+                    controller: _newConfirmUserpasswordTextController,
+                    obscureText: _obscureTextPasswor3,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      labelText: 'Confirm New Password...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                      // errorText: errorText,
+
+                      //Visibility Icon
+                      suffixIcon: IconButton(
+                        hoverColor: Colors.transparent,
+                        onPressed: () => setState(() {
+                          _obscureTextPasswor3 = !_obscureTextPasswor3;
+                        }),
+                        icon: _obscureTextPasswor3
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value != _newUserpasswordTextController.text) {
+                        return 'Password does not match, sir';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
 
@@ -421,32 +496,7 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                         color:
                             Theme.of(context).colorScheme.textInputCursorColor),
                   ),
-                  onPressed: () async {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      if (await _login(_usernameTextController.text,
-                          _userpasswordTextController.text)) {
-                        setState(() {
-                          errorText = null;
-                        });
-                        print("login success");
-                        if (await changePassword(
-                                _newConfirmUserpasswordTextController.text) ==
-                            200) {
-                          print("password chnaged");
-                        } else {
-                          print("problem while changing password");
-                        }
-
-                        Beamer.of(context).beamToNamed('/feed');
-                        // Beamer.of(context).beamBack();
-                      } else {
-                        setState(() {
-                          errorText = "Username or Password wrong";
-                        });
-                      }
-                    }
-                  },
+                  onPressed: () => submit(),
                 ),
               ),
               const SizedBox(
@@ -455,5 +505,31 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
             ],
           ),
         ));
+  }
+
+  Future<void> submit() async {
+    // Validate returns true if the form is valid, or false otherwise.
+    if (_formKey.currentState!.validate()) {
+      if (await _login(
+          _usernameTextController.text, _userpasswordTextController.text)) {
+        setState(() {
+          errorText = null;
+        });
+        print("login success");
+        if (await changePassword(_newConfirmUserpasswordTextController.text) ==
+            200) {
+          print("password chnaged");
+        } else {
+          print("problem while changing password");
+        }
+
+        Beamer.of(context).beamToNamed('/feed');
+        // Beamer.of(context).beamBack();
+      } else {
+        setState(() {
+          errorText = "Username or Password wrong";
+        });
+      }
+    }
   }
 }

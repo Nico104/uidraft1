@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uidraft1/screens/auth/auth_screen.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
@@ -36,12 +37,16 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
   String titleText =
       "It is a long established fact that a reader will be distracted by the readable content of a page when Looking";
 
-  double _formProgress = 0;
+  //FocusNodes
+  FocusNode fnUsername = FocusNode();
+  FocusNode fnPassword = FocusNode();
 
   @override
   void dispose() {
     _usernameTextController.dispose();
     _useremailTextController.dispose();
+    fnUsername.dispose();
+    fnPassword.dispose();
     super.dispose();
   }
 
@@ -93,14 +98,6 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
       );
     } else {
       print("nope");
-      //Navigator.of(context).pushNamed('/login');
-      // setState(() {
-      //   _usernameTextController.text = "";
-      //   _useremailTextController.text = "";
-      //   _userpasswordTextController.text = "";
-      //   _userpasswordControlTextController.text = "";
-      //   titleText = "Something went wrong, please retry";
-      // });
     }
   }
 
@@ -136,61 +133,77 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
               //Username
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _usernameTextController,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Username...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Username...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                  ),
-                  validator: (value) {
-                    //Check if username is free
-                    if (value == null || value.isEmpty) {
-                      return 'You may choose a username, sir';
+                child: KeyboardListener(
+                  focusNode: fnUsername,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnPassword.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: TextFormField(
+                    controller: _usernameTextController,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      // hintText: 'Username...',
+                      // hintStyle: TextStyle(
+                      //     fontFamily: 'Segoe UI',
+                      //     fontSize: 15,
+                      //     color:
+                      //         Theme.of(context).colorScheme.searchBarTextColor),
+                      labelText: 'Username...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                    ),
+                    validator: (value) {
+                      //Check if username is free
+                      if (value == null || value.isEmpty) {
+                        return 'You may choose a username, sir';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -199,68 +212,84 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
               //Useremail
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _useremailTextController,
-                  keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Email...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Email...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                  ),
-                  validator: (value) {
-                    //check if email is already used
-                    Pattern pattern =
-                        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                        r"{0,253}[a-zA-Z0-9])?)*$";
-                    RegExp regex = RegExp(pattern.toString());
-                    if (!regex.hasMatch(value!)) {
-                      return 'Enter a valid email address, sir';
-                    } else {
-                      return null;
+                child: KeyboardListener(
+                  focusNode: fnPassword,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnUsername.requestFocus();
+                      }
                     }
                   },
+                  child: TextFormField(
+                    controller: _useremailTextController,
+                    keyboardType: TextInputType.emailAddress,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      // hintText: 'Email...',
+                      // hintStyle: TextStyle(
+                      //     fontFamily: 'Segoe UI',
+                      //     fontSize: 15,
+                      //     color:
+                      //         Theme.of(context).colorScheme.searchBarTextColor),
+                      labelText: 'Email...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                    ),
+                    validator: (value) {
+                      //check if email is already used
+                      Pattern pattern =
+                          r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                          r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                          r"{0,253}[a-zA-Z0-9])?)*$";
+                      RegExp regex = RegExp(pattern.toString());
+                      if (!regex.hasMatch(value!)) {
+                        return 'Enter a valid email address, sir';
+                      } else {
+                        return null;
+                      }
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -285,30 +314,7 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
                         color:
                             Theme.of(context).colorScheme.textInputCursorColor),
                   ),
-                  onPressed: () async {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      // If the form is valid, display a snackbar. In the real world,
-                      // you'd often call a server or save the information in a database.
-
-                      await _signUp(_usernameTextController.text,
-                          _useremailTextController.text);
-
-                      // if (await _login(_usernameTextController.text,
-                      //     _userpasswordTextController.text)) {
-                      //   print("logged in");
-                      //   Beamer.of(context).beamToNamed('/feed');
-                      // } else {
-                      //   setState(() {
-                      //     print("Username or Password wrong");
-                      //   });
-                      // }
-
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   const SnackBar(content: Text('Processing Data')),
-                      // );
-                    }
-                  },
+                  onPressed: () => submit(),
                 ),
               ),
               const SizedBox(
@@ -317,5 +323,16 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
             ],
           ),
         ));
+  }
+
+  Future<void> submit() async {
+    // Validate returns true if the form is valid, or false otherwise.
+    if (_formKey.currentState!.validate()) {
+      // If the form is valid, display a snackbar. In the real world,
+      // you'd often call a server or save the information in a database.
+
+      await _signUp(
+          _usernameTextController.text, _useremailTextController.text);
+    }
   }
 }
