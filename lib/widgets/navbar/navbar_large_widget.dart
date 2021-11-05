@@ -7,7 +7,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:html' as html;
 
-import 'package:uidraft1/widgets/navbar/navbar_menu_large_widget.dart';
+// import 'package:uidraft1/widgets/navbar/navbar_menu_large_widget.dart';
+import 'package:uidraft1/widgets/notification/notificationList/notification_list_dialog_widget.dart';
+
+import 'navbar_menu_large_widget.dart';
 
 // class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLarge extends StatefulWidget {
@@ -19,6 +22,7 @@ class NavBarLarge extends StatefulWidget {
 
 class _NavBarLargeState extends State<NavBarLarge> {
   bool _showMenu = false;
+  bool _showNotification = false;
 
   bool _isLeftHand = false;
 
@@ -227,12 +231,26 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                               width: 18,
                                             ),
                                             //Notifications
-                                            Icon(
-                                              Icons.notifications_none_outlined,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .navBarIconColor,
-                                              size: 26,
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () {
+                                                setState(() {
+                                                  _showMenu = false;
+                                                  _showNotification =
+                                                      !_showNotification;
+                                                });
+                                              },
+                                              child: Icon(
+                                                Icons
+                                                    .notifications_none_outlined,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .navBarIconColor,
+                                                size: 26,
+                                              ),
                                             ),
                                             const SizedBox(
                                               width: 18,
@@ -267,6 +285,7 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                                   Colors.transparent,
                                               onTap: () {
                                                 setState(() {
+                                                  _showNotification = false;
                                                   _showMenu = !_showMenu;
                                                 });
                                               },
@@ -397,16 +416,19 @@ class _NavBarLargeState extends State<NavBarLarge> {
             ),
           ),
         ),
-        if (_showMenu)
-          Align(
-            alignment: _isLeftHand ? Alignment.topLeft : Alignment.topRight,
-            child: Padding(
-              padding: _isLeftHand
-                  ? const EdgeInsets.only(left: 25)
-                  : const EdgeInsets.only(right: 25),
-              child: NavBarMenu(username: username),
-            ),
-          )
+        Align(
+          alignment: _isLeftHand ? Alignment.topLeft : Alignment.topRight,
+          child: Padding(
+            padding: _isLeftHand
+                ? const EdgeInsets.only(left: 25)
+                : const EdgeInsets.only(right: 25),
+            child: _showMenu
+                ? NavBarMenu(username: username)
+                : _showNotification
+                    ? const NotificationList()
+                    : const SizedBox(),
+          ),
+        )
       ],
     );
   }

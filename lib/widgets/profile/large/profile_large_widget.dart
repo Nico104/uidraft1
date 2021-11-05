@@ -197,113 +197,149 @@ class _ProfileState extends State<Profile> {
                   width: 600,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            //Username
-                            Text(
-                              widget.profileData['username'],
-                              style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize: 26,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                            //Follow Button
-                            FutureBuilder(
-                                future: isThisMe(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<bool> snapshotMe) {
-                                  if (snapshotMe.hasData) {
-                                    if (!snapshotMe.data!) {
-                                      return SizedBox(
-                                          width: 160,
-                                          height: 35,
-                                          child: (!_isFollowing)
-                                              ? TextButton(
-                                                  style: TextButton.styleFrom(
+                    child: FutureBuilder(
+                        future: isThisMe(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<bool> snapshotMe) {
+                          if (snapshotMe.hasData) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    //Username
+                                    Text(
+                                      widget.profileData['username'],
+                                      style: TextStyle(
+                                          fontFamily: 'Segoe UI',
+                                          fontSize: 26,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .brandColor),
+                                    ),
+                                    //Follow Button
+                                    !snapshotMe.data!
+                                        ? SizedBox(
+                                            width: 160,
+                                            height: 35,
+                                            child: (!_isFollowing)
+                                                ? TextButton(
+                                                    style: TextButton.styleFrom(
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                        ),
+                                                        backgroundColor:
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .brandColor),
+                                                    onPressed: () {},
+                                                    child: Text(
+                                                      'Follow',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Segoe UI Black',
+                                                          fontSize: 18,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .canvasColor),
+                                                    ),
+                                                  )
+                                                : OutlinedButton(
+                                                    style: OutlinedButton
+                                                        .styleFrom(
                                                       shape:
                                                           RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(30.0),
                                                       ),
-                                                      backgroundColor:
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .brandColor),
-                                                  onPressed: () {},
-                                                  child: Text(
-                                                    'Follow',
-                                                    style: TextStyle(
-                                                        fontFamily:
-                                                            'Segoe UI Black',
-                                                        fontSize: 18,
-                                                        color: Theme.of(context)
-                                                            .canvasColor),
-                                                  ),
-                                                )
-                                              : OutlinedButton(
-                                                  style:
-                                                      OutlinedButton.styleFrom(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              30.0),
+                                                      side: BorderSide(
+                                                          width: 2,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .brandColor),
                                                     ),
-                                                    side: BorderSide(
-                                                        width: 2,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .brandColor),
-                                                  ),
-                                                  onPressed: () {},
-                                                  child: Text(
-                                                    'Followed',
-                                                    style: TextStyle(
-                                                        fontFamily: 'Segoe UI',
-                                                        fontSize: 18,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .brandColor),
-                                                  ),
-                                                ));
-                                    } else {
-                                      //IsMe
-                                      return const SizedBox();
-                                    }
-                                  } else {
-                                    return const SizedBox();
-                                  }
-                                }),
-                          ],
-                        ),
-                        const SizedBox(height: 13),
-                        //Userpoints
-                        Text(
-                          widget.profileData['profilePoints'].toString() +
-                              ' points',
-                          style: TextStyle(
-                              fontFamily: 'Segoe UI',
-                              fontSize: 16,
-                              color: Theme.of(context).colorScheme.brandColor),
-                        ),
-                        const SizedBox(height: 34),
-                        //User Bio
-                        Text(
-                          widget.profileData['profileBio'],
-                          style: TextStyle(
-                              fontFamily: 'Segoe UI',
-                              fontSize: 16,
-                              color:
-                                  Theme.of(context).colorScheme.userBioColor),
-                        ),
-                      ],
-                    ),
+                                                    onPressed: () {},
+                                                    child: Text(
+                                                      'Followed',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Segoe UI',
+                                                          fontSize: 18,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .brandColor),
+                                                    ),
+                                                  ))
+                                        : const SizedBox()
+                                  ],
+                                ),
+                                //Message
+                                const SizedBox(height: 10),
+                                !snapshotMe.data!
+                                    ? SizedBox(
+                                        // width: 260,
+                                        height: 35,
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .brandColor),
+                                          onPressed: () {},
+                                          child: Text(
+                                            'Message ' +
+                                                widget.profileData['username'],
+                                            style: TextStyle(
+                                                fontFamily: 'Segoe UI Black',
+                                                fontSize: 18,
+                                                color: Theme.of(context)
+                                                    .canvasColor),
+                                          ),
+                                        ))
+                                    : const SizedBox(),
+
+                                const SizedBox(height: 13),
+                                //Userpoints
+                                Text(
+                                  widget.profileData['profilePoints']
+                                          .toString() +
+                                      ' points',
+                                  style: TextStyle(
+                                      fontFamily: 'Segoe UI',
+                                      fontSize: 16,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .brandColor),
+                                ),
+                                const SizedBox(height: 34),
+                                //User Bio
+                                Text(
+                                  widget.profileData['profileBio'],
+                                  style: TextStyle(
+                                      fontFamily: 'Segoe UI',
+                                      fontSize: 16,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .userBioColor),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        }),
                   ),
                 )
               ],
