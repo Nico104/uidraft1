@@ -15,6 +15,7 @@ import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
+import 'package:readmore/readmore.dart';
 // import 'dart:html' as html;
 
 void goFullScreen() {
@@ -228,6 +229,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                     _showMenu = true;
                                                     print(
                                                         "_showMenu set to true");
+                                                    _showQuality = false;
                                                   });
                                                 }
 
@@ -259,6 +261,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                     _showMenu = true;
                                                     print(
                                                         "_showMenu set to true");
+                                                    _showQuality = false;
                                                   });
                                                 }
 
@@ -1043,21 +1046,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                       width: 5,
                                                     ),
                                                     Text(widget
-                                                        .postData['postViews']
+                                                        .postData['_count'][
+                                                            'postWhatchtimeAnalytics']
                                                         .toString()),
-                                                    const SizedBox(
-                                                      width: 12,
-                                                    ),
-                                                    const Icon(
-                                                      Icons.trending_up,
-                                                      size: 24,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Text(widget.postData[
-                                                            'postRatingScore']
-                                                        .toString()),
+
+                                                    //SHow rating hwen not logged in
+                                                    // const SizedBox(
+                                                    //   width: 12,
+                                                    // ),
+                                                    // const Icon(
+                                                    //   Icons.trending_up,
+                                                    //   size: 24,
+                                                    // ),
+                                                    // const SizedBox(
+                                                    //   width: 5,
+                                                    // ),
+                                                    // Text(widget.postData[
+                                                    //         'postRatingScore']
+                                                    //     .toString()),
                                                     const SizedBox(
                                                       width: 10,
                                                     ),
@@ -1169,44 +1175,63 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                             ),
                                             //Post Published Date Time
                                             Text(widget.postData[
-                                                    'postPublishedDateTime'] ??
-                                                "published 15. October 2021"),
+                                                        'postPublishedDateTime'] !=
+                                                    null
+                                                ? "published " +
+                                                    formatDate(widget.postData[
+                                                        'postPublishedDateTime'])
+                                                : "published 15. October 2021"),
                                             const SizedBox(
                                               height: 50,
                                             ),
                                             //Post Description
-                                            Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  ConstrainedBox(
-                                                      constraints: isExpanded
-                                                          ? const BoxConstraints()
-                                                          : const BoxConstraints(
-                                                              maxHeight: 50.0),
-                                                      child: Text(
-                                                        widget.postData[
-                                                            'postDescription'],
-                                                        softWrap: true,
-                                                        overflow:
-                                                            TextOverflow.fade,
-                                                      )),
-                                                  isExpanded
-                                                      ? TextButton(
-                                                          child: const Text(
-                                                              'show less'),
-                                                          onPressed: () =>
-                                                              setState(() =>
-                                                                  isExpanded =
-                                                                      false))
-                                                      : TextButton(
-                                                          child: const Text(
-                                                              'show more'),
-                                                          onPressed: () =>
-                                                              setState(() =>
-                                                                  isExpanded =
-                                                                      true))
-                                                ]),
+                                            ReadMoreText(
+                                              widget
+                                                  .postData['postDescription'],
+                                              trimLines: 2,
+                                              colorClickableText: Colors.pink,
+                                              trimMode: TrimMode.Line,
+                                              trimCollapsedText: 'Show more',
+                                              trimExpandedText: 'Show less',
+                                              // moreStyle: TextStyle(
+                                              //     fontSize: 14,
+                                              //     fontWeight: FontWeight.bold),
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            // Column(
+                                            //     crossAxisAlignment:
+                                            //         CrossAxisAlignment.start,
+                                            //     children: <Widget>[
+                                            //       ConstrainedBox(
+                                            //           constraints: isExpanded
+                                            //               ? const BoxConstraints()
+                                            //               : const BoxConstraints(
+                                            //                   maxHeight: 50.0),
+                                            //           child: Text(
+                                            //             widget.postData[
+                                            //                 'postDescription'],
+                                            //             softWrap: true,
+                                            //             overflow:
+                                            //                 TextOverflow.fade,
+
+                                            //           )),
+                                            //       isExpanded
+                                            //           ? TextButton(
+                                            //               child: const Text(
+                                            //                   'show less'),
+                                            //               onPressed: () =>
+                                            //                   setState(() =>
+                                            //                       isExpanded =
+                                            //                           false))
+                                            //           : TextButton(
+                                            //               child: const Text(
+                                            //                   'show more'),
+                                            //               onPressed: () =>
+                                            //                   setState(() =>
+                                            //                       isExpanded =
+                                            //                           true))
+                                            //     ]),
 
                                             const SizedBox(
                                               height: 40,
@@ -1424,51 +1449,73 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                             Stack(
                                 alignment: Alignment.bottomCenter,
                                 children: [
-                                  // MouseRegion(
-                                  //   onHover: (PointerHoverEvent event) {
-                                  //     if (!_showMenu) {
-                                  //       if (mounted) {
-                                  //         setState(() {
-                                  //           _showMenu = true;
-                                  //           print("_showMenu set to true");
-                                  //         });
-                                  //       }
-
-                                  //       Future.delayed(
-                                  //           const Duration(seconds: 10), () {
-                                  //         if (_showMenu) {
-                                  //           if (mounted) {
-                                  //             setState(() {
-                                  //               _showMenu = false;
-                                  //               _showQuality = false;
-                                  //               print("_showMenu set to false");
-                                  //             });
-                                  //           }
-                                  //         }
-                                  //       });
-                                  //     }
-                                  //   },
-                                  //   child:
                                   VideoPlayerKeyboardListener(
                                     GestureDetector(
                                       behavior: HitTestBehavior.translucent,
                                       onTap: () {
                                         print("tap");
+                                        _firtTimeExternAccess = false;
                                         if (_controller.value.isPlaying) {
                                           if (mounted) {
                                             setState(() {
                                               _controller.pause();
                                               print("paused");
+
+                                              _showMenu = true;
+                                              print("_showMenu set to true");
+                                              _showQuality = false;
                                             });
                                           }
+
+                                          EasyDebounce.debounce(
+                                              'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                              const Duration(
+                                                  seconds:
+                                                      2), // <-- The debounce duration
+                                              () {
+                                            if (_showMenu) {
+                                              if (mounted) {
+                                                setState(() {
+                                                  _showMenu = false;
+                                                  _showQuality = false;
+                                                  print(
+                                                      "_showMenu set to false");
+                                                });
+                                              }
+                                            }
+                                          }); // <-- The target method
+
                                         } else {
                                           // If the video is paused, play it.
                                           if (mounted) {
                                             setState(() {
                                               _controller.play();
                                               print("playing");
+
+                                              _showMenu = true;
+                                              print("_showMenu set to true");
+                                              _showQuality = false;
                                             });
                                           }
+
+                                          EasyDebounce.debounce(
+                                              'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
+                                              const Duration(
+                                                  seconds:
+                                                      2), // <-- The debounce duration
+                                              () {
+                                            if (_showMenu) {
+                                              if (mounted) {
+                                                setState(() {
+                                                  _showMenu = false;
+                                                  _showQuality = false;
+                                                  print(
+                                                      "_showMenu set to false");
+                                                });
+                                              }
+                                            }
+                                          }); // <-- The target method
+
                                         }
                                       },
                                       child: IgnorePointer(

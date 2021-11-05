@@ -10,6 +10,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'profile_video_preview_large_widget.dart';
+import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
+    as vputils;
+import 'dart:html' as html;
 
 class ProfileLargeScreen extends StatelessWidget {
   const ProfileLargeScreen({Key? key, required this.profileData})
@@ -101,17 +104,15 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
 
-    print("UNV Debug 6");
     fetchUserPostIds(widget.profileData['username']).then((value) {
       ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
-    print("UNV Debug 5");
 
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
 
-    print("UNV Debug 7");
+    html.document.onContextMenu.listen((event) => event.preventDefault());
   }
 
   @override
@@ -160,27 +161,23 @@ class _ProfileState extends State<Profile> {
                             print("FutureBuilde Debug 2");
                             if (snapshot.data!) {
                               return Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 16, right: 16),
-                                child: IconButton(
-                                    hoverColor: Colors.transparent,
-                                    onPressed: () {
-                                      Beamer.of(context)
-                                          .beamToNamed("/updateprofile");
-                                    },
-                                    icon: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color: Colors.black87, width: 4),
-                                        color: Colors.blueAccent.shade100,
-                                      ),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 28,
-                                        color: Theme.of(context).canvasColor,
-                                      ),
-                                    )),
+                                padding:
+                                    const EdgeInsets.only(bottom: 16, right: 8),
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Colors.blueAccent.shade100,
+                                    shape: const CircleBorder(),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(4.0),
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  onPressed: () => Beamer.of(context)
+                                      .beamToNamed("/updateprofile"),
+                                ),
                               );
                             } else {
                               return const SizedBox();
@@ -216,52 +213,73 @@ class _ProfileState extends State<Profile> {
                                       Theme.of(context).colorScheme.brandColor),
                             ),
                             //Follow Button
-                            SizedBox(
-                                width: 160,
-                                height: 35,
-                                child: (!_isFollowing)
-                                    ? TextButton(
-                                        style: TextButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
-                                            ),
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .brandColor),
-                                        onPressed: () {},
-                                        child: Text(
-                                          'Follow',
-                                          style: TextStyle(
-                                              fontFamily: 'Segoe UI Black',
-                                              fontSize: 18,
-                                              color: Theme.of(context)
-                                                  .canvasColor),
-                                        ),
-                                      )
-                                    : OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                          side: BorderSide(
-                                              width: 2,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .brandColor),
-                                        ),
-                                        onPressed: () {},
-                                        child: Text(
-                                          'Followed',
-                                          style: TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 18,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .brandColor),
-                                        ),
-                                      )),
+                            FutureBuilder(
+                                future: isThisMe(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<bool> snapshotMe) {
+                                  if (snapshotMe.hasData) {
+                                    if (!snapshotMe.data!) {
+                                      return SizedBox(
+                                          width: 160,
+                                          height: 35,
+                                          child: (!_isFollowing)
+                                              ? TextButton(
+                                                  style: TextButton.styleFrom(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(30.0),
+                                                      ),
+                                                      backgroundColor:
+                                                          Theme.of(context)
+                                                              .colorScheme
+                                                              .brandColor),
+                                                  onPressed: () {},
+                                                  child: Text(
+                                                    'Follow',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Segoe UI Black',
+                                                        fontSize: 18,
+                                                        color: Theme.of(context)
+                                                            .canvasColor),
+                                                  ),
+                                                )
+                                              : OutlinedButton(
+                                                  style:
+                                                      OutlinedButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30.0),
+                                                    ),
+                                                    side: BorderSide(
+                                                        width: 2,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .brandColor),
+                                                  ),
+                                                  onPressed: () {},
+                                                  child: Text(
+                                                    'Followed',
+                                                    style: TextStyle(
+                                                        fontFamily: 'Segoe UI',
+                                                        fontSize: 18,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .brandColor),
+                                                  ),
+                                                ));
+                                    } else {
+                                      //IsMe
+                                      return const SizedBox();
+                                    }
+                                  } else {
+                                    return const SizedBox();
+                                  }
+                                }),
                           ],
                         ),
                         const SizedBox(height: 13),
@@ -321,25 +339,40 @@ class _ProfileState extends State<Profile> {
                             : Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(160, 100, 160, 0),
-                                child: GridView.count(
-                                  shrinkWrap: true,
-                                  childAspectRatio: (1280 / 1174),
-                                  // controller: _scrollController,
-                                  scrollDirection: Axis.vertical,
-                                  // Create a grid with 2 columns. If you change the scrollDirection to
-                                  // horizontal, this produces 2 rows.
-                                  crossAxisCount: 2,
-                                  // Generate 100 widgets that display their index in the List.
-                                  mainAxisSpacing: 10.0,
-                                  crossAxisSpacing: 40.0,
-                                  children: dataList.map((value) {
-                                    print("In Preview");
-                                    return ProfileVideoPreview(
-                                      postId: value,
-                                    );
-                                    // return (Text(value.toString()));
-                                  }).toList(),
-                                ),
+                                child: FutureBuilder(
+                                    future: isAuthenticated(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<int> snapshot) {
+                                      if (snapshot.hasData) {
+                                        return GridView.count(
+                                          shrinkWrap: true,
+                                          childAspectRatio: (1280 / 1174),
+                                          // controller: _scrollController,
+                                          scrollDirection: Axis.vertical,
+                                          // Create a grid with 2 columns. If you change the scrollDirection to
+                                          // horizontal, this produces 2 rows.
+                                          crossAxisCount: 2,
+                                          // Generate 100 widgets that display their index in the List.
+                                          mainAxisSpacing: 10.0,
+                                          crossAxisSpacing: 40.0,
+                                          children: dataList.map((value) {
+                                            print("In Preview");
+                                            return Listener(
+                                              child: ProfileVideoPreview(
+                                                postId: value,
+                                                isAuth: snapshot.data == 200,
+                                              ),
+                                              onPointerDown: (ev) =>
+                                                  vputils.onPointerDown(
+                                                      context, ev, value),
+                                            );
+                                            // return (Text(value.toString()));
+                                          }).toList(),
+                                        );
+                                      } else {
+                                        return const CircularProgressIndicator();
+                                      }
+                                    }),
                               ))),
           ],
         ),

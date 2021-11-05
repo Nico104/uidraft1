@@ -4,11 +4,15 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 
 class ProfileVideoPreview extends StatefulWidget {
   final int postId;
+  final bool isAuth;
 
-  const ProfileVideoPreview({Key? key, required this.postId}) : super(key: key);
+  const ProfileVideoPreview(
+      {Key? key, required this.postId, required this.isAuth})
+      : super(key: key);
 
   @override
   State<ProfileVideoPreview> createState() => _ProfileVideoPreviewState();
@@ -207,35 +211,55 @@ class _ProfileVideoPreviewState extends State<ProfileVideoPreview> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     //Score - trending icon
-                                    Icon(
-                                      Icons.trending_up_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                      size: 17,
-                                    ),
+                                    widget.isAuth
+                                        ? FutureBuilder(
+                                            future: getPostRatingScore(
+                                                widget.postId),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<int>
+                                                    snapshotRating) {
+                                              if (snapshotRating.hasData) {
+                                                return Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .trending_up_outlined,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .navBarIconColor,
+                                                      size: 17,
+                                                    ),
+                                                    //Score
+                                                    Text(snapshotRating.data
+                                                        .toString()),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    //Dot in the middle
+                                                    Container(
+                                                      width: 5,
+                                                      height: 5,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .navBarIconColor,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                return const SizedBox();
+                                              }
+                                            })
+                                        : const SizedBox(),
                                     const SizedBox(
                                       width: 4,
                                     ),
-                                    //Score
-                                    Text("699"),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    //Dot in the middle
-                                    Container(
-                                      width: 5,
-                                      height: 5,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .navBarIconColor,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
+
                                     //Comments Icon
                                     Icon(
                                       Icons.mode_comment_outlined,
@@ -248,7 +272,8 @@ class _ProfileVideoPreviewState extends State<ProfileVideoPreview> {
                                       width: 4,
                                     ),
                                     //Comment Count
-                                    Text("304"),
+                                    Text(snapshot.data!['_count']['comments']
+                                        .toString()),
                                   ],
                                 )
                               ],

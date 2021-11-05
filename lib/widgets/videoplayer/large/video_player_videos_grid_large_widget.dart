@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_video_preview_large_widget.dart';
+import 'dart:html' as html;
+import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
+    as vputils;
 
 class VideoPlayerVideosLargeScreen extends StatelessWidget {
   const VideoPlayerVideosLargeScreen({Key? key}) : super(key: key);
@@ -37,7 +41,7 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
   //Get PostIds List
   Future<void> fetchPostIds() async {
     try {
-      if(!_loading){
+      if (!_loading) {
         setState(() {
           _loading = true;
         });
@@ -73,11 +77,11 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
       }
     } catch (e) {
       setState(() {
-          _loading = false;
-          _error = true;
-        });
-        // throw Exception("Error: " + e.toString());
-        print("Error: " + e.toString());
+        _loading = false;
+        _error = true;
+      });
+      // throw Exception("Error: " + e.toString());
+      print("Error: " + e.toString());
       // Beamer.of(context).beamToNamed("/error/feed");
     }
   }
@@ -93,42 +97,66 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
 
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
+
+    //RightClicktest
+    // Prevent default event handler
+    html.document.onContextMenu.listen((event) => event.preventDefault());
+    //RightClicktest
   }
 
   @override
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : _error ?
-        Column(
-            children: [
-              const SizedBox(height: 150,),
-              const Text("There was an error while loading this Users Video"),
-              OutlinedButton(onPressed: () => fetchPostIds(), child: const Text("Reload Videos"))
-            ],
-          ) :  
-        Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-            child: GridView.count(
-              shrinkWrap: true,
-              childAspectRatio: (600 / 180),
-              controller: _scrollController,
-              scrollDirection: Axis.vertical,
-              // Create a grid with 2 columns. If you change the scrollDirection to
-              // horizontal, this produces 2 rows.
-              crossAxisCount: 1,
-              // Generate 100 widgets that display their index in the List.
-              mainAxisSpacing: 25.0,
-              // crossAxisSpacing: 40.0,
-              children: dataList.map((value) {
-                print("In Preview");
-                return VideoPlayerVideoPreview(
-                  postId: value,
-                );
-                // return (Text(value.toString()));
-              }).toList(),
-            ),
-          );
+        : _error
+            ? Column(
+                children: [
+                  const SizedBox(
+                    height: 150,
+                  ),
+                  const Text(
+                      "There was an error while loading this Users Video"),
+                  OutlinedButton(
+                      onPressed: () => fetchPostIds(),
+                      child: const Text("Reload Videos"))
+                ],
+              )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: FutureBuilder(
+                    future: isAuthenticated(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<int> snapshot) {
+                      if (snapshot.hasData) {
+                        return GridView.count(
+                          shrinkWrap: true,
+                          childAspectRatio: (600 / 180),
+                          controller: _scrollController,
+                          scrollDirection: Axis.vertical,
+                          // Create a grid with 2 columns. If you change the scrollDirection to
+                          // horizontal, this produces 2 rows.
+                          crossAxisCount: 1,
+                          // Generate 100 widgets that display their index in the List.
+                          mainAxisSpacing: 25.0,
+                          // crossAxisSpacing: 40.0,
+                          children: dataList.map((value) {
+                            print("In Preview");
+                            return Listener(
+                              child: VideoPlayerVideoPreview(
+                                postId: value,
+                                isAuth: snapshot.data == 200,
+                              ),
+                              onPointerDown: (ev) =>
+                                  vputils.onPointerDown(context, ev, value),
+                            );
+                            // return (Text(value.toString()));
+                          }).toList(),
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    }),
+              );
   }
 
   //// ADDING THE SCROLL LISTINER

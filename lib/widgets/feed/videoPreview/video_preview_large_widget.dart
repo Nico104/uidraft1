@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'package:beamer/beamer.dart';
-import 'package:uidraft1/screens/videoplayer/videoplayer_screen.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:uidraft1/widgets/videoplayer/large/video_player_large_widget.dart';
+import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 
 class VideoPreview extends StatefulWidget {
   final int postId;
+  final bool isAuth;
 
-  const VideoPreview({Key? key, required this.postId}) : super(key: key);
+  const VideoPreview({Key? key, required this.postId, required this.isAuth})
+      : super(key: key);
 
   @override
   State<VideoPreview> createState() => _VideoPreviewState();
@@ -209,35 +210,54 @@ class _VideoPreviewState extends State<VideoPreview> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     //Score - trending icon
-                                    Icon(
-                                      Icons.trending_up_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                      size: 17,
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    //Score
-                                    Text("699"),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    //Dot in the middle
-                                    Container(
-                                      width: 5,
-                                      height: 5,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .navBarIconColor,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
+                                    widget.isAuth
+                                        ? FutureBuilder(
+                                            future: getPostRatingScore(
+                                                widget.postId),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<int>
+                                                    snapshotRating) {
+                                              if (snapshotRating.hasData) {
+                                                return Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .trending_up_outlined,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .navBarIconColor,
+                                                      size: 17,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 4,
+                                                    ),
+                                                    //Score
+                                                    Text(snapshotRating.data
+                                                        .toString()),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    //Dot in the middle
+                                                    Container(
+                                                      width: 5,
+                                                      height: 5,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .navBarIconColor,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                return const SizedBox();
+                                              }
+                                            })
+                                        : const SizedBox(),
                                     //Comments Icon
                                     Icon(
                                       Icons.mode_comment_outlined,
@@ -250,7 +270,8 @@ class _VideoPreviewState extends State<VideoPreview> {
                                       width: 4,
                                     ),
                                     //Comment Count
-                                    Text("304"),
+                                    Text(snapshot.data!['_count']['comments']
+                                        .toString()),
                                     const SizedBox(
                                       width: 10,
                                     ),

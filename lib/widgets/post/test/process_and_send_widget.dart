@@ -101,7 +101,7 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     var request = http.MultipartRequest('POST', url);
 
     request.headers['Authorization'] = 'Bearer $token';
-    request.fields['postDescription'] = postTitle;
+    request.fields['postDescription'] = postDescription;
     request.fields['postSubchannelName'] = postSubchannelName;
     request.fields['postTitle'] = postTitle;
 

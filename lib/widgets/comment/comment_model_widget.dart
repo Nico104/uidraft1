@@ -1,4 +1,5 @@
 import 'package:beamer/beamer.dart';
+import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_util_methods.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,15 @@ class _CommentModelState extends State<CommentModel> {
   // bool _isHover
 
   final TextEditingController _commentTextController = TextEditingController();
+
+  //FocusNode
+  FocusNode fnReply = FocusNode();
+
+  @override
+  void dispose() {
+    fnReply.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,9 +124,13 @@ class _CommentModelState extends State<CommentModel> {
                                 children: [
                                   snapshot.data == 200
                                       ? TextButton(
-                                          onPressed: () => setState(() =>
-                                              _showReplyTextField =
-                                                  !_showReplyTextField),
+                                          onPressed: () {
+                                            setState(() => _showReplyTextField =
+                                                !_showReplyTextField);
+                                            if (_showReplyTextField) {
+                                              fnReply.requestFocus();
+                                            }
+                                          },
                                           child: Text("Reply"))
                                       : const SizedBox(),
                                   // Text("like"),
@@ -259,59 +273,68 @@ class _CommentModelState extends State<CommentModel> {
                       _showReplyTextField
                           ? Padding(
                               padding: const EdgeInsets.fromLTRB(20, 10, 5, 0),
-                              child: TextFormField(
-                                controller: _commentTextController,
-                                cursorColor: Colors.white,
-                                autocorrect: false,
-                                keyboardType: TextInputType.multiline,
-                                maxLength: 256,
-                                minLines: 1,
-                                maxLines: 20,
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(
-                                      Icons.send,
-                                      color: Colors.white70,
-                                    ),
-                                    onPressed: () {
-                                      sendReplyComment(
+                              child: KeyboardListener(
+                                // focusNode: fnReply,
+                                focusNode: FocusNode(),
+                                onKeyEvent: (event) {
+                                  if (event is KeyDownEvent) {
+                                    if (event.logicalKey.keyLabel == 'Enter') {
+                                      print("enter pressed");
+                                      _sendReply(
                                           snapshot.data!['commentPostId'],
-                                          snapshot.data!['commentId'],
-                                          _commentTextController.text);
-                                      print("pressed");
-                                      setState(() {
-                                        _commentTextController.text = "";
-                                        _showReplyTextField = false;
-                                      });
-                                    },
-                                  ),
-                                  labelText: "Reply to comment",
-                                  labelStyle: const TextStyle(
-                                      fontFamily: "Segoe UI",
-                                      color: Colors.white38,
-                                      fontSize: 14),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    borderSide:
-                                        const BorderSide(color: Colors.white54),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    borderSide:
-                                        const BorderSide(color: Colors.pink),
-                                  ),
-                                ),
-                                validator: (val) {
-                                  if (val!.isEmpty) {
-                                    return "Field cannot be empty";
-                                  } else {
-                                    return null;
+                                          snapshot.data!['commentId']);
+                                    }
                                   }
                                 },
-                                style: const TextStyle(
-                                    fontFamily: "Segoe UI",
-                                    color: Colors.white70,
-                                    fontSize: 14),
+                                child: TextFormField(
+                                  focusNode: fnReply,
+                                  controller: _commentTextController,
+                                  cursorColor: Colors.white,
+                                  autocorrect: false,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLength: 256,
+                                  minLines: 1,
+                                  maxLines: 20,
+                                  decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                        icon: const Icon(
+                                          Icons.send,
+                                          color: Colors.white70,
+                                        ),
+                                        onPressed: () => _sendReply(
+                                            snapshot.data!['commentPostId'],
+                                            snapshot.data!['commentId'])),
+                                    labelText: "Reply to comment",
+                                    labelStyle: const TextStyle(
+                                        fontFamily: "Segoe UI",
+                                        color: Colors.white38,
+                                        fontSize: 14),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.white54),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      borderSide:
+                                          const BorderSide(color: Colors.pink),
+                                    ),
+                                  ),
+                                  validator: (val) {
+                                    if (val!.isEmpty) {
+                                      return "Field cannot be empty";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  style: const TextStyle(
+                                      fontFamily: "Segoe UI",
+                                      color: Colors.white70,
+                                      fontSize: 14),
+                                  // onFieldSubmitted: (_) => _sendReply(
+                                  //     snapshot.data!['commentPostId'],
+                                  //     snapshot.data!['commentId']),
+                                ),
                               ),
                             )
                           : const SizedBox(),
@@ -351,94 +374,18 @@ class _CommentModelState extends State<CommentModel> {
                 )
               ],
             );
-            // return Container(
-            //   color: Colors.blue,
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.start,
-            //     // crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       //Profile Pictrue
-            //       Row(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           InkWell(
-            //             // excludeFromSemantics: true,
-            //             hoverColor: Colors.transparent,
-            //             focusColor: Colors.transparent,
-            //             highlightColor: Colors.transparent,
-            //             onTap: () {
-            //               Beamer.of(context).beamToNamed(
-            //                   'profile/' + snapshot.data!['commentUsername']);
-            //               print("go to profile");
-            //             },
-            //             child: ClipRRect(
-            //               borderRadius: BorderRadius.circular(14.0),
-            //               child: Image.network(
-            //                 baseURL +
-            //                     snapshot.data!['commentUser']['userProfile']
-            //                         ['profilePicturePath'],
-            //                 fit: BoxFit.cover,
-            //                 alignment: Alignment.center,
-            //                 width: 40,
-            //                 height: 40,
-            //               ),
-            //             ),
-            //           ),
-            //           const SizedBox(
-            //             width: 15,
-            //           ),
-            //           Container(
-            //             color: Colors.red,
-            //             child: Column(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               children: [
-            //                 Text(snapshot.data!['commentText'] +
-            //                     "sssssssssssssssssssssss\nssssssssssssssssssssssssssssssssssssssssss\nsssssssssssssssssssssssssssssssss"),
-            //                 const SizedBox(
-            //                   height: 5,
-            //                 ),
-            //                 Container(
-            //                   color: Colors.greenAccent,
-            //                   child: Row(
-            //                     children: [
-            //                       Text("Reply"),
-            //                       SizedBox(
-            //                         width: 10,
-            //                       ),
-            //                       Text("like"),
-            //                       SizedBox(
-            //                         width: 5,
-            //                       ),
-            //                       Text("score"),
-            //                       SizedBox(
-            //                         width: 5,
-            //                       ),
-            //                       Text("dislike")
-            //                     ],
-            //                   ),
-            //                 )
-            //               ],
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-
-            //       Row(
-            //         // mainAxisAlignment: MainAxisAlignment.end,
-            //         crossAxisAlignment: CrossAxisAlignment.end,
-            //         children: [
-            //           SizedBox(
-            //             width: 15,
-            //           ),
-            //           Text("show answers"),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // );
           } else {
             return const CircularProgressIndicator();
           }
         });
+  }
+
+  void _sendReply(int postId, int commentId) {
+    sendReplyComment(postId, commentId, _commentTextController.text.trim());
+    print("pressed");
+    setState(() {
+      _commentTextController.text = "";
+      _showReplyTextField = false;
+    });
   }
 }

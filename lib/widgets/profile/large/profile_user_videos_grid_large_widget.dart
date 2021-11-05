@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 
 import 'profile_video_preview_large_widget.dart';
+import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
+    as vputils;
+import 'dart:html' as html;
 
 class ProfileUserVideosLargeScreen extends StatelessWidget {
   const ProfileUserVideosLargeScreen({Key? key}) : super(key: key);
@@ -95,6 +99,11 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
 
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
+
+    //RightClicktest
+    // Prevent default event handler
+    html.document.onContextMenu.listen((event) => event.preventDefault());
+    //RightClicktest
   }
 
   @override
@@ -123,25 +132,39 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
               )
             : Padding(
                 padding: const EdgeInsets.fromLTRB(160, 100, 160, 0),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  childAspectRatio: (1280 / 1174),
-                  controller: _scrollController,
-                  scrollDirection: Axis.vertical,
-                  // Create a grid with 2 columns. If you change the scrollDirection to
-                  // horizontal, this produces 2 rows.
-                  crossAxisCount: 2,
-                  // Generate 100 widgets that display their index in the List.
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 40.0,
-                  children: dataList.map((value) {
-                    print("In Preview");
-                    return ProfileVideoPreview(
-                      postId: value,
-                    );
-                    // return (Text(value.toString()));
-                  }).toList(),
-                ),
+                child: FutureBuilder(
+                    future: isAuthenticated(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<int> snapshot) {
+                      if (snapshot.hasData) {
+                        return GridView.count(
+                          shrinkWrap: true,
+                          childAspectRatio: (1280 / 1174),
+                          controller: _scrollController,
+                          scrollDirection: Axis.vertical,
+                          // Create a grid with 2 columns. If you change the scrollDirection to
+                          // horizontal, this produces 2 rows.
+                          crossAxisCount: 2,
+                          // Generate 100 widgets that display their index in the List.
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 40.0,
+                          children: dataList.map((value) {
+                            print("In Preview");
+                            return Listener(
+                              child: ProfileVideoPreview(
+                                postId: value,
+                                isAuth: snapshot.data == 200,
+                              ),
+                              onPointerDown: (ev) =>
+                                  vputils.onPointerDown(context, ev, value),
+                            );
+                            // return (Text(value.toString()));
+                          }).toList(),
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    }),
               );
   }
 

@@ -1,9 +1,12 @@
 import 'dart:convert';
 
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/widgets/feed/videoPreview/video_preview_large_widget.dart';
+import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
+    as vputils;
+import 'dart:html' as html;
 
 class FeedGridLargeScreen extends StatelessWidget {
   const FeedGridLargeScreen({Key? key}) : super(key: key);
@@ -114,6 +117,11 @@ class _FeedGridState extends State<FeedGrid> {
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
     //print(postIds);
+
+    //RightClicktest
+    // Prevent default event handler
+    html.document.onContextMenu.listen((event) => event.preventDefault());
+    //RightClicktest
   }
 
   @override
@@ -150,24 +158,38 @@ class _FeedGridState extends State<FeedGrid> {
                         padding: MediaQuery.of(context).size.width <= 1500
                             ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
                             : const EdgeInsets.fromLTRB(310, 120, 310, 0),
-                        child: GridView.count(
-                          // physics: const AlwaysScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          childAspectRatio:
-                              MediaQuery.of(context).size.width >= 1700
-                                  ? (1280 / 1174)
-                                  : (1280 / 1240),
-                          // controller: _scrollController,
-                          scrollDirection: Axis.vertical,
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 40.0,
-                          children: dataList.map((value) {
-                            return VideoPreview(
-                              postId: value,
-                            );
-                          }).toList(),
-                        ),
+                        child: FutureBuilder(
+                            future: isAuthenticated(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<int> snapshot) {
+                              if (snapshot.hasData) {
+                                return GridView.count(
+                                  // physics: const AlwaysScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  childAspectRatio:
+                                      MediaQuery.of(context).size.width >= 1700
+                                          ? (1280 / 1174)
+                                          : (1280 / 1240),
+                                  // controller: _scrollController,
+                                  scrollDirection: Axis.vertical,
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 10.0,
+                                  crossAxisSpacing: 40.0,
+                                  children: dataList.map((value) {
+                                    return Listener(
+                                      child: VideoPreview(
+                                        postId: value,
+                                        isAuth: snapshot.data == 200,
+                                      ),
+                                      onPointerDown: (ev) => vputils
+                                          .onPointerDown(context, ev, value),
+                                    );
+                                  }).toList(),
+                                );
+                              } else {
+                                return const CircularProgressIndicator();
+                              }
+                            }),
                       ),
                     ],
                   ),

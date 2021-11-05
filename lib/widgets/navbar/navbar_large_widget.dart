@@ -1,9 +1,11 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:html' as html;
 
 import 'package:uidraft1/widgets/navbar/navbar_menu_large_widget.dart';
 
@@ -77,12 +79,26 @@ class _NavBarLargeState extends State<NavBarLarge> {
                           ? Alignment.centerRight
                           : Alignment.centerLeft,
                       //Logo
-                      child: Text(
-                        "LOGO",
-                        style: TextStyle(
-                            fontFamily: 'Segoe UI Black',
-                            fontSize: 28,
-                            color: Theme.of(context).colorScheme.brandColor),
+                      child: InkWell(
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          print("taped");
+                          // html.window.location.reload();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const FeedScreen()),
+                          );
+                        },
+                        child: Text(
+                          "LOGO",
+                          style: TextStyle(
+                              fontFamily: 'Segoe UI Black',
+                              fontSize: 28,
+                              color: Theme.of(context).colorScheme.brandColor),
+                        ),
                       ),
                     ),
                     //SearchBar

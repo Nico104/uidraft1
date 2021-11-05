@@ -4,11 +4,14 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 
 class VideoPlayerVideoPreview extends StatefulWidget {
   final int postId;
+  final bool isAuth;
 
-  const VideoPlayerVideoPreview({Key? key, required this.postId})
+  const VideoPlayerVideoPreview(
+      {Key? key, required this.postId, required this.isAuth})
       : super(key: key);
 
   @override
@@ -192,48 +195,69 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   //Score - trending icon
-                                  Icon(
-                                    Icons.trending_up_outlined,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .navBarIconColor,
-                                    size: 10,
-                                  ),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                  //Score
-                                  Text(
-                                    "699",
-                                    style: TextStyle(
-                                        fontFamily: 'Segoe UI',
-                                        fontSize:
-                                            MediaQuery.of(context).size.width >=
-                                                    1650
-                                                ? 12
-                                                : 8,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .videoPreviewTextColor,
-                                        letterSpacing: 1),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  //Dot in the middle
-                                  Container(
-                                    width: 5,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
+                                  widget.isAuth
+                                      ? FutureBuilder(
+                                          future:
+                                              getPostRatingScore(widget.postId),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<int>
+                                                  snapshotRating) {
+                                            if (snapshotRating.hasData) {
+                                              return Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.trending_up_outlined,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .navBarIconColor,
+                                                    size: 10,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 4,
+                                                  ),
+                                                  //Score
+                                                  Text(
+                                                    snapshotRating.data
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontFamily: 'Segoe UI',
+                                                        fontSize: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width >=
+                                                                1650
+                                                            ? 12
+                                                            : 8,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .videoPreviewTextColor,
+                                                        letterSpacing: 1),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  //Dot in the middle
+                                                  Container(
+                                                    width: 5,
+                                                    height: 5,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .navBarIconColor,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              return const SizedBox();
+                                            }
+                                          })
+                                      : const SizedBox(),
+
                                   //Comments Icon
                                   Icon(
                                     Icons.mode_comment_outlined,
@@ -247,7 +271,8 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                                   ),
                                   //Comment Count
                                   Text(
-                                    "304",
+                                    snapshot.data!['_count']['comments']
+                                        .toString(),
                                     style: TextStyle(
                                         fontFamily: 'Segoe UI',
                                         fontSize:
