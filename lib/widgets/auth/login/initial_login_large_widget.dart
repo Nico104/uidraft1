@@ -9,7 +9,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InitialLoginLargeScreen extends StatelessWidget {
-  const InitialLoginLargeScreen({Key? key}) : super(key: key);
+  const InitialLoginLargeScreen({Key? key, required this.username})
+      : super(key: key);
+
+  final String username;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +31,13 @@ class InitialLoginLargeScreen extends StatelessWidget {
             ),
           ),
         ),
-        const Center(
-          child: SizedBox(height: 620, width: 400, child: InitialLoginForm()),
+        Center(
+          child: SizedBox(
+              height: 620,
+              width: 400,
+              child: InitialLoginForm(
+                username: username,
+              )),
         )
       ],
     );
@@ -37,7 +45,9 @@ class InitialLoginLargeScreen extends StatelessWidget {
 }
 
 class InitialLoginForm extends StatefulWidget {
-  const InitialLoginForm({Key? key}) : super(key: key);
+  const InitialLoginForm({Key? key, required this.username}) : super(key: key);
+
+  final String username;
 
   @override
   _InitialLoginFormState createState() => _InitialLoginFormState();
@@ -77,6 +87,12 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
     fnNewConfirmPAssword.dispose();
     fnNewPassword.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fnPassword.requestFocus();
   }
 
   //LoginMethod
@@ -144,6 +160,7 @@ class _InitialLoginFormState extends State<InitialLoginForm> {
                     }
                   },
                   child: TextFormField(
+                    initialValue: widget.username,
                     controller: _usernameTextController,
                     style: const TextStyle(
                         fontSize: 15,

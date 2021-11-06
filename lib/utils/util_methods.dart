@@ -12,3 +12,10 @@ String formatDate(String ufDate) {
   final String formatted = formatter.format(date);
   return formatted;
 }
+
+String formatNotificationDate(String ufDate) {
+  DateTime date = DateTime.parse(ufDate);
+  final DateFormat formatter = DateFormat('dd MMM\nhh:mm');
+  final String formatted = formatter.format(date);
+  return formatted;
+}

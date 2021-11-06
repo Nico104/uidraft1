@@ -425,7 +425,7 @@ class _NavBarLargeState extends State<NavBarLarge> {
             child: _showMenu
                 ? NavBarMenu(username: username)
                 : _showNotification
-                    ? const NotificationList()
+                    ? NotificationList(myUsername: username)
                     : const SizedBox(),
           ),
         )

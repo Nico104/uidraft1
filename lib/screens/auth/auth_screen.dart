@@ -10,11 +10,15 @@ import 'package:uidraft1/widgets/auth/signup/sign_up_v2_large_widget.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen(
-      {Key? key, required this.isLoginInitial, required this.firstTimeLogin})
+      {Key? key,
+      required this.isLoginInitial,
+      required this.firstTimeLogin,
+      this.username})
       : super(key: key);
 
   final bool isLoginInitial;
   final bool firstTimeLogin;
+  final String? username;
 
   @override
   _AuthState createState() => _AuthState();
@@ -42,7 +46,7 @@ class _AuthState extends State<AuthScreen> {
           children: [
             isLogin
                 ? widget.firstTimeLogin
-                    ? const InitialLoginLargeScreen()
+                    ? InitialLoginLargeScreen(username: widget.username ?? "")
                     : const LoginLargeScreen()
                 : const SignUpV2LargeScreen(),
             Row(
