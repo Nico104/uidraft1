@@ -50,42 +50,47 @@ class _CustomFeedListState extends State<CustomFeedList>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: durMilliseconds),
-      curve: Curves.fastLinearToSlowEaseIn,
-      width: _width,
-      // height: _height,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(14)),
-        color: Theme.of(context).colorScheme.searchBarColor,
-      ),
-      child: AnimatedOpacity(
-        curve: Curves.ease,
-        opacity: _visible ? 1.0 : 0.0,
-        duration: Duration(milliseconds: (durMilliseconds / 2).round()),
-        child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: FutureBuilder(
-              future: cfUtils.fetchUserCustomFeedsPreview(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                if (snapshot.hasData) {
-                  print("DEBUZG");
-                  if (_showEdit) {
-                    return CustomFeedEdit(
-                        isLeftHand: widget.isLeftHand,
-                        cfId: snapshot.data!
-                            .elementAt(activeIndex!)['customFeedId'],
-                        back: back,
-                        isNew: _isNew);
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 80),
+      alignment: Alignment.topCenter,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: durMilliseconds),
+        curve: Curves.fastLinearToSlowEaseIn,
+        width: _width,
+        // height: _height,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(14)),
+          color: Theme.of(context).colorScheme.searchBarColor,
+        ),
+        child: AnimatedOpacity(
+          curve: Curves.ease,
+          opacity: _visible ? 1.0 : 0.0,
+          duration: Duration(milliseconds: (durMilliseconds / 2).round()),
+          child: ScrollConfiguration(
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            child: FutureBuilder(
+                future: cfUtils.fetchUserCustomFeedsPreview(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.hasData) {
+                    print("DEBUZG");
+                    if (_showEdit) {
+                      return CustomFeedEdit(
+                          isLeftHand: widget.isLeftHand,
+                          cfId: snapshot.data!
+                              .elementAt(activeIndex!)['customFeedId'],
+                          back: back,
+                          isNew: _isNew);
+                    } else {
+                      return Column(
+                          children: _getCustomFeedsList(snapshot.data!));
+                    }
                   } else {
-                    return Column(
-                        children: _getCustomFeedsList(snapshot.data!));
+                    return const CircularProgressIndicator();
                   }
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              }),
+                }),
+          ),
         ),
       ),
     );

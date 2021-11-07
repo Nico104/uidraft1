@@ -19,11 +19,24 @@ import 'navbar_menu_large_widget.dart';
 // class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLarge extends StatefulWidget {
   const NavBarLarge(
-      {Key? key, required this.setActiveFeed, required this.activeFeed})
+      {Key? key,
+      required this.setActiveFeed,
+      required this.activeFeed,
+      this.leftHand = true,
+      this.notification = true,
+      this.theme = true,
+      this.customFeed = true,
+      this.profile = true})
       : super(key: key);
 
   final int activeFeed;
   final Function(int i) setActiveFeed;
+
+  final bool leftHand;
+  final bool notification;
+  final bool theme;
+  final bool customFeed;
+  final bool profile;
 
   @override
   State<NavBarLarge> createState() => _NavBarLargeState();
@@ -226,158 +239,188 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             //LeftHand Switch
-                                            IconButton(
-                                              icon: Icon(
-                                                _isLeftHand
-                                                    ? Icons.switch_left
-                                                    : Icons.switch_right,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .navBarIconColor,
-                                                size: 24,
-                                              ),
-                                              onPressed: () => setState(() {
-                                                _isLeftHand = !_isLeftHand;
-                                              }),
-                                            ),
+                                            widget.leftHand
+                                                ? IconButton(
+                                                    icon: Icon(
+                                                      _isLeftHand
+                                                          ? Icons.switch_left
+                                                          : Icons.switch_right,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .navBarIconColor,
+                                                      size: 24,
+                                                    ),
+                                                    onPressed: () =>
+                                                        setState(() {
+                                                      _isLeftHand =
+                                                          !_isLeftHand;
+                                                    }),
+                                                  )
+                                                : const SizedBox(),
                                             const SizedBox(
                                               width: 18,
                                             ),
                                             //Notifications
-                                            FutureBuilder(
-                                                future:
-                                                    getMyUnseenNotificationCount(),
-                                                builder: (BuildContext context,
-                                                    AsyncSnapshot snapshot) {
-                                                  if (snapshot.hasData) {
-                                                    return InkWell(
-                                                        splashColor:
-                                                            Colors.transparent,
-                                                        hoverColor:
-                                                            Colors.transparent,
-                                                        highlightColor:
-                                                            Colors.transparent,
-                                                        onTap: () {
-                                                          setState(() {
-                                                            if (activeMenu ==
-                                                                Menu.notification) {
-                                                              activeMenu =
-                                                                  Menu.none;
-                                                            } else {
-                                                              activeMenu = Menu
-                                                                  .notification;
-                                                            }
-                                                          });
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .notifications_none_outlined,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .navBarIconColor,
-                                                              size: 26,
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 2,
-                                                            ),
-                                                            Text(snapshot.data
-                                                                .toString())
-                                                          ],
-                                                        ));
-                                                  } else {
-                                                    return const SizedBox();
-                                                  }
-                                                }),
+                                            widget.notification
+                                                ? FutureBuilder(
+                                                    future:
+                                                        getMyUnseenNotificationCount(),
+                                                    builder:
+                                                        (BuildContext context,
+                                                            AsyncSnapshot
+                                                                snapshot) {
+                                                      if (snapshot.hasData) {
+                                                        return InkWell(
+                                                            splashColor: Colors
+                                                                .transparent,
+                                                            hoverColor: Colors
+                                                                .transparent,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            onTap: () {
+                                                              setState(() {
+                                                                if (activeMenu ==
+                                                                    Menu.notification) {
+                                                                  activeMenu =
+                                                                      Menu.none;
+                                                                } else {
+                                                                  activeMenu = Menu
+                                                                      .notification;
+                                                                }
+                                                              });
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .notifications_none_outlined,
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .navBarIconColor,
+                                                                  size: 26,
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 2,
+                                                                ),
+                                                                Text(snapshot
+                                                                    .data
+                                                                    .toString())
+                                                              ],
+                                                            ));
+                                                      } else {
+                                                        return const SizedBox();
+                                                      }
+                                                    })
+                                                : const SizedBox(),
                                             const SizedBox(
                                               width: 18,
                                             ),
                                             //Dark Light Mode Switch
-                                            Consumer<ThemeNotifier>(
-                                              builder: (context, theme, _) =>
-                                                  InkWell(
-                                                splashColor: Colors.transparent,
-                                                hoverColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                onTap: () {
-                                                  if (theme.getTheme() ==
-                                                      theme.darkTheme) {
-                                                    theme.setLightMode();
-                                                  } else {
-                                                    theme.setDarkMode();
-                                                  }
-                                                },
-                                                child: Icon(
-                                                  Icons.dark_mode_outlined,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .navBarIconColor,
-                                                  size: 24,
-                                                ),
-                                              ),
-                                            ),
+                                            widget.theme
+                                                ? Consumer<ThemeNotifier>(
+                                                    builder:
+                                                        (context, theme, _) =>
+                                                            InkWell(
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      hoverColor:
+                                                          Colors.transparent,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      onTap: () {
+                                                        if (theme.getTheme() ==
+                                                            theme.darkTheme) {
+                                                          theme.setLightMode();
+                                                        } else {
+                                                          theme.setDarkMode();
+                                                        }
+                                                      },
+                                                      child: Icon(
+                                                        Icons
+                                                            .dark_mode_outlined,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .navBarIconColor,
+                                                        size: 24,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
                                             const SizedBox(
                                               width: 18,
                                             ),
                                             //CustomFeedSelection
-                                            InkWell(
-                                              splashColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () {
-                                                setState(() {
-                                                  if (activeMenu ==
-                                                      Menu.customfeed) {
-                                                    activeMenu = Menu.none;
-                                                  } else {
-                                                    activeMenu =
-                                                        Menu.customfeed;
-                                                  }
-                                                });
-                                              },
-                                              child: Icon(
-                                                Icons.filter_list_outlined,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .navBarIconColor,
-                                                size: 30,
-                                              ),
-                                            ),
+                                            widget.customFeed
+                                                ? InkWell(
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () {
+                                                      setState(() {
+                                                        if (activeMenu ==
+                                                            Menu.customfeed) {
+                                                          activeMenu =
+                                                              Menu.none;
+                                                        } else {
+                                                          activeMenu =
+                                                              Menu.customfeed;
+                                                        }
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons
+                                                          .filter_list_outlined,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .navBarIconColor,
+                                                      size: 30,
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
                                             const SizedBox(
                                               width: 32,
                                             ),
                                             //ProfilePicture
-                                            InkWell(
-                                              splashColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () {
-                                                setState(() {
-                                                  if (activeMenu == Menu.menu) {
-                                                    activeMenu = Menu.none;
-                                                  } else {
-                                                    activeMenu = Menu.menu;
-                                                  }
-                                                });
-                                              },
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(14.0),
-                                                child: Image.network(
-                                                  baseURL +
-                                                      snapshot.data[
-                                                          'profilePicturePath'],
-                                                  fit: BoxFit.contain,
-                                                  width: 40,
-                                                  height: 40,
-                                                ),
-                                              ),
-                                            ),
+                                            widget.profile
+                                                ? InkWell(
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () {
+                                                      setState(() {
+                                                        if (activeMenu ==
+                                                            Menu.menu) {
+                                                          activeMenu =
+                                                              Menu.none;
+                                                        } else {
+                                                          activeMenu =
+                                                              Menu.menu;
+                                                        }
+                                                      });
+                                                    },
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              14.0),
+                                                      child: Image.network(
+                                                        baseURL +
+                                                            snapshot.data[
+                                                                'profilePicturePath'],
+                                                        fit: BoxFit.contain,
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
                                           ],
                                         );
                                       } else {
