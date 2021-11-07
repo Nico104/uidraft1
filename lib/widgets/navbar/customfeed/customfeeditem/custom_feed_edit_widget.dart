@@ -41,7 +41,7 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           return snapshot.hasData
-              ? Column(children: [
+              ? Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                   MenuBar(
                     customFeedName: snapshot.data!['customFeedName'],
                     customFeedId: widget.cfId,
@@ -50,7 +50,14 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
                     isNew: widget.isNew,
                   ),
                   const SizedBox(height: 12),
-                  getBodyWidget(activeSearchElement, snapshot.data!),
+                  AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return ScaleTransition(child: child, scale: animation);
+                      },
+                      child:
+                          getBodyWidget(activeSearchElement, snapshot.data!)),
                 ])
               : const SizedBox(height: 300, child: CircularProgressIndicator());
         });
