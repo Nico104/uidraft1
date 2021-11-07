@@ -49,7 +49,7 @@ class _ChooseSubchannelState extends State<ChooseSubchannel> {
 
   final TextEditingController _searchText = TextEditingController();
 
-  //Get PostIds List
+  //Get SubchannleNames List
   Future<void> fetchSubchannels(String search) async {
     // subchannelNames = [];
     try {

@@ -80,7 +80,8 @@ class _ChatNotificationState extends State<ChatNotification> {
                           "seem like you two did not contact each other yet"));
                 }
               } else {
-                return const CircularProgressIndicator();
+                return const SizedBox(
+                    height: 400, child: CircularProgressIndicator());
               }
             }),
         //New Message

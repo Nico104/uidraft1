@@ -11,6 +11,8 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedState extends State<FeedScreen> {
+  int activeFeed = 0;
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
@@ -25,10 +27,29 @@ class _FeedState extends State<FeedScreen> {
       largeScreen: Material(
         child: Stack(
           alignment: Alignment.topCenter,
-          children: const [FeedGridLargeScreen(), NavBarLarge()],
+          children: [
+            const FeedGridLargeScreen(),
+            NavBarLarge(
+              setActiveFeed: setActiveFeedTo,
+              activeFeed: activeFeed,
+            ),
+            activeFeed != 0
+                ? Center(
+                    child: Text(
+                    activeFeed.toString(),
+                    style: const TextStyle(fontSize: 44, color: Colors.purple),
+                  ))
+                : const SizedBox()
+          ],
         ),
       ),
       veryLargeScreen: Text("veryLargeScreen"),
     );
+  }
+
+  void setActiveFeedTo(int i) {
+    setState(() {
+      activeFeed = i;
+    });
   }
 }

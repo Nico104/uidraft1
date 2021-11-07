@@ -56,12 +56,15 @@ class MyApp extends StatelessWidget {
       print("Key: $name, Value: ${shortcuts[name]}");
     }
     return Consumer<ThemeNotifier>(builder: (context, theme, _) {
-      return MaterialApp.router(
-        shortcuts: shortcuts,
-        debugShowCheckedModeBanner: false,
-        theme: theme.getTheme(),
-        routerDelegate: routerDelegate,
-        routeInformationParser: BeamerParser(),
+      return GestureDetector(
+        onTap: () => print("TAP"),
+        child: MaterialApp.router(
+          shortcuts: shortcuts,
+          debugShowCheckedModeBanner: false,
+          theme: theme.getTheme(),
+          routerDelegate: routerDelegate,
+          routeInformationParser: BeamerParser(),
+        ),
       );
     });
   }

@@ -90,3 +90,37 @@ Future<List<Map<String, dynamic>>> fetchConversationWithUser(
     throw Exception('Failed to load conversation');
   }
 }
+
+//See Notification
+Future<void> seeNotification(int notiId) async {
+  print("NotiId: " + notiId.toString());
+  // String? token = await getToken();
+  final response = await http.patch(
+    Uri.parse(baseURL + 'user/seeNotification/$notiId'),
+    // headers: {
+    //   'Content-Type': 'application/json',
+    //   'Accept': 'application/json',
+    //   'Authorization': 'Bearer $token',
+    // },
+  );
+
+  print("Status Code: " + response.statusCode.toString());
+  print(response.body);
+  // if (response.statusCode == 200) {
+  //   List<Map<String, dynamic>> notifications = <Map<String, dynamic>>[];
+  //   List<dynamic> values = <dynamic>[];
+  //   values = json.decode(response.body);
+  //   if (values.isNotEmpty) {
+  //     for (int i = 0; i < values.length; i++) {
+  //       if (values[i] != null) {
+  //         Map<String, dynamic> map = values[i];
+  //         notifications.add(map);
+  //       }
+  //     }
+  //   }
+  //   return notifications;
+  // } else {
+  //   // If that call was not successful, throw an error.
+  //   throw Exception('Failed to load conversation');
+  // }
+}
