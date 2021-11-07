@@ -27,6 +27,7 @@ enum CFsearchElement { none, subchannel, tag, creator }
 
 class _CustomFeedEditState extends State<CustomFeedEdit> {
   CFsearchElement activeSearchElement = CFsearchElement.none;
+  double? _height = null;
 
   backToEdit() {
     setState(() {
@@ -67,6 +68,13 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
   Widget getBodyWidget(CFsearchElement se, Map<String, dynamic> map) {
     switch (se) {
       case CFsearchElement.none:
+        Future.delayed(Duration.zero, () async {
+          if (mounted) {
+            setState(() {
+              _height = null;
+            });
+          }
+        });
         return Column(
           children: [
             //Subchannels
@@ -132,6 +140,13 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
           ],
         );
       case CFsearchElement.subchannel:
+        Future.delayed(Duration.zero, () async {
+          if (mounted) {
+            setState(() {
+              _height = null;
+            });
+          }
+        });
         return ChooseSubchannelUtil(
             notifyParent: (val) =>
                 addToCustomFeed(CFElement.subchannel, widget.cfId, val)
@@ -140,14 +155,15 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
                         })));
       case CFsearchElement.tag:
         return SizedBox(
-            height: 600,
-            child: ChooseTagUtil(
-                notifyParent: (val) =>
-                    addToCustomFeed(CFElement.tag, widget.cfId, val)
-                        .then((value) => setState(() {
-                              activeSearchElement = CFsearchElement.none;
-                            })),
-                back: backToEdit));
+          height: 600,
+          child: ChooseTagUtil(
+              notifyParent: (val) =>
+                  addToCustomFeed(CFElement.tag, widget.cfId, val)
+                      .then((value) => setState(() {
+                            activeSearchElement = CFsearchElement.none;
+                          })),
+              back: backToEdit),
+        );
       case CFsearchElement.creator:
         return SizedBox(
           height: 600,
