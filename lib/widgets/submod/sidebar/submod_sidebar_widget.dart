@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/widgets/submod/sidebar/sidebar_item_widget.dart';
 
 class SubModSideBar extends StatefulWidget {
-  const SubModSideBar({Key? key}) : super(key: key);
+  const SubModSideBar({Key? key, required this.setIndex}) : super(key: key);
+
+  final Function(int) setIndex;
 
   @override
   _SubModSideBarState createState() => _SubModSideBarState();
 }
 
 class _SubModSideBarState extends State<SubModSideBar> {
-  // final double _width = 100;
-  double _elevation = 0;
-  // double _opacity = 0;
-
   bool _isExpanded = false;
 
   @override
@@ -38,28 +37,78 @@ class _SubModSideBarState extends State<SubModSideBar> {
       child: Material(
         elevation: 8,
         child: AnimatedContainer(
-          // clipBehavior: Clip.antiAlias,
           width: _isExpanded ? 200 : 100,
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.only(
-          //       topRight: Radius.circular(_isExpanded ? 34 : 0),
-          //       bottomRight: Radius.circular(_isExpanded ? 34 : 0)),
-          // color: Colors.white54,
-          // ),
           height: double.infinity,
           curve: Curves.fastOutSlowIn,
           duration: const Duration(milliseconds: 200),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SideBarItem(isExpanded: _isExpanded, fun: () => print("fun")),
+              //Logo-Header
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      "LOGO",
+                      style: TextStyle(
+                          fontFamily: 'Segoe UI Black',
+                          // fontSize: 28,
+                          color: Theme.of(context).colorScheme.brandColor),
+                    ),
+                  ),
+                ),
+              ),
+              //MenuItems
+              Column(
+                children: [
+                  SideBarItem(
+                    isExpanded: _isExpanded,
+                    label: 'Data',
+                    icon: Icons.build,
+                    index: 0,
+                    setIndex: widget.setIndex,
+                  ),
+                  const SizedBox(height: 18),
+                  SideBarItem(
+                    isExpanded: _isExpanded,
+                    label: 'Users',
+                    icon: Icons.people,
+                    index: 1,
+                    setIndex: widget.setIndex,
+                  ),
+                  const SizedBox(height: 18),
+                  SideBarItem(
+                    isExpanded: _isExpanded,
+                    label: 'Posts',
+                    icon: Icons.missed_video_call,
+                    index: 2,
+                    setIndex: widget.setIndex,
+                  ),
+                ],
+              ),
+              //Exit
+              Column(
+                children: [
+                  SideBarItem(
+                    isExpanded: _isExpanded,
+                    label: 'Data',
+                    icon: Icons.exit_to_app,
+                    setIndex: (int) {
+                      print("exit");
+                    },
+                    index: 3,
+                  ),
+                  const SizedBox(height: 18)
+                ],
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
-  void expand() {}
-  void collapse() {}
 }

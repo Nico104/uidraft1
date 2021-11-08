@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:uidraft1/widgets/submod/sidebar/submod_sidebar_widget.dart';
+import 'package:uidraft1/widgets/submod/sidebar/users/userlist.dart';
 
 class SubMod extends StatefulWidget {
   const SubMod({Key? key}) : super(key: key);
@@ -18,149 +19,45 @@ class SubMod extends StatefulWidget {
 class _SubModState extends State<SubMod> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
-  double _elevation = 0;
+
+  void setSelectedIndex(int i) {
+    // WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+    //       _selectedIndex = i;
+    //     }));
+    // print(_selectedIndex);
+    setState(() {
+      _selectedIndex = i;
+    });
+
+    print(_selectedIndex);
+  }
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
       smallScreen: Text("smallScreen"),
       mediumScreen: Text("mediumScreen"),
-      largeScreen:
-          // Scaffold(
-          //   body: Row(
-          //     children: <Widget>[
-          //       NavigationRail(
-          //         selectedIndex: _selectedIndex,
-          //         onDestinationSelected: (int index) {
-          //           setState(() {
-          //             _selectedIndex = index;
-          //           });
-          //         },
-          //         labelType: NavigationRailLabelType.selected,
-          //         destinations: const [
-          //           NavigationRailDestination(
-          //             icon: Icon(Icons.favorite_border),
-          //             selectedIcon: Icon(Icons.favorite),
-          //             label: Text('First'),
-          //           ),
-          //           NavigationRailDestination(
-          //             icon: Icon(Icons.bookmark_border),
-          //             selectedIcon: Icon(Icons.book),
-          //             label: Text('Second'),
-          //           ),
-          //           NavigationRailDestination(
-          //             icon: Icon(Icons.star_border),
-          //             selectedIcon: Icon(Icons.star),
-          //             label: Text('Third'),
-          //           ),
-          //         ],
-          //       ),
-          //       const VerticalDivider(thickness: 1, width: 1),
-          //       // This is the main content.
-          //       Expanded(
-          //         child: Center(
-          //           child: Text('selectedIndex: $_selectedIndex'),
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
-
-          // Scaffold(
-          //     key: scaffoldKey,
-          //     drawer: ClipRRect(
-          //       borderRadius: const BorderRadius.only(
-          //           topRight: Radius.circular(25),
-          //           bottomRight: Radius.circular(25)),
-          //       child: SizedBox(
-          //         width: 250,
-          //         child: Drawer(
-          //           child: Container(
-          //             color: Colors.grey.shade500,
-          //             child: ListView(
-          //               children: [
-          //                 InkWell(
-          //                   onTap: () => Navigator.pop(context),
-          //                   onHover: (val) {
-          //                     print(val);
-          //                     if (val) {
-          //                       setState(() {
-          //                         _elevation = 18;
-          //                       });
-          //                     } else {
-          //                       setState(() {
-          //                         _elevation = 0;
-          //                       });
-          //                     }
-          //                   },
-          //                   child: Padding(
-          //                     padding: const EdgeInsets.fromLTRB(25, 8, 25, 8),
-          //                     child: AnimatedPhysicalModel(
-          //                       duration: const Duration(milliseconds: 500),
-          //                       curve: Curves.fastOutSlowIn,
-          //                       elevation: _elevation,
-          //                       shape: BoxShape.rectangle,
-          //                       shadowColor: Colors.black,
-          //                       color: Colors.green,
-          //                       // borderRadius: _first
-          //                       //     ? const BorderRadius.all(Radius.circular(0))
-          //                       //     : const BorderRadius.all(Radius.circular(10)),
-          //                       child: const Icon(Icons.menu),
-          //                     ),
-          //                   ),
-          //                 )
-          //               ],
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     body: Stack(
-          //       children: <Widget>[
-          //         // new Center(
-          //         //     child: new Column(
-          //         //   children: <Widget>[],
-          //         // )),
-          //         Container(
-          //             width: double.infinity,
-          //             height: double.infinity,
-          //             color: Colors.purple),
-          //         Positioned(
-          //           left: 10,
-          //           top: 20,
-          //           child: IconButton(
-          //             icon: const Icon(Icons.menu),
-          //             onPressed: () => scaffoldKey.currentState!.openDrawer(),
-          //           ),
-          //         ),
-          //       ],
-          //     )),
-          Material(
+      largeScreen: Material(
         child: Stack(
           children: [
-            // Container(
-            //   height: double.infinity,
-            //   width: double.infinity,
-            //   color: Colors.blueGrey,
-            // ),
             Row(
-              children: const [
-                // Container(
-                //   width: 100,
-                //   height: double.infinity,
-                //   color: Colors.white54,
-                // ),
-                SubModSideBar(),
-                VerticalDivider(
+              children: [
+                //SideBar
+                SubModSideBar(setIndex: setSelectedIndex),
+                const VerticalDivider(
                   thickness: 1,
                   width: 1,
                   color: Colors.white54,
                 ),
+                //Tab
                 Expanded(
-                  child: SizedBox(
-                    height: double.infinity,
-                    // color: Colors.blueGrey,
-                    child: Center(child: Text("test")),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: getBody(_selectedIndex),
                   ),
                 )
               ],
@@ -170,5 +67,49 @@ class _SubModState extends State<SubMod> {
       ),
       veryLargeScreen: Text("veryLargeScreen"),
     );
+  }
+}
+
+Widget getBody(int index) {
+  switch (index) {
+    case (0):
+      return Container(
+          key: ValueKey<int>(index),
+          color: Colors.blue,
+          child: const Center(child: Text("0")));
+    case (1):
+      return Container(
+          key: ValueKey<int>(index),
+          // color: Colors.green,
+          child: Row(
+            children: [
+              Flexible(flex: 1, child: Container()),
+              Expanded(
+                flex: 4,
+                child: Container(
+                    color: Colors.amber.shade900,
+                    height: 800,
+                    width: 500,
+                    child: SubmodUserlist()),
+              ),
+              Flexible(flex: 1, child: Container()),
+              Flexible(
+                flex: 4,
+                child: Container(
+                  color: Colors.purple,
+                  width: 500,
+                  height: 800,
+                ),
+              ),
+              Flexible(flex: 1, child: Container()),
+            ],
+          ));
+    case (2):
+      return Container(
+          key: ValueKey<int>(index),
+          color: Colors.yellow,
+          child: const Center(child: Text("2")));
+    default:
+      return const Center(child: Text("default"));
   }
 }

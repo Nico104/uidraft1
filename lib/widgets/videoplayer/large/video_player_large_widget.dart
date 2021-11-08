@@ -78,6 +78,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   //Tags
   List<String> taglist = <String>[];
 
+  //SliderTest
+  double sliderval = 50;
+
   @override
   void initState() {
     //Tagstart
@@ -1024,18 +1027,59 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                 return const SizedBox();
                                                               }
                                                             })
-                                                        : Row(
-                                                            children: const [
-                                                              Text(
-                                                                  "login to rate and comment post",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white38)),
+                                                        :
+                                                        //SliderTest
+                                                        Row(
+                                                            children: [
                                                               SizedBox(
+                                                                width: 250,
+                                                                child: Slider(
+                                                                  value:
+                                                                      sliderval,
+                                                                  min: 0,
+                                                                  max: 100,
+                                                                  divisions: 23,
+
+                                                                  activeColor: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .brandColor,
+                                                                  thumbColor: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .brandColor,
+                                                                  // label: sliderval
+                                                                  //     .round()
+                                                                  //     .toString(),
+                                                                  onChanged:
+                                                                      (double
+                                                                          value) {
+                                                                    setState(
+                                                                        () {
+                                                                      sliderval =
+                                                                          value;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
                                                                 width: 40,
                                                               )
                                                             ],
                                                           ),
+
+                                                    // Row(
+                                                    //     children: const [
+                                                    //       Text(
+                                                    //           "login to rate and comment post",
+                                                    //           style: TextStyle(
+                                                    //               color: Colors
+                                                    //                   .white38)),
+                                                    //       SizedBox(
+                                                    //         width: 40,
+                                                    //       )
+                                                    //     ],
+                                                    //   ),
 
                                                     //Post Metrics
                                                     const Icon(
