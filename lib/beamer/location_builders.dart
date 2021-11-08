@@ -12,6 +12,7 @@ import 'package:uidraft1/screens/profile/profile_screen.dart';
 import 'package:uidraft1/screens/studio/studio_screen.dart';
 import 'package:uidraft1/screens/subchannel/create/create_subchannel_screen.dart';
 import 'package:uidraft1/screens/subchannel/subchannel_screen.dart';
+import 'package:uidraft1/screens/subchannelmod/submod_screen.dart';
 import 'package:uidraft1/screens/uploadVideo/upload_video_screen.dart';
 import 'package:uidraft1/screens/videoplayer/videoplayer_screen.dart';
 import 'package:uidraft1/widgets/auth/password/change_password_widget.dart';
@@ -149,6 +150,12 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           key: const ValueKey('studio'),
           title: 'studio',
           child: const StudioScreen(),
+        ),
+
+    'submod': (context, state) => BeamPage(
+          key: const ValueKey('submod'),
+          title: 'submod',
+          child: const SubMod(),
         ),
 
     // 'auth': (context, state) => BeamPage(

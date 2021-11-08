@@ -26,7 +26,8 @@ Map<ShortcutActivator, Intent> getShortcut() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
   final routerDelegate = BeamerDelegate(
-    initialPath: '/feed',
+    // initialPath: '/feed',
+    initialPath: '/submod',
     locationBuilder: simpleLocationBuilder,
   );
 
