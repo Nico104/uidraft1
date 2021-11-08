@@ -6,7 +6,7 @@ import 'package:uidraft1/widgets/profile/large/profile_large_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:uidraft1/widgets/submod/submod_sidebar_widget.dart';
+import 'package:uidraft1/widgets/submod/sidebar/submod_sidebar_widget.dart';
 
 class SubMod extends StatefulWidget {
   const SubMod({Key? key}) : super(key: key);
@@ -138,11 +138,11 @@ class _SubModState extends State<SubMod> {
           Material(
         child: Stack(
           children: [
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.blueGrey,
-            ),
+            // Container(
+            //   height: double.infinity,
+            //   width: double.infinity,
+            //   color: Colors.blueGrey,
+            // ),
             Row(
               children: const [
                 // Container(
@@ -151,6 +151,11 @@ class _SubModState extends State<SubMod> {
                 //   color: Colors.white54,
                 // ),
                 SubModSideBar(),
+                VerticalDivider(
+                  thickness: 1,
+                  width: 1,
+                  color: Colors.white54,
+                ),
                 Expanded(
                   child: SizedBox(
                     height: double.infinity,
