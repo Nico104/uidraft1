@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/subchannel/subchannel_util_methods.dart';
 import 'package:uidraft1/widgets/subchannel/large/subchannel_video_preview_large_widget.dart';
 
 import 'subchannel_videos_grid_large_widget.dart';
@@ -195,82 +196,110 @@ class _SubchannelState extends State<Subchannel> {
                 const SizedBox(
                   height: 17,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 160,
-                      height: 35,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          side: BorderSide(
-                              width: 2,
-                              color: Theme.of(context).colorScheme.brandColor),
-                        ),
-                        onPressed: () => setState(() {
-                          print("About pressed");
-                          _showAboutText = !_showAboutText;
-                        }),
-                        child: Text(
-                          'About',
-                          style: TextStyle(
-                              fontFamily: 'Segoe UI',
-                              fontSize: 18,
-                              color: Theme.of(context).colorScheme.brandColor),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    SizedBox(
-                        width: 160,
-                        height: 35,
-                        child: (!_isFollowing)
-                            ? TextButton(
-                                style: TextButton.styleFrom(
+                StatefulBuilder(builder:
+                    (BuildContext context, StateSetter setStateButtonBar) {
+                  return FutureBuilder(
+                      future: isMember(widget.subchannelData['subchannelName']),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<bool> snapshotIsMember) {
+                        if (snapshotIsMember.hasData) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 160,
+                                height: 35,
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30.0),
                                     ),
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                                onPressed: () {},
-                                child: Text(
-                                  'Follow',
-                                  style: TextStyle(
-                                      fontFamily: 'Segoe UI Black',
-                                      fontSize: 18,
-                                      color: Theme.of(context).canvasColor),
-                                ),
-                              )
-                            : OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
+                                    side: BorderSide(
+                                        width: 2,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .brandColor),
                                   ),
-                                  side: BorderSide(
-                                      width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .brandColor),
+                                  onPressed: () => setState(() {
+                                    print("About pressed");
+                                    _showAboutText = !_showAboutText;
+                                  }),
+                                  child: Text(
+                                    'About',
+                                    style: TextStyle(
+                                        fontFamily: 'Segoe UI',
+                                        fontSize: 18,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .brandColor),
+                                  ),
                                 ),
-                                onPressed: () {},
-                                child: Text(
-                                  'Followed',
-                                  style: TextStyle(
-                                      fontFamily: 'Segoe UI',
-                                      fontSize: 18,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .brandColor),
-                                ),
-                              )),
-                  ],
-                ),
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              SizedBox(
+                                  width: 160,
+                                  height: 35,
+                                  child: (!snapshotIsMember.data!)
+                                      //  (!_isFollowing)
+                                      ? TextButton(
+                                          style: TextButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .brandColor),
+                                          onPressed: () => enterSubchannel(
+                                                  widget.subchannelData[
+                                                      'subchannelName'])
+                                              .then((value) =>
+                                                  setStateButtonBar(() {})),
+                                          child: Text(
+                                            'Follow',
+                                            style: TextStyle(
+                                                fontFamily: 'Segoe UI Black',
+                                                fontSize: 18,
+                                                color: Theme.of(context)
+                                                    .canvasColor),
+                                          ),
+                                        )
+                                      : OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            side: BorderSide(
+                                                width: 2,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .brandColor),
+                                          ),
+                                          onPressed: () => leaveSubchannel(
+                                                  widget.subchannelData[
+                                                      'subchannelName'])
+                                              .then((value) =>
+                                                  setStateButtonBar(() {})),
+                                          child: Text(
+                                            'Followed',
+                                            style: TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 18,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .brandColor),
+                                          ),
+                                        )),
+                            ],
+                          );
+                        } else {
+                          return const SizedBox();
+                        }
+                      });
+                }),
                 const SizedBox(
                   height: 40,
                 ),

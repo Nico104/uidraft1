@@ -37,9 +37,13 @@ import 'dart:convert';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubmodUserlist extends StatefulWidget {
-  const SubmodUserlist({Key? key}) : super(key: key);
+  const SubmodUserlist({Key? key, required this.handleUsername})
+      : super(key: key);
+
+  final Function(String) handleUsername;
 
   @override
   _SubmodUserlistState createState() => _SubmodUserlistState();
@@ -57,36 +61,42 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
 
   int _tabindex = 0;
 
-  //Get SubchannleNames List
-  Future<void> fetchUsers(String search, int tabindex) async {
-    try {
-      final response =
-          await http.get(Uri.parse(baseURL + 'user/searchUser/$search'));
+  // //Get SubchannleNames List
+  // Future<void> fetchUsers(String search, int method
+  //     // , String subchannel
+  //     ) async {
+  //   try {
+  //     final response =
+  //         await http.get(Uri.parse(baseURL + 'user/searchUser/$search'));
 
-      if (response.statusCode == 200) {
-        userNames.clear();
-        List<dynamic> values = <dynamic>[];
-        values = json.decode(response.body);
-        if (values.isNotEmpty) {
-          for (int i = 0; i < values.length; i++) {
-            if (values[i] != null) {
-              Map<String, dynamic> map = values[i];
-              userNames.add([
-                '${map['username']}',
-                '${map['userProfile']['profilePicturePath']}'
-              ]);
-            }
-          }
-        }
-        setState(() {
-          _loading = false;
-        });
-      } else {
-        throw Exception('Failed to load users');
-      }
-    } catch (e) {
-      print("Error: " + e.toString());
-    }
+  //     if (response.statusCode == 200) {
+  //       userNames.clear();
+  //       List<dynamic> values = <dynamic>[];
+  //       values = json.decode(response.body);
+  //       if (values.isNotEmpty) {
+  //         for (int i = 0; i < values.length; i++) {
+  //           if (values[i] != null) {
+  //             Map<String, dynamic> map = values[i];
+  //             userNames.add([
+  //               '${map['username']}',
+  //               '${map['userProfile']['profilePicturePath']}'
+  //             ]);
+  //           }
+  //         }
+  //       }
+  //       setState(() {
+  //         _loading = false;
+  //       });
+  //     } else {
+  //       throw Exception('Failed to load users');
+  //     }
+  //   } catch (e) {
+  //     print("Error: " + e.toString());
+  //   }
+  // }
+
+  void addUserNameToList(String username, String profilePicturePath) {
+    userNames.add([username, profilePicturePath]);
   }
 
   @override
@@ -94,8 +104,11 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
     _loading = false;
 
     super.initState();
-    WidgetsBinding.instance!
-        .addPostFrameCallback((_) => fetchUsers(_searchText.text, 0));
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      userNames.clear();
+      fetchMembersBy(_searchText.text, 0, 'isgut', addUserNameToList)
+          .then((value) => setState(() {}));
+    });
   }
 
   @override
@@ -139,7 +152,9 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                         const Duration(
                             milliseconds: 300), // <-- The debounce duration
                         () async {
-                      await fetchUsers(text, 0);
+                      userNames.clear();
+                      await fetchMembersBy(text, 0, 'isgut', addUserNameToList)
+                          .then((value) => setState(() {}));
                       setState(() {
                         print("username searched for $text");
                         print("usernameList: " + userNames.toString());
@@ -162,10 +177,14 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                             print(val);
                             _tabindex = val;
                           },
-                          tabs: [
-                            Tab(icon: Icon(Icons.directions_car)),
-                            Tab(icon: Icon(Icons.directions_transit)),
-                            Tab(icon: Icon(Icons.directions_bike)),
+                          tabs: const [
+                            Tab(
+                                icon: Icon(Icons.people),
+                                child: Text("Members")),
+                            Tab(
+                                icon: Icon(Icons.videocam),
+                                child: Text("Posters")),
+                            Tab(icon: Icon(Icons.shield), child: Text("Mods")),
                           ],
                         ),
                       ],
@@ -180,8 +199,8 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                     itemCount: userNames.length,
                     itemBuilder: (context, index) {
                       return InkWell(
-                        // onTap: () => widget.notifyParent(
-                        //     userNames.elementAt(index).elementAt(0)),
+                        onTap: () => widget.handleUsername(
+                            userNames.elementAt(index).elementAt(0)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,

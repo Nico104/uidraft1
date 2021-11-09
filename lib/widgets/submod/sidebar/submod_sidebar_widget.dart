@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/widgets/submod/sidebar/sidebar_item_widget.dart';
@@ -52,12 +53,15 @@ class _SubModSideBarState extends State<SubModSideBar> {
                   padding: const EdgeInsets.all(16.0),
                   child: FittedBox(
                     fit: BoxFit.contain,
-                    child: Text(
-                      "LOGO",
-                      style: TextStyle(
-                          fontFamily: 'Segoe UI Black',
-                          // fontSize: 28,
-                          color: Theme.of(context).colorScheme.brandColor),
+                    child: InkWell(
+                      onTap: () => Beamer.of(context).beamToNamed('/feed'),
+                      child: Text(
+                        "LOGO",
+                        style: TextStyle(
+                            fontFamily: 'Segoe UI Black',
+                            // fontSize: 28,
+                            color: Theme.of(context).colorScheme.brandColor),
+                      ),
                     ),
                   ),
                 ),
