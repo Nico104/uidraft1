@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:uidraft1/widgets/submod/sidebar/submod_sidebar_widget.dart';
-import 'package:uidraft1/widgets/submod/sidebar/users/userlist.dart';
+import 'package:uidraft1/widgets/submod/submod_users/submod_user_tab.dart';
 
 class SubMod extends StatefulWidget {
   const SubMod({Key? key}) : super(key: key);
@@ -81,29 +81,7 @@ Widget getBody(int index) {
       return Container(
           key: ValueKey<int>(index),
           // color: Colors.green,
-          child: Row(
-            children: [
-              Flexible(flex: 1, child: Container()),
-              Expanded(
-                flex: 4,
-                child: Container(
-                    color: Colors.amber.shade900,
-                    height: 800,
-                    width: 500,
-                    child: SubmodUserlist()),
-              ),
-              Flexible(flex: 1, child: Container()),
-              Flexible(
-                flex: 4,
-                child: Container(
-                  color: Colors.purple,
-                  width: 500,
-                  height: 800,
-                ),
-              ),
-              Flexible(flex: 1, child: Container()),
-            ],
-          ));
+          child: const SubModUsersTab());
     case (2):
       return Container(
           key: ValueKey<int>(index),
