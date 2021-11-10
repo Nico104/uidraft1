@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
+import 'package:uidraft1/widgets/submod/submod_posts/submod_post_list_item_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_member_details.dart';
 import 'package:uidraft1/widgets/submod/submod_users/userlist.dart';
 
@@ -24,303 +27,111 @@ class _SubModPostTabState extends State<SubModPostTab> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      shrinkWrap: true,
-      itemCount: 100,
-      itemBuilder: (context, index) {
-        return InkWell(
-          // onTap: () =>
-          //     widget.handleUsername(userNames.elementAt(index).elementAt(0)),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Spacer(),
-                Flexible(
-                  flex: 3,
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(14)),
-                      child: Image.network(
-                        // baseURL + userNames.elementAt(index).elementAt(1),
-                        "https://picsum.photos/1280/720",
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
-                        // width: 40,
-                        // height: 40,
-                      ),
-                    ),
-                  ),
+    return Stack(
+      children: [
+        ListView.separated(
+          shrinkWrap: true,
+          itemCount: 100,
+          itemBuilder: (context, index) {
+            return SubModPostListItem();
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Column(
+              children: const [
+                // SizedBox(
+                //   height: 8,
+                // ),
+                Divider(
+                  color: Colors.white60,
                 ),
-                const Spacer(),
-                Flexible(
-                  fit: FlexFit.tight,
-                  flex: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        // userNames.elementAt(index).first,
-                        "Title jojojsjas",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        // userNames.elementAt(index).first,
-                        "Title jojojsjas",
-                        style: TextStyle(fontSize: 13, color: Colors.white38),
-                      ),
-                    ],
-                  ),
-                ),
-                const Spacer(),
-                Flexible(
-                  flex: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        // userNames.elementAt(index).first,
-                        "Reports: ",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        // userNames.elementAt(index).first,
-                        "Rating: ",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        // userNames.elementAt(index).first,
-                        "Views: ",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        // userNames.elementAt(index).first,
-                        "UploadDateTime: ",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      // SizedBox(height: 8),
-                    ],
-                  ),
-                ),
-                const Spacer(),
-                Flexible(
-                  flex: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //Delete
-                      Row(
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              side: BorderSide(
-                                  width: 2,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                            onPressed: () {},
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Icon(Icons.delete,
-                                  size: 22,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                          ),
-                          const SizedBox(width: 0),
-                          Tooltip(
-                              // padding: EdgeInsets.all(20),
-                              margin: const EdgeInsets.all(4),
-                              // showDuration: Duration(seconds: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.7),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(4)),
-                              ),
-                              textStyle: const TextStyle(color: Colors.white),
-                              preferBelow: true,
-                              verticalOffset: 20,
-                              message: "This is a Tooltip",
-                              child: Icon(Icons.info,
-                                  size: 20,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .brandColor)),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              side: BorderSide(
-                                  width: 2,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                            onPressed: () {},
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Icon(Icons.delete,
-                                  size: 22,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                          ),
-                          const SizedBox(width: 0),
-                          Tooltip(
-                              // padding: EdgeInsets.all(20),
-                              margin: const EdgeInsets.all(4),
-                              // showDuration: Duration(seconds: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.7),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(4)),
-                              ),
-                              textStyle: const TextStyle(color: Colors.white),
-                              preferBelow: true,
-                              verticalOffset: 20,
-                              message: "This is a Tooltip",
-                              child: Icon(Icons.info,
-                                  size: 20,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .brandColor)),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              side: BorderSide(
-                                  width: 2,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                            onPressed: () {},
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Icon(Icons.delete,
-                                  size: 22,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                          ),
-                          const SizedBox(width: 0),
-                          Tooltip(
-                              // padding: EdgeInsets.all(20),
-                              margin: const EdgeInsets.all(4),
-                              // showDuration: Duration(seconds: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.7),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(4)),
-                              ),
-                              textStyle: const TextStyle(color: Colors.white),
-                              preferBelow: true,
-                              verticalOffset: 20,
-                              message: "This is a Tooltip",
-                              child: Icon(Icons.info,
-                                  size: 20,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .brandColor)),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              side: BorderSide(
-                                  width: 2,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                            onPressed: () {},
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Icon(Icons.delete,
-                                  size: 22,
-                                  color:
-                                      Theme.of(context).colorScheme.brandColor),
-                            ),
-                          ),
-                          const SizedBox(width: 0),
-                          Tooltip(
-                              // padding: EdgeInsets.all(20),
-                              margin: const EdgeInsets.all(4),
-                              // showDuration: Duration(seconds: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.7),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(4)),
-                              ),
-                              textStyle: const TextStyle(color: Colors.white),
-                              preferBelow: true,
-                              verticalOffset: 20,
-                              message: "This is a Tooltip",
-                              child: Icon(Icons.info,
-                                  size: 20,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .brandColor)),
-                        ],
-                      ),
-                      // SizedBox(height: 8),
-                      // Text(
-                      //   // userNames.elementAt(index).first,
-                      //   "Rating: ",
-                      //   style: TextStyle(fontSize: 16, color: Colors.white),
-                      // ),
-                      // SizedBox(height: 8),
-                      // Text(
-                      //   // userNames.elementAt(index).first,
-                      //   "Views: ",
-                      //   style: TextStyle(fontSize: 16, color: Colors.white),
-                      // ),
-                      // const SizedBox(height: 8),
-                      // const Text(
-                      //   // userNames.elementAt(index).first,
-                      //   "UploadDateTime: ",
-                      //   style: TextStyle(fontSize: 16, color: Colors.white),
-                      // ),
-                      // SizedBox(height: 8),
-                    ],
-                  ),
-                ),
+                // SizedBox(
+                //   height: 8,
+                // ),
               ],
-            ),
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return Column(
-          children: const [
-            // SizedBox(
-            //   height: 8,
-            // ),
-            Divider(
-              color: Colors.white60,
-            ),
-            // SizedBox(
-            //   height: 8,
-            // ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+        Positioned(
+            right: 20,
+            top: 20,
+            child: Container(
+              // color: Colors.purple.withOpacity(0.9),
+              width: 180,
+              height: 40,
+              child: KeyboardListener(
+                focusNode: FocusNode(),
+                // focusNode: fnUsername,
+                // onKeyEvent: (event) {
+                //   if (event is KeyDownEvent) {
+                //     if (event.logicalKey.keyLabel == 'Tab') {
+                //       print("Tab pressed");
+                //       fnPassword.requestFocus();
+                //     }
+                //   }
+                // },
+                child: SizedBox(
+                  width: 350,
+                  child: TextFormField(
+                    // autofocus: true,
+                    // controller: _usernameTextController,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 1),
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      labelText: 'Search',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                      // errorText: errorText,
+                    ),
+                    validator: (value) {
+                      //check if username exists
+                      if (value == null || value.isEmpty) {
+                        return 'You may enter your username, sir';
+                      }
+                      return null;
+                    },
+                    // onFieldSubmitted: (_) => submit(),
+                  ),
+                ),
+              ),
+            ))
+      ],
     );
   }
 }
