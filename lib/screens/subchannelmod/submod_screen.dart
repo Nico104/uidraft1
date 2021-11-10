@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:uidraft1/widgets/submod/sidebar/submod_sidebar_widget.dart';
+import 'package:uidraft1/widgets/submod/submod_posts/submod_post_tab_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_user_tab.dart';
 
 class SubMod extends StatefulWidget {
@@ -85,8 +86,8 @@ Widget getBody(int index) {
     case (2):
       return Container(
           key: ValueKey<int>(index),
-          color: Colors.yellow,
-          child: const Center(child: Text("2")));
+          // color: Colors.yellow,
+          child: const SubModPostTab());
     default:
       return const Center(child: Text("default"));
   }
