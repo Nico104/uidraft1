@@ -1,42 +1,5 @@
 import 'package:flutter/material.dart';
-
-// class SubmodUserlist extends StatelessWidget {
-//   const SubmodUserlist({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: DefaultTabController(
-//         length: 3,
-//         child: Scaffold(
-//           appBar: AppBar(
-//             bottom: const TabBar(
-//               tabs: [
-//                 Tab(icon: Icon(Icons.directions_car)),
-//                 Tab(icon: Icon(Icons.directions_transit)),
-//                 Tab(icon: Icon(Icons.directions_bike)),
-//               ],
-//             ),
-//             title: const Text('Tabs Demo'),
-//           ),
-//           body: const TabBarView(
-//             children: [
-//               Icon(Icons.directions_car),
-//               Icon(Icons.directions_transit),
-//               Icon(Icons.directions_bike),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-import 'dart:convert';
-
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubmodUserlist extends StatefulWidget {
@@ -61,40 +24,6 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
 
   int _tabindex = 0;
 
-  // //Get SubchannleNames List
-  // Future<void> fetchUsers(String search, int method
-  //     // , String subchannel
-  //     ) async {
-  //   try {
-  //     final response =
-  //         await http.get(Uri.parse(baseURL + 'user/searchUser/$search'));
-
-  //     if (response.statusCode == 200) {
-  //       userNames.clear();
-  //       List<dynamic> values = <dynamic>[];
-  //       values = json.decode(response.body);
-  //       if (values.isNotEmpty) {
-  //         for (int i = 0; i < values.length; i++) {
-  //           if (values[i] != null) {
-  //             Map<String, dynamic> map = values[i];
-  //             userNames.add([
-  //               '${map['username']}',
-  //               '${map['userProfile']['profilePicturePath']}'
-  //             ]);
-  //           }
-  //         }
-  //       }
-  //       setState(() {
-  //         _loading = false;
-  //       });
-  //     } else {
-  //       throw Exception('Failed to load users');
-  //     }
-  //   } catch (e) {
-  //     print("Error: " + e.toString());
-  //   }
-  // }
-
   void addUserNameToList(String username, String profilePicturePath) {
     userNames.add([username, profilePicturePath]);
   }
@@ -106,7 +35,7 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       userNames.clear();
-      fetchMembersBy(_searchText.text, 0, 'isgut', addUserNameToList)
+      fetchMembersBy(_searchText.text, _tabindex, 'isgut', addUserNameToList)
           .then((value) => setState(() {}));
     });
   }
@@ -153,12 +82,13 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                             milliseconds: 300), // <-- The debounce duration
                         () async {
                       userNames.clear();
-                      await fetchMembersBy(text, 0, 'isgut', addUserNameToList)
+                      await fetchMembersBy(
+                              text, _tabindex, 'isgut', addUserNameToList)
                           .then((value) => setState(() {}));
-                      setState(() {
-                        print("username searched for $text");
-                        print("usernameList: " + userNames.toString());
-                      });
+                      // setState(() {
+                      //   print("username searched for $text");
+                      //   print("usernameList: " + userNames.toString());
+                      // });
                     } // <-- The target method
                         );
                   },
@@ -168,14 +98,20 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
               SizedBox(
                 height: 100,
                 child: DefaultTabController(
-                    length: 3,
+                    length: 4,
                     initialIndex: 0,
                     child: Column(
                       children: [
                         TabBar(
-                          onTap: (val) {
+                          onTap: (val) async {
                             print(val);
-                            _tabindex = val;
+                            setState(() {
+                              _tabindex = val;
+                            });
+                            userNames.clear();
+                            await fetchMembersBy(_searchText.text, _tabindex,
+                                    'isgut', addUserNameToList)
+                                .then((value) => setState(() {}));
                           },
                           tabs: const [
                             Tab(
@@ -185,6 +121,9 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                                 icon: Icon(Icons.videocam),
                                 child: Text("Posters")),
                             Tab(icon: Icon(Icons.shield), child: Text("Mods")),
+                            Tab(
+                                icon: Icon(Icons.cancel),
+                                child: Text("Banned")),
                           ],
                         ),
                       ],
