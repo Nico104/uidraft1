@@ -1,7 +1,9 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
+import 'package:uidraft1/widgets/submod/submod_users/submod_member_commentmodel_widget.dart';
 
 class SubModMemberDetails extends StatefulWidget {
   const SubModMemberDetails({Key? key, required this.username})
@@ -84,7 +86,8 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
                                         .colorScheme
                                         .brandColor),
                               ),
-                              onPressed: () {},
+                              onPressed: () => banUser(widget.username, 'isgut')
+                                  .then((value) => setState(() {})),
                               child: Text(
                                 'Ban',
                                 style: TextStyle(
@@ -107,9 +110,39 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
                                         .colorScheme
                                         .brandColor),
                               ),
-                              onPressed: () {},
+                              onPressed: () => makeUserSubchannelMod(
+                                      widget.username, 'isgut')
+                                  .then((value) => setState(() {
+                                        print("yisgut");
+                                      })),
                               child: Text(
                                 'Make Mod',
+                                style: TextStyle(
+                                    fontFamily: 'Segoe UI',
+                                    fontSize: 18,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .brandColor),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                side: BorderSide(
+                                    width: 2,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .brandColor),
+                              ),
+                              onPressed: () {
+                                Beamer.of(context)
+                                    .beamToNamed('profile/' + widget.username);
+                              },
+                              child: Text(
+                                'Show Profile',
                                 style: TextStyle(
                                     fontFamily: 'Segoe UI',
                                     fontSize: 18,
@@ -136,7 +169,7 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
                                   itemBuilder: (context, index) {
                                     return Column(
                                       children: [
-                                        CommentModel(
+                                        SubModMemberCommentModel(
                                             commentId: snapshot
                                                 .data!['userComments']
                                                 .elementAt(index)['commentId']),
