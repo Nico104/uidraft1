@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:uidraft1/widgets/submod/sidebar/submod_sidebar_widget.dart';
+import 'package:uidraft1/widgets/submod/submod_data/submod_data_tab_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_posts/submod_post_tab_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_user_tab.dart';
 
@@ -76,8 +77,8 @@ Widget getBody(int index) {
     case (0):
       return Container(
           key: ValueKey<int>(index),
-          color: Colors.blue,
-          child: const Center(child: Text("0")));
+          // color: Colors.blue,
+          child: const SubModDataTab());
     case (1):
       return Container(
           key: ValueKey<int>(index),

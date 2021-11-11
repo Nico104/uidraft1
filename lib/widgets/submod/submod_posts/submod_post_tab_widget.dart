@@ -1,11 +1,6 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
-import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 import 'package:uidraft1/widgets/submod/submod_posts/submod_post_list_item_widget.dart';
-import 'package:uidraft1/widgets/submod/submod_users/submod_member_details.dart';
-import 'package:uidraft1/widgets/submod/submod_users/userlist.dart';
 
 class SubModPostTab extends StatefulWidget {
   const SubModPostTab({Key? key}) : super(key: key);
