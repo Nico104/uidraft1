@@ -3,7 +3,9 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 import 'package:uidraft1/utils/widgets/toggle/toggle_animated_button_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_data/submod_data_subchannel_preview_widget.dart';
-import 'package:uidraft1/widgets/submod/submod_data/submod_data_update_data.dart';
+import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/submod_data_update_about.dart';
+import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/submod_data_update_banner.dart';
+import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/submod_data_update_picture.dart';
 
 class SubModDataTab extends StatefulWidget {
   const SubModDataTab({Key? key}) : super(key: key);
@@ -73,7 +75,7 @@ class _SubModDataTabState extends State<SubModDataTab> {
                         children: [
                           ConstrainedBox(
                             constraints:
-                                BoxConstraints(minWidth: double.infinity),
+                                const BoxConstraints(minWidth: double.infinity),
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               child: SubModSubchannelPreview(
@@ -111,12 +113,24 @@ class _SubModDataTabState extends State<SubModDataTab> {
             //         username: _activeUsername!,
             //       )
             //     : const SizedBox(),
-            child: SubModUpdateData(
-              username: "usernmae",
-            ),
+            child: getCorrectDataUpdatePage(_showData),
           ),
         ],
       ),
     );
+  }
+}
+
+Widget getCorrectDataUpdatePage(SubModData data) {
+  print("now");
+  switch (data) {
+    case SubModData.picture:
+      return const SubModUpdatePicture();
+    case SubModData.banner:
+      return const SubModUpdateBanner();
+    case SubModData.about:
+      return const SubModUpdateAbout();
+    default:
+      return const SizedBox();
   }
 }

@@ -2,16 +2,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 
-class SubModUpdateData extends StatefulWidget {
-  const SubModUpdateData({Key? key, required this.username}) : super(key: key);
-
-  final String username;
+class SubModUpdateBanner extends StatefulWidget {
+  const SubModUpdateBanner({Key? key}) : super(key: key);
 
   @override
-  _SubModUpdateDataState createState() => _SubModUpdateDataState();
+  _SubModUpdateBannerState createState() => _SubModUpdateBannerState();
 }
 
-class _SubModUpdateDataState extends State<SubModUpdateData> {
+class _SubModUpdateBannerState extends State<SubModUpdateBanner> {
   int _showActivity = 0;
 
   //Drozone
@@ -75,7 +73,7 @@ class _SubModUpdateDataState extends State<SubModUpdateData> {
                         onLeave: () => print('Zone left'),
                       ),
                     ),
-                    Center(
+                    const Center(
                       child: Text(
                         // subchannelPicturePreview != null
                         //     ? "Change Subchannel Picture "
