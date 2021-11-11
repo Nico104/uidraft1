@@ -10,8 +10,6 @@ class SubModUpdatePicture extends StatefulWidget {
 }
 
 class _SubModUpdatePictureState extends State<SubModUpdatePicture> {
-  int _showActivity = 0;
-
   //Drozone
   FilePickerResult? result;
   late DropzoneViewController controller;

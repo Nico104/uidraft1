@@ -27,9 +27,14 @@ class _SubModDataTabState extends State<SubModDataTab> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => setState(() {
-        _showData = SubModData.none;
-      }),
+      onTap: () {
+        if (mounted) {
+          setState(() {
+            _showData = SubModData.none;
+          });
+        }
+        print(_showData);
+      },
       child: Row(
         children: [
           Flexible(flex: 1, child: Container()),
@@ -113,7 +118,12 @@ class _SubModDataTabState extends State<SubModDataTab> {
             //         username: _activeUsername!,
             //       )
             //     : const SizedBox(),
-            child: getCorrectDataUpdatePage(_showData),
+            // child: (_showData != SubModData.none)
+            //     ? getCorrectDataUpdatePage(_showData)
+            //     : const SizedBox(),
+            child: (_showData != SubModData.none)
+                ? const SubModUpdatePicture()
+                : const SizedBox(),
           ),
         ],
       ),
@@ -122,7 +132,7 @@ class _SubModDataTabState extends State<SubModDataTab> {
 }
 
 Widget getCorrectDataUpdatePage(SubModData data) {
-  print("now");
+  print("now: " + data.toString());
   switch (data) {
     case SubModData.picture:
       return const SubModUpdatePicture();

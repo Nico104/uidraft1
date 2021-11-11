@@ -154,20 +154,7 @@ class SubModSubchannelPreview extends StatelessWidget {
                   height: 12,
                 ),
                 //Man konn in nomen net ändern nico...
-                // Container(
-                //   width: 400,
-                //   child: TextFormField(
-                //     textAlign: TextAlign.center,
-                //     // subchannelName,
-                //     initialValue: "SubName",
-                //     decoration:
-                //         const InputDecoration(enabledBorder: InputBorder.none),
-                //     style: TextStyle(
-                //         fontFamily: 'Segoe UI',
-                //         fontSize: 30,
-                //         color: Theme.of(context).colorScheme.navBarIconColor),
-                //   ),
-                // ),
+
                 Text(
                   "SubName",
                   style: TextStyle(
