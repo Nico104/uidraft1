@@ -215,3 +215,54 @@ Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
     }
   }
 }
+
+//reports a Post
+Future<void> reportPost(int postId) async {
+  print("report");
+  try {
+    String? token = await getToken();
+    final response =
+        await http.post(Uri.parse(baseURL + 'post/createPostReport'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode(<String, String>{
+              'postId': '$postId',
+            }));
+    print(response.body);
+    print(response.statusCode);
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to report post');
+  }
+}
+
+//Get User Post Rating
+Future<int> getUserPostReport(int postId) async {
+  try {
+    String? token = await getToken();
+    final response = await http
+        .get(Uri.parse(baseURL + 'post/getUserPostReport/$postId'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    print("User Report: " + response.body);
+    if (response.statusCode == 200) {
+      if (response.body.isNotEmpty) {
+        return 1;
+      } else {
+        // print("empty rating");
+        return 0;
+      }
+    } else {
+      throw Exception('Failed to load posts');
+    }
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to load posts3');
+  }
+}

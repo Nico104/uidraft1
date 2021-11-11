@@ -16,6 +16,7 @@ import 'package:uidraft1/screens/subchannelmod/submod_screen.dart';
 import 'package:uidraft1/screens/uploadVideo/upload_video_screen.dart';
 import 'package:uidraft1/screens/videoplayer/videoplayer_screen.dart';
 import 'package:uidraft1/widgets/auth/password/change_password_widget.dart';
+import 'package:uidraft1/widgets/slider/xlider_slider.dart';
 
 // OPTION A:
 final simpleLocationBuilder = SimpleLocationBuilder(
@@ -157,6 +158,14 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           title: 'submod',
           child: const SubMod(),
         ),
+
+    // 'SliderXlider': (context, state) => BeamPage(
+    //       key: const ValueKey('SliderXlider'),
+    //       title: 'SliderXlider',
+    //       child: SliderXlider(
+    //         title: 'yo',
+    //       ),
+    //     ),
 
     // 'auth': (context, state) => BeamPage(
     //       key: const ValueKey('auth'),
