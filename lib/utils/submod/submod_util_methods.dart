@@ -4,6 +4,8 @@ import 'package:uidraft1/utils/auth/authentication_global.dart';
 
 String baseURL = 'http://localhost:3000/';
 
+enum SubModData { none, banner, picture, about }
+
 Future<void> fetchMembersBy(String search, int method, String subchannelname,
     Function(String, String) handleUserName) async {
   print("Method: " + method.toString());
