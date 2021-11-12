@@ -151,3 +151,43 @@ Future<void> makeUserSubchannelMod(
     throw Exception('Failed to make $username Mod of $subchannelname');
   }
 }
+
+Future<void> whiteListPost(int postId) async {
+  try {
+    String? token = await getToken();
+    final response = await http.patch(
+      Uri.parse(baseURL + 'post/whitelistPost/$postId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print(response.statusCode);
+    print(response.body);
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to whitelist $postId');
+  }
+}
+
+Future<void> removePostReports(int postId) async {
+  try {
+    String? token = await getToken();
+    final response = await http.patch(
+      Uri.parse(baseURL + 'post/removePostReports/$postId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print(response.statusCode);
+    print(response.body);
+  } catch (e) {
+    print("Error: " + e.toString());
+    throw Exception('Failed to remove $postId reports');
+  }
+}
