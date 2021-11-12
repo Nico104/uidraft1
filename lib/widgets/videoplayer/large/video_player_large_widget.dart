@@ -12,7 +12,6 @@ import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
-import 'package:uidraft1/widgets/slider/slider_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
@@ -1061,36 +1060,36 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                             children: [
                                                               SizedBox(
                                                                 width: 250,
-                                                                // child: Slider(
-                                                                //   value:
-                                                                //       sliderval,
-                                                                //   min: 0,
-                                                                //   max: 100,
-                                                                //   divisions: 23,
+                                                                child: Slider(
+                                                                  value:
+                                                                      sliderval,
+                                                                  min: 0,
+                                                                  max: 100,
+                                                                  divisions: 23,
 
-                                                                //   activeColor: Theme.of(
-                                                                //           context)
-                                                                //       .colorScheme
-                                                                //       .brandColor,
-                                                                //   thumbColor: Theme.of(
-                                                                //           context)
-                                                                //       .colorScheme
-                                                                //       .brandColor,
-                                                                //   // label: sliderval
-                                                                //   //     .round()
-                                                                //   //     .toString(),
-                                                                //   onChanged:
-                                                                //       (double
-                                                                //           value) {
-                                                                //     setState(
-                                                                //         () {
-                                                                //       sliderval =
-                                                                //           value;
-                                                                //     });
-                                                                //   },
-                                                                // ),
-                                                                child:
-                                                                    JonathansSlider(),
+                                                                  activeColor: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .brandColor,
+                                                                  thumbColor: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .brandColor,
+                                                                  // label: sliderval
+                                                                  //     .round()
+                                                                  //     .toString(),
+                                                                  onChanged:
+                                                                      (double
+                                                                          value) {
+                                                                    setState(
+                                                                        () {
+                                                                      sliderval =
+                                                                          value;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                                // child:
+                                                                //     JonathansSlider(),
                                                               ),
                                                               const SizedBox(
                                                                 width: 40,

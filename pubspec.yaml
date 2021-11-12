@@ -52,7 +52,8 @@ dependencies:
   url_launcher: ^6.0.12
   readmore: ^2.1.0
   animations: ^2.0.2
-  flutter_xlider: ^3.4.0
+  syncfusion_flutter_sliders: ^19.3.53
+  syncfusion_flutter_core: ^19.3.53
 
 dev_dependencies:
   flutter_test:
