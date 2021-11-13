@@ -1,24 +1,25 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
-class SubModUpdatePictureDialog extends StatefulWidget {
-  const SubModUpdatePictureDialog({Key? key}) : super(key: key);
+class SubModUpdateAboutDialog extends StatefulWidget {
+  const SubModUpdateAboutDialog({Key? key}) : super(key: key);
 
   @override
-  State<SubModUpdatePictureDialog> createState() =>
-      _SubModUpdatePictureDialogState();
+  State<SubModUpdateAboutDialog> createState() =>
+      _SubModUpdateAboutDialogState();
 }
 
-class _SubModUpdatePictureDialogState extends State<SubModUpdatePictureDialog> {
-  //Drozone
-  FilePickerResult? result;
-  late DropzoneViewController controller;
+class _SubModUpdateAboutDialogState extends State<SubModUpdateAboutDialog> {
+  final TextEditingController _subchannelAboutTextController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment(0.9, -0.4),
+      alignment: Alignment(-0.5, -0.4),
       child: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -35,66 +36,50 @@ class _SubModUpdatePictureDialogState extends State<SubModUpdatePictureDialog> {
           height: 650,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  // color: Colors.lightBlue,
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  border: Border.all(color: Colors.pink, width: 2)),
-              // color: Colors.pink,
-              // height: 150,
-              child: InkWell(
-                onTap: () async {
-                  result = await FilePicker.platform
-                      .pickFiles(type: FileType.image, allowMultiple: false);
-
-                  // setState(() {
-                  //   subchannelPicturePreview = result!.files.first.bytes;
-                  // });
-
-                  print("testprint1");
-                  //_processThumbnail(result);
-                },
-                child: Stack(
-                  children: [
-                    IgnorePointer(
-                      child: DropzoneView(
-                        mime: const ["image/png", "image/jpeg"],
-                        operation: DragOperation.copy,
-                        cursor: CursorType.grab,
-                        onCreated: (DropzoneViewController ctrl) =>
-                            controller = ctrl,
-                        onLoaded: () => print('Zone loaded'),
-                        onError: (String? ev) => print('Error: $ev'),
-                        onHover: () => print('Zone hovered'),
-                        onDrop: (dynamic ev) async {
-                          setState(() {
-                            print("Dropped: $ev");
-                          });
-                          if (ev != null) {
-                            print("FileName: " +
-                                await controller.getFilename(ev));
-                            // subchannelPicturePreview =
-                            //     await controller.getFileData(ev);
-                            setState(() {
-                              print("weiter");
-                            });
-                          }
-                        },
-                        onLeave: () => print('Zone left'),
-                      ),
-                    ),
-                    const Center(
-                      child: Text(
-                        // subchannelPicturePreview != null
-                        //     ? "Change Subchannel Picture "
-                        //     : "Choose Subchannel Picture",
-                        "Chnage subchannel pic/banner",
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
+            child: //About
+                TextFormField(
+              controller: _subchannelAboutTextController,
+              // enableSuggestions: false,
+              cursorColor: Colors.white,
+              autocorrect: false,
+              keyboardType: TextInputType.multiline,
+              maxLength: 512,
+              minLines: null,
+              maxLines: null,
+              expands: true,
+              textAlignVertical: TextAlignVertical.top,
+              decoration: InputDecoration(
+                alignLabelWithHint: true,
+                labelText: "About...",
+                labelStyle: const TextStyle(
+                    fontFamily: "Segoe UI", color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(color: Colors.pink),
                 ),
               ),
+              validator: (val) {
+                if (val!.isEmpty) {
+                  return "Field cannot be empty";
+                } else {
+                  return null;
+                }
+              },
+              style:
+                  const TextStyle(fontFamily: "Segoe UI", color: Colors.white),
+              onChanged: (text) {
+                EasyDebounce.debounce(
+                    'subchannelNameTextField-debouncer', // <-- An ID for this particular debouncer
+                    const Duration(
+                        milliseconds: 500), // <-- The debounce duration
+                    () => updateSubchannelAboutText(
+                        'isgut', text) // <-- The target method
+                    );
+              },
             ),
           ),
         ),

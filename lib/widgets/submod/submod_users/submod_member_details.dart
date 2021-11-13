@@ -1,15 +1,15 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
-import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_member_commentmodel_widget.dart';
+import 'package:uidraft1/widgets/submod/submod_users/submod_member_details_options_widget.dart';
 
 class SubModMemberDetails extends StatefulWidget {
-  const SubModMemberDetails({Key? key, required this.username})
+  const SubModMemberDetails(
+      {Key? key, required this.username, required this.notifyParents})
       : super(key: key);
 
   final String username;
+  final void Function() notifyParents;
 
   @override
   _SubModMemberDetailsState createState() => _SubModMemberDetailsState();
@@ -25,7 +25,7 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
-            print(snapshot.data.toString());
+            // print("SubModUserData: " + snapshot.data.toString());
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -72,86 +72,20 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
                 Expanded(
                   flex: 10,
                   child: (_showActivity == 0)
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                side: BorderSide(
-                                    width: 2,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                              ),
-                              onPressed: () => banUser(widget.username, 'isgut')
-                                  .then((value) => setState(() {})),
-                              child: Text(
-                                'Ban',
-                                style: TextStyle(
-                                    fontFamily: 'Segoe UI',
-                                    fontSize: 18,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                side: BorderSide(
-                                    width: 2,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                              ),
-                              onPressed: () => makeUserSubchannelMod(
-                                      widget.username, 'isgut')
-                                  .then((value) => setState(() {
-                                        print("yisgut");
-                                      })),
-                              child: Text(
-                                'Make Mod',
-                                style: TextStyle(
-                                    fontFamily: 'Segoe UI',
-                                    fontSize: 18,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                side: BorderSide(
-                                    width: 2,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                              ),
-                              onPressed: () {
-                                Beamer.of(context)
-                                    .beamToNamed('profile/' + widget.username);
-                              },
-                              child: Text(
-                                'Show Profile',
-                                style: TextStyle(
-                                    fontFamily: 'Segoe UI',
-                                    fontSize: 18,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
-                              ),
-                            )
-                          ],
+                      ? SubModMemberOptions(
+                          banUser: () => banUser(widget.username, 'isgut')
+                              .then((value) => widget.notifyParents.call()),
+                          unbanUser: () => unbanUser(widget.username, 'isgut')
+                              .then((value) => widget.notifyParents.call()),
+                          makeUserSubchannelMod: () =>
+                              makeUserSubchannelMod(widget.username, 'isgut')
+                                  .then((value) => widget.notifyParents.call()),
+                          removeUserSubchannelMod: () =>
+                              removeUserSubchannelMod(widget.username, 'isgut')
+                                  .then((value) => widget.notifyParents.call()),
+                          subchannelName: 'isgut',
+                          username: widget.username,
+                          userRole: getUserOption(snapshot.data!),
                         )
                       : Padding(
                           padding: const EdgeInsets.fromLTRB(8, 25, 8, 8),
@@ -189,5 +123,15 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
             return const SizedBox();
           }
         });
+  }
+}
+
+int getUserOption(Map<String, dynamic> data) {
+  if ((data['subchannelsModerater'] as List).isNotEmpty) {
+    return 2;
+  } else if ((data['bannedFromSubchannel'] as List).isNotEmpty) {
+    return 1;
+  } else {
+    return 0;
   }
 }

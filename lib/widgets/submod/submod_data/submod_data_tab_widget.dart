@@ -3,6 +3,8 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 import 'package:uidraft1/utils/widgets/toggle/toggle_animated_button_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_data/submod_data_subchannel_preview_widget.dart';
+import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/dialogs/submod_data_update_about_dialog.dart';
+import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/dialogs/submod_data_update_banner_dialog.dart';
 import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/dialogs/submod_data_update_picture_dialog.dart';
 
 class SubModDataTab extends StatefulWidget {
@@ -34,7 +36,7 @@ class _SubModDataTabState extends State<SubModDataTab> {
       case SubModData.picture:
         setState(() {
           _left = 0;
-          _right = 0;
+          _right = 200;
           _top = 0;
           _bottom = 0;
         });
@@ -42,16 +44,16 @@ class _SubModDataTabState extends State<SubModDataTab> {
       case SubModData.banner:
         setState(() {
           _left = 0;
-          _right = 300;
-          _top = 50;
+          _right = 500;
+          _top = 150;
           _bottom = 0;
         });
         break;
       case SubModData.about:
         setState(() {
-          _left = 0;
+          _left = 600;
           _right = 0;
-          _top = 0;
+          _top = 100;
           _bottom = 0;
         });
         break;
@@ -67,18 +69,53 @@ class _SubModDataTabState extends State<SubModDataTab> {
   }
 
   void showRightDialog() {
-    showDialog(
-      useSafeArea: true,
-      context: context,
-      builder: (BuildContext context) {
-        return const SubModUpdatePictureDialog();
-      },
-    ).then((value) {
-      setState(() {
-        _showData = SubModData.none;
-      });
-      setPaddingvalues();
-    });
+    switch (_showData) {
+      case SubModData.picture:
+        showDialog(
+          useSafeArea: true,
+          context: context,
+          builder: (BuildContext context) {
+            return const SubModUpdatePictureDialog();
+          },
+        ).then((value) {
+          setState(() {
+            _showData = SubModData.none;
+          });
+          setPaddingvalues();
+        });
+        break;
+      case SubModData.banner:
+        showDialog(
+          useSafeArea: true,
+          context: context,
+          builder: (BuildContext context) {
+            return const SubModUpdateBannerDialog();
+          },
+        ).then((value) {
+          setState(() {
+            _showData = SubModData.none;
+          });
+          setPaddingvalues();
+        });
+        break;
+      case SubModData.about:
+        showDialog(
+          useSafeArea: true,
+          context: context,
+          builder: (BuildContext context) {
+            return const SubModUpdateAboutDialog();
+          },
+        ).then((value) {
+          setState(() {
+            _showData = SubModData.none;
+          });
+          setPaddingvalues();
+        });
+        break;
+      default:
+        print("defaultDialog");
+        break;
+    }
   }
 
   @override

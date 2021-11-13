@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
+import 'package:uidraft1/utils/submod/submod_util_widgets.dart';
 
 class SubModSubchannelPreview extends StatelessWidget {
   const SubModSubchannelPreview({
@@ -85,16 +86,8 @@ class SubModSubchannelPreview extends StatelessWidget {
                   child: Transform.translate(
                     offset: const Offset(0, 10),
                     child: InkWell(
-                      onTap: () => handeTap(SubModData.banner),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.purple,
-                        ),
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
+                        onTap: () => handeTap(SubModData.banner),
+                        child: const SubModEditButton()),
                   ),
                 )
               ],
@@ -136,16 +129,8 @@ class SubModSubchannelPreview extends StatelessWidget {
                       child: Transform.translate(
                         offset: const Offset(10, 10),
                         child: InkWell(
-                          onTap: () => handeTap(SubModData.picture),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.purple,
-                            ),
-                            width: 30,
-                            height: 30,
-                          ),
-                        ),
+                            onTap: () => handeTap(SubModData.picture),
+                            child: const SubModEditButton()),
                       ),
                     )
                   ],
@@ -153,8 +138,6 @@ class SubModSubchannelPreview extends StatelessWidget {
                 const SizedBox(
                   height: 12,
                 ),
-                //Man konn in nomen net ändern nico...
-
                 Text(
                   "SubName",
                   style: TextStyle(
@@ -256,14 +239,30 @@ class SubModSubchannelPreview extends StatelessWidget {
                 const SizedBox(
                   height: 32,
                 ),
-                Text(
-                  "SubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubNameubNameSubNameßnSubName\nSubNameSubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubName\n\nSubNameSubNameßnSubName\nSubNameSubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubName\n\nSubNameSubNameßnSubName\nSubNameSubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubName\n\nSubNameSubNameßnSubName\nSubName",
-                  style: const TextStyle(
-                      fontFamily: 'Segoe UI',
-                      fontSize: 18,
-                      color: Colors.white60),
-                  maxLines: realPreviewMode ? null : 5,
-                  overflow: TextOverflow.fade,
+                //About
+                Stack(
+                  children: [
+                    Text(
+                      "SubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubNameubNameSubNameßnSubName\nSubNameSubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubName\n\nSubNameSubNameßnSubName\nSubNameSubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubName\n\nSubNameSubNameßnSubName\nSubNameSubName\nSubNameSubNameSubName\nSubName\nSubNameSubName\nSubNameSubNameSubName\n\nSubNameSubNameßnSubName\nSubName",
+                      style: const TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 18,
+                          color: Colors.white60),
+                      maxLines: realPreviewMode ? null : 5,
+                      overflow: TextOverflow.fade,
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Transform.translate(
+                        offset: const Offset(0, -10),
+                        child: InkWell(
+                          onTap: () => handeTap(SubModData.about),
+                          child: const SubModEditButton(),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 const SizedBox(
                   height: 17,

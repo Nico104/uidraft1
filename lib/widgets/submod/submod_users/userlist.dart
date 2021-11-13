@@ -1,12 +1,16 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubmodUserlist extends StatefulWidget {
-  const SubmodUserlist({Key? key, required this.handleUsername})
+  const SubmodUserlist(
+      {Key? key, required this.handleUsername, required this.fromAbove})
       : super(key: key);
 
   final Function(String) handleUsername;
+
+  final bool fromAbove;
 
   @override
   _SubmodUserlistState createState() => _SubmodUserlistState();
@@ -17,15 +21,16 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
 
   bool _loading = true;
 
-  List<List<String>> userNames = [];
+  List<List<dynamic>> userNames = [];
   bool isLoading = false;
 
   final TextEditingController _searchText = TextEditingController();
 
   int _tabindex = 0;
 
-  void addUserNameToList(String username, String profilePicturePath) {
-    userNames.add([username, profilePicturePath]);
+  void addUserNameToList(
+      String username, String profilePicturePath, bool isMod, bool isBanned) {
+    userNames.add([username, profilePicturePath, isMod, isBanned]);
   }
 
   @override
@@ -36,7 +41,13 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       userNames.clear();
       fetchMembersBy(_searchText.text, _tabindex, 'isgut', addUserNameToList)
-          .then((value) => setState(() {}));
+          .then((value) {
+        if (value == 0) {
+          setState(() {});
+        } else {
+          Beamer.of(context).beamToNamed('/login');
+        }
+      });
     });
   }
 
@@ -84,7 +95,13 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                       userNames.clear();
                       await fetchMembersBy(
                               text, _tabindex, 'isgut', addUserNameToList)
-                          .then((value) => setState(() {}));
+                          .then((value) {
+                        if (value == 0) {
+                          setState(() {});
+                        } else {
+                          Beamer.of(context).beamToNamed('/login');
+                        }
+                      });
                       // setState(() {
                       //   print("username searched for $text");
                       //   print("usernameList: " + userNames.toString());
@@ -141,28 +158,42 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                         onTap: () => widget.handleUsername(
                             userNames.elementAt(index).elementAt(0)),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(14)),
-                              child: Image.network(
-                                baseURL +
-                                    userNames.elementAt(index).elementAt(1),
-                                fit: BoxFit.cover,
-                                alignment: Alignment.center,
-                                width: 40,
-                                height: 40,
-                              ),
+                            Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(14)),
+                                  child: Image.network(
+                                    baseURL +
+                                        userNames.elementAt(index).elementAt(1),
+                                    fit: BoxFit.cover,
+                                    alignment: Alignment.center,
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Text(
+                                  userNames.elementAt(index).first,
+                                  style: const TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            Text(
-                              userNames.elementAt(index).first,
-                              style: const TextStyle(
-                                  fontSize: 18, color: Colors.white),
+                            Row(
+                              children: [
+                                userNames.elementAt(index).elementAt(2) == true
+                                    ? const Icon(Icons.shield)
+                                    : const SizedBox(),
+                                userNames.elementAt(index).elementAt(3) == true
+                                    ? const Icon(Icons.cancel)
+                                    : const SizedBox(),
+                              ],
                             ),
                           ],
                         ),
@@ -193,4 +224,44 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
     _searchText.dispose();
     super.dispose();
   }
+
+  @override
+  void didUpdateWidget(SubmodUserlist oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // print("oldWidget.searchTerm is ${oldWidget.searchTerm}");
+    // print("widget.searchTerm is ${widget.searchTerm}");
+
+    // if (oldWidget.searchTerm != widget.searchTerm) {
+
+    // }
+    // this.updateChildWithParent();
+    if (widget.fromAbove) {
+      print("fromAbove is true");
+      userNames.clear();
+      fetchMembersBy(_searchText.text, _tabindex, 'isgut', addUserNameToList)
+          .then((value) {
+        if (value == 0) {
+          setState(() {});
+        } else {
+          Beamer.of(context).beamToNamed('/login');
+        }
+      });
+    } else {
+      print("fromAbove is false");
+    }
+  }
+
+  // void updateChildWithParent() {
+  //   print("updateChildWithParent/search screen");
+  //   setState(() {
+  //     // _mJsonLoaded = false; // For loader
+  //     // if (listArray.length > 0) {
+  //     //   listArray.clear();
+  //     // }
+  //   });
+
+  //   // Do whatever you want here…
+  //   // Like call api call again in child widget.
+  // }
 }

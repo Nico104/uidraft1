@@ -15,11 +15,21 @@ class _SubModUsersTabState extends State<SubModUsersTab> {
   bool _showDetail = false;
   String? _activeUsername;
 
+  bool _fromAbove = false;
+
   void setToDetail(String username) {
     setState(() {
       _showDetail = true;
       _activeUsername = username;
+      _fromAbove = false;
     });
+  }
+
+  void refresh() {
+    setState(() {
+      _fromAbove = true;
+    });
+    print("refreshed parentz");
   }
 
   @override
@@ -49,7 +59,10 @@ class _SubModUsersTabState extends State<SubModUsersTab> {
                       )),
                   // height: 800,
                   // width: 500,
-                  child: SubmodUserlist(handleUsername: setToDetail)),
+                  child: SubmodUserlist(
+                    handleUsername: setToDetail,
+                    fromAbove: _fromAbove,
+                  )),
             ),
           ),
         ),
@@ -72,6 +85,7 @@ class _SubModUsersTabState extends State<SubModUsersTab> {
           child: _activeUsername != null
               ? SubModMemberDetails(
                   username: _activeUsername!,
+                  notifyParents: () => refresh.call(),
                 )
               : const SizedBox(),
         ),

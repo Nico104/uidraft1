@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubModUpdatePictureDialog extends StatefulWidget {
   const SubModUpdatePictureDialog({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _SubModUpdatePictureDialogState extends State<SubModUpdatePictureDialog> {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment(0.9, -0.4),
+      alignment: Alignment(0.8, 0.4),
       child: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -31,8 +32,8 @@ class _SubModUpdatePictureDialogState extends State<SubModUpdatePictureDialog> {
                   Colors.blue,
                 ],
               )),
-          width: 400,
-          height: 650,
+          width: 300,
+          height: 400,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
             child: Container(
@@ -53,6 +54,14 @@ class _SubModUpdatePictureDialogState extends State<SubModUpdatePictureDialog> {
 
                   print("testprint1");
                   //_processThumbnail(result);
+
+                  if (result!.files.first.bytes != null) {
+                    print("chnage pic");
+                    updateSubchannelPicture(
+                        'isgut', result!.files.first.bytes!);
+                  } else {
+                    print("pic null");
+                  }
                 },
                 child: Stack(
                   children: [
@@ -75,6 +84,9 @@ class _SubModUpdatePictureDialogState extends State<SubModUpdatePictureDialog> {
                                 await controller.getFilename(ev));
                             // subchannelPicturePreview =
                             //     await controller.getFileData(ev);
+                            print("chnage pic");
+                            updateSubchannelPicture(
+                                'isgut', await controller.getFileData(ev));
                             setState(() {
                               print("weiter");
                             });
@@ -88,7 +100,7 @@ class _SubModUpdatePictureDialogState extends State<SubModUpdatePictureDialog> {
                         // subchannelPicturePreview != null
                         //     ? "Change Subchannel Picture "
                         //     : "Choose Subchannel Picture",
-                        "Chnage subchannel pic/banner",
+                        "Chnage subchannel pic",
                         textAlign: TextAlign.center,
                       ),
                     ),

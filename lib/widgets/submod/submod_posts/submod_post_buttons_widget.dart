@@ -23,7 +23,7 @@ class SubModPostButton extends StatelessWidget {
             shape: const CircleBorder(),
             side: BorderSide(width: 2, color: color),
           ),
-          onPressed: handeleTap.call(),
+          onPressed: () => handeleTap.call(),
           child: Padding(
             padding: const EdgeInsets.all(6.0),
             child: Icon(iconData, size: 22, color: color),
