@@ -2,6 +2,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/studio/studio_util_methods.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class StudioVideoPreview extends StatefulWidget {
   final int postId;

@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_member_commentmodel_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_member_details_options_widget.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class SubModMemberDetails extends StatefulWidget {
   const SubModMemberDetails(
-      {Key? key, required this.username, required this.notifyParents})
+      {Key? key,
+      required this.username,
+      required this.notifyParents,
+      required this.subchannelName})
       : super(key: key);
 
   final String username;
   final void Function() notifyParents;
+  final String subchannelName;
 
   @override
   _SubModMemberDetailsState createState() => _SubModMemberDetailsState();
@@ -21,7 +26,7 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getSubModUserData(widget.username, 'isgut'),
+        future: getSubModUserData(widget.username, widget.subchannelName),
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
@@ -73,17 +78,20 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
                   flex: 10,
                   child: (_showActivity == 0)
                       ? SubModMemberOptions(
-                          banUser: () => banUser(widget.username, 'isgut')
-                              .then((value) => widget.notifyParents.call()),
-                          unbanUser: () => unbanUser(widget.username, 'isgut')
-                              .then((value) => widget.notifyParents.call()),
-                          makeUserSubchannelMod: () =>
-                              makeUserSubchannelMod(widget.username, 'isgut')
+                          banUser: () =>
+                              banUser(widget.username, widget.subchannelName)
                                   .then((value) => widget.notifyParents.call()),
+                          unbanUser: () =>
+                              unbanUser(widget.username, widget.subchannelName)
+                                  .then((value) => widget.notifyParents.call()),
+                          makeUserSubchannelMod: () => makeUserSubchannelMod(
+                                  widget.username, widget.subchannelName)
+                              .then((value) => widget.notifyParents.call()),
                           removeUserSubchannelMod: () =>
-                              removeUserSubchannelMod(widget.username, 'isgut')
+                              removeUserSubchannelMod(
+                                      widget.username, widget.subchannelName)
                                   .then((value) => widget.notifyParents.call()),
-                          subchannelName: 'isgut',
+                          subchannelName: widget.subchannelName,
                           username: widget.username,
                           userRole: getUserOption(snapshot.data!),
                         )

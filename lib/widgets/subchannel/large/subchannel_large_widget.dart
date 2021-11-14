@@ -58,9 +58,10 @@ class _SubchannelState extends State<Subchannel> {
   late ScrollController _scrollController;
 
   //Get PostIds List
-  Future<void> fetchPostIds() async {
+  Future<void> fetchSubchannelPostIds(String subchannelname) async {
     try {
-      final response = await http.get(Uri.parse(baseURL + 'post/getPostIds'));
+      final response = await http.get(
+          Uri.parse(baseURL + 'post/getSubchannelPostIds/$subchannelname'));
 
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON
@@ -94,7 +95,8 @@ class _SubchannelState extends State<Subchannel> {
   void initState() {
     super.initState();
 
-    fetchPostIds().then((value) {
+    fetchSubchannelPostIds(widget.subchannelData['subchannelName'])
+        .then((value) {
       ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
@@ -120,18 +122,22 @@ class _SubchannelState extends State<Subchannel> {
       child: Stack(
         children: [
           //Subchannel Banner
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(40),
-                bottomRight: Radius.circular(40)),
-            child: Image.network(
-              baseURL +
-                  widget.subchannelData['subchannelPreview']
-                      ['subchannelBannerPath'],
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
-              height: 230,
+          Padding(
+            // padding: const EdgeInsets.only(left: 15, right: 15),
+            padding: const EdgeInsets.all(0),
+            child: ClipRRect(
+              // borderRadius: const BorderRadius.only(
+              //     bottomLeft: Radius.circular(40),
+              //     bottomRight: Radius.circular(40)),
+              child: Image.network(
+                baseURL +
+                    widget.subchannelData['subchannelPreview']
+                        ['subchannelBannerPath'],
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width,
+                height: 230,
+              ),
             ),
           ),
           SingleChildScrollView(
@@ -199,9 +205,12 @@ class _SubchannelState extends State<Subchannel> {
                 StatefulBuilder(builder:
                     (BuildContext context, StateSetter setStateButtonBar) {
                   return FutureBuilder(
-                      future: isMember(widget.subchannelData['subchannelName']),
+                      future: Future.wait([
+                        isMember(widget.subchannelData['subchannelName']),
+                        isMod(widget.subchannelData['subchannelName'])
+                      ]),
                       builder: (BuildContext context,
-                          AsyncSnapshot<bool> snapshotIsMember) {
+                          AsyncSnapshot<List<bool>> snapshotIsMember) {
                         if (snapshotIsMember.hasData) {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -241,32 +250,8 @@ class _SubchannelState extends State<Subchannel> {
                               SizedBox(
                                   width: 160,
                                   height: 35,
-                                  child: (!snapshotIsMember.data!)
-                                      //  (!_isFollowing)
-                                      ? TextButton(
-                                          style: TextButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(30.0),
-                                              ),
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .brandColor),
-                                          onPressed: () => enterSubchannel(
-                                                  widget.subchannelData[
-                                                      'subchannelName'])
-                                              .then((value) =>
-                                                  setStateButtonBar(() {})),
-                                          child: Text(
-                                            'Follow',
-                                            style: TextStyle(
-                                                fontFamily: 'Segoe UI Black',
-                                                fontSize: 18,
-                                                color: Theme.of(context)
-                                                    .canvasColor),
-                                          ),
-                                        )
-                                      : OutlinedButton(
+                                  child: (snapshotIsMember.data![1])
+                                      ? OutlinedButton(
                                           style: OutlinedButton.styleFrom(
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
@@ -278,13 +263,12 @@ class _SubchannelState extends State<Subchannel> {
                                                     .colorScheme
                                                     .brandColor),
                                           ),
-                                          onPressed: () => leaveSubchannel(
-                                                  widget.subchannelData[
-                                                      'subchannelName'])
-                                              .then((value) =>
-                                                  setStateButtonBar(() {})),
+                                          onPressed: () {
+                                            Beamer.of(context).beamToNamed(
+                                                '/submod/${widget.subchannelData['subchannelName']}');
+                                          },
                                           child: Text(
-                                            'Followed',
+                                            'ModMenu',
                                             style: TextStyle(
                                                 fontFamily: 'Segoe UI',
                                                 fontSize: 18,
@@ -292,7 +276,62 @@ class _SubchannelState extends State<Subchannel> {
                                                     .colorScheme
                                                     .brandColor),
                                           ),
-                                        )),
+                                        )
+                                      : (!snapshotIsMember.data![0])
+                                          ? TextButton(
+                                              style: TextButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30.0),
+                                                  ),
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .brandColor),
+                                              onPressed: () => enterSubchannel(
+                                                      widget.subchannelData[
+                                                          'subchannelName'])
+                                                  .then((value) =>
+                                                      setStateButtonBar(() {})),
+                                              child: Text(
+                                                'Follow',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'Segoe UI Black',
+                                                    fontSize: 18,
+                                                    color: Theme.of(context)
+                                                        .canvasColor),
+                                              ),
+                                            )
+                                          : OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30.0),
+                                                ),
+                                                side: BorderSide(
+                                                    width: 2,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .brandColor),
+                                              ),
+                                              onPressed: () => leaveSubchannel(
+                                                      widget.subchannelData[
+                                                          'subchannelName'])
+                                                  .then((value) =>
+                                                      setStateButtonBar(() {})),
+                                              child: Text(
+                                                'Followed',
+                                                style: TextStyle(
+                                                    fontFamily: 'Segoe UI',
+                                                    fontSize: 18,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .brandColor),
+                                              ),
+                                            )),
                             ],
                           );
                         } else {

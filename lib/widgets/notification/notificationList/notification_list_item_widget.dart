@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
-import 'package:uidraft1/utils/notifications/notification_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class NotificationItem extends StatelessWidget {
   const NotificationItem(

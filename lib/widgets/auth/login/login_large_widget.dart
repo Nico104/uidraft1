@@ -19,12 +19,27 @@ class LoginLargeScreen extends StatelessWidget {
           alignment: Alignment.topLeft,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(72, 34, 0, 0),
-            child: Text(
-              "LOGO",
-              style: TextStyle(
-                  fontFamily: 'Segoe UI Black',
-                  fontSize: 28,
-                  color: Theme.of(context).colorScheme.brandColor),
+            child: InkWell(
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onTap: () {
+                print("taped");
+                // html.window.location.reload();
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //       builder: (context) => const FeedScreen()),
+                // );
+                Beamer.of(context).beamToNamed('/feed');
+              },
+              child: Text(
+                "LOGO",
+                style: TextStyle(
+                    fontFamily: 'Segoe UI Black',
+                    fontSize: 28,
+                    color: Theme.of(context).colorScheme.brandColor),
+              ),
             ),
           ),
         ),

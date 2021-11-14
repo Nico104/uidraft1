@@ -7,6 +7,7 @@ import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/message/write_message_large_dialog.dart';
 import 'package:uidraft1/widgets/submod/submod_posts/submod_post_buttons_widget.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class SubModPostListItem extends StatefulWidget {
   const SubModPostListItem(
@@ -31,6 +32,9 @@ class _SubModPostListItemState extends State<SubModPostListItem> {
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
             return InkWell(
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               onTap: () {},
               onHover: (val) {
                 print(val);
@@ -65,8 +69,7 @@ class _SubModPostListItemState extends State<SubModPostListItem> {
                               const BorderRadius.all(Radius.circular(14)),
                           child: Image.network(
                             // baseURL + userNames.elementAt(index).elementAt(1),
-                            postUtils.baseURL +
-                                snapshot.data!['postTumbnailPath'],
+                            baseURL + snapshot.data!['postTumbnailPath'],
                             fit: BoxFit.cover,
                             alignment: Alignment.center,
                             // width: 40,

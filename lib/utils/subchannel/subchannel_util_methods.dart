@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
-
-String baseURL = 'http://localhost:3000/';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 //Enter Subchannel
 Future<void> enterSubchannel(String subchannelName) async {
@@ -60,6 +59,27 @@ Future<bool> isMember(String subchannelName) async {
     }
   } else {
     print("Nope not a member2");
+    return false;
+  }
+}
+
+Future<bool> isMod(String subchannelName) async {
+  String? token = await getToken();
+  final response = await http.get(
+    Uri.parse(baseURL + 'user/isMod/$subchannelName'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  // print(response.statusCode);
+  // print("isMember: " + response.body);
+  if (response.statusCode == 200) {
+    return response.body.toLowerCase() == 'true';
+  } else {
+    print("Nope not a mod");
     return false;
   }
 }

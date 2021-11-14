@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
-
-String baseURL = 'http://localhost:3000/';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 Future<void> incrementPostViewsByOne(int postId) async {
   final response =

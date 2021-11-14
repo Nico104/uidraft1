@@ -3,6 +3,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/notifications/notification_util_methods.dart';
 import 'package:uidraft1/widgets/chatNotification/chat_dialog_widget.dart';
 import 'package:uidraft1/widgets/notification/notificationList/notification_list_item_widget.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 // import 'package:animations/animations.dart';
 

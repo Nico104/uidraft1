@@ -153,11 +153,16 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           child: const StudioScreen(),
         ),
 
-    'submod': (context, state) => BeamPage(
-          key: const ValueKey('submod'),
-          title: 'submod',
-          child: const SubMod(),
-        ),
+    'submod/:subchannelname': (context, state) {
+      String subchannelname =
+          (context.currentBeamLocation.state).pathParameters['subchannelname']!;
+
+      return BeamPage(
+        key: const ValueKey('submod'),
+        title: 'submod',
+        child: SubMod(subchannelName: subchannelname),
+      );
+    },
 
     'slidertest': (context, state) => BeamPage(
           key: const ValueKey('slidertest'),

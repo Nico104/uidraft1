@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
+import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_large_widget.dart';
 // import 'dart:html' as html;
 
@@ -50,6 +51,11 @@ class _VideoPlayerState extends State<VideoPlayerScreen> {
                   child: VideoPlayerHome(
                     postData: snapshot.data!,
                     firtTimeExternAccess: widget.firtTimeExternAccess,
+                    navbar: NavBarLarge(
+                      setActiveFeed: (_) {},
+                      activeFeed: 0,
+                      customFeed: false,
+                    ),
                   ),
                 ),
                 veryLargeScreen: const Text("veryLargeScreen"),

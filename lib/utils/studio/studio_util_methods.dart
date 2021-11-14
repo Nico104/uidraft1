@@ -5,8 +5,7 @@ import 'dart:convert';
 import 'package:http_parser/http_parser.dart';
 
 import 'package:uidraft1/utils/auth/authentication_global.dart';
-
-String baseURL = 'http://localhost:3000/';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 //Get Post  Data by Id
 Future<List<int>> fetchUserPosts() async {

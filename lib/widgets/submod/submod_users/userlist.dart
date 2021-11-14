@@ -5,12 +5,17 @@ import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubmodUserlist extends StatefulWidget {
   const SubmodUserlist(
-      {Key? key, required this.handleUsername, required this.fromAbove})
+      {Key? key,
+      required this.handleUsername,
+      required this.fromAbove,
+      required this.subchannelName})
       : super(key: key);
 
   final Function(String) handleUsername;
 
   final bool fromAbove;
+
+  final String subchannelName;
 
   @override
   _SubmodUserlistState createState() => _SubmodUserlistState();
@@ -40,7 +45,8 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       userNames.clear();
-      fetchMembersBy(_searchText.text, _tabindex, 'isgut', addUserNameToList)
+      fetchMembersBy(_searchText.text, _tabindex, widget.subchannelName,
+              addUserNameToList)
           .then((value) {
         if (value == 0) {
           setState(() {});
@@ -93,8 +99,8 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                             milliseconds: 300), // <-- The debounce duration
                         () async {
                       userNames.clear();
-                      await fetchMembersBy(
-                              text, _tabindex, 'isgut', addUserNameToList)
+                      await fetchMembersBy(text, _tabindex,
+                              widget.subchannelName, addUserNameToList)
                           .then((value) {
                         if (value == 0) {
                           setState(() {});
@@ -127,7 +133,7 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
                             });
                             userNames.clear();
                             await fetchMembersBy(_searchText.text, _tabindex,
-                                    'isgut', addUserNameToList)
+                                    widget.subchannelName, addUserNameToList)
                                 .then((value) => setState(() {}));
                           },
                           tabs: const [
@@ -239,7 +245,8 @@ class _SubmodUserlistState extends State<SubmodUserlist> {
     if (widget.fromAbove) {
       print("fromAbove is true");
       userNames.clear();
-      fetchMembersBy(_searchText.text, _tabindex, 'isgut', addUserNameToList)
+      fetchMembersBy(_searchText.text, _tabindex, widget.subchannelName,
+              addUserNameToList)
           .then((value) {
         if (value == 0) {
           setState(() {});

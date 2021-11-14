@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
-import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_member_details.dart';
 import 'package:uidraft1/widgets/submod/submod_users/userlist.dart';
 
 class SubModUsersTab extends StatefulWidget {
-  const SubModUsersTab({Key? key}) : super(key: key);
+  const SubModUsersTab({Key? key, required this.subchannelName})
+      : super(key: key);
+
+  final String subchannelName;
 
   @override
   _SubModUsersTabState createState() => _SubModUsersTabState();
@@ -36,37 +37,48 @@ class _SubModUsersTabState extends State<SubModUsersTab> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Flexible(fit: FlexFit.tight, flex: 1, child: Container()),
-        Flexible(
-          fit: FlexFit.tight,
-          flex: 6,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 50, bottom: 50),
-            child: InkWell(
-              // onTap: () => setState(() {
-              //   _showDetail = !_showDetail;
-              // }),
-              child: Container(
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                          Colors.amber,
-                          Colors.deepOrange,
-                        ],
-                      )),
-                  // height: 800,
-                  // width: 500,
-                  child: SubmodUserlist(
-                    handleUsername: setToDetail,
-                    fromAbove: _fromAbove,
-                  )),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              if (_showDetail) {
+                setState(() {
+                  _showDetail = false;
+                });
+              }
+            },
+            child: Row(
+              children: [
+                Flexible(fit: FlexFit.tight, flex: 1, child: Container()),
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 6,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50, bottom: 50),
+                    child: Container(
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            gradient: LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
+                              colors: [
+                                Colors.amber,
+                                Colors.deepOrange,
+                              ],
+                            )),
+                        // height: 800,
+                        // width: 500,
+                        child: SubmodUserlist(
+                          handleUsername: setToDetail,
+                          fromAbove: _fromAbove,
+                          subchannelName: widget.subchannelName,
+                        )),
+                  ),
+                ),
+                Flexible(fit: FlexFit.tight, flex: 1, child: Container()),
+              ],
             ),
           ),
         ),
-        Flexible(fit: FlexFit.tight, flex: 1, child: Container()),
         AnimatedContainer(
           // alignment: Alignment.centerRight,
           duration: const Duration(milliseconds: 200),
@@ -86,6 +98,7 @@ class _SubModUsersTabState extends State<SubModUsersTab> {
               ? SubModMemberDetails(
                   username: _activeUsername!,
                   notifyParents: () => refresh.call(),
+                  subchannelName: widget.subchannelName,
                 )
               : const SizedBox(),
         ),

@@ -5,7 +5,10 @@ import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubModUpdateAboutDialog extends StatefulWidget {
-  const SubModUpdateAboutDialog({Key? key}) : super(key: key);
+  const SubModUpdateAboutDialog({Key? key, required this.subchannelName})
+      : super(key: key);
+
+  final String subchannelName;
 
   @override
   State<SubModUpdateAboutDialog> createState() =>
@@ -77,7 +80,7 @@ class _SubModUpdateAboutDialogState extends State<SubModUpdateAboutDialog> {
                     const Duration(
                         milliseconds: 500), // <-- The debounce duration
                     () => updateSubchannelAboutText(
-                        'isgut', text) // <-- The target method
+                        widget.subchannelName, text) // <-- The target method
                     );
               },
             ),

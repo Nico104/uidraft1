@@ -1,6 +1,6 @@
-import 'package:beamer/beamer.dart';
 import 'package:uidraft1/utils/comment/comment_util_methods.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class SubModMemberCommentModel extends StatelessWidget {
   const SubModMemberCommentModel({Key? key, required this.commentId})

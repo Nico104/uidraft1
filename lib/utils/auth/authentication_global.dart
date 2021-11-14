@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 Future<int> isAuthenticated() async {
-  var url = Uri.parse('http://localhost:3000/protected');
+  var url = Uri.parse(baseURL + 'protected');
   String? token = await getToken();
 
   final response = await http.get(url, headers: {
@@ -29,7 +30,7 @@ Future<String?> getToken() async {
 }
 
 Future<String?> getMyUsername() async {
-  var url = Uri.parse('http://localhost:3000/user/getMyUsername');
+  var url = Uri.parse(baseURL + 'user/getMyUsername');
   String? token = await getToken();
 
   final response = await http.get(url, headers: {
@@ -49,7 +50,7 @@ Future<String?> getMyUsername() async {
 }
 
 Future<int> changePassword(String password) async {
-  var url = Uri.parse('http://localhost:3000/user/updateUserPassword');
+  var url = Uri.parse(baseURL + 'user/updateUserPassword');
   String? token = await getToken();
 
   final response = await http.patch(url,
@@ -71,7 +72,7 @@ Future<int> changePassword(String password) async {
 }
 
 Future<bool> isFirstLogin() async {
-  var url = Uri.parse('http://localhost:3000/user/getIsFirstLogin');
+  var url = Uri.parse(baseURL + 'user/getIsFirstLogin');
   String? token = await getToken();
 
   final response = await http.get(url, headers: {

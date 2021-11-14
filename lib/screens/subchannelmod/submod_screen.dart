@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
-import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
-import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
-import 'package:uidraft1/widgets/profile/large/profile_large_widget.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:uidraft1/widgets/submod/sidebar/submod_sidebar_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_data/submod_data_tab_widget.dart';
@@ -12,7 +7,9 @@ import 'package:uidraft1/widgets/submod/submod_posts/submod_post_tab_widget.dart
 import 'package:uidraft1/widgets/submod/submod_users/submod_user_tab.dart';
 
 class SubMod extends StatefulWidget {
-  const SubMod({Key? key}) : super(key: key);
+  const SubMod({Key? key, required this.subchannelName}) : super(key: key);
+
+  final String subchannelName;
 
   @override
   _SubModState createState() => _SubModState();
@@ -59,7 +56,7 @@ class _SubModState extends State<SubMod> {
                         (Widget child, Animation<double> animation) {
                       return ScaleTransition(child: child, scale: animation);
                     },
-                    child: getBody(_selectedIndex),
+                    child: getBody(_selectedIndex, widget.subchannelName),
                   ),
                 )
               ],
@@ -72,23 +69,23 @@ class _SubModState extends State<SubMod> {
   }
 }
 
-Widget getBody(int index) {
+Widget getBody(int index, String subchannelname) {
   switch (index) {
     case (0):
       return Container(
           key: ValueKey<int>(index),
           // color: Colors.blue,
-          child: const SubModDataTab());
+          child: SubModDataTab(subchannelName: subchannelname));
     case (1):
       return Container(
           key: ValueKey<int>(index),
           // color: Colors.green,
-          child: const SubModUsersTab());
+          child: SubModUsersTab(subchannelName: subchannelname));
     case (2):
       return Container(
           key: ValueKey<int>(index),
           // color: Colors.yellow,
-          child: const SubModPostTab());
+          child: SubModPostTab(subchannelName: subchannelname));
     default:
       return const Center(child: Text("default"));
   }

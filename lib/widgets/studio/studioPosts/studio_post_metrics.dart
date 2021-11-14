@@ -9,6 +9,7 @@ import 'package:uidraft1/utils/studio/studio_util_methods.dart' as studioUtils;
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'dart:html' as html;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class StudioPostMetrics extends StatefulWidget {
   final int postId;
@@ -900,7 +901,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(14)),
                                       child: Image.network(
-                                        studioUtils.baseURL +
+                                        baseURL +
                                             snapshot.data!['postSubchannel']
                                                     ['subchannelPreview'][
                                                 'subchannelSubchannelPicturePath'],

@@ -12,6 +12,8 @@ import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/navbar/profile/navbar_large_profile_widget.dart';
+import 'package:uidraft1/widgets/slider/slidertest.dart';
+import 'package:uidraft1/widgets/videoplayer/large/video_player_normal_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
@@ -29,11 +31,15 @@ void exitFullScreen() {
 //Latest Player
 class VideoPlayerHome extends StatefulWidget {
   const VideoPlayerHome(
-      {Key? key, required this.postData, required this.firtTimeExternAccess})
+      {Key? key,
+      required this.postData,
+      required this.firtTimeExternAccess,
+      required this.navbar})
       : super(key: key);
 
   final Map<String, dynamic> postData;
   final bool firtTimeExternAccess;
+  final Widget navbar;
 
   final String text =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n Tempus iaculis urna id volutpat lacus laoreet non. Aenean vel elit scelerisque mauris.\n Pharetra massa massa ultricies mi. Ut sem viverra aliquet eget sit amet.";
@@ -208,6 +214,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                     height: 120,
                                   ),
                                   //VideoPlayer + Menu Normal
+                                  // VideoPlayerNormalLarge(
+                                  //   firtTimeExternAccess:
+                                  //       widget.firtTimeExternAccess,
+                                  //   postData: widget.postData,
+                                  // ),
                                   VideoPlayerKeyboardListener(
                                     AspectRatio(
                                       aspectRatio:
@@ -921,181 +932,171 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                 Row(
                                                   children: [
                                                     //Post Ratings
-                                                    snapshot.data == 200
-                                                        ? FutureBuilder(
-                                                            future:
-                                                                Future.wait([
-                                                              getUserPostRating(
-                                                                  widget.postData[
-                                                                      'postId']),
-                                                              getPostRatingScore(
-                                                                widget.postData[
-                                                                    'postId'],
-                                                              ),
-                                                              getUserPostReport(
-                                                                  widget.postData[
-                                                                      'postId'])
-                                                            ]),
-                                                            builder: (BuildContext
-                                                                    context,
-                                                                AsyncSnapshot<
-                                                                        List<
-                                                                            int>>
-                                                                    snapshotRating) {
-                                                              if (snapshotRating
-                                                                  .hasData) {
-                                                                return Row(
-                                                                  children: [
-                                                                    //LIKE
-                                                                    IconButton(
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .thumb_up,
-                                                                        size:
-                                                                            16,
-                                                                        color: snapshotRating.data![0] ==
-                                                                                1
-                                                                            ? Theme.of(context).colorScheme.brandColor
-                                                                            : Colors.white60,
-                                                                      ),
-                                                                      onPressed:
-                                                                          () {
-                                                                        switch (
-                                                                            snapshotRating.data![0]) {
-                                                                          case 0:
-                                                                            ratePost(widget.postData['postId'], 'like').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 1:
-                                                                            deletePostRating(widget.postData['postId']).then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 2:
-                                                                            updatePostRating(widget.postData['postId'], 'like').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 8,
-                                                                    ),
-                                                                    //RATING
-                                                                    Text(snapshotRating
-                                                                        .data![
-                                                                            1]
-                                                                        .toString()),
-                                                                    const SizedBox(
-                                                                      width: 8,
-                                                                    ),
-                                                                    // Text("dislike"),
-                                                                    //DISLIKE
-                                                                    IconButton(
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .thumb_down,
-                                                                        size:
-                                                                            16,
-                                                                        color: snapshotRating.data![0] ==
-                                                                                2
-                                                                            ? Theme.of(context).colorScheme.brandColor
-                                                                            : Colors.white60,
-                                                                      ),
-                                                                      onPressed:
-                                                                          () {
-                                                                        switch (
-                                                                            snapshotRating.data![0]) {
-                                                                          case 0:
-                                                                            ratePost(widget.postData['postId'], 'dislike').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 1:
-                                                                            updatePostRating(widget.postData['postId'], 'dislike').then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                          case 2:
-                                                                            deletePostRating(widget.postData['postId']).then((_) =>
-                                                                                setState(() {}));
-                                                                            break;
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 16,
-                                                                    ),
-                                                                    //Report Post
-                                                                    IconButton(
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .flag,
-                                                                        size:
-                                                                            16,
-                                                                        color: snapshotRating.data![2] ==
-                                                                                1
-                                                                            ? Theme.of(context).colorScheme.brandColor
-                                                                            : Colors.white60,
-                                                                      ),
-                                                                      onPressed: () => (snapshotRating.data![2] ==
-                                                                              1)
-                                                                          ? null
-                                                                          : {
-                                                                              reportPost(widget.postData['postId']).then((_) => setState(() {}))
-                                                                            },
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 40,
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              } else {
-                                                                return const SizedBox();
-                                                              }
-                                                            })
-                                                        :
-                                                        //SliderTest
-                                                        Row(
-                                                            children: [
-                                                              SizedBox(
-                                                                width: 250,
-                                                                child: Slider(
-                                                                  value:
-                                                                      sliderval,
-                                                                  min: 0,
-                                                                  max: 100,
-                                                                  divisions: 23,
+                                                    snapshot.hasData
+                                                        ? snapshot.data == 200
+                                                            ? FutureBuilder(
+                                                                future: Future
+                                                                    .wait([
+                                                                  getUserPostRating(
+                                                                      widget.postData[
+                                                                          'postId']),
+                                                                  getPostRatingScore(
+                                                                    widget.postData[
+                                                                        'postId'],
+                                                                  ),
+                                                                  getUserPostReport(
+                                                                      widget.postData[
+                                                                          'postId'])
+                                                                ]),
+                                                                builder: (BuildContext
+                                                                        context,
+                                                                    AsyncSnapshot<
+                                                                            List<int>>
+                                                                        snapshotRating) {
+                                                                  if (snapshotRating
+                                                                      .hasData) {
+                                                                    return Row(
+                                                                      children: [
+                                                                        //LIKE
+                                                                        IconButton(
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.thumb_up,
+                                                                            size:
+                                                                                16,
+                                                                            color: snapshotRating.data![0] == 1
+                                                                                ? Theme.of(context).colorScheme.brandColor
+                                                                                : Colors.white60,
+                                                                          ),
+                                                                          onPressed:
+                                                                              () {
+                                                                            switch (snapshotRating.data![0]) {
+                                                                              case 0:
+                                                                                ratePost(widget.postData['postId'], 'like').then((_) => setState(() {}));
+                                                                                break;
+                                                                              case 1:
+                                                                                deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                break;
+                                                                              case 2:
+                                                                                updatePostRating(widget.postData['postId'], 'like').then((_) => setState(() {}));
+                                                                                break;
+                                                                            }
+                                                                          },
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              8,
+                                                                        ),
+                                                                        //RATING
+                                                                        Text(snapshotRating
+                                                                            .data![1]
+                                                                            .toString()),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              8,
+                                                                        ),
+                                                                        // Text("dislike"),
+                                                                        //DISLIKE
+                                                                        IconButton(
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.thumb_down,
+                                                                            size:
+                                                                                16,
+                                                                            color: snapshotRating.data![0] == 2
+                                                                                ? Theme.of(context).colorScheme.brandColor
+                                                                                : Colors.white60,
+                                                                          ),
+                                                                          onPressed:
+                                                                              () {
+                                                                            switch (snapshotRating.data![0]) {
+                                                                              case 0:
+                                                                                ratePost(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
+                                                                                break;
+                                                                              case 1:
+                                                                                updatePostRating(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
+                                                                                break;
+                                                                              case 2:
+                                                                                deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                break;
+                                                                            }
+                                                                          },
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              16,
+                                                                        ),
+                                                                        //Report Post
+                                                                        IconButton(
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.flag,
+                                                                            size:
+                                                                                16,
+                                                                            color: snapshotRating.data![2] == 1
+                                                                                ? Theme.of(context).colorScheme.brandColor
+                                                                                : Colors.white60,
+                                                                          ),
+                                                                          onPressed: () => (snapshotRating.data![2] == 1)
+                                                                              ? null
+                                                                              : {
+                                                                                  reportPost(widget.postData['postId']).then((_) => setState(() {}))
+                                                                                },
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              40,
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  } else {
+                                                                    return const SizedBox();
+                                                                  }
+                                                                })
+                                                            :
+                                                            //SliderTest
+                                                            // Row(
+                                                            //     children: [
+                                                            //       SizedBox(
+                                                            //         width: 250,
+                                                            //         child: Slider(
+                                                            //           value:
+                                                            //               sliderval,
+                                                            //           min: 0,
+                                                            //           max: 100,
+                                                            //           divisions: 23,
 
-                                                                  activeColor: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .brandColor,
-                                                                  thumbColor: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .brandColor,
-                                                                  // label: sliderval
-                                                                  //     .round()
-                                                                  //     .toString(),
-                                                                  onChanged:
-                                                                      (double
-                                                                          value) {
-                                                                    setState(
-                                                                        () {
-                                                                      sliderval =
-                                                                          value;
-                                                                    });
-                                                                  },
-                                                                ),
-                                                                // child:
-                                                                //     JonathansSlider(),
-                                                              ),
-                                                              const SizedBox(
-                                                                width: 40,
-                                                              )
-                                                            ],
-                                                          ),
+                                                            //           activeColor: Theme.of(
+                                                            //                   context)
+                                                            //               .colorScheme
+                                                            //               .brandColor,
+                                                            //           thumbColor: Theme.of(
+                                                            //                   context)
+                                                            //               .colorScheme
+                                                            //               .brandColor,
+                                                            //           // label: sliderval
+                                                            //           //     .round()
+                                                            //           //     .toString(),
+                                                            //           onChanged:
+                                                            //               (double
+                                                            //                   value) {
+                                                            //             setState(
+                                                            //                 () {
+                                                            //               sliderval =
+                                                            //                   value;
+                                                            //             });
+                                                            //           },
+                                                            //         ),
+                                                            //         // child:
+                                                            //         //     JonathansSlider(),
+                                                            //       ),
+                                                            //       const SizedBox(
+                                                            //         width: 40,
+                                                            //       )
+                                                            //     ],
+                                                            //   ),
+                                                            const Slidertest()
+                                                        : const SizedBox(),
 
                                                     // Row(
                                                     //     children: const [
@@ -2126,7 +2127,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
             ),
           ),
         ),
-        !_isFullScreen ? const NavBarLargeProfile() : const SizedBox(),
+        !_isFullScreen ? widget.navbar : const SizedBox(),
       ],
     );
   }

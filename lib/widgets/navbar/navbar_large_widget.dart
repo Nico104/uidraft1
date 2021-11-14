@@ -117,10 +117,11 @@ class _NavBarLargeState extends State<NavBarLarge> {
                         onTap: () {
                           print("taped");
                           // html.window.location.reload();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => const FeedScreen()),
-                          );
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //       builder: (context) => const FeedScreen()),
+                          // );
+                          Beamer.of(context).beamToNamed('/feed');
                         },
                         child: Text(
                           "LOGO",
@@ -471,6 +472,8 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                     //Login Button
                                     OutlinedButton(
                                       style: OutlinedButton.styleFrom(
+                                        backgroundColor:
+                                            Theme.of(context).canvasColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(30.0),
@@ -503,6 +506,8 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                     //SignUp Button
                                     OutlinedButton(
                                       style: OutlinedButton.styleFrom(
+                                        backgroundColor:
+                                            Theme.of(context).canvasColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(30.0),

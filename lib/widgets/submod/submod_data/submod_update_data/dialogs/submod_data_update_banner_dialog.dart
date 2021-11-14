@@ -4,7 +4,10 @@ import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubModUpdateBannerDialog extends StatefulWidget {
-  const SubModUpdateBannerDialog({Key? key}) : super(key: key);
+  const SubModUpdateBannerDialog({Key? key, required this.subchannelName})
+      : super(key: key);
+
+  final String subchannelName;
 
   @override
   State<SubModUpdateBannerDialog> createState() =>
@@ -57,7 +60,8 @@ class _SubModUpdateBannerDialogState extends State<SubModUpdateBannerDialog> {
 
                   if (result!.files.first.bytes != null) {
                     print("chnage pic");
-                    updateSubchannelBanner('isgut', result!.files.first.bytes!);
+                    updateSubchannelBanner(
+                        widget.subchannelName, result!.files.first.bytes!);
                   } else {
                     print("pic null");
                   }
@@ -84,8 +88,8 @@ class _SubModUpdateBannerDialogState extends State<SubModUpdateBannerDialog> {
                             // subchannelPicturePreview =
                             //     await controller.getFileData(ev);
                             print("chnage pic");
-                            updateSubchannelBanner(
-                                'isgut', await controller.getFileData(ev));
+                            updateSubchannelBanner(widget.subchannelName,
+                                await controller.getFileData(ev));
                             setState(() {
                               print("weiter");
                             });

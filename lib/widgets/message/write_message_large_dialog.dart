@@ -137,7 +137,7 @@ class _WriteMessageDialogState extends State<WriteMessageDialog> {
                     ),
                     backgroundColor: Theme.of(context).colorScheme.brandColor),
                 child: Text(
-                  'Login',
+                  'Send',
                   style: TextStyle(
                       fontFamily: 'Segoe UI Black',
                       fontSize: 18,

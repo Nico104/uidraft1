@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
-
-String baseURL = 'http://localhost:3000/';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 //Get Comment Data by Id
 Future<List<Map<String, dynamic>>> fetchUserNotifications() async {

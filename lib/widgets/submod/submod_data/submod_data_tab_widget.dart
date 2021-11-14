@@ -8,7 +8,10 @@ import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/dialogs/s
 import 'package:uidraft1/widgets/submod/submod_data/submod_update_data/dialogs/submod_data_update_picture_dialog.dart';
 
 class SubModDataTab extends StatefulWidget {
-  const SubModDataTab({Key? key}) : super(key: key);
+  const SubModDataTab({Key? key, required this.subchannelName})
+      : super(key: key);
+
+  final String subchannelName;
 
   @override
   _SubModDataTabState createState() => _SubModDataTabState();
@@ -75,7 +78,9 @@ class _SubModDataTabState extends State<SubModDataTab> {
           useSafeArea: true,
           context: context,
           builder: (BuildContext context) {
-            return const SubModUpdatePictureDialog();
+            return SubModUpdatePictureDialog(
+              subchannelName: widget.subchannelName,
+            );
           },
         ).then((value) {
           setState(() {
@@ -89,7 +94,8 @@ class _SubModDataTabState extends State<SubModDataTab> {
           useSafeArea: true,
           context: context,
           builder: (BuildContext context) {
-            return const SubModUpdateBannerDialog();
+            return SubModUpdateBannerDialog(
+                subchannelName: widget.subchannelName);
           },
         ).then((value) {
           setState(() {
@@ -103,7 +109,8 @@ class _SubModDataTabState extends State<SubModDataTab> {
           useSafeArea: true,
           context: context,
           builder: (BuildContext context) {
-            return const SubModUpdateAboutDialog();
+            return SubModUpdateAboutDialog(
+                subchannelName: widget.subchannelName);
           },
         ).then((value) {
           setState(() {

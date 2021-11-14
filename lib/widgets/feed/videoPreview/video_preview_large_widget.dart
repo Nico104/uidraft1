@@ -154,21 +154,39 @@ class _VideoPreviewState extends State<VideoPreview> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    //User Person icon
-                                    Icon(
-                                      Icons.person_outline_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                      size: 17,
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    //Username
-                                    Text(snapshot.data!['username']),
-                                    const SizedBox(
-                                      width: 10,
+                                    //User
+                                    InkWell(
+                                      excludeFromSemantics: true,
+                                      hoverColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () {
+                                        Beamer.of(context).beamToNamed(
+                                            'profile/' +
+                                                snapshot.data!['username']
+                                                    .toString());
+                                        print("go to subchnanel or profile");
+                                      },
+                                      child: Row(
+                                        children: [
+                                          //Icon
+                                          Icon(
+                                            Icons.person_outline_outlined,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .navBarIconColor,
+                                            size: 17,
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          //Username
+                                          Text(snapshot.data!['username']),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     //Dot in the middle
                                     Container(
@@ -184,21 +202,40 @@ class _VideoPreviewState extends State<VideoPreview> {
                                     const SizedBox(
                                       width: 10,
                                     ),
-                                    //Subchannel icon
-                                    Icon(
-                                      Icons.smart_display_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                      size: 17,
+                                    //Subchannel
+                                    InkWell(
+                                      excludeFromSemantics: true,
+                                      hoverColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () {
+                                        Beamer.of(context).beamToNamed(
+                                            'subchannel/' +
+                                                snapshot.data!['postSubchannel']
+                                                        ['subchannelName']
+                                                    .toString());
+                                        print("go to subchnanel or profile");
+                                      },
+                                      child: Row(
+                                        children: [
+                                          //Subchannel Icon
+                                          Icon(
+                                            Icons.smart_display_outlined,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .navBarIconColor,
+                                            size: 17,
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          //Subchannelname
+                                          Text('c/' +
+                                              snapshot.data!['postSubchannel']
+                                                  ['subchannelName']),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    //Subchannelname
-                                    Text('c/' +
-                                        snapshot.data!['postSubchannel']
-                                            ['subchannelName']),
                                   ],
                                 ),
                                 const SizedBox(
@@ -301,7 +338,9 @@ class _VideoPreviewState extends State<VideoPreview> {
                                       width: 4,
                                     ),
                                     //Views
-                                    Text("42044"),
+                                    Text(snapshot.data!['_count']
+                                            ['postWhatchtimeAnalytics']
+                                        .toString()),
                                   ],
                                 )
                               ],
