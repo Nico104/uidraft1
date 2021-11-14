@@ -92,7 +92,7 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
         MaterialPageRoute(
           builder: (context) => const AuthScreen(
             isLoginInitial: true,
-            firstTimeLogin: true,
+            // firstTimeLogin: true,
           ),
         ),
       );

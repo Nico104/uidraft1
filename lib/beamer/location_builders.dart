@@ -46,7 +46,6 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           // child: const SignUpScreen(),
           child: const AuthScreen(
             isLoginInitial: false,
-            firstTimeLogin: false,
           ),
         ),
 
@@ -56,7 +55,6 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           // child: const LoginScreen(),
           child: const AuthScreen(
             isLoginInitial: true,
-            firstTimeLogin: false,
           ),
         ),
 

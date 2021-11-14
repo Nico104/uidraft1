@@ -333,11 +333,12 @@ class _LoginFormState extends State<LoginForm> {
           errorText = null;
         });
         print("success");
-        if (await isFirstLogin()) {
-          Beamer.of(context).beamToNamed('/changepassword');
-        } else {
-          Beamer.of(context).beamBack();
-        }
+        // if (await isFirstLogin()) {
+        //   Beamer.of(context).beamToNamed('/changepassword');
+        // } else {
+        //   Beamer.of(context).beamBack();
+        // }
+        Beamer.of(context).beamBack();
       } else {
         setState(() {
           errorText = "Username or Password wrong";

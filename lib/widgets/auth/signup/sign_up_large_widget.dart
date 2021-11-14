@@ -1,32 +1,26 @@
 import 'dart:convert';
 
 import 'package:beamer/beamer.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:http/http.dart' as http;
 
-class SignUpLargeScreen extends StatelessWidget {
-  const SignUpLargeScreen({Key? key}) : super(key: key);
+class SignUpLarge extends StatefulWidget {
+  const SignUpLarge({Key? key, required this.setUser}) : super(key: key);
+
+  final Function(String, String, String) setUser;
 
   @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: SizedBox(height: 670, width: 400, child: SignUpForm()),
-    );
-  }
+  _SignUpLargeState createState() => _SignUpLargeState();
 }
 
-class SignUpForm extends StatefulWidget {
-  const SignUpForm({Key? key}) : super(key: key);
-
-  @override
-  _SignUpFormState createState() => _SignUpFormState();
-}
-
-//SignUPForm
-class _SignUpFormState extends State<SignUpForm> {
+//SignUPLarge
+class _SignUpLargeState extends State<SignUpLarge> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureTextPasswor1 = true;
   bool _obscureTextPasswor2 = true;
@@ -35,14 +29,14 @@ class _SignUpFormState extends State<SignUpForm> {
   final _useremailTextController = TextEditingController();
   final _userpasswordTextController = TextEditingController();
   final _userpasswordControlTextController = TextEditingController();
-  // final _profilePicturePathTextController = TextEditingController();
-  // //final _profileDisplayNameTextController = TextEditingController();
-  // final _profileBioTextController = TextEditingController();
+
+  FocusNode fnUsername = FocusNode();
+  FocusNode fnUseremail = FocusNode();
+  FocusNode fnUserpassword = FocusNode();
+  FocusNode fnUserControlpassword = FocusNode();
 
   String titleText =
       "It is a long established fact that a reader will be distracted by the readable content of a page when Looking";
-
-  double _formProgress = 0;
 
   @override
   void dispose() {
@@ -50,66 +44,11 @@ class _SignUpFormState extends State<SignUpForm> {
     _useremailTextController.dispose();
     _userpasswordTextController.dispose();
     _userpasswordControlTextController.dispose();
+    fnUserControlpassword.dispose();
+    fnUseremail.dispose();
+    fnUsername.dispose();
+    fnUserpassword.dispose();
     super.dispose();
-  }
-
-//LoginMethod
-  Future<bool> _login(String username, String password) async {
-    var url = Uri.parse('http://localhost:3000/login');
-    var response = await http
-        .post(url, body: {'username': '$username', 'password': '$password'});
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    if (response.statusCode == 201) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          'access_token', json.decode(response.body)["access_token"]);
-      print("Acess Token: ${prefs.getString('access_token')}");
-
-      // Navigator.of(context).pushNamed('/');
-      // Beamer.of(context).beamToNamed('/');
-      return true;
-    }
-
-    return false;
-    //Navigator.of(context).pushNamed('/welcome');
-  }
-
-  Future<void> _signUp(
-      String username, String useremail, String userpassword) async {
-    DateTime signUpDate = DateTime.now();
-
-    var url = Uri.parse('http://localhost:3000/user/signup');
-    var response = await http.post(url, body: {
-      "username": "$username",
-      "useremail": "$useremail",
-      "userpassword": "$userpassword",
-      "userSignUpDateTime": "$signUpDate",
-      // "$DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(DateTime.now())}",
-      // "2012-04-23T18:25:43.511Z",
-      "userLanguage": "en"
-    });
-
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    if (response.statusCode == 201) {
-      print("yes");
-      await _login(
-          _usernameTextController.text, _userpasswordTextController.text);
-      // Beamer.of(context).beamToNamed('/login');
-    } else {
-      print("nope");
-      //Navigator.of(context).pushNamed('/login');
-      setState(() {
-        _usernameTextController.text = "";
-        _useremailTextController.text = "";
-        _userpasswordTextController.text = "";
-        _userpasswordControlTextController.text = "";
-        titleText = "Something went wrong, please retry";
-      });
-    }
   }
 
   @override
@@ -144,61 +83,104 @@ class _SignUpFormState extends State<SignUpForm> {
               //Username
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _usernameTextController,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Username...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Username...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                  ),
-                  validator: (value) {
-                    //Check if username is free
-                    if (value == null || value.isEmpty) {
-                      return 'You may choose a username, sir';
+                child: KeyboardListener(
+                  focusNode: fnUsername,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnUseremail.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, setUsernameState) {
+                      return TextFormField(
+                        autofocus: true,
+                        controller: _usernameTextController,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Segoe UI',
+                            letterSpacing: 0.3),
+                        cursorColor:
+                            Theme.of(context).colorScheme.textInputCursorColor,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.brandColor,
+                                width: 0.5),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.brandColor,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          filled: true,
+                          fillColor: Theme.of(context).canvasColor,
+                          labelText: 'Username...',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Segoe UI',
+                              fontSize: 15,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .searchBarTextColor),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.only(
+                              bottom: 15, top: 15, left: 15, right: 10),
+                          //Error
+                          errorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 1),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 3),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          errorStyle: const TextStyle(
+                              fontSize: 14.0, fontFamily: 'Segoe UI'),
+                          suffixIcon: _usernameTextController.text.isNotEmpty
+                              ? FutureBuilder(
+                                  future: isUsernameAvailable(
+                                      _usernameTextController.text),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<bool> snapshot) {
+                                    if (snapshot.hasData) {
+                                      if (snapshot.data!) {
+                                        return const Icon(Icons.check);
+                                      } else {
+                                        return const Icon(Icons.cancel);
+                                      }
+                                    } else {
+                                      return const CircularProgressIndicator();
+                                    }
+                                  },
+                                )
+                              : null,
+                        ),
+                        validator: (value) {
+                          //Check if username is free
+                          if (value == null || value.isEmpty) {
+                            return 'You may choose a username, sir';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (_) => submit(),
+                        onChanged: (_) {
+                          EasyDebounce.debounce(
+                              'subchannelNameTextField-debouncer', // <-- An ID for this particular debouncer
+                              const Duration(
+                                  milliseconds:
+                                      500), // <-- The debounce duration
+                              () => setUsernameState(
+                                  () {})); // <-- The target method
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(
@@ -207,68 +189,116 @@ class _SignUpFormState extends State<SignUpForm> {
               //Useremail
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _useremailTextController,
-                  keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Email...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Email...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-                  ),
-                  validator: (value) {
-                    //check if email is already used
-                    Pattern pattern =
-                        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                        r"{0,253}[a-zA-Z0-9])?)*$";
-                    RegExp regex = RegExp(pattern.toString());
-                    if (!regex.hasMatch(value!)) {
-                      return 'Enter a valid email address, sir';
-                    } else {
-                      return null;
+                child: KeyboardListener(
+                  focusNode: fnUseremail,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnUserpassword.requestFocus();
+                      }
                     }
                   },
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, setUseremailState) {
+                      return TextFormField(
+                        controller: _useremailTextController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Segoe UI',
+                            letterSpacing: 0.3),
+                        cursorColor:
+                            Theme.of(context).colorScheme.textInputCursorColor,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.brandColor,
+                                width: 0.5),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.brandColor,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          filled: true,
+                          fillColor: Theme.of(context).canvasColor,
+                          // hintText: 'Email...',
+                          // hintStyle: TextStyle(
+                          //     fontFamily: 'Segoe UI',
+                          //     fontSize: 15,
+                          //     color:
+                          //         Theme.of(context).colorScheme.searchBarTextColor),
+                          labelText: 'Email...',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Segoe UI',
+                              fontSize: 15,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .searchBarTextColor),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.only(
+                              bottom: 15, top: 15, left: 15, right: 10),
+                          //Error
+                          errorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 1),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 3),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          errorStyle: const TextStyle(
+                              fontSize: 14.0, fontFamily: 'Segoe UI'),
+                          suffixIcon: _useremailTextController.text.isNotEmpty
+                              ? FutureBuilder(
+                                  future: isUseremailAvailable(
+                                      _useremailTextController.text),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<bool> snapshot) {
+                                    if (snapshot.hasData) {
+                                      if (snapshot.data!) {
+                                        return const Icon(Icons.check);
+                                      } else {
+                                        return const Icon(Icons.cancel);
+                                      }
+                                    } else {
+                                      return const CircularProgressIndicator();
+                                    }
+                                  },
+                                )
+                              : null,
+                        ),
+                        validator: (value) {
+                          //check if email is already used
+                          Pattern pattern =
+                              r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                              r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                              r"{0,253}[a-zA-Z0-9])?)*$";
+                          RegExp regex = RegExp(pattern.toString());
+                          if (!regex.hasMatch(value!)) {
+                            return 'Enter a valid email address, sir';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onFieldSubmitted: (_) => submit(),
+                        onChanged: (_) {
+                          EasyDebounce.debounce(
+                              'subchannelNameTextField-debouncer', // <-- An ID for this particular debouncer
+                              const Duration(
+                                  milliseconds:
+                                      500), // <-- The debounce duration
+                              () => setUseremailState(
+                                  () {})); // <-- The target method
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(
@@ -277,73 +307,89 @@ class _SignUpFormState extends State<SignUpForm> {
               //Password
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _userpasswordTextController,
-                  obscureText: _obscureTextPasswor1,
-                  // autovalidateMode: AutovalidateMode.onUserInteraction,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Password...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Password...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-
-                    //Visibility Icon
-                    suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      onPressed: () => setState(() {
-                        _obscureTextPasswor1 = !_obscureTextPasswor1;
-                      }),
-                      icon: _obscureTextPasswor1
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 6) {
-                      return 'Password has to be at least 6 characters, sir';
+                child: KeyboardListener(
+                  focusNode: fnUserpassword,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnUserControlpassword.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: TextFormField(
+                    controller: _userpasswordTextController,
+                    obscureText: _obscureTextPasswor1,
+                    // autovalidateMode: AutovalidateMode.onUserInteraction,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      // hintText: 'Password...',
+                      // hintStyle: TextStyle(
+                      //     fontFamily: 'Segoe UI',
+                      //     fontSize: 15,
+                      //     color:
+                      //         Theme.of(context).colorScheme.searchBarTextColor),
+                      labelText: 'Password...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+
+                      //Visibility Icon
+                      suffixIcon: IconButton(
+                        hoverColor: Colors.transparent,
+                        onPressed: () => setState(() {
+                          _obscureTextPasswor1 = !_obscureTextPasswor1;
+                        }),
+                        icon: _obscureTextPasswor1
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 6) {
+                        return 'Password has to be at least 6 characters, sir';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -352,74 +398,90 @@ class _SignUpFormState extends State<SignUpForm> {
               //Password2
               SizedBox(
                 width: 350,
-                child: TextFormField(
-                  controller: _userpasswordControlTextController,
-                  obscureText: _obscureTextPasswor2,
-                  style: const TextStyle(
-                      fontSize: 15, fontFamily: 'Segoe UI', letterSpacing: 0.3),
-                  cursorColor:
-                      Theme.of(context).colorScheme.textInputCursorColor,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 0.5),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.brandColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).canvasColor,
-                    // hintText: 'Re-enter your Password...',
-                    // hintStyle: TextStyle(
-                    //     fontFamily: 'Segoe UI',
-                    //     fontSize: 15,
-                    //     color:
-                    //         Theme.of(context).colorScheme.searchBarTextColor),
-                    labelText: 'Re-enter your Password...',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Segoe UI',
-                        fontSize: 15,
-                        color:
-                            Theme.of(context).colorScheme.searchBarTextColor),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(
-                        bottom: 15, top: 15, left: 15, right: 10),
-                    //Error
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 3),
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    errorStyle:
-                        const TextStyle(fontSize: 14.0, fontFamily: 'Segoe UI'),
-
-                    //Visibility Icon
-                    suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      onPressed: () => setState(() {
-                        _obscureTextPasswor2 = !_obscureTextPasswor2;
-                      }),
-                      icon: _obscureTextPasswor2
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null ||
-                        value.isEmpty ||
-                        value != _userpasswordTextController.text) {
-                      return 'Password does not match, sir';
+                child: KeyboardListener(
+                  focusNode: fnUserControlpassword,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnUsername.requestFocus();
+                      }
                     }
-                    return null;
                   },
+                  child: TextFormField(
+                    controller: _userpasswordControlTextController,
+                    obscureText: _obscureTextPasswor2,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Segoe UI',
+                        letterSpacing: 0.3),
+                    cursorColor:
+                        Theme.of(context).colorScheme.textInputCursorColor,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 0.5),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.brandColor,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      filled: true,
+                      fillColor: Theme.of(context).canvasColor,
+                      // hintText: 'Re-enter your Password...',
+                      // hintStyle: TextStyle(
+                      //     fontFamily: 'Segoe UI',
+                      //     fontSize: 15,
+                      //     color:
+                      //         Theme.of(context).colorScheme.searchBarTextColor),
+                      labelText: 'Re-enter your Password...',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 15,
+                          color:
+                              Theme.of(context).colorScheme.searchBarTextColor),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(
+                          bottom: 15, top: 15, left: 15, right: 10),
+                      //Error
+                      errorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 3),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      errorStyle: const TextStyle(
+                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+
+                      //Visibility Icon
+                      suffixIcon: IconButton(
+                        hoverColor: Colors.transparent,
+                        onPressed: () => setState(() {
+                          _obscureTextPasswor2 = !_obscureTextPasswor2;
+                        }),
+                        icon: _obscureTextPasswor2
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value != _userpasswordTextController.text) {
+                        return 'Password does not match, sir';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => submit(),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -444,32 +506,33 @@ class _SignUpFormState extends State<SignUpForm> {
                         color:
                             Theme.of(context).colorScheme.textInputCursorColor),
                   ),
-                  onPressed: () async {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      // If the form is valid, display a snackbar. In the real world,
-                      // you'd often call a server or save the information in a database.
+                  // onPressed: () async {
+                  //   // Validate returns true if the form is valid, or false otherwise.
+                  //   if (_formKey.currentState!.validate()) {
+                  //     // If the form is valid, display a snackbar. In the real world,
+                  //     // you'd often call a server or save the information in a database.
 
-                      await _signUp(
-                          _usernameTextController.text,
-                          _useremailTextController.text,
-                          _userpasswordControlTextController.text);
+                  //     await _signUp(
+                  //         _usernameTextController.text,
+                  //         _useremailTextController.text,
+                  //         _userpasswordControlTextController.text);
 
-                      if (await _login(_usernameTextController.text,
-                          _userpasswordTextController.text)) {
-                        print("logged in");
-                        Beamer.of(context).beamToNamed('/feed');
-                      } else {
-                        setState(() {
-                          print("Username or Password wrong");
-                        });
-                      }
+                  //     if (await _login(_usernameTextController.text,
+                  //         _userpasswordTextController.text)) {
+                  //       print("logged in");
+                  //       Beamer.of(context).beamToNamed('/feed');
+                  //     } else {
+                  //       setState(() {
+                  //         print("Username or Password wrong");
+                  //       });
+                  //     }
 
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   const SnackBar(content: Text('Processing Data')),
-                      // );
-                    }
-                  },
+                  //     // ScaffoldMessenger.of(context).showSnackBar(
+                  //     //   const SnackBar(content: Text('Processing Data')),
+                  //     // );
+                  //   }
+                  // },
+                  onPressed: () => submit(),
                 ),
               ),
               const SizedBox(
@@ -478,5 +541,18 @@ class _SignUpFormState extends State<SignUpForm> {
             ],
           ),
         ));
+  }
+
+  Future<void> submit() async {
+    if (_formKey.currentState!.validate()) {
+      if (await createPendingAccount(_useremailTextController.text)) {
+        widget.setUser(
+            _usernameTextController.text,
+            _useremailTextController.text,
+            _userpasswordControlTextController.text);
+      } else {
+        print("pending user error");
+      }
+    }
   }
 }

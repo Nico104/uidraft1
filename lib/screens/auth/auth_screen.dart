@@ -7,17 +7,18 @@ import 'package:uidraft1/widgets/auth/login/initial_login_large_widget.dart';
 import 'package:uidraft1/widgets/auth/login/login_large_widget.dart';
 import 'package:uidraft1/widgets/auth/signup/sign_up_large_widget.dart';
 import 'package:uidraft1/widgets/auth/signup/sign_up_v2_large_widget.dart';
+import 'package:uidraft1/widgets/auth/signup/sign_up_v3_large_widget.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen(
       {Key? key,
       required this.isLoginInitial,
-      required this.firstTimeLogin,
+      // required this.firstTimeLogin,
       this.username})
       : super(key: key);
 
   final bool isLoginInitial;
-  final bool firstTimeLogin;
+  // final bool firstTimeLogin;
   final String? username;
 
   @override
@@ -45,10 +46,9 @@ class _AuthState extends State<AuthScreen> {
         body: Stack(
           children: [
             isLogin
-                ? widget.firstTimeLogin
-                    ? InitialLoginLargeScreen(username: widget.username ?? "")
-                    : const LoginLargeScreen()
-                : const SignUpV2LargeScreen(),
+                ? const LoginLargeScreen()
+                // : const SignUpV2LargeScreen(),
+                : const SignUpV3LargeScreen(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
