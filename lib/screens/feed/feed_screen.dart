@@ -18,12 +18,6 @@ class _FeedState extends State<FeedScreen> {
     return ResponsiveWidget(
       smallScreen: Text("smallScreen"),
       mediumScreen: Text("mediumScreen"),
-      // largeScreen: Scaffold(
-      //   extendBodyBehindAppBar: true,
-      //   appBar: NavBarLarge(),
-      //   body: FeedGridLargeScreen(),
-      //   // body: Text("FeedGridScreen"),
-      // ),
       largeScreen: Material(
         child: Stack(
           alignment: Alignment.topCenter,

@@ -9,6 +9,7 @@ import 'package:uidraft1/screens/auth/change_password_screen.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/screens/profile/create/create_profile_screen.dart';
 import 'package:uidraft1/screens/profile/profile_screen.dart';
+import 'package:uidraft1/screens/search/search_screen.dart';
 import 'package:uidraft1/screens/studio/studio_screen.dart';
 import 'package:uidraft1/screens/subchannel/create/create_subchannel_screen.dart';
 import 'package:uidraft1/screens/subchannel/subchannel_screen.dart';
@@ -167,6 +168,22 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           title: 'slidertest',
           child: const Slidertest(),
         ),
+
+    'search/:search': (context, state) {
+      String search =
+          (context.currentBeamLocation.state).pathParameters['search']!;
+
+      if (search.isEmpty) {
+        Beamer.of(context).beamToNamed('/feed');
+      } else {
+        return BeamPage(
+          type: BeamPageType.fadeTransition,
+          key: ValueKey('search-$search'),
+          title: 'Search',
+          child: SearchScreen(search: search),
+        );
+      }
+    },
 
     // 'SliderXlider': (context, state) => BeamPage(
     //       key: const ValueKey('SliderXlider'),

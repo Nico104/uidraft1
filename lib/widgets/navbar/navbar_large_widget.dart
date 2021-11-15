@@ -1,7 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
@@ -19,16 +18,17 @@ import 'options/options_grid_widget.dart';
 
 // class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLarge extends StatefulWidget {
-  const NavBarLarge(
-      {Key? key,
-      required this.setActiveFeed,
-      required this.activeFeed,
-      this.leftHand = true,
-      this.notification = true,
-      this.theme = true,
-      this.customFeed = true,
-      this.profile = true})
-      : super(key: key);
+  const NavBarLarge({
+    Key? key,
+    required this.setActiveFeed,
+    required this.activeFeed,
+    this.leftHand = true,
+    this.notification = true,
+    this.theme = true,
+    this.customFeed = true,
+    this.profile = true,
+    this.searchInitialValue = "",
+  }) : super(key: key);
 
   final int activeFeed;
   final Function(int i) setActiveFeed;
@@ -38,6 +38,8 @@ class NavBarLarge extends StatefulWidget {
   final bool theme;
   final bool customFeed;
   final bool profile;
+
+  final String searchInitialValue;
 
   @override
   State<NavBarLarge> createState() => _NavBarLargeState();
@@ -51,6 +53,14 @@ class _NavBarLargeState extends State<NavBarLarge> {
   String baseURL = 'http://localhost:3000/';
 
   late String username;
+
+  TextEditingController _searchBarController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchBarController.text = widget.searchInitialValue;
+  }
 
   //Get Profile Data by Username
   Future<Map<String, dynamic>> fetchMyProfileData() async {
@@ -125,7 +135,8 @@ class _NavBarLargeState extends State<NavBarLarge> {
                           Beamer.of(context).beamToNamed('/feed');
                         },
                         child: Text(
-                          "LOGO",
+                          // "LOGO",
+                          "LIGMA",
                           style: TextStyle(
                               fontFamily: 'Segoe UI Black',
                               fontSize: 28,
@@ -146,6 +157,8 @@ class _NavBarLargeState extends State<NavBarLarge> {
                               : 1000,
                           //height: 30,
                           child: TextFormField(
+                            // initialValue: widget.searchInitialValue,
+                            controller: _searchBarController,
                             style: const TextStyle(
                                 fontSize: 16,
                                 fontFamily: 'Segoe UI',
@@ -186,7 +199,12 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-                                    print("search Button clicked");
+                                    if (_searchBarController.text.isEmpty) {
+                                      Beamer.of(context).beamToNamed('/feed');
+                                    } else {
+                                      Beamer.of(context).beamToNamed(
+                                          '/search/${_searchBarController.text}');
+                                    }
                                   },
                                   splashColor: Colors.transparent,
                                   hoverColor: Colors.transparent,
@@ -209,6 +227,14 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                   minHeight: 20,
                                   maxWidth: 24 + 10),
                             ),
+                            onFieldSubmitted: (search) {
+                              if (search.isEmpty) {
+                                Beamer.of(context).beamToNamed('/feed');
+                              } else {
+                                Beamer.of(context)
+                                    .beamToNamed('/search/$search');
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -241,27 +267,18 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             //LeftHand Switch
-                                            widget.leftHand
-                                                ? IconButton(
-                                                    icon: Icon(
-                                                      _isLeftHand
-                                                          ? Icons.switch_left
-                                                          : Icons.switch_right,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .navBarIconColor,
-                                                      size: 24,
-                                                    ),
-                                                    onPressed: () =>
-                                                        setState(() {
-                                                      _isLeftHand =
-                                                          !_isLeftHand;
-                                                    }),
-                                                  )
-                                                : const SizedBox(),
-                                            const SizedBox(
-                                              width: 18,
-                                            ),
+                                            // widget.leftHand
+                                            //     ? LeftHandSwitcherIcon(
+                                            //         isLeftHand: _isLeftHand,
+                                            //         onPressed: () =>
+                                            //             setState(() {
+                                            //               _isLeftHand =
+                                            //                   !_isLeftHand;
+                                            //             }))
+                                            //     : const SizedBox(),
+                                            // const SizedBox(
+                                            //   width: 18,
+                                            // ),
                                             //Notifications
                                             widget.notification
                                                 ? FutureBuilder(
@@ -320,39 +337,12 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                               width: 18,
                                             ),
                                             //Dark Light Mode Switch
-                                            widget.theme
-                                                ? Consumer<ThemeNotifier>(
-                                                    builder:
-                                                        (context, theme, _) =>
-                                                            InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () {
-                                                        if (theme.getTheme() ==
-                                                            theme.darkTheme) {
-                                                          theme.setLightMode();
-                                                        } else {
-                                                          theme.setDarkMode();
-                                                        }
-                                                      },
-                                                      child: Icon(
-                                                        Icons
-                                                            .dark_mode_outlined,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .navBarIconColor,
-                                                        size: 24,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
-                                            const SizedBox(
-                                              width: 18,
-                                            ),
+                                            // widget.theme
+                                            //     ? const DarkModeSwitcherIcon()
+                                            //     : const SizedBox(),
+                                            // const SizedBox(
+                                            //   width: 18,
+                                            // ),
                                             //CustomFeedSelection
                                             widget.customFeed
                                                 ? InkWell(
@@ -385,8 +375,43 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                                   )
                                                 : const SizedBox(),
                                             const SizedBox(
-                                              width: 32,
+                                              width: 18,
                                             ),
+                                            //Options Menu
+                                            widget.notification
+                                                ? InkWell(
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () {
+                                                      setState(() {
+                                                        if (activeMenu ==
+                                                            Menu.options) {
+                                                          activeMenu =
+                                                              Menu.none;
+                                                        } else {
+                                                          activeMenu =
+                                                              Menu.options;
+                                                        }
+                                                      });
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.apps_outlined,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .navBarIconColor,
+                                                          size: 26,
+                                                        ),
+                                                      ],
+                                                    ))
+                                                : const SizedBox(),
+                                            const SizedBox(width: 32),
                                             //ProfilePicture
                                             widget.profile
                                                 ? InkWell(
@@ -439,37 +464,6 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    //TODO Transfer to User Logged in
-                                    //Options Menu
-                                    widget.notification
-                                        ? InkWell(
-                                            splashColor: Colors.transparent,
-                                            hoverColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
-                                            onTap: () {
-                                              setState(() {
-                                                if (activeMenu ==
-                                                    Menu.options) {
-                                                  activeMenu = Menu.none;
-                                                } else {
-                                                  activeMenu = Menu.options;
-                                                }
-                                              });
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.apps_outlined,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .navBarIconColor,
-                                                  size: 26,
-                                                ),
-                                              ],
-                                            ))
-                                        : const SizedBox(),
-                                    const SizedBox(width: 5),
-                                    //! End Test
                                     //LeftHand Switch
                                     IconButton(
                                       icon: Icon(
@@ -639,7 +633,12 @@ class _NavBarLargeState extends State<NavBarLarge> {
         //   setActiveFeed: widget.setActiveFeed,
         //   activeFeed: widget.activeFeed,
         // );
-        return const OptionsGrid();
+        return OptionsGrid(
+          lhIsLeftHand: _isLeftHand,
+          lhOnPressed: () => setState(() {
+            _isLeftHand = !_isLeftHand;
+          }),
+        );
     }
   }
 }
