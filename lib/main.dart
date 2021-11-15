@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/screens/notfound/not_found_screen.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'beamer/location_builders.dart';
 import 'utils/theme/theme_notifier.dart';
@@ -29,6 +30,11 @@ class MyApp extends StatelessWidget {
     initialPath: '/feed',
     // initialPath: '/slidertest',
     locationBuilder: simpleLocationBuilder,
+    notFoundPage: BeamPage(
+      key: const ValueKey('notfound'),
+      title: 'notfound',
+      child: const NotFoundScreen(),
+    ),
   );
 
   @override

@@ -15,6 +15,7 @@ import 'dart:html' as html;
 import 'package:uidraft1/widgets/notification/notificationList/notification_list_dialog_widget.dart';
 
 import 'navbar_menu_large_widget.dart';
+import 'options/options_grid_widget.dart';
 
 // class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLarge extends StatefulWidget {
@@ -438,6 +439,37 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    //TODO Transfer to User Logged in
+                                    //Options Menu
+                                    widget.notification
+                                        ? InkWell(
+                                            splashColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () {
+                                              setState(() {
+                                                if (activeMenu ==
+                                                    Menu.options) {
+                                                  activeMenu = Menu.none;
+                                                } else {
+                                                  activeMenu = Menu.options;
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.apps_outlined,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .navBarIconColor,
+                                                  size: 26,
+                                                ),
+                                              ],
+                                            ))
+                                        : const SizedBox(),
+                                    const SizedBox(width: 5),
+                                    //! End Test
                                     //LeftHand Switch
                                     IconButton(
                                       icon: Icon(
@@ -457,15 +489,41 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                       width: 18,
                                     ),
                                     //Dark Light Mode Switch
-                                    Consumer<ThemeNotifier>(
-                                      builder: (context, theme, _) => Icon(
-                                        Icons.dark_mode_outlined,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .navBarIconColor,
-                                        size: 24,
-                                      ),
-                                    ),
+                                    widget.theme
+                                        ? Consumer<ThemeNotifier>(
+                                            builder: (context, theme, _) =>
+                                                InkWell(
+                                              splashColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () {
+                                                if (theme.getTheme() ==
+                                                    theme.darkTheme) {
+                                                  theme.setLightMode();
+                                                } else {
+                                                  theme.setDarkMode();
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.dark_mode_outlined,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .navBarIconColor,
+                                                size: 24,
+                                              ),
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    // Consumer<ThemeNotifier>(
+                                    //   builder: (context, theme, _) => Icon(
+                                    //     Icons.dark_mode_outlined,
+                                    //     color: Theme.of(context)
+                                    //         .colorScheme
+                                    //         .navBarIconColor,
+                                    //     size: 24,
+                                    //   ),
+                                    // ),
                                     const SizedBox(
                                       width: 18,
                                     ),
@@ -574,6 +632,14 @@ class _NavBarLargeState extends State<NavBarLarge> {
           setActiveFeed: widget.setActiveFeed,
           activeFeed: widget.activeFeed,
         );
+      case Menu.options:
+        // return CustomFeedList(
+        //   myUsername: username,
+        //   isLeftHand: _isLeftHand,
+        //   setActiveFeed: widget.setActiveFeed,
+        //   activeFeed: widget.activeFeed,
+        // );
+        return const OptionsGrid();
     }
   }
 }

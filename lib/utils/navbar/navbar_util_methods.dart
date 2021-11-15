@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
-enum Menu { none, menu, notification, customfeed }
+enum Menu { none, menu, notification, customfeed, options }
 
 //Get Comment Data by Id
 Future<int> getMyUnseenNotificationCount() async {
