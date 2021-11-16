@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/uiwidgets/navicons/dark_mode_switcher_icon.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/utils/widgets/toggle/toggle_animated_button_widget.dart';
@@ -69,34 +70,41 @@ class _AuthState extends State<AuthScreen> {
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10, 45, 0),
-                    child: SizedBox(
-                      width: 180,
-                      height: 100,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: AnimatedToggle(
-                          firstInitialPosition: widget.isLoginInitial,
-                          values: const ['Login', 'SignUp'],
-                          onToggleCallback: (value) {
-                            print("value: " + value.toString());
-                            if (value == 0) {
-                              setState(() {
-                                isLogin = true;
-                              });
-                            } else {
-                              setState(() {
-                                isLogin = false;
-                              });
-                            }
-                            print("isogin: " + isLogin.toString());
-                          },
-                          buttonColor: Theme.of(context).colorScheme.brandColor,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.searchBarColor,
-                          textColor:
-                              Theme.of(context).colorScheme.highlightColor,
+                    child: Row(
+                      children: [
+                        const DarkModeSwitcherIcon(),
+                        const SizedBox(width: 15),
+                        SizedBox(
+                          width: 180,
+                          height: 100,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: AnimatedToggle(
+                              firstInitialPosition: widget.isLoginInitial,
+                              values: const ['Login', 'SignUp'],
+                              onToggleCallback: (value) {
+                                print("value: " + value.toString());
+                                if (value == 0) {
+                                  setState(() {
+                                    isLogin = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isLogin = false;
+                                  });
+                                }
+                                print("isogin: " + isLogin.toString());
+                              },
+                              buttonColor:
+                                  Theme.of(context).colorScheme.brandColor,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.searchBarColor,
+                              textColor:
+                                  Theme.of(context).colorScheme.highlightColor,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),

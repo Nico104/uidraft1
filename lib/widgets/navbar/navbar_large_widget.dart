@@ -16,9 +16,12 @@ import 'package:uidraft1/widgets/notification/notificationList/notification_list
 import 'navbar_menu_large_widget.dart';
 import 'options/options_grid_widget.dart';
 
+//! Test GlobalKey for tap menu
+// GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
+
 // class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLarge extends StatefulWidget {
-  const NavBarLarge({
+  NavBarLarge({
     Key? key,
     required this.setActiveFeed,
     required this.activeFeed,
@@ -28,7 +31,7 @@ class NavBarLarge extends StatefulWidget {
     this.customFeed = true,
     this.profile = true,
     this.searchInitialValue = "",
-  }) : super(key: key);
+  }) : super(key: globalKey);
 
   final int activeFeed;
   final Function(int i) setActiveFeed;
@@ -40,6 +43,9 @@ class NavBarLarge extends StatefulWidget {
   final bool profile;
 
   final String searchInitialValue;
+
+  //! Test GlobalKey for tap menu
+  static final GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
 
   @override
   State<NavBarLarge> createState() => _NavBarLargeState();
@@ -96,6 +102,13 @@ class _NavBarLargeState extends State<NavBarLarge> {
 
   refresh() {
     setState(() {});
+  }
+
+  collapseMenus() {
+    print("colapse menus ");
+    setState(() {
+      activeMenu = Menu.none;
+    });
   }
 
   @override

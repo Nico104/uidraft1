@@ -155,7 +155,10 @@ class _SignUpLargeState extends State<SignUpLarge> {
                                         return const Icon(Icons.cancel);
                                       }
                                     } else {
-                                      return const CircularProgressIndicator();
+                                      return Transform.scale(
+                                          scale: 0.5,
+                                          child:
+                                              const CircularProgressIndicator());
                                     }
                                   },
                                 )

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uidraft1/screens/notfound/not_found_screen.dart';
+import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'beamer/location_builders.dart';
 import 'utils/theme/theme_notifier.dart';
@@ -64,7 +65,14 @@ class MyApp extends StatelessWidget {
     }
     return Consumer<ThemeNotifier>(builder: (context, theme, _) {
       return GestureDetector(
-        onTap: () => print("TAP"),
+        onTap: () {
+          print("TAP");
+          if (NavBarLarge.globalKey.currentState == null) {
+            print("current NavBarState null");
+          } else {
+            NavBarLarge.globalKey.currentState!.collapseMenus();
+          }
+        },
         child: MaterialApp.router(
           shortcuts: shortcuts,
           debugShowCheckedModeBanner: false,

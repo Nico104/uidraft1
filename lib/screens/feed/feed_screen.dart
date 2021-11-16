@@ -24,6 +24,7 @@ class _FeedState extends State<FeedScreen> {
           children: [
             const FeedGridLargeScreen(),
             NavBarLarge(
+              // key: globalKey,
               setActiveFeed: setActiveFeedTo,
               activeFeed: activeFeed,
             ),
