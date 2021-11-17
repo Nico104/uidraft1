@@ -17,7 +17,9 @@ class VideoPlayerNormalV2 extends StatefulWidget {
       required this.streamQualityKeysSorted,
       required this.activeQualityStream,
       required this.focusNode,
-      required this.handleEscape})
+      required this.handleQualityChange,
+      required this.handleFullscreenButton,
+      required this.disbaleFirstTimeAccess})
       : super(key: key);
 
   final VideoPlayerController controller;
@@ -26,7 +28,10 @@ class VideoPlayerNormalV2 extends StatefulWidget {
   final int activeQualityStream;
   final FocusNode focusNode;
 
-  final Function() handleEscape;
+  final Function(int) handleQualityChange;
+  final Function() handleFullscreenButton;
+  final Function() disbaleFirstTimeAccess;
+
   // Map<int, String> streamQualityURL = {};
   // List<int> streamQualityKeysSorted = [];
   // late int activeQualityStream;
@@ -36,10 +41,10 @@ class VideoPlayerNormalV2 extends StatefulWidget {
 }
 
 class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
-  late bool _firtTimeExternAccess = false;
+  // late bool _firtTimeExternAccess = false;
 
   //Menu Vars
-  bool _isFullScreen = false;
+  // bool _isFullScreen = false;
   bool _showMenu = false;
   bool _showQuality = false;
 
@@ -47,26 +52,26 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _firtTimeExternAccess = widget.firstTimeExternAccess;
-      // preventDefault();
-      // js.JsObject.fromBrowserObject(js.context.)
-      // @JS('JSON.stringify');
-      // js.context.callMethod('alert', ["alerrtest"]);
-      window.addEventListener("resize", (e) {
-        // print("ss");
-        // widget.handleEscape.call();
-        // EasyDebounce.debounce(
-        //     'fullscreenbuild-debouncer', // <-- An ID for this particular debouncer
-        //     const Duration(seconds: 2), // <-- The debounce duration
-        //     () {
-        //   print("ss");
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //   // _firtTimeExternAccess = widget.firstTimeExternAccess;
+    //   // preventDefault();
+    //   // js.JsObject.fromBrowserObject(js.context.)
+    //   // @JS('JSON.stringify');
+    //   // js.context.callMethod('alert', ["alerrtest"]);
+    //   // window.addEventListener("resize", (e) {
+    //   //   // print("ss");
+    //   //   // widget.handleEscape.call();
+    //   //   // EasyDebounce.debounce(
+    //   //   //     'fullscreenbuild-debouncer', // <-- An ID for this particular debouncer
+    //   //   //     const Duration(seconds: 2), // <-- The debounce duration
+    //   //   //     () {
+    //   //   //   print("ss");
 
-        // });
-        widget.handleEscape.call(); // <-- The target method
-        // print("ss");
-      });
-    });
+    //   //   // });
+    //   //   // widget.handleEscape.call(); // <-- The target method
+    //   //   // print("ss");
+    //   // });
+    // });
   }
 
   @override
@@ -154,7 +159,8 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 print("tap");
-                _firtTimeExternAccess = false;
+                // _firtTimeExternAccess = false;
+                widget.disbaleFirstTimeAccess.call();
                 if (widget.controller.value.isPlaying) {
                   if (mounted) {
                     setState(() {
@@ -212,6 +218,7 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
 
                 }
               },
+              onDoubleTap: () => widget.handleFullscreenButton.call(),
               child: IgnorePointer(
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
@@ -251,24 +258,9 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                                               .brandColor
                                           : Colors.transparent,
                                       child: TextButton(
-                                          onPressed: () {
-                                            if (mounted) {
-                                              //TODO Handle in Parent
-                                              // setState(() {
-                                              //   _firtTimeExternAccess = false;
-                                              //   activeQualityStream =
-                                              //       streamQualityKeysSorted
-                                              //           .elementAt(index);
-                                              //   _initializePlay(
-                                              //       streamQualityURL[
-                                              //           activeQualityStream]!,
-                                              //       widget.controller.value
-                                              //           .position);
-                                              //   _showMenu = false;
-                                              //   _showQuality = false;
-                                              // });
-                                            }
-                                          },
+                                          onPressed: () => widget
+                                              .handleQualityChange
+                                              .call(index),
                                           child: Text(widget
                                                   .streamQualityKeysSorted
                                                   .elementAt(index)
@@ -357,7 +349,8 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                             minWidth: 0,
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
-                              _firtTimeExternAccess = false;
+                              // _firtTimeExternAccess = false;
+                              widget.disbaleFirstTimeAccess.call();
                               if (widget.controller.value.isPlaying) {
                                 if (mounted) {
                                   setState(() {
@@ -489,10 +482,11 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                             onPressed: () {
                               if (mounted) {
                                 setState(() {
-                                  _firtTimeExternAccess = false;
+                                  // _firtTimeExternAccess = false;
                                   _showQuality = !_showQuality;
                                   _showMenu = true;
                                 });
+                                widget.disbaleFirstTimeAccess.call();
                               }
 
                               EasyDebounce.debounce(
@@ -503,12 +497,13 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                                 if (_showMenu) {
                                   if (mounted) {
                                     setState(() {
-                                      _firtTimeExternAccess = false;
+                                      // _firtTimeExternAccess = false;
                                       _showMenu = false;
                                       _showQuality = false;
                                       print("_showMenu set to false");
                                     });
                                   }
+                                  widget.disbaleFirstTimeAccess.call();
                                 }
                               });
                             },
@@ -541,24 +536,8 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                             highlightColor: Colors.transparent,
                             minWidth: 0,
                             padding: const EdgeInsets.all(0),
-                            onPressed: () {
-                              //TODO Handle in Parent
-                              // if (!_isFullScreen) {
-                              //   if (mounted) {
-                              //     setState(() {
-                              //       _isFullScreen = true;
-                              //       goFullScreen();
-                              //     });
-                              //   }
-                              // } else {
-                              //   if (mounted) {
-                              //     setState(() {
-                              //       _isFullScreen = false;
-                              //       exitFullScreen();
-                              //     });
-                              //   }
-                              // }
-                            },
+                            onPressed: () =>
+                                widget.handleFullscreenButton.call(),
                             child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
@@ -590,7 +569,8 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                   )
                 : const SizedBox(),
             //FirstTimeExternAccess
-            _firtTimeExternAccess
+            // _firtTimeExternAccess
+            widget.firstTimeExternAccess
                 ? Center(
                     child: MaterialButton(
                       hoverColor: Colors.transparent,
@@ -599,7 +579,8 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                       minWidth: 0,
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        _firtTimeExternAccess = false;
+                        // _firtTimeExternAccess = false;
+                        widget.disbaleFirstTimeAccess.call();
                         if (widget.controller.value.isPlaying) {
                           if (mounted) {
                             setState(() {

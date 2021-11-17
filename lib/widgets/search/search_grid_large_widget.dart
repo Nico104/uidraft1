@@ -143,22 +143,22 @@ class _SearchGridState extends State<SearchGridLargeScreen> {
                         // physics: const AlwaysScrollableScrollPhysics(),
                         child: Column(
                           children: [
-                            const SizedBox(
-                              height: 120,
-                            ),
-                            TextButton(
-                                onPressed: () => Share.share(
-                                    'check out my website https://example.com',
-                                    subject: 'Look what I made!'),
-                                child: Text("ShareTest")),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            TextButton(
-                                onPressed: () => Clipboard.setData(
-                                        const ClipboardData(text: "copiedtext"))
-                                    .then((_) => _showToast(context)),
-                                child: Text("CopyToClipBoardTest")),
+                            // const SizedBox(
+                            //   height: 120,
+                            // ),
+                            // TextButton(
+                            //     onPressed: () => Share.share(
+                            //         'check out my website https://example.com',
+                            //         subject: 'Look what I made!'),
+                            //     child: Text("ShareTest")),
+                            // const SizedBox(
+                            //   height: 50,
+                            // ),
+                            // TextButton(
+                            //     onPressed: () => Clipboard.setData(
+                            //             const ClipboardData(text: "copiedtext"))
+                            //         .then((_) => _showToast(context)),
+                            //     child: Text("CopyToClipBoardTest")),
                             // const SizedBox(
                             //   height: 100,
                             // ),
@@ -224,17 +224,6 @@ class _SearchGridState extends State<SearchGridLargeScreen> {
                         ),
                       ),
                     ),
-    );
-  }
-
-  //Needs Scaffold in Tree to work
-  void _showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 1),
-        content: Text('copied to clipboard'),
-      ),
     );
   }
 

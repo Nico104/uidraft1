@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:beamer/beamer.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
@@ -12,7 +12,6 @@ import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
-import 'package:uidraft1/widgets/videoplayer/large/video_player_normal_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_normal_v2_widget.dart';
 import 'package:video_player/video_player.dart';
@@ -88,8 +87,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   //SliderTest
   double sliderval = 50;
 
-  //!Fullscreentest
-  DateTime fullscreen = DateTime.now();
+  //PressF
+  // bool _pressFVisible = false;
+  double _width = 0;
+  double _height = 0;
+  double _opacity = 0;
+  int _duration = 200;
 
   void _onFullScreenChange(ev) {
     print("onFullScreenChange!: $ev");
@@ -105,15 +108,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   @override
   void initState() {
     print("Is Full  Screen: " + document.fullscreenEnabled.toString());
-    //!FullscreenTest
-    // document.documentElement!
-    //     .addEventListener('keydown', (key) => print(key.toString()));
-    // document.documentElement!
-    //     .addEventListener('fullscreenchange', (ev) => "dffgfdsgsdfgdfsfsgg");
-    // // document.onFullscreenChange((ev) => _onFullScreenChange(ev));
-    // // window.onResize.;
-
-    //!Fullscreentest end
 
     //Tagstart
     List<dynamic> values = widget.postData['tags'];
@@ -173,12 +167,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
         window.history.replaceState(null, 'VideoPlayer',
             '#/whatch/' + widget.postData['postId'].toString());
       }
-      //!Escape test
-      document.documentElement!
-          .addEventListener('keydown', (key) => print(key.toString()));
-      document.documentElement!.addEventListener('fullscreenchange',
-          (ev) => print("gdahkfgsdahfghdsakljfhgdsalkjfhgasdlkfgashk"));
     });
+  }
+
+  //Needs Scaffold in Tree to work
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text('copied to clipboard'),
+      ),
+    );
   }
 
   @override
@@ -191,32 +191,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
     _controller.dispose();
 
     super.dispose();
-  }
-
-  void goFullscreen() {
-    setState(() {
-      _isFullScreen = true;
-    });
-  }
-
-  void exitFullscreen() {
-    // if(fullscreen{}
-    print("millisecodns2: " +
-        millisecondsBetween(fullscreen, DateTime.now()).toString());
-    if (millisecondsBetween(fullscreen, DateTime.now()) > 2000) {
-      EasyDebounce.debounce(
-          'fullscreenbuild-debouncer', // <-- An ID for this particular debouncer
-          const Duration(seconds: 5), // <-- The debounce duration
-          () {
-        print("ff");
-        setState(() {
-          _isFullScreen = false;
-        });
-      });
-    } else {
-      print("millisecodns: " +
-          millisecondsBetween(fullscreen, DateTime.now()).toString());
-    }
   }
 
   int millisecondsBetween(DateTime from, DateTime to) {
@@ -244,6 +218,65 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
       });
     });
     _controller.setLooping(true);
+  }
+
+  void handleQualityChange(int index) {
+    if (mounted) {
+      setState(() {
+        _firtTimeExternAccess = false;
+        activeQualityStream = streamQualityKeysSorted.elementAt(index);
+        _initializePlay(
+            streamQualityURL[activeQualityStream]!, _controller.value.position);
+        _showMenu = false;
+        _showQuality = false;
+      });
+    }
+  }
+
+  void handleFullscreen() {
+    if (!_isFullScreen) {
+      if (mounted) {
+        setState(() {
+          _isFullScreen = true;
+        });
+        goFullScreen();
+        animatePressF();
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _opacity = 0;
+          _width = 0;
+          _height = 0;
+          _duration = 1;
+          _isFullScreen = false;
+          exitFullScreen();
+        });
+      }
+    }
+  }
+
+  void animatePressF() {
+    setState(() {
+      _width = 300;
+      _height = 70;
+      _duration = 100;
+    });
+    Future.delayed(Duration(seconds: 3)).then((value) => {
+          setState(() {
+            _width = 0;
+            _height = 0;
+            _duration = 400;
+          })
+        });
+  }
+
+  void disableFirstTimeAccess() {
+    if (mounted) {
+      setState(() {
+        _firtTimeExternAccess = false;
+      });
+    }
   }
 
   //Quality Test End
@@ -296,674 +329,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                       streamQualityKeysSorted:
                                           streamQualityKeysSorted,
                                       focusNode: focusNode,
-                                      handleEscape: () => exitFullscreen(),
+                                      handleFullscreenButton: () =>
+                                          handleFullscreen.call(),
+                                      handleQualityChange: (index) =>
+                                          handleQualityChange.call(index),
+                                      disbaleFirstTimeAccess: () =>
+                                          disableFirstTimeAccess.call(),
                                     ),
                                   ),
 
-                                  // videoPlayerKeyboardListener(
-                                  //   AspectRatio(
-                                  //     aspectRatio:
-                                  //         _controller.value.aspectRatio,
-                                  //     // Use the VideoPlayer widget to display the video.
-                                  //     child: Stack(
-                                  //       alignment: Alignment.bottomCenter,
-                                  //       children: [
-                                  //         //VideoPlayer Normal
-                                  //         GestureDetector(
-                                  //           behavior:
-                                  //               HitTestBehavior.translucent,
-                                  //           onTap: () {
-                                  //             print("tap");
-                                  //             _firtTimeExternAccess = false;
-                                  //             if (_controller.value.isPlaying) {
-                                  //               if (mounted) {
-                                  //                 setState(() {
-                                  //                   _controller.pause();
-                                  //                   print("paused");
-
-                                  //                   _showMenu = true;
-                                  //                   print(
-                                  //                       "_showMenu set to true");
-                                  //                   _showQuality = false;
-                                  //                 });
-                                  //               }
-
-                                  //               EasyDebounce.debounce(
-                                  //                   'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                  //                   const Duration(
-                                  //                       seconds:
-                                  //                           2), // <-- The debounce duration
-                                  //                   () {
-                                  //                 if (_showMenu) {
-                                  //                   if (mounted) {
-                                  //                     setState(() {
-                                  //                       _showMenu = false;
-                                  //                       _showQuality = false;
-                                  //                       print(
-                                  //                           "_showMenu set to false");
-                                  //                     });
-                                  //                   }
-                                  //                 }
-                                  //               }); // <-- The target method
-
-                                  //             } else {
-                                  //               // If the video is paused, play it.
-                                  //               if (mounted) {
-                                  //                 setState(() {
-                                  //                   _controller.play();
-                                  //                   print("playing");
-
-                                  //                   _showMenu = true;
-                                  //                   print(
-                                  //                       "_showMenu set to true");
-                                  //                   _showQuality = false;
-                                  //                 });
-                                  //               }
-
-                                  //               EasyDebounce.debounce(
-                                  //                   'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                  //                   const Duration(
-                                  //                       seconds:
-                                  //                           2), // <-- The debounce duration
-                                  //                   () {
-                                  //                 if (_showMenu) {
-                                  //                   if (mounted) {
-                                  //                     setState(() {
-                                  //                       _showMenu = false;
-                                  //                       _showQuality = false;
-                                  //                       print(
-                                  //                           "_showMenu set to false");
-                                  //                     });
-                                  //                   }
-                                  //                 }
-                                  //               }); // <-- The target method
-
-                                  //             }
-                                  //           },
-                                  //           child: IgnorePointer(
-                                  //             child: ClipRRect(
-                                  //                 borderRadius:
-                                  //                     BorderRadius.circular(15),
-                                  //                 child:
-                                  //                     VideoPlayer(_controller)),
-                                  //           ),
-                                  //         ),
-                                  //         _showMenu
-                                  //             //VideoPlayerMenu Normal
-                                  //             ? Column(
-                                  //                 crossAxisAlignment:
-                                  //                     CrossAxisAlignment.center,
-                                  //                 mainAxisSize:
-                                  //                     MainAxisSize.max,
-                                  //                 mainAxisAlignment:
-                                  //                     MainAxisAlignment.end,
-                                  //                 children: [
-                                  //                   Row(
-                                  //                     mainAxisAlignment:
-                                  //                         MainAxisAlignment.end,
-                                  //                     crossAxisAlignment:
-                                  //                         CrossAxisAlignment
-                                  //                             .end,
-                                  //                     children: [
-                                  //                       _showQuality
-                                  //                           ? Container(
-                                  //                               decoration: BoxDecoration(
-                                  //                                   borderRadius:
-                                  //                                       BorderRadius
-                                  //                                           .circular(
-                                  //                                               8),
-                                  //                                   color: Theme.of(
-                                  //                                           context)
-                                  //                                       .colorScheme
-                                  //                                       .videoPlayerIconBackgroundColor
-                                  //                                       .withOpacity(
-                                  //                                           0.6)),
-                                  //                               child: Column(
-                                  //                                   //Generate Quality Menu
-                                  //                                   children: List.generate(
-                                  //                                       streamQualityKeysSorted
-                                  //                                           .length,
-                                  //                                       (index) {
-                                  //                                 return Container(
-                                  //                                   color: streamQualityKeysSorted.elementAt(index) ==
-                                  //                                           activeQualityStream
-                                  //                                       ? Theme.of(context)
-                                  //                                           .colorScheme
-                                  //                                           .brandColor
-                                  //                                       : Colors
-                                  //                                           .transparent,
-                                  //                                   child: TextButton(
-                                  //                                       onPressed: () {
-                                  //                                         if (mounted) {
-                                  //                                           setState(() {
-                                  //                                             _firtTimeExternAccess = false;
-                                  //                                             activeQualityStream = streamQualityKeysSorted.elementAt(index);
-                                  //                                             _initializePlay(streamQualityURL[activeQualityStream]!, _controller.value.position);
-                                  //                                             _showMenu = false;
-                                  //                                             _showQuality = false;
-                                  //                                           });
-                                  //                                         }
-                                  //                                       },
-                                  //                                       child: Text(streamQualityKeysSorted.elementAt(index).toString() + 'p')),
-                                  //                                 );
-                                  //                               })),
-                                  //                             )
-                                  //                           : const SizedBox(),
-                                  //                       RotatedBox(
-                                  //                         quarterTurns: 3,
-                                  //                         child: SliderTheme(
-                                  //                           data:
-                                  //                               SliderTheme.of(
-                                  //                                       context)
-                                  //                                   .copyWith(
-                                  //                             activeTrackColor: Theme
-                                  //                                     .of(context)
-                                  //                                 .colorScheme
-                                  //                                 .highlightColor,
-                                  //                             inactiveTrackColor: Theme
-                                  //                                     .of(
-                                  //                                         context)
-                                  //                                 .colorScheme
-                                  //                                 .videoPlayerIconBackgroundColor
-                                  //                                 .withOpacity(
-                                  //                                     0.6),
-                                  //                             // trackShape: RectangularSliderTrackShape(),
-                                  //                             trackHeight: 10,
-                                  //                             thumbColor: Theme
-                                  //                                     .of(context)
-                                  //                                 .colorScheme
-                                  //                                 .highlightColor,
-                                  //                             thumbShape: const RoundSliderThumbShape(
-                                  //                                 enabledThumbRadius:
-                                  //                                     7,
-                                  //                                 elevation: 0,
-                                  //                                 pressedElevation:
-                                  //                                     0,
-                                  //                                 disabledThumbRadius:
-                                  //                                     7),
-
-                                  //                             overlayColor: Colors
-                                  //                                 .transparent,
-                                  //                             // overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
-                                  //                           ),
-                                  //                           child: Slider(
-                                  //                             mouseCursor:
-                                  //                                 SystemMouseCursors
-                                  //                                     .resizeUpDown,
-
-                                  //                             value: _controller
-                                  //                                     .value
-                                  //                                     .volume *
-                                  //                                 100,
-                                  //                             min: 0,
-                                  //                             max: 100,
-                                  //                             //divisions: 20,
-                                  //                             //label: (_controller!.value.volume * 100).round().toString(),
-                                  //                             onChanged: (double
-                                  //                                 value) {
-                                  //                               if (mounted) {
-                                  //                                 setState(() {
-                                  //                                   _controller.setVolume(
-                                  //                                       value /
-                                  //                                           100);
-                                  //                                 });
-                                  //                               }
-
-                                  //                               if (!_showMenu) {
-                                  //                                 if (mounted) {
-                                  //                                   setState(
-                                  //                                       () {
-                                  //                                     _showMenu =
-                                  //                                         true;
-                                  //                                     print(
-                                  //                                         "_showMenu set to true");
-                                  //                                   });
-                                  //                                 }
-
-                                  //                                 Future.delayed(
-                                  //                                     const Duration(
-                                  //                                         seconds:
-                                  //                                             5),
-                                  //                                     () {
-                                  //                                   if (_showMenu) {
-                                  //                                     if (mounted) {
-                                  //                                       setState(
-                                  //                                           () {
-                                  //                                         _showMenu =
-                                  //                                             false;
-                                  //                                         print(
-                                  //                                             "_showMenu set to false");
-                                  //                                       });
-                                  //                                     }
-                                  //                                   }
-                                  //                                 });
-                                  //                               }
-                                  //                             },
-                                  //                           ),
-                                  //                         ),
-                                  //                       ),
-                                  //                     ],
-                                  //                   ),
-                                  //                   Row(
-                                  //                     crossAxisAlignment:
-                                  //                         CrossAxisAlignment
-                                  //                             .center,
-                                  //                     children: [
-                                  //                       const SizedBox(
-                                  //                         width: 24,
-                                  //                       ),
-                                  //                       MaterialButton(
-                                  //                         hoverColor: Colors
-                                  //                             .transparent,
-                                  //                         focusColor: Colors
-                                  //                             .transparent,
-                                  //                         highlightColor: Colors
-                                  //                             .transparent,
-                                  //                         minWidth: 0,
-                                  //                         padding:
-                                  //                             const EdgeInsets
-                                  //                                 .all(0),
-                                  //                         onPressed: () {
-                                  //                           _firtTimeExternAccess =
-                                  //                               false;
-                                  //                           if (_controller
-                                  //                               .value
-                                  //                               .isPlaying) {
-                                  //                             if (mounted) {
-                                  //                               setState(() {
-                                  //                                 _controller
-                                  //                                     .pause();
-                                  //                                 print(
-                                  //                                     "paused");
-                                  //                               });
-                                  //                             }
-                                  //                           } else {
-                                  //                             // If the video is paused, play it.
-                                  //                             if (mounted) {
-                                  //                               setState(() {
-                                  //                                 _controller
-                                  //                                     .play();
-                                  //                                 print(
-                                  //                                     "playing");
-                                  //                               });
-                                  //                             }
-                                  //                           }
-                                  //                         },
-                                  //                         child: Container(
-                                  //                             decoration:
-                                  //                                 BoxDecoration(
-                                  //                               borderRadius:
-                                  //                                   BorderRadius
-                                  //                                       .circular(
-                                  //                                           12),
-                                  //                               color: Theme.of(
-                                  //                                       context)
-                                  //                                   .colorScheme
-                                  //                                   .videoPlayerIconBackgroundColor
-                                  //                                   .withOpacity(
-                                  //                                       0.6),
-                                  //                             ),
-                                  //                             child: Padding(
-                                  //                               padding:
-                                  //                                   const EdgeInsets
-                                  //                                           .all(
-                                  //                                       4.0),
-                                  //                               child: Icon(
-                                  //                                 _controller
-                                  //                                         .value
-                                  //                                         .isPlaying
-                                  //                                     ? Icons
-                                  //                                         .pause
-                                  //                                     : Icons
-                                  //                                         .play_arrow,
-                                  //                                 size: 32,
-                                  //                                 color: Theme.of(
-                                  //                                         context)
-                                  //                                     .colorScheme
-                                  //                                     .highlightColor,
-                                  //                               ),
-                                  //                             )),
-                                  //                       ),
-                                  //                       const SizedBox(
-                                  //                         width: 5,
-                                  //                       ),
-                                  //                       MaterialButton(
-                                  //                         hoverColor: Colors
-                                  //                             .transparent,
-                                  //                         focusColor: Colors
-                                  //                             .transparent,
-                                  //                         highlightColor: Colors
-                                  //                             .transparent,
-                                  //                         minWidth: 0,
-                                  //                         padding:
-                                  //                             const EdgeInsets
-                                  //                                 .all(0),
-                                  //                         onPressed: () {
-                                  //                           if (_controller
-                                  //                               .value
-                                  //                               .isPlaying) {
-                                  //                             if (mounted) {
-                                  //                               setState(() {
-                                  //                                 _controller
-                                  //                                     .pause();
-                                  //                                 print(
-                                  //                                     "paused");
-                                  //                               });
-                                  //                             }
-                                  //                           } else {
-                                  //                             // If the video is paused, play it.
-                                  //                             if (mounted) {
-                                  //                               setState(() {
-                                  //                                 _controller
-                                  //                                     .play();
-                                  //                                 print(
-                                  //                                     "playing");
-                                  //                               });
-                                  //                             }
-                                  //                           }
-                                  //                         },
-                                  //                         child: Container(
-                                  //                             decoration:
-                                  //                                 BoxDecoration(
-                                  //                               borderRadius:
-                                  //                                   BorderRadius
-                                  //                                       .circular(
-                                  //                                           12),
-                                  //                               color: Theme.of(
-                                  //                                       context)
-                                  //                                   .colorScheme
-                                  //                                   .videoPlayerIconBackgroundColor
-                                  //                                   .withOpacity(
-                                  //                                       0.6),
-                                  //                             ),
-                                  //                             child: Padding(
-                                  //                               padding:
-                                  //                                   const EdgeInsets
-                                  //                                           .all(
-                                  //                                       4.0),
-                                  //                               child: Icon(
-                                  //                                 Icons
-                                  //                                     .skip_next,
-                                  //                                 size: 24,
-                                  //                                 color: Theme.of(
-                                  //                                         context)
-                                  //                                     .colorScheme
-                                  //                                     .highlightColor,
-                                  //                               ),
-                                  //                             )),
-                                  //                       ),
-                                  //                       const SizedBox(
-                                  //                         width: 10,
-                                  //                       ),
-                                  //                       //Video Position
-                                  //                       Text(_controller.value
-                                  //                           .position.inSeconds
-                                  //                           .toString()),
-                                  //                       const SizedBox(
-                                  //                         width: 10,
-                                  //                       ),
-                                  //                       Flexible(
-                                  //                         child: SizedBox(
-                                  //                           height: 15,
-                                  //                           child: ClipRRect(
-                                  //                             borderRadius: const BorderRadius
-                                  //                                     .only(
-                                  //                                 topLeft:
-                                  //                                     Radius.circular(
-                                  //                                         28),
-                                  //                                 topRight: Radius
-                                  //                                     .circular(
-                                  //                                         28),
-                                  //                                 bottomLeft: Radius
-                                  //                                     .circular(
-                                  //                                         12),
-                                  //                                 bottomRight: Radius
-                                  //                                     .circular(
-                                  //                                         12)),
-                                  //                             child:
-                                  //                                 VideoProgressIndicator(
-                                  //                               _controller,
-                                  //                               colors: VideoProgressColors(
-                                  //                                   playedColor: Theme.of(
-                                  //                                           context)
-                                  //                                       .colorScheme
-                                  //                                       .highlightColor,
-                                  //                                   bufferedColor: Theme.of(
-                                  //                                           context)
-                                  //                                       .colorScheme
-                                  //                                       .videoPlayerIconBackgroundColor
-                                  //                                       .withOpacity(
-                                  //                                           0.6),
-                                  //                                   backgroundColor:
-                                  //                                       Colors
-                                  //                                           .grey),
-                                  //                               allowScrubbing:
-                                  //                                   true,
-                                  //                             ),
-                                  //                           ),
-                                  //                         ),
-                                  //                       ),
-                                  //                       const SizedBox(
-                                  //                         width: 10,
-                                  //                       ),
-                                  //                       //Show Qualities Button
-                                  //                       MaterialButton(
-                                  //                         hoverColor: Colors
-                                  //                             .transparent,
-                                  //                         focusColor: Colors
-                                  //                             .transparent,
-                                  //                         highlightColor: Colors
-                                  //                             .transparent,
-                                  //                         minWidth: 0,
-                                  //                         padding:
-                                  //                             const EdgeInsets
-                                  //                                 .all(0),
-                                  //                         onPressed: () {
-                                  //                           if (mounted) {
-                                  //                             setState(() {
-                                  //                               _firtTimeExternAccess =
-                                  //                                   false;
-                                  //                               _showQuality =
-                                  //                                   !_showQuality;
-                                  //                               _showMenu =
-                                  //                                   true;
-                                  //                             });
-                                  //                           }
-
-                                  //                           EasyDebounce
-                                  //                               .debounce(
-                                  //                                   'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                                  //                                   const Duration(
-                                  //                                       seconds:
-                                  //                                           5), // <-- The debounce duration
-                                  //                                   () {
-                                  //                             if (_showMenu) {
-                                  //                               if (mounted) {
-                                  //                                 setState(() {
-                                  //                                   _firtTimeExternAccess =
-                                  //                                       false;
-                                  //                                   _showMenu =
-                                  //                                       false;
-                                  //                                   _showQuality =
-                                  //                                       false;
-                                  //                                   print(
-                                  //                                       "_showMenu set to false");
-                                  //                                 });
-                                  //                               }
-                                  //                             }
-                                  //                           });
-                                  //                         },
-                                  //                         child: Container(
-                                  //                             decoration:
-                                  //                                 BoxDecoration(
-                                  //                               borderRadius:
-                                  //                                   BorderRadius
-                                  //                                       .circular(
-                                  //                                           12),
-                                  //                               color: Theme.of(
-                                  //                                       context)
-                                  //                                   .colorScheme
-                                  //                                   .videoPlayerIconBackgroundColor
-                                  //                                   .withOpacity(
-                                  //                                       0.6),
-                                  //                             ),
-                                  //                             child: Padding(
-                                  //                               padding:
-                                  //                                   const EdgeInsets
-                                  //                                           .all(
-                                  //                                       4.0),
-                                  //                               child: Icon(
-                                  //                                 Icons
-                                  //                                     .settings,
-                                  //                                 size: 28,
-                                  //                                 color: Theme.of(
-                                  //                                         context)
-                                  //                                     .colorScheme
-                                  //                                     .highlightColor,
-                                  //                               ),
-                                  //                             )),
-                                  //                       ),
-                                  //                       const SizedBox(
-                                  //                         width: 10,
-                                  //                       ),
-                                  //                       //Fullscreen Button Normal PLayer
-                                  //                       MaterialButton(
-                                  //                         hoverColor: Colors
-                                  //                             .transparent,
-                                  //                         focusColor: Colors
-                                  //                             .transparent,
-                                  //                         highlightColor: Colors
-                                  //                             .transparent,
-                                  //                         minWidth: 0,
-                                  //                         padding:
-                                  //                             const EdgeInsets
-                                  //                                 .all(0),
-                                  //                         onPressed: () {
-                                  //                           if (!_isFullScreen) {
-                                  //                             if (mounted) {
-                                  //                               setState(() {
-                                  //                                 _isFullScreen =
-                                  //                                     true;
-                                  //                                 goFullScreen();
-                                  //                               });
-                                  //                             }
-                                  //                           } else {
-                                  //                             if (mounted) {
-                                  //                               setState(() {
-                                  //                                 _isFullScreen =
-                                  //                                     false;
-                                  //                                 exitFullScreen();
-                                  //                               });
-                                  //                             }
-                                  //                           }
-                                  //                         },
-                                  //                         child: Container(
-                                  //                             decoration:
-                                  //                                 BoxDecoration(
-                                  //                               borderRadius:
-                                  //                                   BorderRadius
-                                  //                                       .circular(
-                                  //                                           12),
-                                  //                               color: Theme.of(
-                                  //                                       context)
-                                  //                                   .colorScheme
-                                  //                                   .videoPlayerIconBackgroundColor
-                                  //                                   .withOpacity(
-                                  //                                       0.6),
-                                  //                             ),
-                                  //                             child: Padding(
-                                  //                               padding:
-                                  //                                   const EdgeInsets
-                                  //                                           .all(
-                                  //                                       2.0),
-                                  //                               child: Icon(
-                                  //                                 Icons
-                                  //                                     .fullscreen,
-                                  //                                 size: 32,
-                                  //                                 color: Theme.of(
-                                  //                                         context)
-                                  //                                     .colorScheme
-                                  //                                     .highlightColor,
-                                  //                               ),
-                                  //                             )),
-                                  //                       ),
-                                  //                       const SizedBox(
-                                  //                         width: 12,
-                                  //                       ),
-                                  //                     ],
-                                  //                   ),
-                                  //                   const SizedBox(
-                                  //                     height: 35,
-                                  //                   )
-                                  //                 ],
-                                  //               )
-                                  //             : const SizedBox(),
-                                  //         //FirstTimeExternAccess
-                                  //         _firtTimeExternAccess
-                                  //             ? Center(
-                                  //                 child: MaterialButton(
-                                  //                   hoverColor:
-                                  //                       Colors.transparent,
-                                  //                   focusColor:
-                                  //                       Colors.transparent,
-                                  //                   highlightColor:
-                                  //                       Colors.transparent,
-                                  //                   minWidth: 0,
-                                  //                   padding:
-                                  //                       const EdgeInsets.all(0),
-                                  //                   onPressed: () {
-                                  //                     _firtTimeExternAccess =
-                                  //                         false;
-                                  //                     if (_controller
-                                  //                         .value.isPlaying) {
-                                  //                       if (mounted) {
-                                  //                         setState(() {
-                                  //                           _controller.pause();
-                                  //                           print("paused");
-                                  //                         });
-                                  //                       }
-                                  //                     } else {
-                                  //                       // If the video is paused, play it.
-                                  //                       if (mounted) {
-                                  //                         setState(() {
-                                  //                           _controller.play();
-                                  //                           print("playing");
-                                  //                         });
-                                  //                       }
-                                  //                     }
-                                  //                   },
-                                  //                   child: Container(
-                                  //                       decoration:
-                                  //                           BoxDecoration(
-                                  //                         borderRadius:
-                                  //                             BorderRadius
-                                  //                                 .circular(12),
-                                  //                         color: Theme.of(
-                                  //                                 context)
-                                  //                             .colorScheme
-                                  //                             .videoPlayerIconBackgroundColor
-                                  //                             .withOpacity(0.6),
-                                  //                       ),
-                                  //                       child: Padding(
-                                  //                         padding:
-                                  //                             const EdgeInsets
-                                  //                                 .all(4.0),
-                                  //                         child: Icon(
-                                  //                           Icons.play_arrow,
-                                  //                           size: 128,
-                                  //                           color: Theme.of(
-                                  //                                   context)
-                                  //                               .colorScheme
-                                  //                               .highlightColor,
-                                  //                         ),
-                                  //                       )),
-                                  //                 ),
-                                  //               )
-                                  //             : const SizedBox(),
-                                  //       ],
-                                  //     ),
-                                  //   ),
-                                  // ),
                                   const SizedBox(height: 30),
                                   //Post Title and Metric, Comments, Description etc.
                                   FutureBuilder(
@@ -1010,218 +384,203 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                   ],
                                                 ),
                                                 //Post Metrics and Ratings
-                                                Row(
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
                                                   children: [
-                                                    //Post Ratings
-                                                    snapshot.hasData
-                                                        ? snapshot.data == 200
-                                                            ? FutureBuilder(
-                                                                future: Future
-                                                                    .wait([
-                                                                  getUserPostRating(
-                                                                      widget.postData[
-                                                                          'postId']),
-                                                                  getPostRatingScore(
-                                                                    widget.postData[
-                                                                        'postId'],
-                                                                  ),
-                                                                  getUserPostReport(
-                                                                      widget.postData[
-                                                                          'postId'])
-                                                                ]),
-                                                                builder: (BuildContext
-                                                                        context,
-                                                                    AsyncSnapshot<
-                                                                            List<int>>
-                                                                        snapshotRating) {
-                                                                  if (snapshotRating
-                                                                      .hasData) {
-                                                                    return Row(
-                                                                      children: [
-                                                                        //LIKE
-                                                                        IconButton(
-                                                                          icon:
-                                                                              Icon(
-                                                                            Icons.thumb_up,
-                                                                            size:
-                                                                                16,
-                                                                            color: snapshotRating.data![0] == 1
-                                                                                ? Theme.of(context).colorScheme.brandColor
-                                                                                : Colors.white60,
-                                                                          ),
-                                                                          onPressed:
-                                                                              () {
-                                                                            switch (snapshotRating.data![0]) {
-                                                                              case 0:
-                                                                                ratePost(widget.postData['postId'], 'like').then((_) => setState(() {}));
-                                                                                break;
-                                                                              case 1:
-                                                                                deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
-                                                                                break;
-                                                                              case 2:
-                                                                                updatePostRating(widget.postData['postId'], 'like').then((_) => setState(() {}));
-                                                                                break;
-                                                                            }
-                                                                          },
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              8,
-                                                                        ),
-                                                                        //RATING
-                                                                        Text(snapshotRating
-                                                                            .data![1]
-                                                                            .toString()),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              8,
-                                                                        ),
-                                                                        // Text("dislike"),
-                                                                        //DISLIKE
-                                                                        IconButton(
-                                                                          icon:
-                                                                              Icon(
-                                                                            Icons.thumb_down,
-                                                                            size:
-                                                                                16,
-                                                                            color: snapshotRating.data![0] == 2
-                                                                                ? Theme.of(context).colorScheme.brandColor
-                                                                                : Colors.white60,
-                                                                          ),
-                                                                          onPressed:
-                                                                              () {
-                                                                            switch (snapshotRating.data![0]) {
-                                                                              case 0:
-                                                                                ratePost(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
-                                                                                break;
-                                                                              case 1:
-                                                                                updatePostRating(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
-                                                                                break;
-                                                                              case 2:
-                                                                                deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
-                                                                                break;
-                                                                            }
-                                                                          },
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              16,
-                                                                        ),
-                                                                        //Report Post
-                                                                        IconButton(
-                                                                          icon:
-                                                                              Icon(
-                                                                            Icons.flag,
-                                                                            size:
-                                                                                16,
-                                                                            color: snapshotRating.data![2] == 1
-                                                                                ? Theme.of(context).colorScheme.brandColor
-                                                                                : Colors.white60,
-                                                                          ),
-                                                                          onPressed: () => (snapshotRating.data![2] == 1)
-                                                                              ? null
-                                                                              : {
-                                                                                  reportPost(widget.postData['postId']).then((_) => setState(() {}))
-                                                                                },
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              40,
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  } else {
-                                                                    return const SizedBox();
-                                                                  }
-                                                                })
-                                                            :
-                                                            //SliderTest
-                                                            // Row(
-                                                            //     children: [
-                                                            //       SizedBox(
-                                                            //         width: 250,
-                                                            //         child: Slider(
-                                                            //           value:
-                                                            //               sliderval,
-                                                            //           min: 0,
-                                                            //           max: 100,
-                                                            //           divisions: 23,
+                                                    Row(
+                                                      children: [
+                                                        //Post Ratings
+                                                        snapshot.hasData
+                                                            ? snapshot.data ==
+                                                                    200
+                                                                ? FutureBuilder(
+                                                                    future: Future
+                                                                        .wait([
+                                                                      getUserPostRating(
+                                                                          widget
+                                                                              .postData['postId']),
+                                                                      getPostRatingScore(
+                                                                        widget.postData[
+                                                                            'postId'],
+                                                                      ),
+                                                                      getUserPostReport(
+                                                                          widget
+                                                                              .postData['postId'])
+                                                                    ]),
+                                                                    builder: (BuildContext
+                                                                            context,
+                                                                        AsyncSnapshot<List<int>>
+                                                                            snapshotRating) {
+                                                                      if (snapshotRating
+                                                                          .hasData) {
+                                                                        return Row(
+                                                                          children: [
+                                                                            //LIKE
+                                                                            IconButton(
+                                                                              icon: Icon(
+                                                                                Icons.thumb_up,
+                                                                                size: 16,
+                                                                                color: snapshotRating.data![0] == 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                switch (snapshotRating.data![0]) {
+                                                                                  case 0:
+                                                                                    ratePost(widget.postData['postId'], 'like').then((_) => setState(() {}));
+                                                                                    break;
+                                                                                  case 1:
+                                                                                    deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                    break;
+                                                                                  case 2:
+                                                                                    updatePostRating(widget.postData['postId'], 'like').then((_) => setState(() {}));
+                                                                                    break;
+                                                                                }
+                                                                              },
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              width: 8,
+                                                                            ),
+                                                                            //RATING
+                                                                            Text(snapshotRating.data![1].toString()),
+                                                                            const SizedBox(
+                                                                              width: 8,
+                                                                            ),
+                                                                            // Text("dislike"),
+                                                                            //DISLIKE
+                                                                            IconButton(
+                                                                              icon: Icon(
+                                                                                Icons.thumb_down,
+                                                                                size: 16,
+                                                                                color: snapshotRating.data![0] == 2 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                switch (snapshotRating.data![0]) {
+                                                                                  case 0:
+                                                                                    ratePost(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
+                                                                                    break;
+                                                                                  case 1:
+                                                                                    updatePostRating(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
+                                                                                    break;
+                                                                                  case 2:
+                                                                                    deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                    break;
+                                                                                }
+                                                                              },
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              width: 16,
+                                                                            ),
+                                                                            //Report Post
+                                                                            IconButton(
+                                                                              icon: Icon(
+                                                                                Icons.flag,
+                                                                                size: 16,
+                                                                                color: snapshotRating.data![2] == 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                              ),
+                                                                              onPressed: () => (snapshotRating.data![2] == 1)
+                                                                                  ? null
+                                                                                  : {
+                                                                                      reportPost(widget.postData['postId']).then((_) => setState(() {}))
+                                                                                    },
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              width: 40,
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      } else {
+                                                                        return const SizedBox();
+                                                                      }
+                                                                    })
+                                                                :
+                                                                //SliderTest
 
-                                                            //           activeColor: Theme.of(
-                                                            //                   context)
-                                                            //               .colorScheme
-                                                            //               .brandColor,
-                                                            //           thumbColor: Theme.of(
-                                                            //                   context)
-                                                            //               .colorScheme
-                                                            //               .brandColor,
-                                                            //           // label: sliderval
-                                                            //           //     .round()
-                                                            //           //     .toString(),
-                                                            //           onChanged:
-                                                            //               (double
-                                                            //                   value) {
-                                                            //             setState(
-                                                            //                 () {
-                                                            //               sliderval =
-                                                            //                   value;
-                                                            //             });
-                                                            //           },
-                                                            //         ),
-                                                            //         // child:
-                                                            //         //     JonathansSlider(),
-                                                            //       ),
-                                                            //       const SizedBox(
-                                                            //         width: 40,
-                                                            //       )
-                                                            //     ],
-                                                            //   ),
-                                                            const Slidertest()
-                                                        : const SizedBox(),
+                                                                const Slidertest()
+                                                            : const SizedBox(),
 
-                                                    // Row(
-                                                    //     children: const [
-                                                    //       Text(
-                                                    //           "login to rate and comment post",
-                                                    //           style: TextStyle(
-                                                    //               color: Colors
-                                                    //                   .white38)),
-                                                    //       SizedBox(
-                                                    //         width: 40,
-                                                    //       )
-                                                    //     ],
-                                                    //   ),
+                                                        // Row(
+                                                        //     children: const [
+                                                        //       Text(
+                                                        //           "login to rate and comment post",
+                                                        //           style: TextStyle(
+                                                        //               color: Colors
+                                                        //                   .white38)),
+                                                        //       SizedBox(
+                                                        //         width: 40,
+                                                        //       )
+                                                        //     ],
+                                                        //   ),
 
-                                                    //Post Metrics
-                                                    const Icon(
-                                                      Icons.visibility,
-                                                      size: 24,
+                                                        //Post Metrics
+                                                        const Icon(
+                                                          Icons.visibility,
+                                                          size: 24,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(widget
+                                                            .postData['_count'][
+                                                                'postWhatchtimeAnalytics']
+                                                            .toString()),
+
+                                                        //SHow rating hwen not logged in
+                                                        // const SizedBox(
+                                                        //   width: 12,
+                                                        // ),
+                                                        // const Icon(
+                                                        //   Icons.trending_up,
+                                                        //   size: 24,
+                                                        // ),
+                                                        // const SizedBox(
+                                                        //   width: 5,
+                                                        // ),
+                                                        // Text(widget.postData[
+                                                        //         'postRatingScore']
+                                                        //     .toString()),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                      ],
                                                     ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Text(widget
-                                                        .postData['_count'][
-                                                            'postWhatchtimeAnalytics']
-                                                        .toString()),
-
-                                                    //SHow rating hwen not logged in
-                                                    // const SizedBox(
-                                                    //   width: 12,
-                                                    // ),
-                                                    // const Icon(
-                                                    //   Icons.trending_up,
-                                                    //   size: 24,
-                                                    // ),
-                                                    // const SizedBox(
-                                                    //   width: 5,
-                                                    // ),
-                                                    // Text(widget.postData[
-                                                    //         'postRatingScore']
-                                                    //     .toString()),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
+                                                    const SizedBox(height: 15),
+                                                    //Sharing share
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        //COPY
+                                                        InkWell(
+                                                          onTap: () => Clipboard.setData(ClipboardData(
+                                                                  text: "http://localhost:55555/#/whatch/" +
+                                                                      widget
+                                                                          .postData[
+                                                                              'postId']
+                                                                          .toString()))
+                                                              .then((_) =>
+                                                                  _showToast(
+                                                                      context)),
+                                                          child: const Icon(
+                                                              Icons.copy,
+                                                              size: 16),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 10),
+                                                        //SHARE
+                                                        InkWell(
+                                                          onTap: () => Share.share(
+                                                              'check out my website https://example.com',
+                                                              subject:
+                                                                  'Look what I made!'),
+                                                          child: const Icon(
+                                                              Icons.share,
+                                                              size: 20),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 10)
+                                                      ],
+                                                    )
                                                   ],
                                                 ),
                                               ],
@@ -1601,596 +960,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                               )
                             :
                             //Fullcreen
-                            videoPlayerKeyboardListener(
-                                VideoPlayerNormalV2(
-                                  activeQualityStream: activeQualityStream,
-                                  controller: _controller,
-                                  firstTimeExternAccess: _firtTimeExternAccess,
-                                  streamQualityKeysSorted:
-                                      streamQualityKeysSorted,
-                                  focusNode: focusNode,
-                                  handleEscape: () {},
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height,
+                                child: videoPlayerKeyboardListener(
+                                  VideoPlayerNormalV2(
+                                    activeQualityStream: activeQualityStream,
+                                    controller: _controller,
+                                    firstTimeExternAccess:
+                                        _firtTimeExternAccess,
+                                    streamQualityKeysSorted:
+                                        streamQualityKeysSorted,
+                                    focusNode: focusNode,
+                                    handleFullscreenButton: () =>
+                                        handleFullscreen.call(),
+                                    handleQualityChange: (index) =>
+                                        handleQualityChange.call(index),
+                                    disbaleFirstTimeAccess: () =>
+                                        disableFirstTimeAccess.call(),
+                                  ),
                                 ),
                               );
-                        // Stack(
-                        //     alignment: Alignment.bottomCenter,
-                        //     children: [
-                        //       videoPlayerKeyboardListener(
-                        //         GestureDetector(
-                        //           behavior: HitTestBehavior.translucent,
-                        //           onTap: () {
-                        //             print("tap");
-                        //             _firtTimeExternAccess = false;
-                        //             if (_controller.value.isPlaying) {
-                        //               if (mounted) {
-                        //                 setState(() {
-                        //                   _controller.pause();
-                        //                   print("paused");
-
-                        //                   _showMenu = true;
-                        //                   print("_showMenu set to true");
-                        //                   _showQuality = false;
-                        //                 });
-                        //               }
-
-                        //               EasyDebounce.debounce(
-                        //                   'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                        //                   const Duration(
-                        //                       seconds:
-                        //                           2), // <-- The debounce duration
-                        //                   () {
-                        //                 if (_showMenu) {
-                        //                   if (mounted) {
-                        //                     setState(() {
-                        //                       _showMenu = false;
-                        //                       _showQuality = false;
-                        //                       print(
-                        //                           "_showMenu set to false");
-                        //                     });
-                        //                   }
-                        //                 }
-                        //               }); // <-- The target method
-
-                        //             } else {
-                        //               // If the video is paused, play it.
-                        //               if (mounted) {
-                        //                 setState(() {
-                        //                   _controller.play();
-                        //                   print("playing");
-
-                        //                   _showMenu = true;
-                        //                   print("_showMenu set to true");
-                        //                   _showQuality = false;
-                        //                 });
-                        //               }
-
-                        //               EasyDebounce.debounce(
-                        //                   'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                        //                   const Duration(
-                        //                       seconds:
-                        //                           2), // <-- The debounce duration
-                        //                   () {
-                        //                 if (_showMenu) {
-                        //                   if (mounted) {
-                        //                     setState(() {
-                        //                       _showMenu = false;
-                        //                       _showQuality = false;
-                        //                       print(
-                        //                           "_showMenu set to false");
-                        //                     });
-                        //                   }
-                        //                 }
-                        //               }); // <-- The target method
-
-                        //             }
-                        //           },
-                        //           child: IgnorePointer(
-                        //             child: AspectRatio(
-                        //               aspectRatio:
-                        //                   _controller.value.aspectRatio,
-                        //               child: SizedBox.expand(
-                        //                 child: FittedBox(
-                        //                   alignment: Alignment.center,
-                        //                   fit: BoxFit.cover,
-                        //                   child: SizedBox(
-                        //                     // width: _controller.value.size.width,
-                        //                     // height: _controller.value.size.height,
-                        //                     width: MediaQuery.of(context)
-                        //                         .size
-                        //                         .width,
-                        //                     height: MediaQuery.of(context)
-                        //                         .size
-                        //                         .height,
-                        //                     child: VideoPlayer(_controller),
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       _showMenu
-                        //           //VideoPlayer Menu Fullscreen
-                        //           ? Column(
-                        //               crossAxisAlignment:
-                        //                   CrossAxisAlignment.center,
-                        //               mainAxisSize: MainAxisSize.max,
-                        //               mainAxisAlignment:
-                        //                   MainAxisAlignment.end,
-                        //               children: [
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.end,
-                        //                   crossAxisAlignment:
-                        //                       CrossAxisAlignment.end,
-                        //                   children: [
-                        //                     _showQuality
-                        //                         ? Container(
-                        //                             decoration: BoxDecoration(
-                        //                                 borderRadius:
-                        //                                     BorderRadius
-                        //                                         .circular(
-                        //                                             8),
-                        //                                 color: Theme.of(
-                        //                                         context)
-                        //                                     .colorScheme
-                        //                                     .videoPlayerIconBackgroundColor
-                        //                                     .withOpacity(
-                        //                                         0.6)),
-                        //                             child: Column(
-                        //                                 //Generate Quality Menu
-                        //                                 children: List.generate(
-                        //                                     streamQualityKeysSorted
-                        //                                         .length,
-                        //                                     (index) {
-                        //                               return Container(
-                        //                                 color: streamQualityKeysSorted
-                        //                                             .elementAt(
-                        //                                                 index) ==
-                        //                                         activeQualityStream
-                        //                                     ? Theme.of(
-                        //                                             context)
-                        //                                         .colorScheme
-                        //                                         .brandColor
-                        //                                     : Colors
-                        //                                         .transparent,
-                        //                                 child: TextButton(
-                        //                                     onPressed: () {
-                        //                                       _firtTimeExternAccess =
-                        //                                           false;
-                        //                                       if (mounted) {
-                        //                                         setState(
-                        //                                             () {
-                        //                                           activeQualityStream =
-                        //                                               streamQualityKeysSorted
-                        //                                                   .elementAt(index);
-                        //                                           _initializePlay(
-                        //                                               streamQualityURL[
-                        //                                                   activeQualityStream]!,
-                        //                                               _controller
-                        //                                                   .value
-                        //                                                   .position);
-                        //                                           _showMenu =
-                        //                                               false;
-                        //                                           _showQuality =
-                        //                                               false;
-                        //                                         });
-                        //                                       }
-                        //                                     },
-                        //                                     child: Text(streamQualityKeysSorted
-                        //                                             .elementAt(
-                        //                                                 index)
-                        //                                             .toString() +
-                        //                                         'p')),
-                        //                               );
-                        //                             })),
-                        //                           )
-                        //                         : const SizedBox(),
-                        //                     RotatedBox(
-                        //                       quarterTurns: 3,
-                        //                       child: SliderTheme(
-                        //                         data:
-                        //                             SliderTheme.of(context)
-                        //                                 .copyWith(
-                        //                           activeTrackColor:
-                        //                               Theme.of(context)
-                        //                                   .colorScheme
-                        //                                   .highlightColor,
-                        //                           inactiveTrackColor: Theme
-                        //                                   .of(context)
-                        //                               .colorScheme
-                        //                               .videoPlayerIconBackgroundColor
-                        //                               .withOpacity(0.6),
-                        //                           // trackShape: RectangularSliderTrackShape(),
-                        //                           trackHeight: 10,
-                        //                           thumbColor:
-                        //                               Theme.of(context)
-                        //                                   .colorScheme
-                        //                                   .highlightColor,
-                        //                           thumbShape:
-                        //                               const RoundSliderThumbShape(
-                        //                                   enabledThumbRadius:
-                        //                                       7,
-                        //                                   elevation: 0,
-                        //                                   pressedElevation:
-                        //                                       0,
-                        //                                   disabledThumbRadius:
-                        //                                       7),
-
-                        //                           overlayColor:
-                        //                               Colors.transparent,
-                        //                           // overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
-                        //                         ),
-                        //                         child: Slider(
-                        //                           mouseCursor:
-                        //                               SystemMouseCursors
-                        //                                   .resizeUpDown,
-
-                        //                           value: _controller
-                        //                                   .value.volume *
-                        //                               100,
-                        //                           min: 0,
-                        //                           max: 100,
-                        //                           //divisions: 20,
-                        //                           //label: (_controller!.value.volume * 100).round().toString(),
-                        //                           onChanged:
-                        //                               (double value) {
-                        //                             if (mounted) {
-                        //                               setState(() {
-                        //                                 _controller
-                        //                                     .setVolume(
-                        //                                         value /
-                        //                                             100);
-                        //                               });
-                        //                             }
-
-                        //                             if (!_showMenu) {
-                        //                               if (mounted) {
-                        //                                 setState(() {
-                        //                                   _showMenu = true;
-                        //                                   print(
-                        //                                       "_showMenu set to true");
-                        //                                 });
-                        //                               }
-
-                        //                               Future.delayed(
-                        //                                   const Duration(
-                        //                                       seconds: 5),
-                        //                                   () {
-                        //                                 if (_showMenu) {
-                        //                                   if (mounted) {
-                        //                                     setState(() {
-                        //                                       _showMenu =
-                        //                                           false;
-                        //                                       print(
-                        //                                           "_showMenu set to false");
-                        //                                     });
-                        //                                   }
-                        //                                 }
-                        //                               });
-                        //                             }
-                        //                           },
-                        //                         ),
-                        //                       ),
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   crossAxisAlignment:
-                        //                       CrossAxisAlignment.center,
-                        //                   children: [
-                        //                     const SizedBox(
-                        //                       width: 24,
-                        //                     ),
-                        //                     MaterialButton(
-                        //                       hoverColor:
-                        //                           Colors.transparent,
-                        //                       focusColor:
-                        //                           Colors.transparent,
-                        //                       highlightColor:
-                        //                           Colors.transparent,
-                        //                       minWidth: 0,
-                        //                       padding:
-                        //                           const EdgeInsets.all(0),
-                        //                       onPressed: () {
-                        //                         _firtTimeExternAccess =
-                        //                             false;
-                        //                         if (_controller
-                        //                             .value.isPlaying) {
-                        //                           if (mounted) {
-                        //                             setState(() {
-                        //                               _controller.pause();
-                        //                               print("paused");
-                        //                             });
-                        //                           }
-                        //                         } else {
-                        //                           // If the video is paused, play it.
-                        //                           if (mounted) {
-                        //                             setState(() {
-                        //                               _controller.play();
-                        //                               print("playing");
-                        //                             });
-                        //                           }
-                        //                         }
-                        //                       },
-                        //                       child: Container(
-                        //                           decoration: BoxDecoration(
-                        //                             borderRadius:
-                        //                                 BorderRadius
-                        //                                     .circular(12),
-                        //                             color: Theme.of(context)
-                        //                                 .colorScheme
-                        //                                 .videoPlayerIconBackgroundColor
-                        //                                 .withOpacity(0.6),
-                        //                           ),
-                        //                           child: Padding(
-                        //                             padding:
-                        //                                 const EdgeInsets
-                        //                                     .all(4.0),
-                        //                             child: Icon(
-                        //                               _controller.value
-                        //                                       .isPlaying
-                        //                                   ? Icons.pause
-                        //                                   : Icons
-                        //                                       .play_arrow,
-                        //                               size: 32,
-                        //                               color: Theme.of(
-                        //                                       context)
-                        //                                   .colorScheme
-                        //                                   .highlightColor,
-                        //                             ),
-                        //                           )),
-                        //                     ),
-                        //                     const SizedBox(
-                        //                       width: 5,
-                        //                     ),
-                        //                     MaterialButton(
-                        //                       hoverColor:
-                        //                           Colors.transparent,
-                        //                       focusColor:
-                        //                           Colors.transparent,
-                        //                       highlightColor:
-                        //                           Colors.transparent,
-                        //                       minWidth: 0,
-                        //                       padding:
-                        //                           const EdgeInsets.all(0),
-                        //                       onPressed: () {
-                        //                         _firtTimeExternAccess =
-                        //                             false;
-                        //                         if (_controller
-                        //                             .value.isPlaying) {
-                        //                           if (mounted) {
-                        //                             setState(() {
-                        //                               _controller.pause();
-                        //                               print("paused");
-                        //                             });
-                        //                           }
-                        //                         } else {
-                        //                           // If the video is paused, play it.
-                        //                           if (mounted) {
-                        //                             setState(() {
-                        //                               _controller.play();
-                        //                               print("playing");
-                        //                             });
-                        //                           }
-                        //                         }
-                        //                       },
-                        //                       child: Container(
-                        //                           decoration: BoxDecoration(
-                        //                             borderRadius:
-                        //                                 BorderRadius
-                        //                                     .circular(12),
-                        //                             color: Theme.of(context)
-                        //                                 .colorScheme
-                        //                                 .videoPlayerIconBackgroundColor
-                        //                                 .withOpacity(0.6),
-                        //                           ),
-                        //                           child: Padding(
-                        //                             padding:
-                        //                                 const EdgeInsets
-                        //                                     .all(4.0),
-                        //                             child: Icon(
-                        //                               Icons.skip_next,
-                        //                               size: 24,
-                        //                               color: Theme.of(
-                        //                                       context)
-                        //                                   .colorScheme
-                        //                                   .highlightColor,
-                        //                             ),
-                        //                           )),
-                        //                     ),
-                        //                     const SizedBox(
-                        //                       width: 10,
-                        //                     ),
-                        //                     //Video Position
-                        //                     Text(_controller
-                        //                         .value.position.inSeconds
-                        //                         .toString()),
-                        //                     const SizedBox(
-                        //                       width: 10,
-                        //                     ),
-                        //                     Flexible(
-                        //                       child: SizedBox(
-                        //                         height: 15,
-                        //                         child: ClipRRect(
-                        //                           borderRadius:
-                        //                               const BorderRadius
-                        //                                       .only(
-                        //                                   topLeft: Radius
-                        //                                       .circular(28),
-                        //                                   topRight: Radius
-                        //                                       .circular(28),
-                        //                                   bottomLeft: Radius
-                        //                                       .circular(12),
-                        //                                   bottomRight:
-                        //                                       Radius
-                        //                                           .circular(
-                        //                                               12)),
-                        //                           child:
-                        //                               VideoProgressIndicator(
-                        //                             _controller,
-                        //                             colors: VideoProgressColors(
-                        //                                 playedColor: Theme
-                        //                                         .of(context)
-                        //                                     .colorScheme
-                        //                                     .highlightColor,
-                        //                                 bufferedColor: Theme
-                        //                                         .of(context)
-                        //                                     .colorScheme
-                        //                                     .videoPlayerIconBackgroundColor
-                        //                                     .withOpacity(
-                        //                                         0.6),
-                        //                                 backgroundColor:
-                        //                                     Colors.grey),
-                        //                             allowScrubbing: true,
-                        //                           ),
-                        //                         ),
-                        //                       ),
-                        //                     ),
-                        //                     const SizedBox(
-                        //                       width: 10,
-                        //                     ),
-                        //                     //Show Qualities Button
-                        //                     MaterialButton(
-                        //                       hoverColor:
-                        //                           Colors.transparent,
-                        //                       focusColor:
-                        //                           Colors.transparent,
-                        //                       highlightColor:
-                        //                           Colors.transparent,
-                        //                       minWidth: 0,
-                        //                       padding:
-                        //                           const EdgeInsets.all(0),
-                        //                       onPressed: () {
-                        //                         _firtTimeExternAccess =
-                        //                             false;
-                        //                         if (mounted) {
-                        //                           setState(() {
-                        //                             _firtTimeExternAccess =
-                        //                                 false;
-                        //                             _showQuality =
-                        //                                 !_showQuality;
-                        //                             _showMenu = true;
-                        //                           });
-                        //                         }
-
-                        //                         EasyDebounce.debounce(
-                        //                             'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-                        //                             const Duration(
-                        //                                 seconds:
-                        //                                     5), // <-- The debounce duration
-                        //                             () {
-                        //                           if (_showMenu) {
-                        //                             if (mounted) {
-                        //                               setState(() {
-                        //                                 _firtTimeExternAccess =
-                        //                                     false;
-                        //                                 _showMenu = false;
-                        //                                 _showQuality =
-                        //                                     false;
-                        //                                 print(
-                        //                                     "_showMenu set to false");
-                        //                               });
-                        //                             }
-                        //                           }
-                        //                         });
-                        //                       },
-                        //                       child: Container(
-                        //                           decoration: BoxDecoration(
-                        //                             borderRadius:
-                        //                                 BorderRadius
-                        //                                     .circular(12),
-                        //                             color: Theme.of(context)
-                        //                                 .colorScheme
-                        //                                 .videoPlayerIconBackgroundColor
-                        //                                 .withOpacity(0.6),
-                        //                           ),
-                        //                           child: Padding(
-                        //                             padding:
-                        //                                 const EdgeInsets
-                        //                                     .all(4.0),
-                        //                             child: Icon(
-                        //                               Icons.settings,
-                        //                               size: 28,
-                        //                               color: Theme.of(
-                        //                                       context)
-                        //                                   .colorScheme
-                        //                                   .highlightColor,
-                        //                             ),
-                        //                           )),
-                        //                     ),
-                        //                     const SizedBox(
-                        //                       width: 10,
-                        //                     ),
-                        //                     //Fullscreen Button Fullscreen PLayer
-                        //                     MaterialButton(
-                        //                       hoverColor:
-                        //                           Colors.transparent,
-                        //                       focusColor:
-                        //                           Colors.transparent,
-                        //                       highlightColor:
-                        //                           Colors.transparent,
-                        //                       minWidth: 0,
-                        //                       padding:
-                        //                           const EdgeInsets.all(0),
-                        //                       onPressed: () {
-                        //                         if (!_isFullScreen) {
-                        //                           if (mounted) {
-                        //                             setState(() {
-                        //                               _firtTimeExternAccess =
-                        //                                   false;
-                        //                               _isFullScreen = true;
-                        //                               goFullScreen();
-                        //                             });
-                        //                           }
-                        //                         } else {
-                        //                           if (mounted) {
-                        //                             setState(() {
-                        //                               _firtTimeExternAccess =
-                        //                                   false;
-                        //                               _isFullScreen = false;
-                        //                               exitFullScreen();
-                        //                             });
-                        //                           }
-                        //                         }
-                        //                       },
-                        //                       child: Container(
-                        //                           decoration: BoxDecoration(
-                        //                             borderRadius:
-                        //                                 BorderRadius
-                        //                                     .circular(12),
-                        //                             color: Theme.of(context)
-                        //                                 .colorScheme
-                        //                                 .videoPlayerIconBackgroundColor
-                        //                                 .withOpacity(0.6),
-                        //                           ),
-                        //                           child: Padding(
-                        //                             padding:
-                        //                                 const EdgeInsets
-                        //                                     .all(2.0),
-                        //                             child: Icon(
-                        //                               Icons.fullscreen,
-                        //                               size: 32,
-                        //                               color: Theme.of(
-                        //                                       context)
-                        //                                   .colorScheme
-                        //                                   .highlightColor,
-                        //                             ),
-                        //                           )),
-                        //                     ),
-                        //                     const SizedBox(
-                        //                       width: 12,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 const SizedBox(
-                        //                   height: 35,
-                        //                 )
-                        //               ],
-                        //             )
-                        //           : const SizedBox(),
-                        //     ],
-                        //   );
                       } else {
                         // If the VideoPlayerController is still initializing, show a
                         // loading spinner.
@@ -2220,6 +1009,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
           ),
         ),
         !_isFullScreen ? widget.navbar : const SizedBox(),
+        //Press F
+        Center(
+          child: AnimatedContainer(
+            color: Colors.grey.shade700.withOpacity(_opacity),
+            duration: Duration(milliseconds: _duration),
+            width: _width,
+            height: _height,
+            curve: Curves.fastOutSlowIn,
+            child: const Center(
+              child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text("Press F to exit Fullscreen")),
+            ),
+          ),
+        )
       ],
     );
   }
@@ -2232,6 +1036,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
         onKeyEvent: (event) {
           print("EVENT");
           if (event is KeyDownEvent) {
+            print("Label" + event.logicalKey.keyLabel);
             // if(event.physicalKey)
             // print("Physical: " + event.physicalKey.toString());
             // print("Logical: " + event.logicalKey.toString());
@@ -2240,17 +1045,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
             // prevent from writing comment
             if (event.logicalKey.keyLabel == 'F') {
               print("F pressed");
-              if (_isFullScreen) {
-                exitFullScreen();
-                setState(() {
-                  _isFullScreen = false;
-                });
-              } else {
-                goFullScreen();
-                setState(() {
-                  _isFullScreen = true;
-                });
-              }
+              // if (_isFullScreen) {
+              //   exitFullScreen();
+              //   setState(() {
+              //     _isFullScreen = false;
+              //   });
+              // } else {
+              //   goFullScreen();
+              //   setState(() {
+              //     _isFullScreen = true;
+              //   });
+              // }
+              handleFullscreen();
             } else if (event.logicalKey.keyLabel == ' ') {
               print("Space pressed");
               if (_controller.value.isPlaying) {
@@ -2313,89 +1119,27 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
               //     !document.mozFullScreen &&
               //     !document.msFullscreenElement) {}
               // document.onFullscreenChange.
-              if (_isFullScreen) {
-                setState(() {
-                  _isFullScreen = false;
-                });
-                exitFullScreen();
-              }
+              // if (_isFullScreen) {
+              //   setState(() {
+              //     _isFullScreen = false;
+              //   });
+              //   exitFullScreen();
+              // }
+              handleFullscreen();
             }
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            setState(() {
+              _controller.seekTo(
+                  _controller.value.position - const Duration(seconds: 5));
+            });
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            setState(() {
+              _controller.seekTo(
+                  _controller.value.position + const Duration(seconds: 5));
+            });
           }
         },
-        child: MouseRegion(
-            // cursor:
-            //     _showMenu ? SystemMouseCursors.basic : SystemMouseCursors.none,
-            // //On Player Exit
-            // onExit: (PointerExitEvent event) {
-            //   if (_showMenu) {
-            //     EasyDebounce.debounce(
-            //         'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-            //         const Duration(seconds: 2), // <-- The debounce duration
-            //         () {
-            //       if (_showMenu) {
-            //         if (mounted) {
-            //           setState(() {
-            //             _showMenu = false;
-            //             _showQuality = false;
-            //             print("_showMenu set to false");
-            //           });
-            //         }
-            //       }
-            //     });
-            //   }
-            // },
-            // onEnter: (PointerEnterEvent event) {
-            //   focusNode.requestFocus();
-            //   if (!_showMenu) {
-            //     if (mounted) {
-            //       setState(() {
-            //         _showMenu = true;
-            //         print("_showMenu set to true");
-            //       });
-            //     }
-
-            //     EasyDebounce.debounce(
-            //         'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-            //         const Duration(seconds: 5), // <-- The debounce duration
-            //         () {
-            //       if (_showMenu) {
-            //         if (mounted) {
-            //           setState(() {
-            //             _showMenu = false;
-            //             _showQuality = false;
-            //             print("_showMenu set to false");
-            //           });
-            //         }
-            //       }
-            //     }); // <-- The target method
-            //   }
-            // },
-            // onHover: (PointerHoverEvent event) {
-            //   if (!_showMenu) {
-            //     if (mounted) {
-            //       setState(() {
-            //         _showMenu = true;
-            //         print("_showMenu set to true");
-            //       });
-            //     }
-
-            //     EasyDebounce.debounce(
-            //         'showMenuTextField-debouncer', // <-- An ID for this particular debouncer
-            //         const Duration(seconds: 7), // <-- The debounce duration
-            //         () {
-            //       if (_showMenu) {
-            //         if (mounted) {
-            //           setState(() {
-            //             _showMenu = false;
-            //             _showQuality = false;
-            //             print("_showMenu set to false");
-            //           });
-            //         }
-            //       }
-            //     }); // <-- The target method
-            //   }
-            // },
-            child: child));
+        child: child);
   }
 }
 

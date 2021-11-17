@@ -13,7 +13,7 @@ document.addEventListener("keydown", function (e) {
     if (charCode == 27) {
         // alert("Escape is not suppressed for lightbox!");
         console.log("Escape oh yeah");
-        // e.preventDefault();
+        e.preventDefault();
         // return false;
     }
 });

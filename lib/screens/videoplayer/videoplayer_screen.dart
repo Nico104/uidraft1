@@ -33,8 +33,8 @@ class _VideoPlayerState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: FutureBuilder(
+    return Scaffold(
+      body: FutureBuilder(
           future: fetchPostData(widget.postId),
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>> snapshot) {
