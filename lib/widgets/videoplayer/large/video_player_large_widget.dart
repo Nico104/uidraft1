@@ -91,7 +91,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   // bool _pressFVisible = false;
   double _width = 0;
   double _height = 0;
-  double _opacity = 0;
   int _duration = 200;
 
   void _onFullScreenChange(ev) {
@@ -245,7 +244,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
     } else {
       if (mounted) {
         setState(() {
-          _opacity = 0;
           _width = 0;
           _height = 0;
           _duration = 1;
@@ -262,11 +260,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
       _height = 70;
       _duration = 100;
     });
-    Future.delayed(Duration(seconds: 3)).then((value) => {
+    Future.delayed(const Duration(seconds: 4)).then((value) => {
           setState(() {
             _width = 0;
             _height = 0;
-            _duration = 400;
+            _duration = 600;
           })
         });
   }
@@ -1012,15 +1010,48 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
         //Press F
         Center(
           child: AnimatedContainer(
-            color: Colors.grey.shade700.withOpacity(_opacity),
             duration: Duration(milliseconds: _duration),
             width: _width,
             height: _height,
             curve: Curves.fastOutSlowIn,
-            child: const Center(
-              child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text("Press F to exit Fullscreen")),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(18)),
+              color: Colors.grey.shade700.withOpacity(0.3),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      children: [
+                        const Text(
+                          "Press  ",
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(4)),
+                            border: Border.all(color: Colors.white),
+                            color: Colors.black.withOpacity(0.8),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: Text(
+                              " F ",
+                              style: TextStyle(
+                                  fontSize: 28, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          "  to exit Fullscreen",
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ],
+                    )),
+              ),
             ),
           ),
         )

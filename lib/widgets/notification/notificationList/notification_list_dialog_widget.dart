@@ -69,6 +69,7 @@ class _NotificationListState extends State<NotificationList>
                     if (snapshot.data!.isNotEmpty) {
                       print("DEBUZG");
                       if (_showChat && activeIndex != null) {
+                        //NotificationDetail
                         return Column(
                           children: [
                             Row(
