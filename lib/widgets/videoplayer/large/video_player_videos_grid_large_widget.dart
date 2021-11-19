@@ -9,26 +9,30 @@ import 'dart:html' as html;
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
 
-class VideoPlayerVideosLargeScreen extends StatelessWidget {
-  const VideoPlayerVideosLargeScreen({Key? key}) : super(key: key);
+// class VideoPlayerVideosLargeScreen extends StatelessWidget {
+//   const VideoPlayerVideosLargeScreen({Key? key, required this.setSkipToId})
+//       : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        //width: 400,
-        alignment: Alignment.topCenter,
-        child: const VideoPlayerVideos());
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//         //width: 400,
+//         alignment: Alignment.topCenter,
+//         child: const VideoPlayerVideos());
+//   }
+// }
 
-class VideoPlayerVideos extends StatefulWidget {
-  const VideoPlayerVideos({Key? key}) : super(key: key);
+class VideoPlayerVideosLargeScreen extends StatefulWidget {
+  const VideoPlayerVideosLargeScreen({Key? key, required this.setSkipToId})
+      : super(key: key);
+
+  final Function(int) setSkipToId;
 
   @override
   _VideoPlayerVideosState createState() => _VideoPlayerVideosState();
 }
 
-class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
+class _VideoPlayerVideosState extends State<VideoPlayerVideosLargeScreen> {
   bool _loading = true;
   bool _error = false;
 
@@ -64,6 +68,10 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
           }
         }
         print(postIds);
+
+        //setSkipTo post Id
+        widget.setSkipToId.call(postIds.elementAt(0));
+
         setState(() {
           _loading = false;
         });
@@ -106,57 +114,60 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideos> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading
-        ? const Center(child: CircularProgressIndicator())
-        : _error
-            ? Column(
-                children: [
-                  const SizedBox(
-                    height: 150,
-                  ),
-                  const Text(
-                      "There was an error while loading this Users Video"),
-                  OutlinedButton(
-                      onPressed: () => fetchPostIds(),
-                      child: const Text("Reload Videos"))
-                ],
-              )
-            : Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: FutureBuilder(
-                    future: isAuthenticated(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<int> snapshot) {
-                      if (snapshot.hasData) {
-                        return GridView.count(
-                          shrinkWrap: true,
-                          childAspectRatio: (600 / 180),
-                          controller: _scrollController,
-                          scrollDirection: Axis.vertical,
-                          // Create a grid with 2 columns. If you change the scrollDirection to
-                          // horizontal, this produces 2 rows.
-                          crossAxisCount: 1,
-                          // Generate 100 widgets that display their index in the List.
-                          mainAxisSpacing: 25.0,
-                          // crossAxisSpacing: 40.0,
-                          children: dataList.map((value) {
-                            print("In Preview");
-                            return Listener(
-                              child: VideoPlayerVideoPreview(
-                                postId: value,
-                                isAuth: snapshot.data == 200,
-                              ),
-                              onPointerDown: (ev) =>
-                                  vputils.onPointerDown(context, ev, value),
-                            );
-                            // return (Text(value.toString()));
-                          }).toList(),
-                        );
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    }),
-              );
+    return Align(
+      alignment: Alignment.topCenter,
+      child: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error
+              ? Column(
+                  children: [
+                    const SizedBox(
+                      height: 150,
+                    ),
+                    const Text(
+                        "There was an error while loading this Users Video"),
+                    OutlinedButton(
+                        onPressed: () => fetchPostIds(),
+                        child: const Text("Reload Videos"))
+                  ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: FutureBuilder(
+                      future: isAuthenticated(),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<int> snapshot) {
+                        if (snapshot.hasData) {
+                          return GridView.count(
+                            shrinkWrap: true,
+                            childAspectRatio: (600 / 180),
+                            controller: _scrollController,
+                            scrollDirection: Axis.vertical,
+                            // Create a grid with 2 columns. If you change the scrollDirection to
+                            // horizontal, this produces 2 rows.
+                            crossAxisCount: 1,
+                            // Generate 100 widgets that display their index in the List.
+                            mainAxisSpacing: 25.0,
+                            // crossAxisSpacing: 40.0,
+                            children: dataList.map((value) {
+                              print("In Preview");
+                              return Listener(
+                                child: VideoPlayerVideoPreview(
+                                  postId: value,
+                                  isAuth: snapshot.data == 200,
+                                ),
+                                onPointerDown: (ev) =>
+                                    vputils.onPointerDown(context, ev, value),
+                              );
+                              // return (Text(value.toString()));
+                            }).toList(),
+                          );
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      }),
+                ),
+    );
   }
 
   //// ADDING THE SCROLL LISTINER

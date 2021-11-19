@@ -19,7 +19,8 @@ class VideoPlayerNormalV2 extends StatefulWidget {
       required this.focusNode,
       required this.handleQualityChange,
       required this.handleFullscreenButton,
-      required this.disbaleFirstTimeAccess})
+      required this.disbaleFirstTimeAccess,
+      required this.skipToNextVideo})
       : super(key: key);
 
   final VideoPlayerController controller;
@@ -31,6 +32,7 @@ class VideoPlayerNormalV2 extends StatefulWidget {
   final Function(int) handleQualityChange;
   final Function() handleFullscreenButton;
   final Function() disbaleFirstTimeAccess;
+  final Function() skipToNextVideo;
 
   // Map<int, String> streamQualityURL = {};
   // List<int> streamQualityKeysSorted = [];
@@ -392,6 +394,8 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                           const SizedBox(
                             width: 5,
                           ),
+
+                          //Skip Button
                           MaterialButton(
                             hoverColor: Colors.transparent,
                             focusColor: Colors.transparent,
@@ -399,22 +403,23 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                             minWidth: 0,
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
-                              if (widget.controller.value.isPlaying) {
-                                if (mounted) {
-                                  setState(() {
-                                    widget.controller.pause();
-                                    print("paused");
-                                  });
-                                }
-                              } else {
-                                // If the video is paused, play it.
-                                if (mounted) {
-                                  setState(() {
-                                    widget.controller.play();
-                                    print("playing");
-                                  });
-                                }
-                              }
+                              // if (widget.controller.value.isPlaying) {
+                              //   if (mounted) {
+                              //     setState(() {
+                              //       widget.controller.pause();
+                              //       print("paused");
+                              //     });
+                              //   }
+                              // } else {
+                              //   // If the video is paused, play it.
+                              //   if (mounted) {
+                              //     setState(() {
+                              //       widget.controller.play();
+                              //       print("playing");
+                              //     });
+                              //   }
+                              // }
+                              widget.skipToNextVideo.call();
                             },
                             child: Container(
                                 decoration: BoxDecoration(

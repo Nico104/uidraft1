@@ -93,6 +93,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   double _height = 0;
   int _duration = 200;
 
+  //SkipButton
+  int? skipToId;
+
+  void setSkipToId(int id) {
+    skipToId = id;
+  }
+
+  void skipToNextVideo() {
+    if (skipToId != null) {
+      Beamer.of(context).beamToNamed('whatchintern/' + skipToId.toString());
+    } else {
+      print("skipId is null");
+    }
+  }
+
   void _onFullScreenChange(ev) {
     print("onFullScreenChange!: $ev");
     // setState(() {
@@ -333,6 +348,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                           handleQualityChange.call(index),
                                       disbaleFirstTimeAccess: () =>
                                           disableFirstTimeAccess.call(),
+                                      skipToNextVideo: () =>
+                                          skipToNextVideo.call(),
                                     ),
                                   ),
 
@@ -975,6 +992,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                         handleQualityChange.call(index),
                                     disbaleFirstTimeAccess: () =>
                                         disableFirstTimeAccess.call(),
+                                    skipToNextVideo: () =>
+                                        skipToNextVideo.call(),
                                   ),
                                 ),
                               );
@@ -994,11 +1013,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                 //Video Recommendations
                 _isFullScreen
                     ? const SizedBox()
-                    : const Expanded(
+                    : Expanded(
                         flex: 3,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 100),
-                          child: VideoPlayerVideosLargeScreen(),
+                          padding: const EdgeInsets.only(top: 100),
+                          child: VideoPlayerVideosLargeScreen(
+                              setSkipToId: (id) => setSkipToId.call(id)),
                         ),
                       ),
                 _isFullScreen ? const SizedBox() : const SizedBox(width: 20),
@@ -1076,17 +1096,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
             // prevent from writing comment
             if (event.logicalKey.keyLabel == 'F') {
               print("F pressed");
-              // if (_isFullScreen) {
-              //   exitFullScreen();
-              //   setState(() {
-              //     _isFullScreen = false;
-              //   });
-              // } else {
-              //   goFullScreen();
-              //   setState(() {
-              //     _isFullScreen = true;
-              //   });
-              // }
               handleFullscreen();
             } else if (event.logicalKey.keyLabel == ' ') {
               print("Space pressed");
