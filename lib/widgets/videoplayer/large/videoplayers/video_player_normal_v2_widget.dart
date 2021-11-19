@@ -396,49 +396,52 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
                           ),
 
                           //Skip Button
-                          MaterialButton(
-                            hoverColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            minWidth: 0,
-                            padding: const EdgeInsets.all(0),
-                            onPressed: () {
-                              // if (widget.controller.value.isPlaying) {
-                              //   if (mounted) {
-                              //     setState(() {
-                              //       widget.controller.pause();
-                              //       print("paused");
-                              //     });
-                              //   }
-                              // } else {
-                              //   // If the video is paused, play it.
-                              //   if (mounted) {
-                              //     setState(() {
-                              //       widget.controller.play();
-                              //       print("playing");
-                              //     });
-                              //   }
-                              // }
-                              widget.skipToNextVideo.call();
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .videoPlayerIconBackgroundColor
-                                      .withOpacity(0.6),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Icon(
-                                    Icons.skip_next,
-                                    size: 24,
+                          Tooltip(
+                            message: "Skip Video - Click or Press N",
+                            child: MaterialButton(
+                              hoverColor: Colors.transparent,
+                              focusColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              minWidth: 0,
+                              padding: const EdgeInsets.all(0),
+                              onPressed: () {
+                                // if (widget.controller.value.isPlaying) {
+                                //   if (mounted) {
+                                //     setState(() {
+                                //       widget.controller.pause();
+                                //       print("paused");
+                                //     });
+                                //   }
+                                // } else {
+                                //   // If the video is paused, play it.
+                                //   if (mounted) {
+                                //     setState(() {
+                                //       widget.controller.play();
+                                //       print("playing");
+                                //     });
+                                //   }
+                                // }
+                                widget.skipToNextVideo.call();
+                              },
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .highlightColor,
+                                        .videoPlayerIconBackgroundColor
+                                        .withOpacity(0.6),
                                   ),
-                                )),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Icon(
+                                      Icons.skip_next,
+                                      size: 24,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .highlightColor,
+                                    ),
+                                  )),
+                            ),
                           ),
                           const SizedBox(
                             width: 10,

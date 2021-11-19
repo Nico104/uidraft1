@@ -14,12 +14,15 @@ class SignUpConfirmationCodeLarge extends StatefulWidget {
       {Key? key,
       required this.password,
       required this.username,
-      required this.useremail})
+      required this.useremail,
+      required this.changeEmail})
       : super(key: key);
 
   final String password;
   final String username;
   final String useremail;
+
+  final Function() changeEmail;
 
   @override
   _SignUpConfirmationCodeLargeState createState() =>
@@ -143,6 +146,38 @@ class _SignUpConfirmationCodeLargeState
             const SizedBox(
               height: 50,
             ),
+            //LOGO
+            SizedBox(
+              width: 270,
+              child: Text(
+                "LOGO",
+                style: TextStyle(
+                    fontFamily: 'Segoe UI Black',
+                    fontSize: 28,
+                    color: Theme.of(context).colorScheme.brandColor),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            //Please veryfy email
+            SizedBox(
+              width: 270,
+              child: Text(
+                "please verify your Email",
+                style: TextStyle(
+                  fontFamily: 'Segoe UI',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.textInputCursorColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
             //Thank you for signing up text
             SizedBox(
               width: 270,
@@ -159,7 +194,7 @@ class _SignUpConfirmationCodeLargeState
             const SizedBox(
               height: 50,
             ),
-            //Username
+            //CodeField
             Expanded(
               child: Form(
                 key: _formKey,
@@ -194,14 +229,14 @@ class _SignUpConfirmationCodeLargeState
                         handleDeleteAction: () => handleDelete(
                             fnCodeDigitThree, _codeDigitThreeController),
                         codeDigitController: _codeDigitFourController),
-                    //Code Digit FiveFive
+                    //Code Digit Five
                     CodeInputField(
                         focusNode: fnCodeDigitFive,
                         handleInputAction: () => fnCodeDigitSix.requestFocus(),
                         handleDeleteAction: () => handleDelete(
                             fnCodeDigitFour, _codeDigitFourController),
                         codeDigitController: _codeDigitFiveController),
-                    //Code Digit One
+                    //Code Digit Six
                     CodeInputField(
                         focusNode: fnCodeDigitSix,
                         handleInputAction: () => submit(),
@@ -212,6 +247,129 @@ class _SignUpConfirmationCodeLargeState
                 ),
               ),
             ),
+            const SizedBox(
+              height: 50,
+            ),
+            //TODO manually verify code button
+            //Submit Button
+            SizedBox(
+              width: 200,
+              height: 40,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.brandColor),
+                child: Text(
+                  'Verify Email',
+                  style: TextStyle(
+                      fontFamily: 'Segoe UI Black',
+                      fontSize: 18,
+                      color:
+                          Theme.of(context).colorScheme.textInputCursorColor),
+                ),
+                onPressed: () => submit(),
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            SizedBox(
+              width: 270,
+              child: Text(
+                "Didn't reveive the email? Check your spam folder.",
+                style: TextStyle(
+                  fontFamily: 'Segoe UI',
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.textInputCursorColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(
+              width: 340,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //TODO Resend email
+                  Text(
+                    "Re-send",
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontFamily: 'Segoe UI',
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.textInputCursorColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    " email or ",
+                    style: TextStyle(
+                      fontFamily: 'Segoe UI',
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.textInputCursorColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  //! Takes User back to SignUp but with all fields filled again, except email and set focus on email field
+                  //TODO testen
+                  InkWell(
+                    onTap: () => widget.changeEmail.call(),
+                    child: Text(
+                      "change the email address",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontFamily: 'Segoe UI',
+                        fontSize: 16,
+                        color:
+                            Theme.of(context).colorScheme.textInputCursorColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            SizedBox(
+              width: 270,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already have a Ligma account? ",
+                    style: TextStyle(
+                      fontFamily: 'Segoe UI',
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.textInputCursorColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  //! Takes User to Login
+                  InkWell(
+                    onTap: () => Beamer.of(context).beamToNamed('/login'),
+                    child: Text(
+                      "Log in",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontFamily: 'Segoe UI',
+                        fontSize: 16,
+                        color:
+                            Theme.of(context).colorScheme.textInputCursorColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            //Already have an Account?
           ],
         ));
   }

@@ -1,17 +1,21 @@
-import 'dart:convert';
-
-import 'package:beamer/beamer.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
-import 'package:http/http.dart' as http;
-
 class SignUpLarge extends StatefulWidget {
-  const SignUpLarge({Key? key, required this.setUser}) : super(key: key);
+  const SignUpLarge(
+      {Key? key,
+      required this.setUser,
+      required this.password,
+      required this.username,
+      required this.useremail})
+      : super(key: key);
+
+  final String password;
+  final String username;
+  final String useremail;
 
   final Function(String, String, String) setUser;
 
@@ -49,6 +53,17 @@ class _SignUpLargeState extends State<SignUpLarge> {
     fnUsername.dispose();
     fnUserpassword.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _usernameTextController.text = widget.username;
+      _useremailTextController.text = widget.useremail;
+      _userpasswordTextController.text = widget.password;
+      _userpasswordControlTextController.text = widget.password;
+    });
   }
 
   @override
@@ -96,7 +111,7 @@ class _SignUpLargeState extends State<SignUpLarge> {
                   child: StatefulBuilder(
                     builder: (BuildContext context, setUsernameState) {
                       return TextFormField(
-                        autofocus: true,
+                        autofocus: widget.username.isEmpty ? true : false,
                         controller: _usernameTextController,
                         style: const TextStyle(
                             fontSize: 15,
@@ -205,6 +220,7 @@ class _SignUpLargeState extends State<SignUpLarge> {
                   child: StatefulBuilder(
                     builder: (BuildContext context, setUseremailState) {
                       return TextFormField(
+                        autofocus: widget.useremail.isEmpty ? true : false,
                         controller: _useremailTextController,
                         keyboardType: TextInputType.emailAddress,
                         style: const TextStyle(
@@ -310,89 +326,112 @@ class _SignUpLargeState extends State<SignUpLarge> {
               //Password
               SizedBox(
                 width: 350,
-                child: KeyboardListener(
-                  focusNode: fnUserpassword,
-                  onKeyEvent: (event) {
-                    if (event is KeyDownEvent) {
-                      if (event.logicalKey.keyLabel == 'Tab') {
-                        print("Tab pressed");
-                        fnUserControlpassword.requestFocus();
-                      }
-                    }
-                  },
-                  child: TextFormField(
-                    controller: _userpasswordTextController,
-                    obscureText: _obscureTextPasswor1,
-                    // autovalidateMode: AutovalidateMode.onUserInteraction,
-                    style: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Segoe UI',
-                        letterSpacing: 0.3),
-                    cursorColor:
-                        Theme.of(context).colorScheme.textInputCursorColor,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.brandColor,
-                            width: 0.5),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.brandColor,
-                            width: 2),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      filled: true,
-                      fillColor: Theme.of(context).canvasColor,
-                      // hintText: 'Password...',
-                      // hintStyle: TextStyle(
-                      //     fontFamily: 'Segoe UI',
-                      //     fontSize: 15,
-                      //     color:
-                      //         Theme.of(context).colorScheme.searchBarTextColor),
-                      labelText: 'Password...',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Segoe UI',
-                          fontSize: 15,
-                          color:
-                              Theme.of(context).colorScheme.searchBarTextColor),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.only(
-                          bottom: 15, top: 15, left: 15, right: 10),
-                      //Error
-                      errorBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.red, width: 1),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.red, width: 3),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      errorStyle: const TextStyle(
-                          fontSize: 14.0, fontFamily: 'Segoe UI'),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    KeyboardListener(
+                      focusNode: fnUserpassword,
+                      onKeyEvent: (event) {
+                        if (event is KeyDownEvent) {
+                          if (event.logicalKey.keyLabel == 'Tab') {
+                            print("Tab pressed");
+                            fnUserControlpassword.requestFocus();
+                          }
+                        }
 
-                      //Visibility Icon
-                      suffixIcon: IconButton(
-                        hoverColor: Colors.transparent,
-                        onPressed: () => setState(() {
-                          _obscureTextPasswor1 = !_obscureTextPasswor1;
-                        }),
-                        icon: _obscureTextPasswor1
-                            ? const Icon(Icons.visibility_outlined)
-                            : const Icon(Icons.visibility_off_outlined),
+                        print("LockModes: " +
+                            HardwareKeyboard.instance.lockModesEnabled
+                                .contains(KeyboardLockMode.capsLock)
+                                .toString());
+                      },
+                      child: TextFormField(
+                        controller: _userpasswordTextController,
+                        obscureText: _obscureTextPasswor1,
+                        // autovalidateMode: AutovalidateMode.onUserInteraction,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Segoe UI',
+                            letterSpacing: 0.3),
+                        cursorColor:
+                            Theme.of(context).colorScheme.textInputCursorColor,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.brandColor,
+                                width: 0.5),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.brandColor,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          filled: true,
+                          fillColor: Theme.of(context).canvasColor,
+                          // hintText: 'Password...',
+                          // hintStyle: TextStyle(
+                          //     fontFamily: 'Segoe UI',
+                          //     fontSize: 15,
+                          //     color:
+                          //         Theme.of(context).colorScheme.searchBarTextColor),
+                          labelText: 'Password...',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Segoe UI',
+                              fontSize: 15,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .searchBarTextColor),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.only(
+                              bottom: 15, top: 15, left: 15, right: 10),
+                          //Error
+                          errorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 1),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 3),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          errorStyle: const TextStyle(
+                              fontSize: 14.0, fontFamily: 'Segoe UI'),
+
+                          //Visibility Icon
+                          suffixIcon: IconButton(
+                            hoverColor: Colors.transparent,
+                            onPressed: () => setState(() {
+                              _obscureTextPasswor1 = !_obscureTextPasswor1;
+                            }),
+                            icon: _obscureTextPasswor1
+                                ? const Icon(Icons.visibility_outlined)
+                                : const Icon(Icons.visibility_off_outlined),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length < 6) {
+                            return 'Password has to be at least 6 characters, sir';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (_) => submit(),
+                        // onChanged: (Text) {
+                        //   HardwareKeyboard()
+                        //       .lockModesEnabled
+                        //       .forEach((element) => print(element.toString()));
+                        // },
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty || value.length < 6) {
-                        return 'Password has to be at least 6 characters, sir';
-                      }
-                      return null;
-                    },
-                    onFieldSubmitted: (_) => submit(),
-                  ),
+                    //TODO if Capslocck on
+                    //CapsLockIcon
+                    const Icon(Icons.lock)
+                  ],
                 ),
               ),
               const SizedBox(
@@ -509,32 +548,6 @@ class _SignUpLargeState extends State<SignUpLarge> {
                         color:
                             Theme.of(context).colorScheme.textInputCursorColor),
                   ),
-                  // onPressed: () async {
-                  //   // Validate returns true if the form is valid, or false otherwise.
-                  //   if (_formKey.currentState!.validate()) {
-                  //     // If the form is valid, display a snackbar. In the real world,
-                  //     // you'd often call a server or save the information in a database.
-
-                  //     await _signUp(
-                  //         _usernameTextController.text,
-                  //         _useremailTextController.text,
-                  //         _userpasswordControlTextController.text);
-
-                  //     if (await _login(_usernameTextController.text,
-                  //         _userpasswordTextController.text)) {
-                  //       print("logged in");
-                  //       Beamer.of(context).beamToNamed('/feed');
-                  //     } else {
-                  //       setState(() {
-                  //         print("Username or Password wrong");
-                  //       });
-                  //     }
-
-                  //     // ScaffoldMessenger.of(context).showSnackBar(
-                  //     //   const SnackBar(content: Text('Processing Data')),
-                  //     // );
-                  //   }
-                  // },
                   onPressed: () => submit(),
                 ),
               ),

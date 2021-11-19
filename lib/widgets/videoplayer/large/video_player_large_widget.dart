@@ -1166,17 +1166,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
               //   exitFullScreen();
               // }
               handleFullscreen();
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+              setState(() {
+                _controller.seekTo(
+                    _controller.value.position - const Duration(seconds: 5));
+              });
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+              setState(() {
+                _controller.seekTo(
+                    _controller.value.position + const Duration(seconds: 5));
+              });
+            } else if (event.logicalKey == LogicalKeyboardKey.keyN) {
+              //Skipping Video
+              print("skip");
+              skipToNextVideo.call();
             }
-          } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-            setState(() {
-              _controller.seekTo(
-                  _controller.value.position - const Duration(seconds: 5));
-            });
-          } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-            setState(() {
-              _controller.seekTo(
-                  _controller.value.position + const Duration(seconds: 5));
-            });
           }
         },
         child: child);

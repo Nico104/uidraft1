@@ -13,9 +13,9 @@ class _SignUpV3LargeScreenState extends State<SignUpV3LargeScreen> {
   bool _enterCode = false;
   // bool _enterCode = true;
 
-  String? _password = "";
-  String? _username = "";
-  String? _useremail = "";
+  String _password = "";
+  String _username = "";
+  String _useremail = "";
 
   void setUser(String username, String useremail, String password) {
     print("setUSer");
@@ -23,8 +23,8 @@ class _SignUpV3LargeScreenState extends State<SignUpV3LargeScreen> {
       _password = password;
       _useremail = useremail;
       _username = username;
-      _enterCode = true;
     });
+    setEnterCode(true);
   }
 
   void setEnterCode(bool val) {
@@ -37,17 +37,27 @@ class _SignUpV3LargeScreenState extends State<SignUpV3LargeScreen> {
     }
   }
 
+  void changeEmail() {
+    if (mounted) {
+      setState(() {
+        _useremail = "";
+      });
+      setEnterCode(false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_enterCode) {
       return Center(
         child: SizedBox(
-            height: 470,
-            width: 400,
+            height: 760,
+            width: 420,
             child: SignUpConfirmationCodeLarge(
-              password: _password!,
-              username: _username!,
-              useremail: _useremail!,
+              password: _password,
+              username: _username,
+              useremail: _useremail,
+              changeEmail: () => changeEmail.call(),
             )),
       );
     } else {
@@ -56,6 +66,9 @@ class _SignUpV3LargeScreenState extends State<SignUpV3LargeScreen> {
             height: 670,
             width: 400,
             child: SignUpLarge(
+              password: _password,
+              username: _username,
+              useremail: _useremail,
               setUser: (v, d, s) => setUser(v, d, s),
             )),
       );
