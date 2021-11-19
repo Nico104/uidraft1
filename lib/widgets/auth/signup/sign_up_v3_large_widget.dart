@@ -63,14 +63,15 @@ class _SignUpV3LargeScreenState extends State<SignUpV3LargeScreen> {
     } else {
       return Center(
         child: SizedBox(
-            height: 670,
-            width: 400,
-            child: SignUpLarge(
-              password: _password,
-              username: _username,
-              useremail: _useremail,
-              setUser: (v, d, s) => setUser(v, d, s),
-            )),
+          height: 670,
+          width: 400,
+          child: SignUpLarge(
+            password: _password,
+            username: _username,
+            useremail: _useremail,
+            setUser: (v, d, s) => setUser(v, d, s),
+          ),
+        ),
       );
     }
   }

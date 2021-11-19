@@ -75,6 +75,7 @@ class _SignUpLargeState extends State<SignUpLarge> {
             borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Form(
           key: _formKey,
+          // child: const SizedBox(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -326,112 +327,114 @@ class _SignUpLargeState extends State<SignUpLarge> {
               //Password
               SizedBox(
                 width: 350,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    KeyboardListener(
-                      focusNode: fnUserpassword,
-                      onKeyEvent: (event) {
-                        if (event is KeyDownEvent) {
-                          if (event.logicalKey.keyLabel == 'Tab') {
-                            print("Tab pressed");
-                            fnUserControlpassword.requestFocus();
-                          }
-                        }
-
-                        print("LockModes: " +
-                            HardwareKeyboard.instance.lockModesEnabled
-                                .contains(KeyboardLockMode.capsLock)
-                                .toString());
-                      },
-                      child: TextFormField(
-                        controller: _userpasswordTextController,
-                        obscureText: _obscureTextPasswor1,
-                        // autovalidateMode: AutovalidateMode.onUserInteraction,
-                        style: const TextStyle(
-                            fontSize: 15,
-                            fontFamily: 'Segoe UI',
-                            letterSpacing: 0.3),
-                        cursorColor:
-                            Theme.of(context).colorScheme.textInputCursorColor,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.brandColor,
-                                width: 0.5),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.brandColor,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          filled: true,
-                          fillColor: Theme.of(context).canvasColor,
-                          // hintText: 'Password...',
-                          // hintStyle: TextStyle(
-                          //     fontFamily: 'Segoe UI',
-                          //     fontSize: 15,
-                          //     color:
-                          //         Theme.of(context).colorScheme.searchBarTextColor),
-                          labelText: 'Password...',
-                          labelStyle: TextStyle(
-                              fontFamily: 'Segoe UI',
+                child: KeyboardListener(
+                  focusNode: fnUserpassword,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      if (event.logicalKey.keyLabel == 'Tab') {
+                        print("Tab pressed");
+                        fnUserpassword.requestFocus();
+                      }
+                    }
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: TextFormField(
+                          controller: _userpasswordTextController,
+                          obscureText: _obscureTextPasswor1,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          style: const TextStyle(
                               fontSize: 15,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .searchBarTextColor),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.only(
-                              bottom: 15, top: 15, left: 15, right: 10),
-                          //Error
-                          errorBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.red, width: 1),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.red, width: 3),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          errorStyle: const TextStyle(
-                              fontSize: 14.0, fontFamily: 'Segoe UI'),
+                              fontFamily: 'Segoe UI',
+                              letterSpacing: 0.3),
+                          cursorColor: Theme.of(context)
+                              .colorScheme
+                              .textInputCursorColor,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.brandColor,
+                                  width: 0.5),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.brandColor,
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            filled: true,
+                            fillColor: Theme.of(context).canvasColor,
+                            // hintText: 'Password...',
+                            // hintStyle: TextStyle(
+                            //     fontFamily: 'Segoe UI',
+                            //     fontSize: 15,
+                            //     color:
+                            //         Theme.of(context).colorScheme.searchBarTextColor),
+                            labelText: 'Password...',
+                            labelStyle: TextStyle(
+                                fontFamily: 'Segoe UI',
+                                fontSize: 15,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .searchBarTextColor),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.only(
+                                bottom: 15, top: 15, left: 15, right: 10),
+                            //Error
+                            errorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 3),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            errorStyle: const TextStyle(
+                                fontSize: 14.0, fontFamily: 'Segoe UI'),
 
-                          //Visibility Icon
-                          suffixIcon: IconButton(
-                            hoverColor: Colors.transparent,
-                            onPressed: () => setState(() {
-                              _obscureTextPasswor1 = !_obscureTextPasswor1;
-                            }),
-                            icon: _obscureTextPasswor1
-                                ? const Icon(Icons.visibility_outlined)
-                                : const Icon(Icons.visibility_off_outlined),
+                            //Visibility Icon
+                            suffixIcon: IconButton(
+                              hoverColor: Colors.transparent,
+                              onPressed: () => setState(() {
+                                _obscureTextPasswor1 = !_obscureTextPasswor1;
+                              }),
+                              icon: _obscureTextPasswor1
+                                  ? const Icon(Icons.visibility_outlined)
+                                  : const Icon(Icons.visibility_off_outlined),
+                            ),
                           ),
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length < 6) {
+                              return 'Password has to be at least 6 characters, sir';
+                            }
+                            return null;
+                          },
+                          onFieldSubmitted: (_) => submit(),
+                          onChanged: (Text) {
+                            HardwareKeyboard().lockModesEnabled.forEach(
+                                (element) => print(element.toString()));
+                          },
                         ),
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.length < 6) {
-                            return 'Password has to be at least 6 characters, sir';
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (_) => submit(),
-                        // onChanged: (Text) {
-                        //   HardwareKeyboard()
-                        //       .lockModesEnabled
-                        //       .forEach((element) => print(element.toString()));
-                        // },
                       ),
-                    ),
-                    //TODO if Capslocck on
-                    //CapsLockIcon
-                    const Icon(Icons.lock)
-                  ],
+                      HardwareKeyboard.instance.lockModesEnabled
+                              .contains(KeyboardLockMode.capsLock)
+                          ? const Tooltip(
+                              message: "CapsLock is on boy",
+                              child: Icon(Icons.lock))
+                          : const SizedBox()
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(

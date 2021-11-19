@@ -5,6 +5,8 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
+import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
+    as vputils;
 
 class VideoPreview extends StatefulWidget {
   final int postId;
@@ -167,25 +169,33 @@ class _VideoPreviewState extends State<VideoPreview> {
                                                     .toString());
                                         print("go to subchnanel or profile");
                                       },
-                                      child: Row(
-                                        children: [
-                                          //Icon
-                                          Icon(
-                                            Icons.person_outline_outlined,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .navBarIconColor,
-                                            size: 17,
-                                          ),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-                                          //Username
-                                          Text(snapshot.data!['username']),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                        ],
+                                      child: Listener(
+                                        onPointerDown: (ev) =>
+                                            vputils.onPointerDownUser(
+                                                context,
+                                                ev,
+                                                snapshot.data!['username']
+                                                    .toString()),
+                                        child: Row(
+                                          children: [
+                                            //Icon
+                                            Icon(
+                                              Icons.person_outline_outlined,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .navBarIconColor,
+                                              size: 17,
+                                            ),
+                                            const SizedBox(
+                                              width: 4,
+                                            ),
+                                            //Username
+                                            Text(snapshot.data!['username']),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     //Dot in the middle
@@ -203,37 +213,53 @@ class _VideoPreviewState extends State<VideoPreview> {
                                       width: 10,
                                     ),
                                     //Subchannel
-                                    InkWell(
-                                      excludeFromSemantics: true,
-                                      hoverColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () {
-                                        Beamer.of(context).beamToNamed(
-                                            'subchannel/' +
+                                    Container(
+                                      color: Colors.purple,
+                                      // height: double.infinity,
+                                      child: Listener(
+                                        onPointerDown: (ev) =>
+                                            vputils.onPointerDownSubchannel(
+                                                context,
+                                                ev,
                                                 snapshot.data!['postSubchannel']
                                                         ['subchannelName']
-                                                    .toString());
-                                        print("go to subchnanel or profile");
-                                      },
-                                      child: Row(
-                                        children: [
-                                          //Subchannel Icon
-                                          Icon(
-                                            Icons.smart_display_outlined,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .navBarIconColor,
-                                            size: 17,
+                                                    .toString()),
+                                        child: InkWell(
+                                          excludeFromSemantics: true,
+                                          hoverColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () {
+                                            Beamer.of(context).beamToNamed(
+                                                'subchannel/' +
+                                                    snapshot
+                                                        .data!['postSubchannel']
+                                                            ['subchannelName']
+                                                        .toString());
+                                            print(
+                                                "go to subchnanel or profile");
+                                          },
+                                          child: Row(
+                                            children: [
+                                              //Subchannel Icon
+                                              Icon(
+                                                Icons.smart_display_outlined,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .navBarIconColor,
+                                                size: 17,
+                                              ),
+                                              const SizedBox(
+                                                width: 4,
+                                              ),
+                                              //Subchannelname
+                                              Text('c/' +
+                                                  snapshot.data![
+                                                          'postSubchannel']
+                                                      ['subchannelName']),
+                                            ],
                                           ),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-                                          //Subchannelname
-                                          Text('c/' +
-                                              snapshot.data!['postSubchannel']
-                                                  ['subchannelName']),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ],
