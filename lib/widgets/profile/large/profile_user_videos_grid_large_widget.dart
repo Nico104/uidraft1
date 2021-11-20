@@ -155,8 +155,8 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
                                 postId: value,
                                 isAuth: snapshot.data == 200,
                               ),
-                              onPointerDown: (ev) =>
-                                  vputils.onPointerDown(context, ev, value),
+                              // onPointerDown: (ev) =>
+                              //     vputils.onPointerDown(context, ev, value),
                             );
                             // return (Text(value.toString()));
                           }).toList(),

@@ -567,15 +567,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                       children: [
                                                         //COPY
                                                         InkWell(
-                                                          onTap: () => Clipboard.setData(ClipboardData(
-                                                                  text: "http://localhost:55555/#/whatch/" +
-                                                                      widget
-                                                                          .postData[
-                                                                              'postId']
-                                                                          .toString()))
-                                                              .then((_) =>
-                                                                  _showToast(
-                                                                      context)),
+                                                          onTap: () {
+                                                            Clipboard.setData(ClipboardData(
+                                                                    text: "http://localhost:55555/#/whatch/" +
+                                                                        widget
+                                                                            .postData[
+                                                                                'postId']
+                                                                            .toString()))
+                                                                .then((_) =>
+                                                                    _showToast(
+                                                                        context));
+                                                            //Create Sharing DB Eintrag
+                                                            createSharingAnalyticPost(
+                                                                widget.postData[
+                                                                    'postId']);
+                                                          },
                                                           child: const Icon(
                                                               Icons.copy,
                                                               size: 16),
@@ -585,9 +591,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                         //SHARE
                                                         InkWell(
                                                           onTap: () => Share.share(
-                                                              'check out my website https://example.com',
-                                                              subject:
-                                                                  'Look what I made!'),
+                                                                  'check out my website https://example.com',
+                                                                  subject:
+                                                                      'Look what I made!')
+                                                              .then((value) {
+                                                            print(
+                                                                "create sharing");
+                                                            //Create Sharing DB Eintrag
+                                                            createSharingAnalyticPost(
+                                                                widget.postData[
+                                                                    'postId']);
+                                                          }),
                                                           child: const Icon(
                                                               Icons.share,
                                                               size: 20),

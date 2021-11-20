@@ -151,13 +151,9 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideosLargeScreen> {
                             // crossAxisSpacing: 40.0,
                             children: dataList.map((value) {
                               print("In Preview");
-                              return Listener(
-                                child: VideoPlayerVideoPreview(
-                                  postId: value,
-                                  isAuth: snapshot.data == 200,
-                                ),
-                                onPointerDown: (ev) =>
-                                    vputils.onPointerDown(context, ev, value),
+                              return VideoPlayerVideoPreview(
+                                postId: value,
+                                isAuth: snapshot.data == 200,
                               );
                               // return (Text(value.toString()));
                             }).toList(),

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
-import 'package:uidraft1/widgets/feed/videoPreview/video_preview_large_widget.dart';
+import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
 import 'dart:html' as html;
@@ -174,15 +174,11 @@ class _FeedGridState extends State<FeedGrid> {
                                       mainAxisSpacing: 10.0,
                                       crossAxisSpacing: 40.0,
                                       children: dataList.map((value) {
-                                        return Listener(
-                                          child: VideoPreview(
-                                            postId: value,
-                                            isAuth: snapshot.data == 200,
-                                          ),
-                                          // behavior: HitTestBehavior.opaque,
-                                          onPointerDown: (ev) =>
-                                              vputils.onPointerDown(
-                                                  context, ev, value),
+                                        return VideoPreview(
+                                          postId: value,
+                                          isAuth: snapshot.data == 200,
+                                          videoPreviewMode:
+                                              vputils.VideoPreviewMode.feed,
                                         );
                                       }).toList(),
                                     );

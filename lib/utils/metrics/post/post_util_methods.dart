@@ -215,6 +215,48 @@ Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
   }
 }
 
+//Create Sharing analytics
+Future<void> createSharingAnalyticPost(int postId) async {
+  if (await isAuthenticated() == 200) {
+    try {
+      print("auth wt");
+      String? token = await getToken();
+      final response = await http.post(
+          Uri.parse(baseURL + 'post/createPostSharingAnalyticWithUser'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(<String, String>{
+            'postId': '$postId',
+          }));
+      // print(response.body);
+      // print(response.statusCode);
+    } catch (e) {
+      print("Error: " + e.toString());
+      throw Exception('Failed to create post whatchtime analytic AUTH');
+    }
+  } else {
+    try {
+      // print("no auth wt " + postId.toString());
+      final response =
+          await http.post(Uri.parse(baseURL + 'post/createPostSharingAnalytic'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(<String, String>{
+                'postId': '$postId',
+              }));
+      // print(response.body);
+      // print(response.statusCode);
+    } catch (e) {
+      print("Error: " + e.toString());
+      throw Exception('Failed to create post whatchtime analytic NOAUTH');
+    }
+  }
+}
+
 //reports a Post
 Future<void> reportPost(int postId) async {
   print("report");

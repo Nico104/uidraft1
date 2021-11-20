@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/subchannel/subchannel_util_methods.dart';
+import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/widgets/subchannel/large/subchannel_video_preview_large_widget.dart';
 
 import 'subchannel_videos_grid_large_widget.dart';
@@ -379,14 +380,15 @@ class _SubchannelState extends State<Subchannel> {
                                           crossAxisSpacing: 40.0,
                                           children: dataList.map((value) {
                                             print("In Preview");
-                                            return Listener(
-                                              child: SubchannelVideoPreview(
-                                                postId: value,
-                                                isAuth: snapshot.data == 200,
-                                              ),
-                                              onPointerDown: (ev) =>
-                                                  vputils.onPointerDown(
-                                                      context, ev, value),
+                                            // return SubchannelVideoPreview(
+                                            //   postId: value,
+                                            //   isAuth: snapshot.data == 200,
+                                            // );
+                                            return VideoPreview(
+                                              postId: value,
+                                              isAuth: snapshot.data == 200,
+                                              videoPreviewMode: vputils
+                                                  .VideoPreviewMode.subchannel,
                                             );
                                           }).toList(),
                                         );

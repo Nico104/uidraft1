@@ -8,6 +8,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/widgets/message/write_message_large_dialog.dart';
 
 import 'profile_video_preview_large_widget.dart';
@@ -397,15 +398,16 @@ class _ProfileState extends State<Profile> {
                                           crossAxisSpacing: 40.0,
                                           children: dataList.map((value) {
                                             print("In Preview");
-                                            return Listener(
-                                              child: ProfileVideoPreview(
-                                                postId: value,
-                                                isAuth: snapshot.data == 200,
-                                              ),
-                                              onPointerDown: (ev) =>
-                                                  vputils.onPointerDown(
-                                                      context, ev, value),
+                                            return VideoPreview(
+                                              postId: value,
+                                              isAuth: snapshot.data == 200,
+                                              videoPreviewMode: vputils
+                                                  .VideoPreviewMode.profile,
                                             );
+                                            // return ProfileVideoPreview(
+                                            //   postId: value,
+                                            //   isAuth: snapshot.data == 200,
+                                            // );
                                             // return (Text(value.toString()));
                                           }).toList(),
                                         );

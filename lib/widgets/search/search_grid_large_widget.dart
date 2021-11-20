@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
-import 'package:uidraft1/widgets/feed/videoPreview/video_preview_large_widget.dart';
+import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
 import 'dart:html' as html;
@@ -143,34 +143,6 @@ class _SearchGridState extends State<SearchGridLargeScreen> {
                         // physics: const AlwaysScrollableScrollPhysics(),
                         child: Column(
                           children: [
-                            // const SizedBox(
-                            //   height: 120,
-                            // ),
-                            // TextButton(
-                            //     onPressed: () => Share.share(
-                            //         'check out my website https://example.com',
-                            //         subject: 'Look what I made!'),
-                            //     child: Text("ShareTest")),
-                            // const SizedBox(
-                            //   height: 50,
-                            // ),
-                            // TextButton(
-                            //     onPressed: () => Clipboard.setData(
-                            //             const ClipboardData(text: "copiedtext"))
-                            //         .then((_) => _showToast(context)),
-                            //     child: Text("CopyToClipBoardTest")),
-                            // const SizedBox(
-                            //   height: 100,
-                            // ),
-
-                            // const Divider(
-                            //   color: Colors.grey,
-                            // ),
-                            // Padding(
-                            //   padding: MediaQuery.of(context).size.width <= 1500
-                            //       ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
-                            //       : const EdgeInsets.fromLTRB(310, 120, 310, 0),
-
                             const SizedBox(
                               height: 120,
                             ),
@@ -200,14 +172,11 @@ class _SearchGridState extends State<SearchGridLargeScreen> {
                                             mainAxisSpacing: 10.0,
                                             crossAxisSpacing: 40.0,
                                             children: dataList.map((value) {
-                                              return Listener(
-                                                child: VideoPreview(
-                                                  postId: value,
-                                                  isAuth: snapshot.data == 200,
-                                                ),
-                                                onPointerDown: (ev) =>
-                                                    vputils.onPointerDown(
-                                                        context, ev, value),
+                                              return VideoPreview(
+                                                postId: value,
+                                                isAuth: snapshot.data == 200,
+                                                videoPreviewMode: vputils
+                                                    .VideoPreviewMode.feed,
                                               );
                                             }).toList(),
                                           );
