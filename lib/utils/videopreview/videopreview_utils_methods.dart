@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 /// Callback when mouse clicked on `Listener` wrapped widget.
 Future<void> onPointerDown(
@@ -108,5 +112,23 @@ _launchURL(String url) async {
     await launch(url);
   } else {
     throw 'Could not launch $url';
+  }
+}
+
+//Get PostPreview Data by Id
+Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
+  final response =
+      await http.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> map = json.decode(response.body);
+    if (map.isNotEmpty) {
+      return map;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post');
   }
 }

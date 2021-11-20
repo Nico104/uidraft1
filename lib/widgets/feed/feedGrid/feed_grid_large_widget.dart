@@ -147,17 +147,6 @@ class _FeedGridState extends State<FeedGrid> {
                   // physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
-                      // const SizedBox(
-                      //   height: 100,
-                      // ),
-
-                      // const Divider(
-                      //   color: Colors.grey,
-                      // ),
-                      // Padding(
-                      //   padding: MediaQuery.of(context).size.width <= 1500
-                      //       ? const EdgeInsets.fromLTRB(160, 100, 160, 0)
-                      //       : const EdgeInsets.fromLTRB(310, 120, 310, 0),
                       const SizedBox(
                         height: 120,
                       ),
@@ -190,6 +179,7 @@ class _FeedGridState extends State<FeedGrid> {
                                             postId: value,
                                             isAuth: snapshot.data == 200,
                                           ),
+                                          // behavior: HitTestBehavior.opaque,
                                           onPointerDown: (ev) =>
                                               vputils.onPointerDown(
                                                   context, ev, value),

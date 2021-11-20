@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/notifications/notification_util_methods.dart';
+import 'package:uidraft1/utils/widgets/notification/message/message_list_item_widget.dart';
+import 'package:uidraft1/utils/widgets/notification/notification/detail_notification_widget.dart';
+import 'package:uidraft1/utils/widgets/notification/notification/notification_list_item_widget.dart';
 import 'package:uidraft1/widgets/chatNotification/chat_dialog_widget.dart';
-import 'package:uidraft1/widgets/notification/notificationList/notification_list_item_widget.dart';
-import 'package:uidraft1/utils/constants/global_constants.dart';
 
 // import 'package:animations/animations.dart';
 
@@ -25,7 +26,8 @@ class NotificationList extends StatefulWidget {
 
 class _NotificationListState extends State<NotificationList>
     with SingleTickerProviderStateMixin {
-  bool _showChat = false;
+  // bool _showChat = false;
+  NotificationMode _notificationMode = NotificationMode.none;
   int? activeIndex;
 
   double _width = 230;
@@ -68,67 +70,46 @@ class _NotificationListState extends State<NotificationList>
                   if (snapshot.hasData) {
                     if (snapshot.data!.isNotEmpty) {
                       print("DEBUZG");
-                      if (_showChat && activeIndex != null) {
+                      if (_notificationMode == NotificationMode.chat &&
+                          activeIndex != null) {
                         //NotificationDetail
-                        return Column(
-                          children: [
-                            Row(
-                              textDirection: widget.isLeftHand
-                                  ? TextDirection.rtl
-                                  : TextDirection.ltr,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(width: 8),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(14.0),
-                                      child: Image.network(
-                                        baseURL +
-                                            snapshot.data!.elementAt(
-                                                        activeIndex!)[
-                                                    'fromUser']['userProfile']
-                                                ['profilePicturePath'],
-                                        fit: BoxFit.contain,
-                                        width: 34,
-                                        height: 34,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(snapshot.data!.elementAt(
-                                        activeIndex!)['formUsername']),
-                                    const SizedBox(width: 8),
-                                  ],
-                                ),
-                                IconButton(
-                                    hoverColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onPressed: () {
-                                      seeNotification(snapshot.data!
-                                                  .elementAt(activeIndex!)[
-                                              'userNotificationId'])
-                                          .then((value) {
-                                        widget.notifyParent();
-                                        // setState(() {});
-                                      });
-                                      setToList();
-                                    },
-                                    icon: Icon(widget.isLeftHand
-                                        ? Icons.arrow_back
-                                        : Icons.arrow_forward))
-                              ],
-                            ),
-                            ChatNotification(
-                              username: snapshot.data!
-                                  .elementAt(activeIndex!)['formUsername'],
-                              picturePath: snapshot.data!
-                                      .elementAt(activeIndex!)['fromUser']
+                        return ChatNotification(
+                          username: snapshot.data!
+                              .elementAt(activeIndex!)['formUsername'],
+                          picturePath:
+                              snapshot.data!.elementAt(activeIndex!)['fromUser']
                                   ['userProfile']['profilePicturePath'],
-                              myUsername: widget.myUsername,
-                            ),
-                          ],
+                          myUsername: widget.myUsername,
+                          isLeftHand: widget.isLeftHand,
+                          onBackPressed: () {
+                            seeNotification(snapshot.data!.elementAt(
+                                    activeIndex!)['userNotificationId'])
+                                .then((value) {
+                              widget.notifyParent();
+                              // setState(() {});
+                            });
+                            setToList();
+                          },
+                        );
+                      }
+                      if (_notificationMode == NotificationMode.notification &&
+                          activeIndex != null) {
+                        //NotificationDetail
+                        return DetailNotification(
+                          title:
+                              snapshot.data!.elementAt(activeIndex!)['title'],
+                          notificationText: snapshot.data!
+                              .elementAt(activeIndex!)['notificationText'],
+                          isLeftHand: widget.isLeftHand,
+                          onBackPressed: () {
+                            seeNotification(snapshot.data!.elementAt(
+                                    activeIndex!)['userNotificationId'])
+                                .then((value) {
+                              widget.notifyParent();
+                              // setState(() {});
+                            });
+                            setToList();
+                          },
                         );
                       } else {
                         return ConstrainedBox(
@@ -140,23 +121,41 @@ class _NotificationListState extends State<NotificationList>
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               return InkWell(
-                                hoverColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () {
-                                  setToChat(index);
-                                },
-                                child: NotificationItem(
-                                    username: snapshot.data!
-                                        .elementAt(index)['formUsername'],
-                                    notificationText: snapshot.data!
-                                        .elementAt(index)['notificationText'],
-                                    picturePath: snapshot.data!
-                                            .elementAt(index)['fromUser']
-                                        ['userProfile']['profilePicturePath'],
-                                    assignedDate: snapshot.data!
-                                        .elementAt(index)['assignedDate']),
-                              );
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () {
+                                    if (snapshot.data!
+                                            .elementAt(index)['title'] !=
+                                        null) {
+                                      setToNotificationDetail(index);
+                                    } else {
+                                      setToChat(index);
+                                    }
+                                  },
+                                  child: snapshot.data!.elementAt(index)['title'] !=
+                                          null
+                                      ? NotificationItem(
+                                          title: snapshot.data!
+                                              .elementAt(index)['title'],
+                                          notificationText: snapshot.data!.elementAt(
+                                              index)['notificationText'],
+                                          // picturePath: snapshot.data!.elementAt(index)['fromUser']
+                                          //         ['userProfile']
+                                          // ['profilePicturePath'],
+                                          assignedDate: snapshot.data!
+                                              .elementAt(index)['assignedDate'])
+                                      : MessageItem(
+                                          username: snapshot.data!
+                                              .elementAt(index)['formUsername'],
+                                          notificationText: snapshot.data!.elementAt(
+                                              index)['notificationText'],
+                                          picturePath: snapshot.data!
+                                                      .elementAt(index)['fromUser']
+                                                  ['userProfile']
+                                              ['profilePicturePath'],
+                                          assignedDate: snapshot.data!
+                                              .elementAt(index)['assignedDate']));
                             },
                           ),
                         );
@@ -176,19 +175,26 @@ class _NotificationListState extends State<NotificationList>
   }
 
   void setToChat(int index) async {
-    // setState(() {
-    //   _showChat = true;
-    //   activeIndex = index;
-    //   _width = 600;
-    // });
     setState(() {
-      // _height = 400;
       _width = 600;
       _visible = false;
     });
     await Future.delayed(Duration(milliseconds: (durMilliseconds / 2).round()));
     setState(() {
-      _showChat = true;
+      _notificationMode = NotificationMode.chat;
+      activeIndex = index;
+      _visible = true;
+    });
+  }
+
+  void setToNotificationDetail(int index) async {
+    setState(() {
+      _width = 600;
+      _visible = false;
+    });
+    await Future.delayed(Duration(milliseconds: (durMilliseconds / 2).round()));
+    setState(() {
+      _notificationMode = NotificationMode.notification;
       activeIndex = index;
       _visible = true;
     });
@@ -196,8 +202,7 @@ class _NotificationListState extends State<NotificationList>
 
   void setToList() {
     setState(() {
-      // _height = 100;
-      _showChat = false;
+      _notificationMode = NotificationMode.none;
       activeIndex = null;
       _width = 230;
     });

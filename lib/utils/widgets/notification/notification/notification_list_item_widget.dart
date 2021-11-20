@@ -5,15 +5,15 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 class NotificationItem extends StatelessWidget {
   const NotificationItem(
       {Key? key,
-      required this.username,
+      required this.title,
       required this.notificationText,
-      required this.picturePath,
+      // required this.picturePath,
       required this.assignedDate})
       : super(key: key);
 
-  final String username;
+  final String title;
   final String notificationText;
-  final String picturePath;
+  // final String picturePath;
   final String assignedDate;
 
   @override
@@ -25,42 +25,31 @@ class NotificationItem extends StatelessWidget {
           flex: 8,
           child: Row(
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      baseURL + picturePath,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                      width: 40,
-                      height: 40,
-                    ),
-                  ),
-                ),
-              ),
+              // Align(
+              //   alignment: Alignment.centerLeft,
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(4.0),
+              //     child: ClipRRect(
+              //       borderRadius: BorderRadius.circular(8.0),
+              //       child: Image.network(
+              //         baseURL + picturePath,
+              //         fit: BoxFit.cover,
+              //         alignment: Alignment.center,
+              //         width: 40,
+              //         height: 40,
+              //       ),
+              //     ),
+              //   ),
+              // ),
               const SizedBox(
-                width: 5,
+                height: 40,
+                width: 8,
               ),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      username,
-                      style: const TextStyle(fontSize: 10, color: Colors.grey),
-                    ),
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    Text(
-                      notificationText,
-                      overflow: TextOverflow.fade,
-                      maxLines: 1,
-                    ),
-                  ],
+                child: Text(
+                  title,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
                 ),
               ),
             ],

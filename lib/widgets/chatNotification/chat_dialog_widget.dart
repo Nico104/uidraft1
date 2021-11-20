@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/notifications/notification_util_methods.dart';
 
 class ChatNotification extends StatefulWidget {
@@ -8,13 +8,18 @@ class ChatNotification extends StatefulWidget {
       {Key? key,
       required this.username,
       required this.picturePath,
-      required this.myUsername})
+      required this.myUsername,
+      required this.onBackPressed,
+      required this.isLeftHand})
       : super(key: key);
 
   final String username;
   final String picturePath;
 
   final String myUsername;
+  final bool isLeftHand;
+
+  final Function() onBackPressed;
 
   @override
   State<ChatNotification> createState() => _ChatNotificationState();
@@ -24,10 +29,48 @@ class _ChatNotificationState extends State<ChatNotification> {
   final TextEditingController _newMsgTextController = TextEditingController();
 
   @override
+  void dispose() {
+    _newMsgTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // return const Center(child: Text("yo"));
     return Column(
       children: [
+        Row(
+          textDirection:
+              widget.isLeftHand ? TextDirection.rtl : TextDirection.ltr,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(width: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14.0),
+                  child: Image.network(
+                    baseURL + widget.picturePath,
+                    fit: BoxFit.contain,
+                    width: 34,
+                    height: 34,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(widget.username),
+                const SizedBox(width: 8),
+              ],
+            ),
+            IconButton(
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: () => widget.onBackPressed.call(),
+                icon: Icon(
+                    widget.isLeftHand ? Icons.arrow_back : Icons.arrow_forward))
+          ],
+        ),
         //Chat
         FutureBuilder(
             future: fetchConversationWithUser(widget.username),

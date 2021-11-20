@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
+enum NotificationMode { chat, notification, none }
+
 //Get Comment Data by Id
 Future<List<Map<String, dynamic>>> fetchUserNotifications() async {
   String? token = await getToken();
@@ -41,7 +43,7 @@ Future<void> sendMessageToUser(
     String toUsername, String notificationText) async {
   String? token = await getToken();
   final response = await http.post(
-      Uri.parse(baseURL + 'user/createUserNotification'),
+      Uri.parse(baseURL + 'user/createUserMessage'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
