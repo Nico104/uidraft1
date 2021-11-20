@@ -19,7 +19,7 @@ final ThemeData constLightTheme = ThemeData(
   // backgroundColor: const Color(0xFF020304),
   dividerColor: Colors.white54,
   // canvasColor: const Color(0xFF020304),
-  canvasColor: Colors.white,
+  canvasColor: const Color(0xFFf6f8fa),
   // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(
   //   secondary: Colors.black,
   //   brightness: Brightness.light,

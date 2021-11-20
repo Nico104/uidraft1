@@ -209,6 +209,8 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(
                 height: 40,
               ),
+
+              //TODO TextFieldPassword des + capslock von signup
               //Password
               KeyboardListener(
                 focusNode: fnPassword,
@@ -277,8 +279,14 @@ class _LoginFormState extends State<LoginForm> {
                           _obscureTextPasswor1 = !_obscureTextPasswor1;
                         }),
                         icon: _obscureTextPasswor1
-                            ? const Icon(Icons.visibility_outlined)
-                            : const Icon(Icons.visibility_off_outlined),
+                            ? Icon(Icons.visibility_outlined,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .navBarIconColor)
+                            : Icon(Icons.visibility_off_outlined,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .navBarIconColor),
                       ),
                     ),
                     validator: (value) {

@@ -375,3 +375,24 @@ Future<Map<String, dynamic>> getSubModPostMetrics(int id) async {
     throw Exception('Failed to load postmetrics');
   }
 }
+
+//Send Announcement to All Memebrs
+Future<void> sendAnnouncementToMembers(
+    String subchannelName, String title, String notificationText) async {
+  String? token = await getToken();
+  final response = await http.post(
+      Uri.parse(baseURL + 'user/createSubchannelAnnoucementNotification'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(<String, String>{
+        "subchannelname": subchannelName,
+        "title": title,
+        "notificationtext": notificationText,
+      }));
+
+  print("Status Code: " + response.statusCode.toString());
+  print(response.body);
+}

@@ -22,7 +22,6 @@ class SideBarItem extends StatefulWidget {
 
 class _SideBarItemState extends State<SideBarItem>
     with SingleTickerProviderStateMixin {
-  double _elevation = 0;
   bool _onHover = false;
 
   @override
@@ -80,12 +79,6 @@ class _SideBarItemState extends State<SideBarItem>
                       ? const SizedBox(width: 18)
                       : const SizedBox(),
                   Icon(widget.icon),
-                  // AnimatedIcon(
-                  //   // size: _onHover ? 48 : 36,
-                  //   color: Colors.blue,
-                  //   icon: widget.animIcon,
-                  //   progress: _animationController,
-                  // ),
                   widget.isExpanded
                       ? const SizedBox(width: 8)
                       : const SizedBox(),

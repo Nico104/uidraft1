@@ -92,6 +92,14 @@ class _SubModSideBarState extends State<SubModSideBar> {
                     index: 2,
                     setIndex: widget.setIndex,
                   ),
+                  const SizedBox(height: 18),
+                  SideBarItem(
+                    isExpanded: _isExpanded,
+                    label: 'News',
+                    icon: Icons.edit_notifications,
+                    index: 3,
+                    setIndex: widget.setIndex,
+                  ),
                 ],
               ),
               //Exit

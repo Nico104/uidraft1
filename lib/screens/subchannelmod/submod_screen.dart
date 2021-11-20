@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 
 import 'package:uidraft1/widgets/submod/sidebar/submod_sidebar_widget.dart';
+import 'package:uidraft1/widgets/submod/submod_announcement/submod_announce_write_large_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_data/submod_data_tab_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_posts/submod_post_tab_widget.dart';
 import 'package:uidraft1/widgets/submod/submod_users/submod_user_tab.dart';
@@ -20,10 +21,6 @@ class _SubModState extends State<SubMod> {
   int _selectedIndex = 0;
 
   void setSelectedIndex(int i) {
-    // WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-    //       _selectedIndex = i;
-    //     }));
-    // print(_selectedIndex);
     setState(() {
       _selectedIndex = i;
     });
@@ -86,6 +83,11 @@ Widget getBody(int index, String subchannelname) {
           key: ValueKey<int>(index),
           // color: Colors.yellow,
           child: SubModPostTab(subchannelName: subchannelname));
+    case (3):
+      return Container(
+          key: ValueKey<int>(index),
+          // color: Colors.yellow,
+          child: SubModWriteAnnouncement(subchannelName: subchannelname));
     default:
       return const Center(child: Text("default"));
   }

@@ -25,32 +25,6 @@ class _SubModPostTabState extends State<SubModPostTab> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    // fnSearch.addListener(() {
-    //   if (fnSearch.hasFocus) {
-    //     print("hasFocus");
-    //     if (mounted) {
-    //       if (!_isCollapsed) {
-    //         setState(() {
-    //           _isCollapsed = false;
-    //         });
-    //       }
-    //     }
-    //   } else if (!fnSearch.hasFocus) {
-    //     print("hasNotFocus");
-    //     if (mounted) {
-    //       if (_isCollapsed) {
-    //         setState(() {
-    //           _isCollapsed = true;
-    //         });
-    //       }
-    //     }
-    //   }
-    // });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topCenter,

@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/customIcons/light_outlined/light_outline_notification_icon_icons.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
@@ -259,346 +260,368 @@ class _NavBarLargeState extends State<NavBarLarge> {
                           : Alignment.centerRight,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 5),
-                        child: FutureBuilder(
-                            future: isAuthenticated(),
-                            builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
-                              if (snapshot.data == 200) {
-                                //If User Is Logged in
-                                return FutureBuilder(
-                                    future: fetchMyProfileData(),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Row(
-                                          textDirection: _isLeftHand
-                                              ? TextDirection.rtl
-                                              : TextDirection.ltr,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            //LeftHand Switch
-                                            // widget.leftHand
-                                            //     ? LeftHandSwitcherIcon(
-                                            //         isLeftHand: _isLeftHand,
-                                            //         onPressed: () =>
-                                            //             setState(() {
-                                            //               _isLeftHand =
-                                            //                   !_isLeftHand;
-                                            //             }))
-                                            //     : const SizedBox(),
-                                            // const SizedBox(
-                                            //   width: 18,
-                                            // ),
-                                            //Notifications
-                                            widget.notification
-                                                ? FutureBuilder(
-                                                    future:
-                                                        getMyUnseenNotificationCount(),
-                                                    builder:
-                                                        (BuildContext context,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(32)),
+                            color: Theme.of(context).canvasColor,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: FutureBuilder(
+                                future: isAuthenticated(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.data == 200) {
+                                    //If User Is Logged in
+                                    return FutureBuilder(
+                                        future: fetchMyProfileData(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Row(
+                                              textDirection: _isLeftHand
+                                                  ? TextDirection.rtl
+                                                  : TextDirection.ltr,
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                //LeftHand Switch
+                                                // widget.leftHand
+                                                //     ? LeftHandSwitcherIcon(
+                                                //         isLeftHand: _isLeftHand,
+                                                //         onPressed: () =>
+                                                //             setState(() {
+                                                //               _isLeftHand =
+                                                //                   !_isLeftHand;
+                                                //             }))
+                                                //     : const SizedBox(),
+                                                // const SizedBox(
+                                                //   width: 18,
+                                                // ),
+                                                //Notifications
+                                                widget.notification
+                                                    ? FutureBuilder(
+                                                        future:
+                                                            getMyUnseenNotificationCount(),
+                                                        builder: (BuildContext
+                                                                context,
                                                             AsyncSnapshot
                                                                 snapshot) {
-                                                      if (snapshot.hasData) {
-                                                        return InkWell(
-                                                            splashColor: Colors
-                                                                .transparent,
-                                                            hoverColor: Colors
-                                                                .transparent,
-                                                            highlightColor:
-                                                                Colors
+                                                          if (snapshot
+                                                              .hasData) {
+                                                            return InkWell(
+                                                                splashColor: Colors
                                                                     .transparent,
-                                                            onTap: () {
-                                                              setState(() {
-                                                                if (activeMenu ==
-                                                                    Menu.notification) {
-                                                                  activeMenu =
-                                                                      Menu.none;
-                                                                } else {
-                                                                  activeMenu = Menu
-                                                                      .notification;
-                                                                }
-                                                              });
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .notifications_none_outlined,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .navBarIconColor,
-                                                                  size: 26,
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 2,
-                                                                ),
-                                                                Text(snapshot
-                                                                    .data
-                                                                    .toString())
-                                                              ],
-                                                            ));
-                                                      } else {
-                                                        return const SizedBox();
-                                                      }
-                                                    })
-                                                : const SizedBox(),
-                                            const SizedBox(
-                                              width: 18,
-                                            ),
-                                            //Dark Light Mode Switch
-                                            // widget.theme
-                                            //     ? const DarkModeSwitcherIcon()
-                                            //     : const SizedBox(),
-                                            // const SizedBox(
-                                            //   width: 18,
-                                            // ),
-                                            //CustomFeedSelection
-                                            widget.customFeed
-                                                ? InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      setState(() {
-                                                        if (activeMenu ==
-                                                            Menu.customfeed) {
-                                                          activeMenu =
-                                                              Menu.none;
-                                                        } else {
-                                                          activeMenu =
-                                                              Menu.customfeed;
-                                                        }
-                                                      });
-                                                    },
-                                                    child: Icon(
-                                                      Icons
-                                                          .filter_list_outlined,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .navBarIconColor,
-                                                      size: 30,
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
-                                            const SizedBox(
-                                              width: 18,
-                                            ),
-                                            //Options Menu
-                                            widget.notification
-                                                ? InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      setState(() {
-                                                        if (activeMenu ==
-                                                            Menu.options) {
-                                                          activeMenu =
-                                                              Menu.none;
-                                                        } else {
-                                                          activeMenu =
-                                                              Menu.options;
-                                                        }
-                                                      });
-                                                    },
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.apps_outlined,
+                                                                hoverColor: Colors
+                                                                    .transparent,
+                                                                highlightColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    if (activeMenu ==
+                                                                        Menu.notification) {
+                                                                      activeMenu =
+                                                                          Menu.none;
+                                                                    } else {
+                                                                      activeMenu =
+                                                                          Menu.notification;
+                                                                    }
+                                                                  });
+                                                                },
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      // Icons
+                                                                      //     .notifications_none_outlined,
+                                                                      // Icons
+                                                                      //     .bus_alert,
+                                                                      LightOutlineNotificationIcon
+                                                                          .notification,
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .colorScheme
+                                                                          .navBarIconColor,
+                                                                      size: 24,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 2,
+                                                                    ),
+                                                                    Text(snapshot
+                                                                        .data
+                                                                        .toString())
+                                                                  ],
+                                                                ));
+                                                          } else {
+                                                            return const SizedBox();
+                                                          }
+                                                        })
+                                                    : const SizedBox(),
+                                                const SizedBox(
+                                                  width: 18,
+                                                ),
+                                                //Dark Light Mode Switch
+                                                // widget.theme
+                                                //     ? const DarkModeSwitcherIcon()
+                                                //     : const SizedBox(),
+                                                // const SizedBox(
+                                                //   width: 18,
+                                                // ),
+                                                //CustomFeedSelection
+                                                widget.customFeed
+                                                    ? InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () {
+                                                          setState(() {
+                                                            if (activeMenu ==
+                                                                Menu.customfeed) {
+                                                              activeMenu =
+                                                                  Menu.none;
+                                                            } else {
+                                                              activeMenu = Menu
+                                                                  .customfeed;
+                                                            }
+                                                          });
+                                                        },
+                                                        child: Icon(
+                                                          Icons
+                                                              .filter_list_outlined,
                                                           color: Theme.of(
                                                                   context)
                                                               .colorScheme
                                                               .navBarIconColor,
-                                                          size: 26,
+                                                          size: 30,
                                                         ),
-                                                      ],
-                                                    ))
-                                                : const SizedBox(),
-                                            const SizedBox(width: 32),
-                                            //ProfilePicture
-                                            widget.profile
-                                                ? InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () {
-                                                      setState(() {
-                                                        if (activeMenu ==
-                                                            Menu.menu) {
-                                                          activeMenu =
-                                                              Menu.none;
-                                                        } else {
-                                                          activeMenu =
-                                                              Menu.menu;
-                                                        }
-                                                      });
-                                                    },
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              14.0),
-                                                      child: Image.network(
-                                                        baseURL +
-                                                            snapshot.data[
-                                                                'profilePicturePath'],
-                                                        fit: BoxFit.contain,
-                                                        width: 40,
-                                                        height: 40,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
-                                          ],
-                                        );
-                                      } else {
-                                        return const Text(
-                                            "loading Profile Data...");
-                                      }
-                                    });
-                              } else {
-                                //If User Is NOT logged in
-                                return Row(
-                                  textDirection: _isLeftHand
-                                      ? TextDirection.rtl
-                                      : TextDirection.ltr,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    //LeftHand Switch
-                                    IconButton(
-                                      icon: Icon(
-                                        _isLeftHand
-                                            ? Icons.switch_left
-                                            : Icons.switch_right,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .navBarIconColor,
-                                        size: 24,
-                                      ),
-                                      onPressed: () => setState(() {
-                                        _isLeftHand = !_isLeftHand;
-                                      }),
-                                    ),
-                                    const SizedBox(
-                                      width: 18,
-                                    ),
-                                    //Dark Light Mode Switch
-                                    widget.theme
-                                        ? Consumer<ThemeNotifier>(
-                                            builder: (context, theme, _) =>
-                                                InkWell(
-                                              splashColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () {
-                                                if (theme.getTheme() ==
-                                                    theme.darkTheme) {
-                                                  theme.setLightMode();
-                                                } else {
-                                                  theme.setDarkMode();
-                                                }
-                                              },
-                                              child: Icon(
-                                                Icons.dark_mode_outlined,
+                                                      )
+                                                    : const SizedBox(),
+                                                const SizedBox(
+                                                  width: 18,
+                                                ),
+                                                //Options Menu
+                                                widget.notification
+                                                    ? InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () {
+                                                          setState(() {
+                                                            if (activeMenu ==
+                                                                Menu.options) {
+                                                              activeMenu =
+                                                                  Menu.none;
+                                                            } else {
+                                                              activeMenu =
+                                                                  Menu.options;
+                                                            }
+                                                          });
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .apps_outlined,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .navBarIconColor,
+                                                              size: 26,
+                                                            ),
+                                                          ],
+                                                        ))
+                                                    : const SizedBox(),
+                                                const SizedBox(width: 32),
+                                                //ProfilePicture
+                                                widget.profile
+                                                    ? InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () {
+                                                          setState(() {
+                                                            if (activeMenu ==
+                                                                Menu.menu) {
+                                                              activeMenu =
+                                                                  Menu.none;
+                                                            } else {
+                                                              activeMenu =
+                                                                  Menu.menu;
+                                                            }
+                                                          });
+                                                        },
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      14.0),
+                                                          child: Image.network(
+                                                            baseURL +
+                                                                snapshot.data[
+                                                                    'profilePicturePath'],
+                                                            fit: BoxFit.contain,
+                                                            width: 40,
+                                                            height: 40,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
+                                              ],
+                                            );
+                                          } else {
+                                            return const Text(
+                                                "loading Profile Data...");
+                                          }
+                                        });
+                                  } else {
+                                    //If User Is NOT logged in
+                                    return Row(
+                                      textDirection: _isLeftHand
+                                          ? TextDirection.rtl
+                                          : TextDirection.ltr,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        //LeftHand Switch
+                                        IconButton(
+                                          icon: Icon(
+                                            _isLeftHand
+                                                ? Icons.switch_left
+                                                : Icons.switch_right,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .navBarIconColor,
+                                            size: 24,
+                                          ),
+                                          onPressed: () => setState(() {
+                                            _isLeftHand = !_isLeftHand;
+                                          }),
+                                        ),
+                                        const SizedBox(
+                                          width: 18,
+                                        ),
+                                        //Dark Light Mode Switch
+                                        widget.theme
+                                            ? Consumer<ThemeNotifier>(
+                                                builder: (context, theme, _) =>
+                                                    InkWell(
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  hoverColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onTap: () {
+                                                    if (theme.getTheme() ==
+                                                        theme.darkTheme) {
+                                                      theme.setLightMode();
+                                                    } else {
+                                                      theme.setDarkMode();
+                                                    }
+                                                  },
+                                                  child: Icon(
+                                                    Icons.dark_mode_outlined,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .navBarIconColor,
+                                                    size: 24,
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox(),
+                                        // Consumer<ThemeNotifier>(
+                                        //   builder: (context, theme, _) => Icon(
+                                        //     Icons.dark_mode_outlined,
+                                        //     color: Theme.of(context)
+                                        //         .colorScheme
+                                        //         .navBarIconColor,
+                                        //     size: 24,
+                                        //   ),
+                                        // ),
+                                        const SizedBox(
+                                          width: 18,
+                                        ),
+                                        //Login Button
+                                        OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor:
+                                                Theme.of(context).canvasColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            side: BorderSide(
+                                                width: 2,
                                                 color: Theme.of(context)
                                                     .colorScheme
-                                                    .navBarIconColor,
-                                                size: 24,
-                                              ),
+                                                    .brandColor),
+                                          ),
+                                          onPressed: () => Beamer.of(context)
+                                              .beamToNamed('/login'),
+                                          child: Text(
+                                            'Login',
+                                            style: TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 15,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .brandColor),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        const Text("or"),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        //SignUp Button
+                                        OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor:
+                                                Theme.of(context).canvasColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
                                             ),
-                                          )
-                                        : const SizedBox(),
-                                    // Consumer<ThemeNotifier>(
-                                    //   builder: (context, theme, _) => Icon(
-                                    //     Icons.dark_mode_outlined,
-                                    //     color: Theme.of(context)
-                                    //         .colorScheme
-                                    //         .navBarIconColor,
-                                    //     size: 24,
-                                    //   ),
-                                    // ),
-                                    const SizedBox(
-                                      width: 18,
-                                    ),
-                                    //Login Button
-                                    OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        backgroundColor:
-                                            Theme.of(context).canvasColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
+                                            side: BorderSide(
+                                                width: 2,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .brandColor),
+                                          ),
+                                          onPressed: () => Beamer.of(context)
+                                              .beamToNamed('/signup'),
+                                          child: Text(
+                                            'Sign Up',
+                                            style: TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 15,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .brandColor),
+                                          ),
                                         ),
-                                        side: BorderSide(
-                                            width: 2,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .brandColor),
-                                      ),
-                                      onPressed: () => Beamer.of(context)
-                                          .beamToNamed('/login'),
-                                      child: Text(
-                                        'Login',
-                                        style: TextStyle(
-                                            fontFamily: 'Segoe UI',
-                                            fontSize: 15,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .brandColor),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    const Text("or"),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    //SignUp Button
-                                    OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        backgroundColor:
-                                            Theme.of(context).canvasColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
-                                        side: BorderSide(
-                                            width: 2,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .brandColor),
-                                      ),
-                                      onPressed: () => Beamer.of(context)
-                                          .beamToNamed('/signup'),
-                                      child: Text(
-                                        'Sign Up',
-                                        style: TextStyle(
-                                            fontFamily: 'Segoe UI',
-                                            fontSize: 15,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .brandColor),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }
-                            }),
+                                      ],
+                                    );
+                                  }
+                                }),
+                          ),
+                        ),
                       ),
                     ),
                   ],

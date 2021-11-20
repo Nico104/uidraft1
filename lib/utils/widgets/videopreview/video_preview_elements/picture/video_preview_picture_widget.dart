@@ -23,14 +23,19 @@ class VideoPreviewPicture extends StatelessWidget {
       focusColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () => onTap.call(),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(14.0),
-        child: Image.network(
-          baseURL + picturePath,
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
-          width: width,
-          height: height,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(const Radius.circular(14)),
+            border: Border.all(color: Colors.black, width: 1)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14.0),
+          child: Image.network(
+            baseURL + picturePath,
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            width: width,
+            height: height,
+          ),
         ),
       ),
     );

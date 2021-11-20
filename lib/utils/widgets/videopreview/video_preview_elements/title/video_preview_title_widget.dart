@@ -25,11 +25,12 @@ class VideoPreviewTitleLarge extends StatelessWidget {
             //overflow: TextOverflow.fade,
             //softWrap: false,
             maxLines: 2,
-            style: TextStyle(
+            style: const TextStyle(
                 fontFamily: 'Segoe UI',
                 fontSize: 17,
-                color: Theme.of(context).colorScheme.videoPreviewTextColor,
-                letterSpacing: 1),
+                // color: Theme.of(context).colorScheme.videoPreviewTextColor,
+                letterSpacing: 1,
+                fontWeight: FontWeight.bold),
           ),
         ),
       ],
