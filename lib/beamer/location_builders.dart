@@ -3,6 +3,7 @@ import 'package:beamer/beamer.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:uidraft1/admin%20tools/create_tag.dart';
 import 'package:uidraft1/error/error_feed_widget.dart';
+import 'package:uidraft1/justtest/wordsearch_test.dart';
 import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/auth/auth_screen.dart';
 import 'package:uidraft1/screens/auth/change_password_screen.dart';
@@ -185,13 +186,10 @@ final simpleLocationBuilder = SimpleLocationBuilder(
       }
     },
 
-    // 'SliderXlider': (context, state) => BeamPage(
-    //       key: const ValueKey('SliderXlider'),
-    //       title: 'SliderXlider',
-    //       child: SliderXlider(
-    //         title: 'yo',
-    //       ),
-    //     ),
+    'wordsearch': (context, state) => BeamPage(
+        key: const ValueKey('SliderXlider'),
+        title: 'SliderXlider',
+        child: const WordSearchTest()),
 
     // 'auth': (context, state) => BeamPage(
     //       key: const ValueKey('auth'),
