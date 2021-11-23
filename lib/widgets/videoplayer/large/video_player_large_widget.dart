@@ -60,7 +60,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   //Menu vars
   bool _isFullScreen = false;
   bool _showMenu = false;
-  bool _showQuality = false;
 
   //Description
   bool isExpanded = false;
@@ -249,7 +248,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
         _initializePlay(
             streamQualityURL[activeQualityStream]!, _controller.value.position);
         _showMenu = false;
-        _showQuality = false;
       });
     }
   }
@@ -340,6 +338,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                   //     postData: widget.postData,
                                   //   ),
                                   // ),
+
                                   videoPlayerKeyboardListener(
                                     VideoPlayerNormalV2(
                                       activeQualityStream: activeQualityStream,
@@ -1050,7 +1049,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                               // ),
                               VideoPlayerWordSearchLarge(
                                   postId: widget.postData['postId'],
-                                  seekToSecond: (id) => seekToSecond.call(id)),
+                                  seekToSecond: (id) => seekToSecond.call(id),
+                                  pos: pos),
                               const SizedBox(height: 35),
                               VideoPlayerVideosLargeScreen(
                                   setSkipToId: (id) => setSkipToId.call(id)),
@@ -1155,7 +1155,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                     if (mounted) {
                       setState(() {
                         _showMenu = false;
-                        _showQuality = false;
                         print("_showMenu set to false");
                       });
                     }
@@ -1182,7 +1181,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                     if (mounted) {
                       setState(() {
                         _showMenu = false;
-                        _showQuality = false;
                         print("_showMenu set to false");
                       });
                     }

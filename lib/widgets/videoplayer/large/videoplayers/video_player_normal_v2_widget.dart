@@ -46,35 +46,8 @@ class _VideoPlayerNormalV2State extends State<VideoPlayerNormalV2> {
   // late bool _firtTimeExternAccess = false;
 
   //Menu Vars
-  // bool _isFullScreen = false;
   bool _showMenu = false;
   bool _showQuality = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //   // _firtTimeExternAccess = widget.firstTimeExternAccess;
-    //   // preventDefault();
-    //   // js.JsObject.fromBrowserObject(js.context.)
-    //   // @JS('JSON.stringify');
-    //   // js.context.callMethod('alert', ["alerrtest"]);
-    //   // window.addEventListener("resize", (e) {
-    //   //   // print("ss");
-    //   //   // widget.handleEscape.call();
-    //   //   // EasyDebounce.debounce(
-    //   //   //     'fullscreenbuild-debouncer', // <-- An ID for this particular debouncer
-    //   //   //     const Duration(seconds: 2), // <-- The debounce duration
-    //   //   //     () {
-    //   //   //   print("ss");
-
-    //   //   // });
-    //   //   // widget.handleEscape.call(); // <-- The target method
-    //   //   // print("ss");
-    //   // });
-    // });
-  }
 
   @override
   Widget build(BuildContext context) {

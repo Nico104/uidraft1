@@ -6,11 +6,16 @@ import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
 
 class VideoPlayerWordSearchLarge extends StatefulWidget {
   const VideoPlayerWordSearchLarge(
-      {Key? key, required this.postId, required this.seekToSecond})
+      {Key? key,
+      required this.postId,
+      required this.seekToSecond,
+      required this.pos})
       : super(key: key);
 
   final Function(double) seekToSecond;
   final int postId;
+
+  final Duration pos;
 
   @override
   _VideoPlayerWordSearchLargeState createState() =>
@@ -129,7 +134,8 @@ class _VideoPlayerWordSearchLargeState
                           child: AllWordsWrap(
                               words: snapshot.data!,
                               seekToSecond: (id) =>
-                                  widget.seekToSecond.call(id)),
+                                  widget.seekToSecond.call(id),
+                              pos: widget.pos),
                         );
 
                         // ListView.builder(
@@ -163,21 +169,54 @@ class AllWordsWrap extends StatelessWidget {
     Key? key,
     required this.words,
     required this.seekToSecond,
+    required this.pos,
   }) : super(key: key);
 
   final List<Map<String, dynamic>> words;
   final Function(double) seekToSecond;
 
+  final Duration pos;
+
   @override
   Widget build(BuildContext context) {
-    // for (int i = 0; i < words.length - 1; i++) {
-    //   if (double.parse(words.elementAt(i)['end']) !=
-    //       double.parse(words.elementAt(i + 1)['start'])) {
-    //     words.elementAt(i)['word'] = words.elementAt(i)['word'] + '\n';
-    //   } else {
-    //     words.elementAt(i)['word'] = words.elementAt(i)['word'] + ' ';
-    //   }
-    // }
+    if (words.elementAt(0)['word'] == 'the') {
+      words.removeAt(0);
+    }
+    if (words.last['word'] == 'the') {
+      words.removeLast();
+    }
+
+    // List<String> wordList = [];
+
+    for (int i = 0; i < words.length - 1; i++) {
+      if (double.parse(words.elementAt(i)['end']) !=
+          double.parse(words.elementAt(i + 1)['start'])) {
+        if ((double.parse(words.elementAt(i + 1)['start']) -
+                double.parse(words.elementAt(i)['end'])) >
+            1) {
+          words.elementAt(i)['word'] = words.elementAt(i)['word'] +
+              ' ' +
+              // (double.parse(words.elementAt(i + 1)['start']) -
+              //         double.parse(words.elementAt(i)['end']))
+              //     .toStringAsFixed(2) +
+              '\n\n';
+        } else if ((double.parse(words.elementAt(i + 1)['start']) -
+                double.parse(words.elementAt(i)['end'])) >
+            0.2) {
+          words.elementAt(i)['word'] = words.elementAt(i)['word'] +
+              ' ' +
+              // (double.parse(words.elementAt(i + 1)['start']) -
+              //         double.parse(words.elementAt(i)['end']))
+              //     .toStringAsFixed(2) +
+              '\n';
+        } else {
+          words.elementAt(i)['word'] = words.elementAt(i)['word'] + '...';
+        }
+      } else {
+        words.elementAt(i)['word'] = words.elementAt(i)['word'] + ' ';
+      }
+      // wordList.add(words.elementAt(i)['word']);
+    }
 
     return SingleChildScrollView(
         // child: Wrap(spacing: 5, runSpacing: 5, children: [
@@ -185,18 +224,29 @@ class AllWordsWrap extends StatelessWidget {
         //     WordWidget(seekToSecond: seekToSecond, word: word),
         // ]),
 
-        child: Text.rich(
-      TextSpan(
-        // default text style
-        children: <TextSpan>[
-          for (var word in words)
-            TextSpan(
-              text: word['word'] + ' ',
-              style: const TextStyle(fontSize: 18),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () => seekToSecond.call(double.parse(word['start'])),
-            )
-        ],
+        child: Align(
+      alignment: Alignment.topLeft,
+      child: Text.rich(
+        TextSpan(
+          // default text style
+          children: <TextSpan>[
+            // for (var word in words)
+            for (var word in words)
+              TextSpan(
+                text: word['word'],
+                style: TextStyle(
+                  fontSize: 16,
+                  color:
+                      (pos.inMilliseconds / 1000 > double.parse(word['start'])
+                          ? Colors.red
+                          : Colors.white70),
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap =
+                      () => seekToSecond.call(double.parse(word['start'])),
+              )
+          ],
+        ),
       ),
     ));
     // return ListView.builder(
