@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
+enum SharingType { copy, link }
+
 Future<void> incrementPostViewsByOne(int postId) async {
   final response =
       await http.patch(Uri.parse(baseURL + 'post/incrementPostViews/$postId'));
@@ -216,7 +218,15 @@ Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
 }
 
 //Create Sharing analytics
-Future<void> createSharingAnalyticPost(int postId) async {
+Future<void> createSharingAnalyticPost(
+    int postId, SharingType sharingtype) async {
+  int sharetypeint;
+  if (sharingtype == SharingType.copy) {
+    sharetypeint = 0;
+  } else {
+    sharetypeint = 1;
+  }
+
   if (await isAuthenticated() == 200) {
     try {
       print("auth wt");
@@ -230,6 +240,7 @@ Future<void> createSharingAnalyticPost(int postId) async {
           },
           body: jsonEncode(<String, String>{
             'postId': '$postId',
+            "sharingtype": "$sharetypeint"
           }));
       // print(response.body);
       // print(response.statusCode);
@@ -240,14 +251,15 @@ Future<void> createSharingAnalyticPost(int postId) async {
   } else {
     try {
       // print("no auth wt " + postId.toString());
-      final response =
-          await http.post(Uri.parse(baseURL + 'post/createPostSharingAnalytic'),
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-              body: jsonEncode(<String, String>{
-                'postId': '$postId',
-              }));
+      final response = await http.post(
+          Uri.parse(baseURL + 'post/createPostSharingAnalytic'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'postId': '$postId',
+            "sharingtype": "$sharetypeint"
+          }));
       // print(response.body);
       // print(response.statusCode);
     } catch (e) {

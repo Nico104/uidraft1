@@ -14,6 +14,7 @@ import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_normal_v2_widget.dart';
+import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_word_search_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
 import 'package:readmore/readmore.dart';
@@ -106,6 +107,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
     } else {
       print("skipId is null");
     }
+  }
+
+  void seekToSecond(double second) {
+    setState(() {
+      _controller.seekTo(Duration(milliseconds: (second * 1000).floor()));
+    });
   }
 
   void _onFullScreenChange(ev) {
@@ -580,7 +587,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                             //Create Sharing DB Eintrag
                                                             createSharingAnalyticPost(
                                                                 widget.postData[
-                                                                    'postId']);
+                                                                    'postId'],
+                                                                SharingType
+                                                                    .copy);
                                                           },
                                                           child: const Icon(
                                                               Icons.copy,
@@ -600,7 +609,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                             //Create Sharing DB Eintrag
                                                             createSharingAnalyticPost(
                                                                 widget.postData[
-                                                                    'postId']);
+                                                                    'postId'],
+                                                                SharingType
+                                                                    .link);
                                                           }),
                                                           child: const Icon(
                                                               Icons.share,
@@ -1030,9 +1041,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                     : Expanded(
                         flex: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 100),
-                          child: VideoPlayerVideosLargeScreen(
-                              setSkipToId: (id) => setSkipToId.call(id)),
+                          padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
+                          child: Column(
+                            children: [
+                              // Container(
+                              //   color: Colors.amberAccent,
+                              //   height: 200,
+                              // ),
+                              VideoPlayerWordSearchLarge(
+                                  postId: widget.postData['postId'],
+                                  seekToSecond: (id) => seekToSecond.call(id)),
+                              const SizedBox(height: 35),
+                              VideoPlayerVideosLargeScreen(
+                                  setSkipToId: (id) => setSkipToId.call(id)),
+                            ],
+                          ),
                         ),
                       ),
                 _isFullScreen ? const SizedBox() : const SizedBox(width: 20),
