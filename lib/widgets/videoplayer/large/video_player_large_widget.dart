@@ -1043,10 +1043,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                           padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
                           child: Column(
                             children: [
-                              // Container(
-                              //   color: Colors.amberAccent,
-                              //   height: 200,
-                              // ),
                               VideoPlayerWordSearchLarge(
                                   postId: widget.postData['postId'],
                                   seekToSecond: (id) => seekToSecond.call(id),

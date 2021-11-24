@@ -26,6 +26,56 @@ class _VideoPlayerWordSearchLargeState
     extends State<VideoPlayerWordSearchLarge> {
   bool _showWords = false;
 
+  late List<Map<String, dynamic>> words = [];
+
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      fetchAllWords(widget.postId).then((value) {
+        words = value;
+        if (words.elementAt(0)['word'] == 'the') {
+          words.removeAt(0);
+        }
+        if (words.last['word'] == 'the') {
+          words.removeLast();
+        }
+        for (int i = 0; i < words.length - 1; i++) {
+          if (double.parse(words.elementAt(i)['end']) !=
+              double.parse(words.elementAt(i + 1)['start'])) {
+            if ((double.parse(words.elementAt(i + 1)['start']) -
+                    double.parse(words.elementAt(i)['end'])) >
+                1) {
+              words.elementAt(i)['word'] = words.elementAt(i)['word'] +
+                  ' ' +
+                  // (double.parse(words.elementAt(i + 1)['start']) -
+                  //         double.parse(words.elementAt(i)['end']))
+                  //     .toStringAsFixed(2) +
+                  '\n\n';
+            } else if ((double.parse(words.elementAt(i + 1)['start']) -
+                    double.parse(words.elementAt(i)['end'])) >
+                0.2) {
+              words.elementAt(i)['word'] = words.elementAt(i)['word'] +
+                  ' ' +
+                  // (double.parse(words.elementAt(i + 1)['start']) -
+                  //         double.parse(words.elementAt(i)['end']))
+                  //     .toStringAsFixed(2) +
+                  '\n';
+            } else {
+              words.elementAt(i)['word'] = words.elementAt(i)['word'] + '...';
+            }
+          } else {
+            words.elementAt(i)['word'] = words.elementAt(i)['word'] + ' ';
+          }
+        }
+        setState(() {});
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -101,8 +151,6 @@ class _VideoPlayerWordSearchLargeState
                   ),
                 ),
               ),
-              // ignore: prefer_const_constructors
-              // SizedBox(width: 3),
               IconButton(
                   onPressed: () => setState(() {
                         _showWords = !_showWords;
@@ -112,50 +160,14 @@ class _VideoPlayerWordSearchLargeState
           ),
           _showWords
               ? Expanded(
-                  child: FutureBuilder(
-                  // future: fetchAllWords(widget.postId),
-                  future: fetchAllWords(55),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.isNotEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          //? You can get the exaxt same effect by making a standalone widget
-                          // child: Builder(builder: (BuildContext context) {
-                          //   return SingleChildScrollView(
-                          //     child:
-                          //         Wrap(spacing: 10, runSpacing: 10, children: [
-                          //       for (var word in snapshot.data!)
-                          //         Text(word['word']),
-                          //     ]),
-                          //   );
-                          // }),
-                          child: AllWordsWrap(
-                              words: snapshot.data!,
-                              seekToSecond: (id) =>
-                                  widget.seekToSecond.call(id),
-                              pos: widget.pos),
-                        );
-
-                        // ListView.builder(
-                        //   itemCount: snapshot.data!.length,
-                        //   itemBuilder: (BuildContext context, int index) {
-                        //     return Wrap(spacing: 10, runSpacing: 10, children: [
-                        //       for (var word in snapshot.data!)
-                        //         Text(word['word']),
-                        //     ]);
-                        //   },
-                        // );
-                      } else {
-                        return const Center(child: Text("no words available"));
-                      }
-                    } else {
-                      return CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.brandColor,
-                      );
-                    }
-                  },
+                  child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: AllWordsWrap(
+                    words: words,
+                    seekToSecond: (id) => widget.seekToSecond.call(id),
+                    pos: widget.pos,
+                    scrollController: _scrollController,
+                  ),
                 ))
               : const SizedBox()
         ],
@@ -170,6 +182,7 @@ class AllWordsWrap extends StatelessWidget {
     required this.words,
     required this.seekToSecond,
     required this.pos,
+    required this.scrollController,
   }) : super(key: key);
 
   final List<Map<String, dynamic>> words;
@@ -177,105 +190,68 @@ class AllWordsWrap extends StatelessWidget {
 
   final Duration pos;
 
+  final ScrollController scrollController;
+
   @override
   Widget build(BuildContext context) {
-    if (words.elementAt(0)['word'] == 'the') {
-      words.removeAt(0);
-    }
-    if (words.last['word'] == 'the') {
-      words.removeLast();
-    }
-
-    // List<String> wordList = [];
-
-    for (int i = 0; i < words.length - 1; i++) {
-      if (double.parse(words.elementAt(i)['end']) !=
-          double.parse(words.elementAt(i + 1)['start'])) {
-        if ((double.parse(words.elementAt(i + 1)['start']) -
-                double.parse(words.elementAt(i)['end'])) >
-            1) {
-          words.elementAt(i)['word'] = words.elementAt(i)['word'] +
-              ' ' +
-              // (double.parse(words.elementAt(i + 1)['start']) -
-              //         double.parse(words.elementAt(i)['end']))
-              //     .toStringAsFixed(2) +
-              '\n\n';
-        } else if ((double.parse(words.elementAt(i + 1)['start']) -
-                double.parse(words.elementAt(i)['end'])) >
-            0.2) {
-          words.elementAt(i)['word'] = words.elementAt(i)['word'] +
-              ' ' +
-              // (double.parse(words.elementAt(i + 1)['start']) -
-              //         double.parse(words.elementAt(i)['end']))
-              //     .toStringAsFixed(2) +
-              '\n';
-        } else {
-          words.elementAt(i)['word'] = words.elementAt(i)['word'] + '...';
-        }
-      } else {
-        words.elementAt(i)['word'] = words.elementAt(i)['word'] + ' ';
-      }
-      // wordList.add(words.elementAt(i)['word']);
-    }
-
     return SingleChildScrollView(
-        // child: Wrap(spacing: 5, runSpacing: 5, children: [
-        //   for (var word in words)
-        //     WordWidget(seekToSecond: seekToSecond, word: word),
-        // ]),
-
-        child: Align(
-      alignment: Alignment.topLeft,
-      child: Text.rich(
-        TextSpan(
-          // default text style
-          children: <TextSpan>[
-            // for (var word in words)
-            for (var word in words)
-              TextSpan(
-                text: word['word'],
-                style: TextStyle(
-                  fontSize: 16,
-                  color:
-                      (pos.inMilliseconds / 1000 > double.parse(word['start'])
-                          ? Colors.red
-                          : Colors.white70),
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap =
-                      () => seekToSecond.call(double.parse(word['start'])),
-              )
-          ],
+      controller: scrollController,
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Text.rich(
+          TextSpan(
+            // default text style
+            children: <TextSpan>[
+              for (var word in words) getWord(word, pos, seekToSecond),
+            ],
+            // children: getWords(words, pos, seekToSecond, scrollController)
+            //     as List<InlineSpan>),
+          ),
         ),
+        // child: getWords(words, pos, seekToSecond),
       ),
-    ));
-    // return ListView.builder(
-    //   shrinkWrap: true,
-    //   itemCount: words.length,
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return Text(index.toString());
-    //   },
-    // );
+    );
   }
 }
 
-class WordWidget extends StatelessWidget {
-  const WordWidget({
-    Key? key,
-    required this.seekToSecond,
-    required this.word,
-  }) : super(key: key);
-
-  final Function(double p1) seekToSecond;
-  final Map<String, dynamic> word;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () => seekToSecond.call(double.parse(word['start'])),
-        child: Text(
-          word['word'],
-          style: const TextStyle(fontSize: 16),
-        ));
-  }
+TextSpan getWord(
+    Map<String, dynamic> word, Duration pos, Function(double) seekToSecond) {
+  // scrollController.jumpTo(scrollController.position.)
+  return TextSpan(
+    text: word['word'],
+    style: (pos.inMilliseconds / 1000 > double.parse(word['start']))
+        ? const TextStyle(fontSize: 16, color: Colors.purple)
+        : const TextStyle(fontSize: 16, color: Colors.white),
+    recognizer: TapGestureRecognizer()
+      ..onTap = () => seekToSecond.call(double.parse(word['start'])),
+  );
 }
+
+// Text getWords(List<Map<String, dynamic>> words, Duration pos,
+//     Function(double) seekToSecond) {
+//   // List<GlobalKey> keys = List.generate(words.length, (i) => GlobalKey());
+//   List<Key> keys = List.generate(words.length, (i) => Key(i.toString()));
+//   // List<TextSpan> wordList = [];
+//   // for (int i = 0; i < words.length; i++) {
+//   //   wordList.add(getWord(words.elementAt(i), pos, seekToSecond));
+//   // }
+
+//   Text allWords = Text.rich(
+//     TextSpan(
+//       children: Iterable.generate(words.length, (i) => i)
+//           .expand((i) => [
+//                 WidgetSpan(
+//                   child: SizedBox.fromSize(
+//                     size: Size.zero,
+//                     key: keys[i],
+//                   ),
+//                 ),
+//                 getWord(words.elementAt(i), pos, seekToSecond)
+//               ])
+//           .toList(),
+//     ),
+//   );
+
+//   // return wordList;
+//   return allWords;
+// }

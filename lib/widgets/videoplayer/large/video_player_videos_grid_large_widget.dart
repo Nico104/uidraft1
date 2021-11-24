@@ -135,27 +135,24 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideosLargeScreen> {
                   future: isAuthenticated(),
                   builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                     if (snapshot.hasData) {
-                      return Expanded(
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          childAspectRatio: (600 / 180),
-                          controller: _scrollController,
-                          scrollDirection: Axis.vertical,
-                          // Create a grid with 2 columns. If you change the scrollDirection to
-                          // horizontal, this produces 2 rows.
-                          crossAxisCount: 1,
-                          // Generate 100 widgets that display their index in the List.
-                          mainAxisSpacing: 25.0,
-                          // crossAxisSpacing: 40.0,
-                          children: dataList.map((value) {
-                            print("In Preview");
-                            return VideoPlayerVideoPreview(
-                              postId: value,
-                              isAuth: snapshot.data == 200,
-                            );
-                            // return (Text(value.toString()));
-                          }).toList(),
-                        ),
+                      return GridView.count(
+                        shrinkWrap: true,
+                        childAspectRatio: (600 / 180),
+                        controller: _scrollController,
+                        scrollDirection: Axis.vertical,
+                        // Create a grid with 2 columns. If you change the scrollDirection to
+                        // horizontal, this produces 2 rows.
+                        crossAxisCount: 1,
+                        // Generate 100 widgets that display their index in the List.
+                        mainAxisSpacing: 25.0,
+                        // crossAxisSpacing: 40.0,
+                        children: dataList.map((value) {
+                          return VideoPlayerVideoPreview(
+                            postId: value,
+                            isAuth: snapshot.data == 200,
+                          );
+                          // return (Text(value.toString()));
+                        }).toList(),
                       );
                     } else {
                       return const CircularProgressIndicator();
