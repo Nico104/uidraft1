@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:uidraft1/utils/auth/authentication_global.dart';
+import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
+import 'package:uidraft1/uiwidgets/textfields/textformfield_password_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'dart:convert';
@@ -61,7 +61,6 @@ class LoginForm extends StatefulWidget {
 //LoginForm
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  bool _obscureTextPasswor1 = true;
 
   final _usernameTextController = TextEditingController();
   final _userpasswordTextController = TextEditingController();
@@ -97,13 +96,10 @@ class _LoginFormState extends State<LoginForm> {
           'access_token', json.decode(response.body)["access_token"]);
       print("Acess Token: ${prefs.getString('access_token')}");
 
-      // Navigator.of(context).pushNamed('/');
-      // Beamer.of(context).beamToNamed('/');
       return true;
     }
 
     return false;
-    //Navigator.of(context).pushNamed('/welcome');
   }
 
   @override
@@ -135,168 +131,47 @@ class _LoginFormState extends State<LoginForm> {
                 height: 50,
               ),
               //Username
-              KeyboardListener(
-                focusNode: fnUsername,
-                onKeyEvent: (event) {
-                  if (event is KeyDownEvent) {
-                    if (event.logicalKey.keyLabel == 'Tab') {
-                      print("Tab pressed");
-                      fnPassword.requestFocus();
+              SizedBox(
+                width: 350,
+                child: TextFormFieldNormal(
+                  autofocus: true,
+                  controller: _usernameTextController,
+                  fontSize: 15,
+                  labelText: 'Username...',
+                  errorText: errorText,
+                  onFieldSubmitted: (_) => submit(),
+                  validator: (value) {
+                    //check if username exists
+                    if (value == null || value.isEmpty) {
+                      return 'You may enter your username, sir';
                     }
-                  }
-                },
-                child: SizedBox(
-                  width: 350,
-                  child: TextFormField(
-                    autofocus: true,
-                    controller: _usernameTextController,
-                    style: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Segoe UI',
-                        letterSpacing: 0.3),
-                    cursorColor:
-                        Theme.of(context).colorScheme.textInputCursorColor,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.brandColor,
-                            width: 0.5),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.brandColor,
-                            width: 2),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      filled: true,
-                      fillColor: Theme.of(context).canvasColor,
-                      labelText: 'Username...',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Segoe UI',
-                          fontSize: 15,
-                          color:
-                              Theme.of(context).colorScheme.searchBarTextColor),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.only(
-                          bottom: 15, top: 15, left: 15, right: 10),
-                      //Error
-                      errorBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.red, width: 1),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.red, width: 3),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      errorStyle: const TextStyle(
-                          fontSize: 14.0, fontFamily: 'Segoe UI'),
-                      errorText: errorText,
-                    ),
-                    validator: (value) {
-                      //check if username exists
-                      if (value == null || value.isEmpty) {
-                        return 'You may enter your username, sir';
-                      }
-                      return null;
-                    },
-                    onFieldSubmitted: (_) => submit(),
-                  ),
+                    return null;
+                  },
+                  focusNode: fnUsername,
+                  onTab: () => fnPassword.requestFocus(),
                 ),
               ),
               const SizedBox(
                 height: 40,
               ),
-
-              //TODO TextFieldPassword des + capslock von signup
               //Password
-              KeyboardListener(
-                focusNode: fnPassword,
-                onKeyEvent: (event) {
-                  if (event is KeyDownEvent) {
-                    if (event.logicalKey.keyLabel == 'Tab') {
-                      print("Tab2 pressed");
-                      fnUsername.requestFocus();
+              SizedBox(
+                width: 350,
+                child: TextFormFieldPassword(
+                  autofocus: true,
+                  controller: _userpasswordTextController,
+                  fontSize: 15,
+                  labelText: 'Password...',
+                  errorText: errorText,
+                  onFieldSubmitted: (_) => submit(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'please enter a password';
                     }
-                  }
-                },
-                child: SizedBox(
-                  width: 350,
-                  child: TextFormField(
-                    controller: _userpasswordTextController,
-                    obscureText: _obscureTextPasswor1,
-                    style: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Segoe UI',
-                        letterSpacing: 0.3),
-                    cursorColor:
-                        Theme.of(context).colorScheme.textInputCursorColor,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.brandColor,
-                            width: 0.5),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.brandColor,
-                            width: 2),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      filled: true,
-                      fillColor: Theme.of(context).canvasColor,
-                      labelText: 'Password...',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Segoe UI',
-                          fontSize: 15,
-                          color:
-                              Theme.of(context).colorScheme.searchBarTextColor),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.only(
-                          bottom: 15, top: 15, left: 15, right: 10),
-                      //Error
-                      errorBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.red, width: 1),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.red, width: 3),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      errorStyle: const TextStyle(
-                          fontSize: 14.0, fontFamily: 'Segoe UI'),
-                      errorText: errorText,
-
-                      //Visibility Icon
-                      suffixIcon: IconButton(
-                        hoverColor: Colors.transparent,
-                        onPressed: () => setState(() {
-                          _obscureTextPasswor1 = !_obscureTextPasswor1;
-                        }),
-                        icon: _obscureTextPasswor1
-                            ? Icon(Icons.visibility_outlined,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .navBarIconColor)
-                            : Icon(Icons.visibility_off_outlined,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .navBarIconColor),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'please enter a password';
-                      }
-                      return null;
-                    },
-                    onFieldSubmitted: (_) => submit(),
-                  ),
+                    return null;
+                  },
+                  focusNode: fnPassword,
+                  onTab: () => fnUsername.requestFocus(),
                 ),
               ),
               const SizedBox(
