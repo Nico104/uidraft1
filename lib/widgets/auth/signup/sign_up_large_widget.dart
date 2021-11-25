@@ -98,7 +98,8 @@ class _SignUpLargeState extends State<SignUpLarge> {
               SizedBox(
                 width: 350,
                 child: TextFormFieldCheck(
-                  checking: isUsernameAvailable(_usernameTextController.text),
+                  // checking: isUsernameAvailable(_usernameTextController.text),
+                  checking: (check) => isUsernameAvailable.call(check),
                   controller: _usernameTextController,
                   focusNode: fnUsername,
                   fontSize: 15,
@@ -114,109 +115,6 @@ class _SignUpLargeState extends State<SignUpLarge> {
                   onFieldSubmitted: (_) => submit(),
                   onTab: () => fnUseremail.requestFocus(),
                 ),
-                //TODO Check if CHECKING works properly with server and delete commented part
-                // child: KeyboardListener(
-                //   focusNode: fnUsername,
-                //   onKeyEvent: (event) {
-                //     if (event is KeyDownEvent) {
-                //       if (event.logicalKey.keyLabel == 'Tab') {
-                //         print("Tab pressed");
-                //         fnUseremail.requestFocus();
-                //       }
-                //     }
-                //   },
-                //   child: StatefulBuilder(
-                //     builder: (BuildContext context, setUsernameState) {
-                //       return TextFormField(
-                //         autofocus: widget.username.isEmpty ? true : false,
-                //         controller: _usernameTextController,
-                //         style: const TextStyle(
-                //             fontSize: 15,
-                //             fontFamily: 'Segoe UI',
-                //             letterSpacing: 0.3),
-                //         cursorColor:
-                //             Theme.of(context).colorScheme.textInputCursorColor,
-                //         decoration: InputDecoration(
-                //           enabledBorder: OutlineInputBorder(
-                //             borderSide: BorderSide(
-                //                 color: Theme.of(context).colorScheme.brandColor,
-                //                 width: 0.5),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           focusedBorder: OutlineInputBorder(
-                //             borderSide: BorderSide(
-                //                 color: Theme.of(context).colorScheme.brandColor,
-                //                 width: 2),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           filled: true,
-                //           fillColor: Theme.of(context).canvasColor,
-                //           labelText: 'Username...',
-                //           labelStyle: TextStyle(
-                //               fontFamily: 'Segoe UI',
-                //               fontSize: 15,
-                //               color: Theme.of(context)
-                //                   .colorScheme
-                //                   .searchBarTextColor),
-                //           isDense: true,
-                //           contentPadding: const EdgeInsets.only(
-                //               bottom: 15, top: 15, left: 15, right: 10),
-                //           //Error
-                //           errorBorder: OutlineInputBorder(
-                //             borderSide:
-                //                 const BorderSide(color: Colors.red, width: 1),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           focusedErrorBorder: OutlineInputBorder(
-                //             borderSide:
-                //                 const BorderSide(color: Colors.red, width: 3),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           errorStyle: const TextStyle(
-                //               fontSize: 14.0, fontFamily: 'Segoe UI'),
-                //           suffixIcon: _usernameTextController.text.isNotEmpty
-                //               ? FutureBuilder(
-                //                   future: isUsernameAvailable(
-                //                       _usernameTextController.text),
-                //                   builder: (BuildContext context,
-                //                       AsyncSnapshot<bool> snapshot) {
-                //                     if (snapshot.hasData) {
-                //                       if (snapshot.data!) {
-                //                         return const Icon(Icons.check);
-                //                       } else {
-                //                         return const Icon(Icons.cancel);
-                //                       }
-                //                     } else {
-                //                       return Transform.scale(
-                //                           scale: 0.5,
-                //                           child:
-                //                               const CircularProgressIndicator());
-                //                     }
-                //                   },
-                //                 )
-                //               : null,
-                //         ),
-                //         validator: (value) {
-                //           //Check if username is free
-                //           if (value == null || value.isEmpty) {
-                //             return 'You may choose a username, sir';
-                //           }
-                //           return null;
-                //         },
-                //         onFieldSubmitted: (_) => submit(),
-                //         onChanged: (_) {
-                //           EasyDebounce.debounce(
-                //               'subchannelNameTextField-debouncer', // <-- An ID for this particular debouncer
-                //               const Duration(
-                //                   milliseconds:
-                //                       500), // <-- The debounce duration
-                //               () => setUsernameState(
-                //                   () {})); // <-- The target method
-                //         },
-                //       );
-                //     },
-                //   ),
-                // ),
               ),
               const SizedBox(
                 height: 40,
@@ -225,7 +123,7 @@ class _SignUpLargeState extends State<SignUpLarge> {
               SizedBox(
                 width: 350,
                 child: TextFormFieldCheck(
-                  checking: isUseremailAvailable(_useremailTextController.text),
+                  checking: (check) => isUseremailAvailable.call(check),
                   controller: _useremailTextController,
                   focusNode: fnUseremail,
                   fontSize: 15,
@@ -247,119 +145,6 @@ class _SignUpLargeState extends State<SignUpLarge> {
                   onFieldSubmitted: (_) => submit(),
                   onTab: () => fnUserpassword.requestFocus(),
                 ),
-                //TODO Check if CHECKING works properly with server and delete commented part
-                // child: KeyboardListener(
-                //   focusNode: fnUseremail,
-                //   onKeyEvent: (event) {
-                //     if (event is KeyDownEvent) {
-                //       if (event.logicalKey.keyLabel == 'Tab') {
-                //         print("Tab pressed");
-                //         fnUserpassword.requestFocus();
-                //       }
-                //     }
-                //   },
-                //   child: StatefulBuilder(
-                //     builder: (BuildContext context, setUseremailState) {
-                //       return TextFormField(
-                //         autofocus: widget.useremail.isEmpty ? true : false,
-                //         controller: _useremailTextController,
-                //         keyboardType: TextInputType.emailAddress,
-                //         style: const TextStyle(
-                //             fontSize: 15,
-                //             fontFamily: 'Segoe UI',
-                //             letterSpacing: 0.3),
-                //         cursorColor:
-                //             Theme.of(context).colorScheme.textInputCursorColor,
-                //         decoration: InputDecoration(
-                //           enabledBorder: OutlineInputBorder(
-                //             borderSide: BorderSide(
-                //                 color: Theme.of(context).colorScheme.brandColor,
-                //                 width: 0.5),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           focusedBorder: OutlineInputBorder(
-                //             borderSide: BorderSide(
-                //                 color: Theme.of(context).colorScheme.brandColor,
-                //                 width: 2),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           filled: true,
-                //           fillColor: Theme.of(context).canvasColor,
-                //           // hintText: 'Email...',
-                //           // hintStyle: TextStyle(
-                //           //     fontFamily: 'Segoe UI',
-                //           //     fontSize: 15,
-                //           //     color:
-                //           //         Theme.of(context).colorScheme.searchBarTextColor),
-                //           labelText: 'Email...',
-                //           labelStyle: TextStyle(
-                //               fontFamily: 'Segoe UI',
-                //               fontSize: 15,
-                //               color: Theme.of(context)
-                //                   .colorScheme
-                //                   .searchBarTextColor),
-                //           isDense: true,
-                //           contentPadding: const EdgeInsets.only(
-                //               bottom: 15, top: 15, left: 15, right: 10),
-                //           //Error
-                //           errorBorder: OutlineInputBorder(
-                //             borderSide:
-                //                 const BorderSide(color: Colors.red, width: 1),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           focusedErrorBorder: OutlineInputBorder(
-                //             borderSide:
-                //                 const BorderSide(color: Colors.red, width: 3),
-                //             borderRadius: BorderRadius.circular(30.0),
-                //           ),
-                //           errorStyle: const TextStyle(
-                //               fontSize: 14.0, fontFamily: 'Segoe UI'),
-                //           suffixIcon: _useremailTextController.text.isNotEmpty
-                //               ? FutureBuilder(
-                //                   future: isUseremailAvailable(
-                //                       _useremailTextController.text),
-                //                   builder: (BuildContext context,
-                //                       AsyncSnapshot<bool> snapshot) {
-                //                     if (snapshot.hasData) {
-                //                       if (snapshot.data!) {
-                //                         return const Icon(Icons.check);
-                //                       } else {
-                //                         return const Icon(Icons.cancel);
-                //                       }
-                //                     } else {
-                //                       return const CircularProgressIndicator();
-                //                     }
-                //                   },
-                //                 )
-                //               : null,
-                //         ),
-                //         validator: (value) {
-                //           //check if email is already used
-                //           Pattern pattern =
-                //               r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                //               r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                //               r"{0,253}[a-zA-Z0-9])?)*$";
-                //           RegExp regex = RegExp(pattern.toString());
-                //           if (!regex.hasMatch(value!)) {
-                //             return 'Enter a valid email address, sir';
-                //           } else {
-                //             return null;
-                //           }
-                //         },
-                //         onFieldSubmitted: (_) => submit(),
-                //         onChanged: (_) {
-                //           EasyDebounce.debounce(
-                //               'subchannelNameTextField-debouncer', // <-- An ID for this particular debouncer
-                //               const Duration(
-                //                   milliseconds:
-                //                       500), // <-- The debounce duration
-                //               () => setUseremailState(
-                //                   () {})); // <-- The target method
-                //         },
-                //       );
-                //     },
-                //   ),
-                // ),
               ),
               const SizedBox(
                 height: 40,

@@ -30,7 +30,8 @@ class TextFormFieldCheck extends StatefulWidget {
   final FocusNode focusNode;
   final Function()? onTab;
 
-  final Future<bool> checking;
+  // final Future<bool> checking;
+  final Future<bool> Function(String) checking;
 
   @override
   _TextFormFieldCheckState createState() => _TextFormFieldCheckState();
@@ -39,6 +40,7 @@ class TextFormFieldCheck extends StatefulWidget {
 class _TextFormFieldCheckState extends State<TextFormFieldCheck> {
   @override
   Widget build(BuildContext context) {
+    print("Text: " + widget.controller.text);
     return TextFormFieldTabHandler(
       focusNode: widget.focusNode,
       onTab: () => widget.onTab!.call(),
@@ -89,7 +91,7 @@ class _TextFormFieldCheckState extends State<TextFormFieldCheck> {
           errorText: widget.errorText,
           suffixIcon: widget.controller.text.isNotEmpty
               ? FutureBuilder(
-                  future: widget.checking,
+                  future: widget.checking.call(widget.controller.text),
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     if (snapshot.hasData) {

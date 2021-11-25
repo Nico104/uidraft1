@@ -169,6 +169,7 @@ Future<bool> createPendingAccount(String usermail) async {
 }
 
 Future<bool> isUsernameAvailable(String username) async {
+  print("Usenmae:" + username);
   var url = Uri.parse(baseURL + 'user/isUsernameAvailable/$username');
   final response = await http.get(
     url,

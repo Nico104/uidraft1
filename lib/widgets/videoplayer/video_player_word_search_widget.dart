@@ -28,7 +28,7 @@ class _VideoPlayerWordSearchLargeState
 
   late List<Map<String, dynamic>> words = [];
 
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -74,6 +74,31 @@ class _VideoPlayerWordSearchLargeState
         setState(() {});
       });
     });
+  }
+
+  void handleScrollButtonPressed(ScrollPressMethod method) {
+    switch (method) {
+      case ScrollPressMethod.smallUp:
+        _scrollController.animateTo(_scrollController.position.pixels - 250,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.fastOutSlowIn);
+        break;
+      case ScrollPressMethod.smallDown:
+        _scrollController.animateTo(_scrollController.position.pixels + 250,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.fastOutSlowIn);
+        break;
+      case ScrollPressMethod.start:
+        _scrollController.animateTo(_scrollController.position.minScrollExtent,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.fastOutSlowIn);
+        break;
+      case ScrollPressMethod.end:
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.fastOutSlowIn);
+        break;
+    }
   }
 
   @override
@@ -162,11 +187,54 @@ class _VideoPlayerWordSearchLargeState
               ? Expanded(
                   child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: AllWordsWrap(
-                    words: words,
-                    seekToSecond: (id) => widget.seekToSecond.call(id),
-                    pos: widget.pos,
-                    scrollController: _scrollController,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: AllWordsWrap(
+                          words: words,
+                          seekToSecond: (id) => widget.seekToSecond.call(id),
+                          pos: widget.pos,
+                          scrollController: _scrollController,
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const SizedBox(height: 10),
+                              InkWell(
+                                  onTap: () => handleScrollButtonPressed(
+                                      ScrollPressMethod.smallUp),
+                                  // onDoubleTap: () => handleScrollButtonPressed(
+                                  //     ScrollPressMethod.start),
+                                  onLongPress: () => handleScrollButtonPressed(
+                                      ScrollPressMethod.start),
+                                  child: const Icon(Icons.arrow_upward)),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                  onTap: () => handleScrollButtonPressed(
+                                      ScrollPressMethod.smallDown),
+                                  // onDoubleTap: () => handleScrollButtonPressed(
+                                  //     ScrollPressMethod.end),
+                                  onLongPress: () => handleScrollButtonPressed(
+                                      ScrollPressMethod.end),
+                                  child: const Icon(Icons.arrow_downward)),
+                              const SizedBox(height: 10)
+                            ],
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ))
               : const SizedBox()
