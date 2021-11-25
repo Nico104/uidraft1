@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/widgets/keyhandler/textformfield_tab_handler_widget.dart';
 
 class TextFormFieldPassword extends StatefulWidget {
   const TextFormFieldPassword({
@@ -66,27 +67,22 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
     }
   }
 
+  void checkAndToggleCapsLock() {
+    if (HardwareKeyboard.instance.lockModesEnabled
+            .contains(KeyboardLockMode.capsLock) !=
+        _capsLockOn) {
+      setState(() {
+        _capsLockOn = !_capsLockOn;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return KeyboardListener(
+    return TextFormFieldTabHandler(
       focusNode: widget.focusNode,
-      onKeyEvent: (event) {
-        if (event is KeyDownEvent) {
-          if (event.logicalKey.keyLabel == 'Tab') {
-            print("Tab2 pressed");
-            if (widget.onTab != null) {
-              widget.onTab!.call();
-            }
-          }
-          if (HardwareKeyboard.instance.lockModesEnabled
-                  .contains(KeyboardLockMode.capsLock) !=
-              _capsLockOn) {
-            setState(() {
-              _capsLockOn = !_capsLockOn;
-            });
-          }
-        }
-      },
+      onTab: () => widget.onTab!.call(),
+      onCapsLock: () => checkAndToggleCapsLock.call(),
       child: Row(
         children: [
           Flexible(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/widgets/keyhandler/textformfield_tab_handler_widget.dart';
 
 class TextFormFieldNormal extends StatelessWidget {
   const TextFormFieldNormal(
@@ -29,18 +30,9 @@ class TextFormFieldNormal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return KeyboardListener(
+    return TextFormFieldTabHandler(
       focusNode: focusNode,
-      onKeyEvent: (event) {
-        if (event is KeyDownEvent) {
-          if (event.logicalKey.keyLabel == 'Tab') {
-            print("Tab pressed");
-            if (onTab != null) {
-              onTab!.call();
-            }
-          }
-        }
-      },
+      onTab: () => onTab!.call(),
       child: TextFormField(
         autofocus: autofocus,
         controller: controller,

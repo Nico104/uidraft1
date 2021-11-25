@@ -2,6 +2,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/widgets/keyhandler/textformfield_tab_handler_widget.dart';
 
 class TextFormFieldCheck extends StatefulWidget {
   const TextFormFieldCheck({
@@ -38,18 +39,9 @@ class TextFormFieldCheck extends StatefulWidget {
 class _TextFormFieldCheckState extends State<TextFormFieldCheck> {
   @override
   Widget build(BuildContext context) {
-    return KeyboardListener(
+    return TextFormFieldTabHandler(
       focusNode: widget.focusNode,
-      onKeyEvent: (event) {
-        if (event is KeyDownEvent) {
-          if (event.logicalKey.keyLabel == 'Tab') {
-            print("Tab pressed");
-            if (widget.onTab != null) {
-              widget.onTab!.call();
-            }
-          }
-        }
-      },
+      onTab: () => widget.onTab!.call(),
       child: TextFormField(
         autofocus: widget.autofocus,
         controller: widget.controller,
