@@ -1049,8 +1049,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                   seekToSecond: (id) => seekToSecond.call(id),
                                   pos: pos),
                               const SizedBox(height: 35),
-                              VideoPlayerVideosLargeScreen(
-                                  setSkipToId: (id) => setSkipToId.call(id)),
+                              //Todo wieder eini tean fir video recommendations
+                              // VideoPlayerVideosLargeScreen(
+                              //     setSkipToId: (id) => setSkipToId.call(id)),
                             ],
                           ),
                         ),

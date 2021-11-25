@@ -1,3 +1,4 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -198,42 +199,42 @@ class _VideoPlayerWordSearchLargeState
                           scrollController: _scrollController,
                         ),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const SizedBox(height: 10),
-                              InkWell(
-                                  onTap: () => handleScrollButtonPressed(
-                                      ScrollPressMethod.smallUp),
-                                  // onDoubleTap: () => handleScrollButtonPressed(
-                                  //     ScrollPressMethod.start),
-                                  onLongPress: () => handleScrollButtonPressed(
-                                      ScrollPressMethod.start),
-                                  child: const Icon(Icons.arrow_upward)),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              InkWell(
-                                  onTap: () => handleScrollButtonPressed(
-                                      ScrollPressMethod.smallDown),
-                                  // onDoubleTap: () => handleScrollButtonPressed(
-                                  //     ScrollPressMethod.end),
-                                  onLongPress: () => handleScrollButtonPressed(
-                                      ScrollPressMethod.end),
-                                  child: const Icon(Icons.arrow_downward)),
-                              const SizedBox(height: 10)
-                            ],
-                          )
-                        ],
-                      )
+                      // Column(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   crossAxisAlignment: CrossAxisAlignment.end,
+                      //   children: [
+                      //     Column(
+                      //       mainAxisAlignment: MainAxisAlignment.start,
+                      //       crossAxisAlignment: CrossAxisAlignment.end,
+                      //       children: [
+                      //         const SizedBox(height: 10),
+                      //         InkWell(
+                      //             onTap: () => handleScrollButtonPressed(
+                      //                 ScrollPressMethod.smallUp),
+                      //             // onDoubleTap: () => handleScrollButtonPressed(
+                      //             //     ScrollPressMethod.start),
+                      //             onLongPress: () => handleScrollButtonPressed(
+                      //                 ScrollPressMethod.start),
+                      //             child: const Icon(Icons.arrow_upward)),
+                      //       ],
+                      //     ),
+                      //     Column(
+                      //       mainAxisAlignment: MainAxisAlignment.end,
+                      //       crossAxisAlignment: CrossAxisAlignment.end,
+                      //       children: [
+                      //         InkWell(
+                      //             onTap: () => handleScrollButtonPressed(
+                      //                 ScrollPressMethod.smallDown),
+                      //             // onDoubleTap: () => handleScrollButtonPressed(
+                      //             //     ScrollPressMethod.end),
+                      //             onLongPress: () => handleScrollButtonPressed(
+                      //                 ScrollPressMethod.end),
+                      //             child: const Icon(Icons.arrow_downward)),
+                      //         const SizedBox(height: 10)
+                      //       ],
+                      //     )
+                      //   ],
+                      // )
                     ],
                   ),
                 ))
@@ -244,7 +245,7 @@ class _VideoPlayerWordSearchLargeState
   }
 }
 
-class AllWordsWrap extends StatelessWidget {
+class AllWordsWrap extends StatefulWidget {
   const AllWordsWrap({
     Key? key,
     required this.words,
@@ -261,22 +262,71 @@ class AllWordsWrap extends StatelessWidget {
   final ScrollController scrollController;
 
   @override
+  State<AllWordsWrap> createState() => _AllWordsWrapState();
+}
+
+class _AllWordsWrapState extends State<AllWordsWrap> {
+  GlobalKey key = GlobalKey();
+  bool _tempDeactivateAutoScroll = false;
+
+  @override
+  @mustCallSuper
+  @protected
+  void didUpdateWidget(covariant oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (key.currentContext != null && !_tempDeactivateAutoScroll) {
+      print("LEsgo");
+      Scrollable.ensureVisible(key.currentContext!, alignment: 0.3);
+    } else {
+      print("´Current Context is null");
+    }
+  }
+
+  void temporaryDeactivateAutoScroll() {
+    if (mounted) {
+      if (!_tempDeactivateAutoScroll) {
+        setState(() {
+          _tempDeactivateAutoScroll = true;
+        });
+      }
+    }
+    EasyDebounce.debounce(
+        'temporaryDeactivateAutoScroll', // <-- An ID for this particular debouncer
+        const Duration(seconds: 3), // <-- The debounce duration
+        () {
+      if (mounted) {
+        setState(() {
+          _tempDeactivateAutoScroll = false;
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Text.rich(
-          TextSpan(
-            // default text style
-            children: <TextSpan>[
-              for (var word in words) getWord(word, pos, seekToSecond),
+    return Listener(
+      onPointerSignal: (pointerSignal) {
+        if (pointerSignal is PointerScrollEvent) {
+          temporaryDeactivateAutoScroll();
+          print('Scrolled');
+        }
+      },
+      child: SingleChildScrollView(
+        controller: widget.scrollController,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Column(
+            children: [
+              Text.rich(
+                TextSpan(
+                    // default text style
+                    children: getWords(widget.words, widget.pos,
+                        widget.seekToSecond, widget.scrollController, key)),
+              ),
             ],
-            // children: getWords(words, pos, seekToSecond, scrollController)
-            //     as List<InlineSpan>),
           ),
+          // child: getWords(words, pos, seekToSecond),
         ),
-        // child: getWords(words, pos, seekToSecond),
       ),
     );
   }
@@ -284,7 +334,6 @@ class AllWordsWrap extends StatelessWidget {
 
 TextSpan getWord(
     Map<String, dynamic> word, Duration pos, Function(double) seekToSecond) {
-  // scrollController.jumpTo(scrollController.position.)
   return TextSpan(
     text: word['word'],
     style: (pos.inMilliseconds / 1000 > double.parse(word['start']))
@@ -295,31 +344,29 @@ TextSpan getWord(
   );
 }
 
-// Text getWords(List<Map<String, dynamic>> words, Duration pos,
-//     Function(double) seekToSecond) {
-//   // List<GlobalKey> keys = List.generate(words.length, (i) => GlobalKey());
-//   List<Key> keys = List.generate(words.length, (i) => Key(i.toString()));
-//   // List<TextSpan> wordList = [];
-//   // for (int i = 0; i < words.length; i++) {
-//   //   wordList.add(getWord(words.elementAt(i), pos, seekToSecond));
-//   // }
+List<InlineSpan> getWords(
+    List<Map<String, dynamic>> words,
+    Duration pos,
+    Function(double) seekToSecond,
+    ScrollController scrollController,
+    GlobalKey key) {
+  bool _keyGiven = false;
+  print("generate list");
+  List<InlineSpan> wordList = [];
+  for (int i = 0; i < words.length; i++) {
+    if (pos.inMilliseconds / 1000 < double.parse(words.elementAt(i)['start']) &&
+        !_keyGiven) {
+      wordList.add(WidgetSpan(
+        child: SizedBox.fromSize(
+          size: Size.zero,
+          key: key,
+        ),
+      ));
+      _keyGiven = true;
+      print("Key given to: " + words.elementAt(i)['word']);
+    }
+    wordList.add(getWord(words.elementAt(i), pos, seekToSecond));
+  }
 
-//   Text allWords = Text.rich(
-//     TextSpan(
-//       children: Iterable.generate(words.length, (i) => i)
-//           .expand((i) => [
-//                 WidgetSpan(
-//                   child: SizedBox.fromSize(
-//                     size: Size.zero,
-//                     key: keys[i],
-//                   ),
-//                 ),
-//                 getWord(words.elementAt(i), pos, seekToSecond)
-//               ])
-//           .toList(),
-//     ),
-//   );
-
-//   // return wordList;
-//   return allWords;
-// }
+  return wordList;
+}
