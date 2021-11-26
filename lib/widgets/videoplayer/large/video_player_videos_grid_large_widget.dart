@@ -110,6 +110,8 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideosLargeScreen> {
     // Prevent default event handler
     html.document.onContextMenu.listen((event) => event.preventDefault());
     //RightClicktest
+
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {}
   }
 
   @override

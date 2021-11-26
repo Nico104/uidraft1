@@ -17,10 +17,6 @@ import 'package:uidraft1/widgets/notification/notificationList/notification_list
 import 'navbar_menu_large_widget.dart';
 import 'options/options_grid_widget.dart';
 
-//! Test GlobalKey for tap menu
-// GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
-
-// class NavBarLarge extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLarge extends StatefulWidget {
   NavBarLarge({
     Key? key,
@@ -129,35 +125,6 @@ class _NavBarLargeState extends State<NavBarLarge> {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    Align(
-                      alignment: _isLeftHand
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      //Logo
-                      child: InkWell(
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          print("taped");
-                          // html.window.location.reload();
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //       builder: (context) => const FeedScreen()),
-                          // );
-                          Beamer.of(context).beamToNamed('/feed');
-                        },
-                        child: Text(
-                          // "LOGO",
-                          "LIGMA",
-                          style: TextStyle(
-                              fontFamily: 'Segoe UI Black',
-                              fontSize: 28,
-                              color: Theme.of(context).colorScheme.brandColor),
-                        ),
-                      ),
-                    ),
                     //SearchBar
                     Align(
                       alignment: Alignment.center,
@@ -621,6 +588,31 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                   }
                                 }),
                           ),
+                        ),
+                      ),
+                    ),
+                    //LOGO
+                    Align(
+                      alignment: _isLeftHand
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      //Logo
+                      child: InkWell(
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          print("taped");
+                          Beamer.of(context).beamToNamed('/feed');
+                        },
+                        child: Text(
+                          // "LOGO",
+                          "LIGMA",
+                          style: TextStyle(
+                              fontFamily: 'Segoe UI Black',
+                              fontSize: 28,
+                              color: Theme.of(context).colorScheme.brandColor),
                         ),
                       ),
                     ),

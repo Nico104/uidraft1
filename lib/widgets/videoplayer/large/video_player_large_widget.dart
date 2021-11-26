@@ -14,7 +14,7 @@ import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_normal_v2_widget.dart';
-import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_word_search_widget.dart';
+import 'package:uidraft1/widgets/videoplayer/video_player_word_search_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
 import 'package:readmore/readmore.dart';
@@ -111,6 +111,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   void seekToSecond(double second) {
     setState(() {
       _controller.seekTo(Duration(milliseconds: (second * 1000).floor()));
+      _firtTimeExternAccess = false;
     });
   }
 
@@ -1048,8 +1049,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                   seekToSecond: (id) => seekToSecond.call(id),
                                   pos: pos),
                               const SizedBox(height: 35),
-                              VideoPlayerVideosLargeScreen(
-                                  setSkipToId: (id) => setSkipToId.call(id)),
+                              //Todo wieder eini tean fir video recommendations
+                              // VideoPlayerVideosLargeScreen(
+                              //     setSkipToId: (id) => setSkipToId.call(id)),
                             ],
                           ),
                         ),
