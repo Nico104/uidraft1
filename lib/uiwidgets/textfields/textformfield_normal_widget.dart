@@ -80,7 +80,9 @@ class TextFormFieldNormal extends StatelessWidget {
           errorText: errorText,
         ),
         validator: (value) => validator!.call(value),
-        onFieldSubmitted: (_) => onFieldSubmitted!.call(_),
+        onFieldSubmitted: onFieldSubmitted != null
+            ? (_) => onFieldSubmitted!.call(_)
+            : (_) {},
       ),
     );
   }
