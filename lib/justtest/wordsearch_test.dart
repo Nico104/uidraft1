@@ -1,3 +1,4 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
@@ -10,10 +11,6 @@ class WordSearchTest extends StatefulWidget {
 }
 
 class _WordSearchTestState extends State<WordSearchTest> {
-  // double _he = 100;
-  bool _showWords = false;
-  double _opacity = 0;
-
   double _widthfactor = 0.8;
   double _padding = 0;
 
@@ -23,6 +20,9 @@ class _WordSearchTestState extends State<WordSearchTest> {
 
   double _borderRadius = 50;
 
+  final Curve _curve = Curves.fastOutSlowIn;
+  final Duration _duration = const Duration(milliseconds: 180);
+
   void initiateAnimation() {
     setState(() {
       if (_widthfactor == 1) {
@@ -31,7 +31,7 @@ class _WordSearchTestState extends State<WordSearchTest> {
         _scriptHeight = 60;
         _borderRadius = 50;
         _scriptWidthfactor = 0.17;
-        Future.delayed(const Duration(milliseconds: 50), () {
+        Future.delayed(_duration ~/ 4, () {
           setState(() {
             _widthfactor = 0.8;
             _padding = 0;
@@ -46,9 +46,9 @@ class _WordSearchTestState extends State<WordSearchTest> {
         // _scriptHeight = 400;
         // _borderRadius = 12;
         // _scriptWidthfactor = 1;
-        Future.delayed(const Duration(milliseconds: 50), () {
+        Future.delayed(_duration ~/ 4, () {
           setState(() {
-            _scriptHeight = 400;
+            _scriptHeight = 700;
             _borderRadius = 12;
             _scriptWidthfactor = 1;
           });
@@ -111,8 +111,8 @@ class _WordSearchTestState extends State<WordSearchTest> {
                           Align(
                             alignment: Alignment.topRight,
                             child: AnimatedPadding(
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 200),
+                              curve: _curve,
+                              duration: _duration,
                               padding: EdgeInsets.only(top: _padding),
                               child: InkWell(
                                 focusColor: Colors.transparent,
@@ -121,33 +121,33 @@ class _WordSearchTestState extends State<WordSearchTest> {
                                 splashColor: Colors.transparent,
                                 onTap: () => initiateAnimation.call(),
                                 child: AnimatedContainer(
-                                  curve: Curves.fastOutSlowIn,
-                                  duration: const Duration(milliseconds: 200),
+                                  curve: _curve,
+                                  duration: _duration,
                                   width:
                                       constraints.maxWidth * _scriptWidthfactor,
                                   height: _scriptHeight,
-                                  // decoration: BoxDecoration(
-                                  //     color: Colors.blue,
-                                  //     borderRadius:
-                                  //         BorderRadius.circular(_borderRadius)),
                                   decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white.withOpacity(0.1),
-                                        offset: Offset(-6.0, -6.0),
-                                        blurRadius: 16.0,
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.4),
-                                        offset: Offset(6.0, 6.0),
-                                        blurRadius: 16.0,
-                                      ),
-                                    ],
-                                    // color: Color(0xFF292D32),
-                                    color: Theme.of(context).canvasColor,
-                                    borderRadius:
-                                        BorderRadius.circular(_borderRadius),
-                                  ),
+                                      color: Colors.blue,
+                                      borderRadius:
+                                          BorderRadius.circular(_borderRadius)),
+                                  // decoration: BoxDecoration(
+                                  //   boxShadow: [
+                                  //     BoxShadow(
+                                  //       color: Colors.white.withOpacity(0.1),
+                                  //       offset: Offset(-6.0, -6.0),
+                                  //       blurRadius: 16.0,
+                                  //     ),
+                                  //     BoxShadow(
+                                  //       color: Colors.black.withOpacity(0.4),
+                                  //       offset: Offset(6.0, 6.0),
+                                  //       blurRadius: 16.0,
+                                  //     ),
+                                  //   ],
+                                  //   // color: Color(0xFF292D32),
+                                  //   color: Theme.of(context).canvasColor,
+                                  //   borderRadius:
+                                  //       BorderRadius.circular(_borderRadius),
+                                  // ),
                                 ),
                               ),
                             ),
@@ -161,8 +161,8 @@ class _WordSearchTestState extends State<WordSearchTest> {
                                   AnimatedContainer(
                                     color: Colors.green,
                                     // alignment: Alignment.centerLeft,
-                                    duration: const Duration(milliseconds: 200),
-                                    curve: Curves.fastOutSlowIn,
+                                    duration: _duration,
+                                    curve: _curve,
                                     width: constraints.maxWidth * _widthfactor,
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
+///Icon to show and toggle Lefthand mode
+///takes in a bool for [isLeftHand] as the current set LeftHandMode setting
+///takes in a void returning Function for [onPressed] and executes it when the Icon is pressed
 class LeftHandSwitcherIcon extends StatelessWidget {
   const LeftHandSwitcherIcon(
       {Key? key,

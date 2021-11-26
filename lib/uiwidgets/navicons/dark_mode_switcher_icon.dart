@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/theme/theme_notifier.dart';
 
+///Icon which toggles the application theme on Tap
+///takes in a Double for [iconSize] and sized the Icon accrodingly
 class DarkModeSwitcherIcon extends StatelessWidget {
   const DarkModeSwitcherIcon({
     Key? key,

@@ -7,8 +7,8 @@ final ThemeData constDarkTheme = ThemeData(
   dividerColor: Colors.black12,
   // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
   //     .copyWith(secondary: Colors.white, brightness: Brightness.dark),
-  // canvasColor: const Color(0xFF020304),
-  canvasColor: const Color(0xFF292D32),
+  canvasColor: const Color(0xFF020304),
+  // canvasColor: const Color(0xFF292D32),
   appBarTheme: const AppBarTheme(backgroundColor: Colors.yellow, elevation: 0),
   scaffoldBackgroundColor: const Color(0xFF020304),
 );
