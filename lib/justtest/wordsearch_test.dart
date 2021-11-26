@@ -63,7 +63,36 @@ class _WordSearchTestState extends State<WordSearchTest> {
         child: Row(
       children: [
         Flexible(
-            flex: 5,
+            flex: 1,
+            child: Container(
+              color: Colors.transparent,
+            )),
+        Flexible(
+          flex: 3,
+          child: Container(
+            // width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.1),
+                  offset: Offset(-6.0, -6.0),
+                  blurRadius: 16.0,
+                ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.4),
+                  offset: Offset(6.0, 6.0),
+                  blurRadius: 16.0,
+                ),
+              ],
+              // color: Color(0xFF292D32),
+              color: Theme.of(context).canvasColor,
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          ),
+        ),
+        Flexible(
+            flex: 1,
             child: Container(
               color: Colors.transparent,
             )),
@@ -86,6 +115,10 @@ class _WordSearchTestState extends State<WordSearchTest> {
                               duration: const Duration(milliseconds: 200),
                               padding: EdgeInsets.only(top: _padding),
                               child: InkWell(
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
                                 onTap: () => initiateAnimation.call(),
                                 child: AnimatedContainer(
                                   curve: Curves.fastOutSlowIn,
@@ -93,10 +126,28 @@ class _WordSearchTestState extends State<WordSearchTest> {
                                   width:
                                       constraints.maxWidth * _scriptWidthfactor,
                                   height: _scriptHeight,
+                                  // decoration: BoxDecoration(
+                                  //     color: Colors.blue,
+                                  //     borderRadius:
+                                  //         BorderRadius.circular(_borderRadius)),
                                   decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius:
-                                          BorderRadius.circular(_borderRadius)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.white.withOpacity(0.1),
+                                        offset: Offset(-6.0, -6.0),
+                                        blurRadius: 16.0,
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.4),
+                                        offset: Offset(6.0, 6.0),
+                                        blurRadius: 16.0,
+                                      ),
+                                    ],
+                                    // color: Color(0xFF292D32),
+                                    color: Theme.of(context).canvasColor,
+                                    borderRadius:
+                                        BorderRadius.circular(_borderRadius),
+                                  ),
                                 ),
                               ),
                             ),
