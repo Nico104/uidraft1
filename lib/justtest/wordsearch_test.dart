@@ -26,17 +26,33 @@ class _WordSearchTestState extends State<WordSearchTest> {
   void initiateAnimation() {
     setState(() {
       if (_widthfactor == 1) {
-        _widthfactor = 0.8;
-        _scriptWidthfactor = 0.17;
-        _padding = 0;
+        // _widthfactor = 0.8;
+        // _padding = 0;
         _scriptHeight = 60;
         _borderRadius = 50;
+        _scriptWidthfactor = 0.17;
+        Future.delayed(const Duration(milliseconds: 50), () {
+          setState(() {
+            _widthfactor = 0.8;
+            _padding = 0;
+            // _scriptHeight = 60;
+            // _borderRadius = 50;
+            // _scriptWidthfactor = 0.17;
+          });
+        });
       } else {
         _widthfactor = 1;
-        _scriptWidthfactor = 1;
         _padding = 100;
-        _scriptHeight = 400;
-        _borderRadius = 12;
+        // _scriptHeight = 400;
+        // _borderRadius = 12;
+        // _scriptWidthfactor = 1;
+        Future.delayed(const Duration(milliseconds: 50), () {
+          setState(() {
+            _scriptHeight = 400;
+            _borderRadius = 12;
+            _scriptWidthfactor = 1;
+          });
+        });
       }
     });
   }
