@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 class WordSearchTest extends StatefulWidget {
@@ -13,142 +14,65 @@ class _WordSearchTestState extends State<WordSearchTest> {
   bool _showWords = false;
   double _opacity = 0;
 
+  double _widthfactor = 0.7;
+
   @override
   Widget build(BuildContext context) {
     return Material(
         child: Row(
       children: [
         Flexible(
-            flex: 6,
+            flex: 5,
             child: Container(
               color: Colors.transparent,
             )),
         Flexible(
-            flex: 3,
+            flex: 4,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.fastOutSlowIn,
-                  height: _showWords ? 400 : 60,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    color: Colors.blue,
-                  ),
-                  child: Column(
+                padding: const EdgeInsets.all(16.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Stack(
+                    // alignment: Alignment.topCenter,
                     children: [
-                      //TextFormfield
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextFormField(
-                                autofocus: true,
-                                // controller: _usernameTextController,
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    fontFamily: 'Segoe UI',
-                                    letterSpacing: 0.3),
-                                cursorColor: Theme.of(context)
-                                    .colorScheme
-                                    .textInputCursorColor,
-                                decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .brandColor,
-                                        width: 0.5),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .brandColor,
-                                        width: 2),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  filled: true,
-                                  fillColor: Theme.of(context).canvasColor,
-                                  labelText: 'Username...',
-                                  labelStyle: TextStyle(
-                                      fontFamily: 'Segoe UI',
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .searchBarTextColor),
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.only(
-                                      bottom: 15, top: 15, left: 15, right: 10),
-                                  //Error
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Colors.red, width: 1),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Colors.red, width: 3),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  errorStyle: const TextStyle(
-                                      fontSize: 14.0, fontFamily: 'Segoe UI'),
-                                ),
-                                validator: (value) {
-                                  //check if username exists
-                                  if (value == null || value.isEmpty) {
-                                    return 'You may enter your username, sir';
-                                  }
-                                  return null;
-                                },
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _widthfactor = 0.9;
+                            });
+                          },
+                          child: Container(
+                            height: 300,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: AnimatedSize(
+                          duration: const Duration(milliseconds: 400),
+                          child: FractionallySizedBox(
+                            widthFactor: _widthfactor,
+                            child: Container(
+                              color: Colors.green,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormFieldNormal(
+                                    controller: TextEditingController(),
+                                    labelText: 'test',
+                                    fontSize: 14,
+                                    focusNode: FocusNode()),
                               ),
                             ),
                           ),
-                          // ignore: prefer_const_constructors
-                          // SizedBox(width: 3),
-                          IconButton(
-                              onPressed: () => setState(() {
-                                    _showWords = !_showWords;
-                                  }),
-                              icon: const Icon(Icons.architecture_rounded))
-                        ],
+                        ),
                       ),
-                      _showWords
-                          ? Expanded(
-                              child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 300),
-                              opacity: _showWords ? 1 : 0,
-                              child: Wrap(
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    color: Colors.green,
-                                  ),
-                                  Container(
-                                    height: 40,
-                                    color: Colors.yellow,
-                                  ),
-                                  Container(
-                                    height: 40,
-                                    color: Colors.red,
-                                  ),
-                                  Container(
-                                    height: 40,
-                                    color: Colors.orange,
-                                  ),
-                                ],
-                              ),
-                            ))
-                          : const SizedBox()
                     ],
                   ),
-                ),
-              ),
-            )),
+                ))),
         Flexible(
             flex: 1,
             child: Container(
