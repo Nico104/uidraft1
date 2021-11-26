@@ -1,9 +1,22 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/widgets/keyhandler/textformfield_tab_handler_widget.dart';
 
+/// Return a rounded TextFormField with a suffix checkmark depending on the passed Future
+/// and being themed and decorated accordingly
+/// Requires a TextEditingController for [controller],
+/// a String for [labelText]. Will be shown as hint and eventually animate inside the topLeft border
+/// a Double for [fontSize]. Will size all Text accordingly
+/// a FocusNode() for [focusNode]. Is needed so other TextFormFields can Tab to this TextFormField
+/// a Function which takes a Sting and return a Future<bool> for [checkign], on true the suffix checkmark will be a check,
+/// on false it will be a cancel icon
+///
+/// [errorText] takes in a String to show a custom errorText
+/// [onFieldSubmitted] is called when the Enter-Key is pressed while the TextFormField is focused
+/// [validator] is called when a Parent Form widget is validated
+/// [autofocus] takes in a bool and automatically requests Focus accordingly on Widget build
+/// [onTab] is called when the Tabulator Key is pressed while the TextFormField is focused
 class TextFormFieldCheck extends StatefulWidget {
   const TextFormFieldCheck({
     Key? key,
@@ -40,7 +53,6 @@ class TextFormFieldCheck extends StatefulWidget {
 class _TextFormFieldCheckState extends State<TextFormFieldCheck> {
   @override
   Widget build(BuildContext context) {
-    print("Text: " + widget.controller.text);
     return TextFormFieldTabHandler(
       focusNode: widget.focusNode,
       onTab: () => widget.onTab!.call(),

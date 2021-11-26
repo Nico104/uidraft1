@@ -3,6 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/widgets/keyhandler/textformfield_tab_handler_widget.dart';
 
+/// Return a rounded TextFormField with an obscure Text option, which is default on,
+/// a CapsLock on Warning
+/// and being themed and decorated accordingly
+/// Requires a TextEditingController for [controller],
+/// a String for [labelText]. Will be shown as hint and eventually animate inside the topLeft border
+/// a Double for [fontSize]. Will size all Text accordingly
+/// a FocusNode() for [focusNode]. Is needed so other TextFormFields can Tab to this TextFormField
+///
+/// [errorText] takes in a String to show a custom errorText
+/// [onFieldSubmitted] is called when the Enter-Key is pressed while the TextFormField is focused
+/// [validator] is called when a Parent Form widget is validated
+/// [autofocus] takes in a bool and automatically requests Focus accordingly on Widget build
+/// [onTab] is called when the Tabulator Key is pressed while the TextFormField is focused
 class TextFormFieldPassword extends StatefulWidget {
   const TextFormFieldPassword({
     Key? key,
@@ -39,6 +52,8 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
   @override
   void initState() {
     super.initState();
+
+    ///Initially check if CapsLock is on or off
     if (HardwareKeyboard.instance.lockModesEnabled
             .contains(KeyboardLockMode.capsLock) !=
         _capsLockOn) {
@@ -46,6 +61,8 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
         _capsLockOn = !_capsLockOn;
       });
     }
+
+    ///Call [_onFocusChange] on every focus change the [focusNode] experiences
     widget.focusNode.addListener(_onFocusChange);
   }
 
@@ -55,6 +72,7 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
     super.dispose();
   }
 
+  ///Chekcs if CapsLock is on or off and updates the TextFormField accordingly
   void _onFocusChange() {
     if (widget.focusNode.hasFocus) {
       if (HardwareKeyboard.instance.lockModesEnabled
@@ -136,7 +154,7 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
                     fontFamily: 'Segoe UI'),
                 errorText: widget.errorText,
 
-                //Visibility Icon
+                //Obscure Password Icon
                 suffixIcon: IconButton(
                   hoverColor: Colors.transparent,
                   onPressed: () => setState(() {
