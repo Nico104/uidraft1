@@ -2,9 +2,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
-import 'package:uidraft1/widgets/videoplayer/wordsearch/word_search_bar_widget.dart';
 
 class VideoPlayerWordSearchLarge extends StatefulWidget {
   const VideoPlayerWordSearchLarge(
@@ -26,12 +24,9 @@ class VideoPlayerWordSearchLarge extends StatefulWidget {
 
 class _VideoPlayerWordSearchLargeState
     extends State<VideoPlayerWordSearchLarge> {
-  bool _showWords = false;
-
   late List<Map<String, dynamic>> words = [];
 
   final ScrollController _scrollController = ScrollController();
-  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -52,21 +47,13 @@ class _VideoPlayerWordSearchLargeState
             if ((double.parse(words.elementAt(i + 1)['start']) -
                     double.parse(words.elementAt(i)['end'])) >
                 1) {
-              words.elementAt(i)['word'] = words.elementAt(i)['word'] +
-                  ' ' +
-                  // (double.parse(words.elementAt(i + 1)['start']) -
-                  //         double.parse(words.elementAt(i)['end']))
-                  //     .toStringAsFixed(2) +
-                  '\n\n';
+              words.elementAt(i)['word'] =
+                  words.elementAt(i)['word'] + ' ' + '\n\n';
             } else if ((double.parse(words.elementAt(i + 1)['start']) -
                     double.parse(words.elementAt(i)['end'])) >
                 0.2) {
-              words.elementAt(i)['word'] = words.elementAt(i)['word'] +
-                  ' ' +
-                  // (double.parse(words.elementAt(i + 1)['start']) -
-                  //         double.parse(words.elementAt(i)['end']))
-                  //     .toStringAsFixed(2) +
-                  '\n';
+              words.elementAt(i)['word'] =
+                  words.elementAt(i)['word'] + ' ' + '\n';
             } else {
               words.elementAt(i)['word'] = words.elementAt(i)['word'] + '...';
             }
@@ -79,186 +66,22 @@ class _VideoPlayerWordSearchLargeState
     });
   }
 
-  void handleScrollButtonPressed(ScrollPressMethod method) {
-    switch (method) {
-      case ScrollPressMethod.smallUp:
-        _scrollController.animateTo(_scrollController.position.pixels - 250,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.fastOutSlowIn);
-        break;
-      case ScrollPressMethod.smallDown:
-        _scrollController.animateTo(_scrollController.position.pixels + 250,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.fastOutSlowIn);
-        break;
-      case ScrollPressMethod.start:
-        _scrollController.animateTo(_scrollController.position.minScrollExtent,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.fastOutSlowIn);
-        break;
-      case ScrollPressMethod.end:
-        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.fastOutSlowIn);
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        //! Word SearchBar
-        WordSearchBar(
-          postId: widget.postId,
-          pos: widget.pos,
-          seekToSecond: (sec) => widget.seekToSecond.call(sec),
-        ),
-        const SizedBox(height: 15),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.fastOutSlowIn,
-          height: _showWords ? 400 : 60,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            color: Colors.blue,
-          ),
-          child: Column(
-            children: [
-              //TextFormfield
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        autofocus: false,
-                        focusNode: _focusNode,
-                        // controller: _usernameTextController,
-                        style: const TextStyle(
-                            fontSize: 15,
-                            fontFamily: 'Segoe UI',
-                            letterSpacing: 0.3),
-                        cursorColor:
-                            Theme.of(context).colorScheme.textInputCursorColor,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.brandColor,
-                                width: 0.5),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.brandColor,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          filled: true,
-                          fillColor: Theme.of(context).canvasColor,
-                          labelText: 'Username...',
-                          labelStyle: TextStyle(
-                              fontFamily: 'Segoe UI',
-                              fontSize: 15,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .searchBarTextColor),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.only(
-                              bottom: 15, top: 15, left: 15, right: 10),
-                          //Error
-                          errorBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.red, width: 1),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.red, width: 3),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          errorStyle: const TextStyle(
-                              fontSize: 14.0, fontFamily: 'Segoe UI'),
-                        ),
-                        validator: (value) {
-                          //check if username exists
-                          if (value == null || value.isEmpty) {
-                            return 'You may enter your username, sir';
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (_) => _focusNode.requestFocus(),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () => setState(() {
-                            _showWords = !_showWords;
-                          }),
-                      icon: const Icon(Icons.architecture_rounded))
-                ],
+    return words.isNotEmpty
+        ? SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: AllWordsWrap(
+                words: words,
+                seekToSecond: (id) => widget.seekToSecond.call(id),
+                pos: widget.pos,
+                scrollController: _scrollController,
               ),
-              _showWords
-                  ? Expanded(
-                      child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: AllWordsWrap(
-                              words: words,
-                              seekToSecond: (id) =>
-                                  widget.seekToSecond.call(id),
-                              pos: widget.pos,
-                              scrollController: _scrollController,
-                            ),
-                          ),
-                          // Column(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   crossAxisAlignment: CrossAxisAlignment.end,
-                          //   children: [
-                          //     Column(
-                          //       mainAxisAlignment: MainAxisAlignment.start,
-                          //       crossAxisAlignment: CrossAxisAlignment.end,
-                          //       children: [
-                          //         const SizedBox(height: 10),
-                          //         InkWell(
-                          //             onTap: () => handleScrollButtonPressed(
-                          //                 ScrollPressMethod.smallUp),
-                          //             // onDoubleTap: () => handleScrollButtonPressed(
-                          //             //     ScrollPressMethod.start),
-                          //             onLongPress: () => handleScrollButtonPressed(
-                          //                 ScrollPressMethod.start),
-                          //             child: const Icon(Icons.arrow_upward)),
-                          //       ],
-                          //     ),
-                          //     Column(
-                          //       mainAxisAlignment: MainAxisAlignment.end,
-                          //       crossAxisAlignment: CrossAxisAlignment.end,
-                          //       children: [
-                          //         InkWell(
-                          //             onTap: () => handleScrollButtonPressed(
-                          //                 ScrollPressMethod.smallDown),
-                          //             // onDoubleTap: () => handleScrollButtonPressed(
-                          //             //     ScrollPressMethod.end),
-                          //             onLongPress: () => handleScrollButtonPressed(
-                          //                 ScrollPressMethod.end),
-                          //             child: const Icon(Icons.arrow_downward)),
-                          //         const SizedBox(height: 10)
-                          //       ],
-                          //     )
-                          //   ],
-                          // )
-                        ],
-                      ),
-                    ))
-                  : const SizedBox()
-            ],
-          ),
-        ),
-      ],
-    );
+            ),
+          )
+        : const CircularProgressIndicator();
   }
 }
 
@@ -291,9 +114,21 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
   @protected
   void didUpdateWidget(covariant oldWidget) {
     super.didUpdateWidget(oldWidget);
+    scrollToActiveWord();
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  // // Context is null
+  //   scrollToActiveWord();
+  //   print("initS2");
+  // }
+
+  void scrollToActiveWord() {
     if (key.currentContext != null && !_tempDeactivateAutoScroll) {
-      print("LEsgo");
-      Scrollable.ensureVisible(key.currentContext!, alignment: 0.4);
+      // Scrollable.ensureVisible(key.currentContext!, alignment: 0.8);
+      Scrollable.ensureVisible(key.currentContext!, alignment: 0.6);
     } else {
       print("´Current Context is null");
     }
@@ -387,3 +222,29 @@ List<InlineSpan> getWords(
 
   return wordList;
 }
+
+
+ // void handleScrollButtonPressed(ScrollPressMethod method) {
+  //   switch (method) {
+  //     case ScrollPressMethod.smallUp:
+  //       _scrollController.animateTo(_scrollController.position.pixels - 250,
+  //           duration: const Duration(milliseconds: 100),
+  //           curve: Curves.fastOutSlowIn);
+  //       break;
+  //     case ScrollPressMethod.smallDown:
+  //       _scrollController.animateTo(_scrollController.position.pixels + 250,
+  //           duration: const Duration(milliseconds: 100),
+  //           curve: Curves.fastOutSlowIn);
+  //       break;
+  //     case ScrollPressMethod.start:
+  //       _scrollController.animateTo(_scrollController.position.minScrollExtent,
+  //           duration: const Duration(milliseconds: 100),
+  //           curve: Curves.fastOutSlowIn);
+  //       break;
+  //     case ScrollPressMethod.end:
+  //       _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+  //           duration: const Duration(milliseconds: 100),
+  //           curve: Curves.fastOutSlowIn);
+  //       break;
+  //   }
+  // }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_no_tab_widget.dart';
-import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
 
 class WordSearchBar extends StatefulWidget {
@@ -48,7 +47,6 @@ class _WordSearchBarState extends State<WordSearchBar> {
     }
     findMatches().then((value) {
       if (matches.isNotEmpty) {
-        // seekToClosestLargerMatch(widget.pos.inMilliseconds / 1000, matches);
         widget.seekToSecond.call(seekToClosestLargerMatch(
             widget.pos.inMilliseconds / 1000, matches));
         _focusNode.requestFocus();
@@ -72,8 +70,18 @@ class _WordSearchBarState extends State<WordSearchBar> {
             },
           ),
         ),
-        const SizedBox(width: 8),
-        Text(matches.length.toString())
+        matches.isNotEmpty
+            ? Row(
+                children: [
+                  const SizedBox(width: 8),
+                  Text(getBeforeMatchesCount(
+                              widget.pos.inMilliseconds / 1000, matches)
+                          .toString() +
+                      '/' +
+                      matches.length.toString()),
+                ],
+              )
+            : const SizedBox()
       ],
     );
   }
@@ -87,8 +95,6 @@ class _WordSearchBarState extends State<WordSearchBar> {
 }
 
 double seekToClosestLargerMatch(double numberToMatch, List<double> matches) {
-  // List<double> greater = matches.where((e) => e >= numberToMatch).toList()
-  //   ..sort();
   List<double> greater = matches.where((e) => e > numberToMatch).toList()
     ..sort(); //List of the greater values
 
@@ -99,4 +105,11 @@ double seekToClosestLargerMatch(double numberToMatch, List<double> matches) {
     print("Closes Larger Match: " + matches.first.toString());
     return matches.first;
   }
+}
+
+int getBeforeMatchesCount(double numberToMatch, List<double> matches) {
+  List<double> before = matches.where((e) => e <= numberToMatch).toList()
+    ..sort(); //List of the greater values
+
+  return before.length;
 }
