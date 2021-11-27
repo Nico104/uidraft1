@@ -14,7 +14,7 @@ import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_normal_v2_widget.dart';
-import 'package:uidraft1/widgets/videoplayer/video_player_word_search_widget.dart';
+import 'package:uidraft1/widgets/videoplayer/wordsearch/video_player_word_search_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
 import 'package:readmore/readmore.dart';
@@ -1050,8 +1050,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                   pos: pos),
                               const SizedBox(height: 35),
                               //Todo wieder eini tean fir video recommendations
-                              // VideoPlayerVideosLargeScreen(
-                              //     setSkipToId: (id) => setSkipToId.call(id)),
+                              VideoPlayerVideosLargeScreen(
+                                  setSkipToId: (id) => setSkipToId.call(id)),
                             ],
                           ),
                         ),
