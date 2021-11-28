@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:uidraft1/uiwidgets/textfields/textformfield_no_tab_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/wordsearch/video_player_word_search_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/wordsearch/word_search_bar_widget.dart';
 
 //!Fianl Widget
 
 class WordSearchLarge extends StatefulWidget {
-  const WordSearchLarge(
+  WordSearchLarge(
       {Key? key,
       required this.seekToSecond,
       required this.postId,
       required this.pos})
-      : super(key: key);
+      : super(key: globalKey);
 
   final Function(double) seekToSecond;
   final int postId;
 
   final Duration pos;
+
+  static final GlobalKey<_WordSearchLargeState> globalKey =
+      GlobalKey<_WordSearchLargeState>();
 
   @override
   _WordSearchLargeState createState() => _WordSearchLargeState();
@@ -34,6 +36,10 @@ class _WordSearchLargeState extends State<WordSearchLarge> {
   final Duration _duration = const Duration(milliseconds: 180);
 
   bool _showWords = false;
+
+  bool getShowWords() {
+    return _showWords;
+  }
 
   void initiateAnimation() {
     setState(() {
