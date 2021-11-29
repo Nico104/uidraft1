@@ -12,16 +12,6 @@ Future<List<Map<String, dynamic>>> fetchAllWords(int postId) async {
   // print("response body: " + response.body);
   print("penis1: " + response.statusCode.toString());
   if (response.statusCode == 200) {
-    // List<Map<String, dynamic>> words = json.decode(response.body);
-    // print("penis");
-    // if (words.isNotEmpty) {
-    //   print("Word Lenght: " + words.length.toString());
-    //   return words;
-    // } else {
-    //   // throw Exception('Failed to load all words');
-    //   return [];
-    // }
-
     List<Map<String, dynamic>> words = <Map<String, dynamic>>[];
     List<dynamic> values = <dynamic>[];
     values = json.decode(response.body);
@@ -37,5 +27,31 @@ Future<List<Map<String, dynamic>>> fetchAllWords(int postId) async {
   } else {
     // If that call was not successful, throw an error.
     throw Exception('Failed to load all words');
+  }
+}
+
+Future<List<double>> searchWords(int postId, String search) async {
+  if (search.isNotEmpty) {
+    final response = await http
+        .get(Uri.parse(baseURL + 'transcript/searchWords/$postId/$search'));
+
+    print("response body: " + response.body);
+    if (response.statusCode == 200) {
+      List<double> matches = <double>[];
+      List<dynamic> values = <dynamic>[];
+      values = json.decode(response.body);
+      if (values.isNotEmpty) {
+        for (int i = 0; i < values.length; i++) {
+          double match = values.elementAt(i);
+          matches.add(match);
+        }
+      }
+      return matches;
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load all words');
+    }
+  } else {
+    return <double>[];
   }
 }

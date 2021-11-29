@@ -83,13 +83,30 @@ class _VideoPreviewState extends State<VideoPreview> {
               ),
             );
           } else {
-            return Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            return Column(
+              children: [
+                //Thumbnail
+                Expanded(
+                  flex: 8,
+                  child: Container(
+                      decoration: BoxDecoration(
+                    color: Colors.grey.shade900,
+                    borderRadius: BorderRadius.circular(12.0),
+                  )),
                 ),
-                color: Theme.of(context).canvasColor,
-                child: const Text("loading"));
+                const SizedBox(
+                  height: 18,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                      decoration: BoxDecoration(
+                    color: Colors.grey.shade900,
+                    borderRadius: BorderRadius.circular(12.0),
+                  )),
+                ),
+              ],
+            );
           }
         });
   }

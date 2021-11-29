@@ -256,19 +256,6 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                //LeftHand Switch
-                                                // widget.leftHand
-                                                //     ? LeftHandSwitcherIcon(
-                                                //         isLeftHand: _isLeftHand,
-                                                //         onPressed: () =>
-                                                //             setState(() {
-                                                //               _isLeftHand =
-                                                //                   !_isLeftHand;
-                                                //             }))
-                                                //     : const SizedBox(),
-                                                // const SizedBox(
-                                                //   width: 18,
-                                                // ),
                                                 //Notifications
                                                 widget.notification
                                                     ? FutureBuilder(
@@ -462,6 +449,7 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         //LeftHand Switch
                                         IconButton(
@@ -510,15 +498,6 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                                 ),
                                               )
                                             : const SizedBox(),
-                                        // Consumer<ThemeNotifier>(
-                                        //   builder: (context, theme, _) => Icon(
-                                        //     Icons.dark_mode_outlined,
-                                        //     color: Theme.of(context)
-                                        //         .colorScheme
-                                        //         .navBarIconColor,
-                                        //     size: 24,
-                                        //   ),
-                                        // ),
                                         const SizedBox(
                                           width: 18,
                                         ),

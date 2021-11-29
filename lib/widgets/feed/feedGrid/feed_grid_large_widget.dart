@@ -13,13 +13,7 @@ class FeedGridLargeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Align(
-        alignment: Alignment.topCenter,
-        // child: Padding(
-        //   padding: EdgeInsets.fromLTRB(150, 10, 150, 0),
-        //   child: FeedGrid(),
-        // )),
-        child: FeedGrid());
+    return const Align(alignment: Alignment.topCenter, child: FeedGrid());
   }
 }
 
@@ -225,7 +219,7 @@ class _FeedGridState extends State<FeedGrid> {
   ////ADDING DATA INTO ARRAYLIST
   void addItemIntoLisT(var pageCount) {
     print("addItemIntoLisT");
-    int itemsLoading = 6;
+    int itemsLoading = 5;
     for (int i = (pageCount * itemsLoading) - itemsLoading;
         i < pageCount * itemsLoading;
         i++) {
