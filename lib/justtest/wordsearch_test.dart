@@ -2,6 +2,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/widgets/slider/slidertest.dart';
 
 class WordSearchTest extends StatefulWidget {
   const WordSearchTest({Key? key}) : super(key: key);
@@ -67,6 +68,9 @@ class _WordSearchTestState extends State<WordSearchTest> {
             child: Container(
               color: Colors.transparent,
             )),
+        const SizedBox(
+          child: Slidertest(),
+        ),
         Flexible(
           flex: 3,
           child: Container(

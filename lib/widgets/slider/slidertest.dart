@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:uidraft1/customIcons/light_outlined/light_outline_notification_icon_icons.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/widgets/slider/snapslidertest.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -19,12 +20,6 @@ extension on Color {
 class _SlidertestState extends State<Slidertest> {
   double sliderval = 0;
   double _value = 0;
-
-  Color getColor(double op) {
-    // final colorC = Color.alphaBlend(Colors.red, Colors.white70);
-    final combinedColor = Colors.pink.withOpacity(op) + Colors.blue;
-    return combinedColor;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,9 +107,9 @@ class PolygonSliderThumb extends SliderComponentShape {
     double outerPolygonRadius = thumbRadius * 1.4;
     double angle = (math.pi * 2) / sides;
 
-    final outerPathColor = Paint()
-      ..color = Colors.pink.shade800
-      ..style = PaintingStyle.fill;
+    // final outerPathColor = Paint()
+    //   ..color = Colors.pink.shade800
+    //   ..style = PaintingStyle.fill;
 
     var outerPath = Path();
 
@@ -135,12 +130,14 @@ class PolygonSliderThumb extends SliderComponentShape {
     }
 
     outerPath.close();
-    // canvas.drawPath(outerPath, outerPathColor);
 
-    final innerPathColor = Paint()
-      ..color = sliderTheme.thumbColor ?? Colors.black
-      ..style = PaintingStyle.fill;
+    // final innerPathColor = Paint()
+    //   ..color = sliderTheme.thumbColor ?? Colors.black
+    //   ..style = PaintingStyle.fill;
 
+    // final innerPath = Paint()
+    //   ..color = sliderTheme.thumbColor ?? Colors.black
+    //   ..style = PaintingStyle.fill;
     var innerPath = Path();
 
     Offset startPoint = Offset(
@@ -160,22 +157,22 @@ class PolygonSliderThumb extends SliderComponentShape {
     }
 
     innerPath.close();
-    // canvas.drawPath(innerPath, innerPathColor);
 
-    // TextSpan span = new TextSpan(
-    //   style: new TextStyle(
-    //     fontSize: thumbRadius,
-    //     fontWeight: FontWeight.w700,
-    //     color: Colors.white,
-    //   ),
-    //   text: sliderValue.round().toString(),
-    // );
+    List<IconData> iconsList = [
+      Icons.arrow_forward,
+      LightOutlineNotificationIcon.notification
+    ];
 
     final IconData icon;
     if (sliderValue < 0) {
       icon = Icons.arrow_back;
     } else {
-      icon = Icons.arrow_forward;
+      // icon = Icons.arrow_forward;
+      if (sliderValue.round().isOdd) {
+        icon = iconsList.elementAt(0);
+      } else {
+        icon = iconsList.elementAt(1);
+      }
     }
 
     TextPainter tp = TextPainter(
@@ -187,7 +184,10 @@ class PolygonSliderThumb extends SliderComponentShape {
     tp.text = TextSpan(
         text: String.fromCharCode(icon.codePoint),
         style: TextStyle(
-            fontSize: 40.0, fontFamily: icon.fontFamily, color: Colors.white));
+            fontSize: 40.0,
+            fontFamily: icon.fontFamily,
+            color: getThumbColor((13 + 25) / 50),
+            fontWeight: FontWeight.bold));
 
     tp.layout();
 
@@ -196,6 +196,22 @@ class PolygonSliderThumb extends SliderComponentShape {
       center.dy - (tp.height / 2),
     );
 
+    //!Test
+    // In your paint method
+    // final paint = Paint()
+    //   ..shader = RadialGradient(
+    //     colors: [
+    //       Colors.green,
+    //       Colors.red,
+    //     ],
+    //   ).createShader(Rect.fromCircle(
+    //     center: textCenter,
+    //     radius: 5,
+    //   ));
+
+    // canvas.drawPath(innerPath, paint);
+    //!Test
+
     canvas.translate(center.dx, center.dy);
     if (sliderValue > 0) {
       canvas.rotate(-sliderValue / 16);
@@ -203,19 +219,9 @@ class PolygonSliderThumb extends SliderComponentShape {
       canvas.rotate(sliderValue / 16);
     }
 
-    // canvas.rotate(1.5625);
     canvas.translate(-center.dx, -center.dy);
 
     tp.paint(canvas, textCenter);
-
-    // final icon = Icons.add;
-    // TextPainter textPainter = TextPainter(textDirection: TextDirection.rtl);
-    // textPainter.text = TextSpan(
-    //     text: String.fromCharCode(icon.codePoint),
-    //     style: TextStyle(
-    //         fontSize: 40.0, fontFamily: icon.fontFamily, color: Colors.white));
-    // textPainter.layout();
-    // textPainter.paint(canvas, Offset(center.dx - (tp.width / 2), 0));
   }
 }
 
@@ -223,4 +229,34 @@ void rotate(Canvas canvas, double cx, double cy, double angle) {
   canvas.translate(cx, cy);
   canvas.rotate(angle);
   canvas.translate(-cx, -cy);
+}
+
+class RadiantGradientMask extends StatelessWidget {
+  const RadiantGradientMask({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) => const RadialGradient(
+        center: Alignment.center,
+        radius: 0.5,
+        colors: [Colors.blue, Colors.red],
+        tileMode: TileMode.mirror,
+      ).createShader(bounds),
+      child: child,
+    );
+  }
+}
+
+Color getColor(double op) {
+  // final colorC = Color.alphaBlend(Colors.red, Colors.white70);
+  final combinedColor = Colors.pink.withOpacity(op) + Colors.blue;
+  return combinedColor;
+}
+
+Color getThumbColor(double op) {
+  // final colorC = Color.alphaBlend(Colors.red, Colors.white70);
+  final combinedColor = Colors.red.withOpacity(op) + Colors.green;
+  return combinedColor;
 }
