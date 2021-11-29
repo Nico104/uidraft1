@@ -13,6 +13,12 @@ class FeedScreen extends StatefulWidget {
 class _FeedState extends State<FeedScreen> {
   int activeFeed = 0;
 
+  void reloadFeed() {
+    if (FeedGrid.feedGridKey.currentState != null) {
+      FeedGrid.feedGridKey.currentState!.reload();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
@@ -22,11 +28,11 @@ class _FeedState extends State<FeedScreen> {
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
-            const FeedGridLargeScreen(),
+            FeedGrid(),
             NavBarLarge(
-              // key: globalKey,
               setActiveFeed: setActiveFeedTo,
               activeFeed: activeFeed,
+              onLogoClick: () => reloadFeed.call(),
             ),
             activeFeed != 0
                 ? Center(

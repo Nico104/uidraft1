@@ -108,30 +108,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
 
   bool _showScrollToTopComment = false;
 
+  // GlobalKey<_VideoPlayerCommentsTestState> videoPlacerCommentsKey =
+  //   GlobalKey<_VideoPlayerCommentsTestState>();
+
   void loadNewStuff() {
-    if (VideoPlayerCommentsTest.videoPlacerCommentsKey.currentState == null) {
+    if (VideoPlayerCommentsTest.videoPlacerCommentsKey2.currentState == null) {
       print("current NavBarState null");
     } else {
-      VideoPlayerCommentsTest.videoPlacerCommentsKey.currentState!
+      VideoPlayerCommentsTest.videoPlacerCommentsKey2.currentState!
           .appendCommentModels();
     }
-    // if (VideoPlayerVideosLargeScreenTest
-    //         .videoPlayerRecommendedKey.currentState ==
-    //     null) {
-    //   print("current NavBarState null");
-    // } else {
-    //   VideoPlayerVideosLargeScreenTest.videoPlayerRecommendedKey.currentState!
-    //       .appendRecommendedVideos();
-    // }
   }
 
   void loadNewStuff2() {
-    // if (VideoPlayerCommentsTest.videoPlacerCommentsKey.currentState == null) {
-    //   print("current NavBarState null");
-    // } else {
-    //   VideoPlayerCommentsTest.videoPlacerCommentsKey.currentState!
-    //       .appendCommentModels();
-    // }
     if (VideoPlayerVideosLargeScreenTest
             .videoPlayerRecommendedKey.currentState ==
         null) {
@@ -992,6 +981,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                         if (snapshot
                                                             .data!.isNotEmpty) {
                                                           return VideoPlayerCommentsTest(
+                                                              // key:
+                                                              //     videoPlacerCommentsKey,
                                                               commentIds:
                                                                   snapshot
                                                                       .data!);

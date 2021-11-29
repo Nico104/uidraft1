@@ -8,17 +8,20 @@ import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
 import 'dart:html' as html;
 
-class FeedGridLargeScreen extends StatelessWidget {
-  const FeedGridLargeScreen({Key? key}) : super(key: key);
+// class FeedGridLargeScreen extends StatelessWidget {
+//   const FeedGridLargeScreen({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return const Align(alignment: Alignment.topCenter, child: FeedGrid());
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Align(alignment: Alignment.topCenter, child: FeedGrid());
+//   }
+// }
 
 class FeedGrid extends StatefulWidget {
-  const FeedGrid({Key? key}) : super(key: key);
+  FeedGrid({Key? key}) : super(key: key ?? feedGridKey);
+
+  static final GlobalKey<_FeedGridState> feedGridKey =
+      GlobalKey<_FeedGridState>();
 
   @override
   _FeedGridState createState() => _FeedGridState();
@@ -100,13 +103,8 @@ class _FeedGridState extends State<FeedGrid> {
 
     // try {
     fetchPostIds().then((value) {
-      ////LOADING FIRST  DATA
       addItemIntoLisT(1);
     });
-    // } catch (e) {
-    //   print("Error: " + e.toString());
-    //   Beamer.of(context).beamToNamed("/error/feed");
-    // }
 
     _scrollController = ScrollController(initialScrollOffset: 5.0)
       ..addListener(_scrollListener);
@@ -116,6 +114,26 @@ class _FeedGridState extends State<FeedGrid> {
     // Prevent default event handler
     html.document.onContextMenu.listen((event) => event.preventDefault());
     //RightClicktest
+  }
+
+  void reload() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController
+        .animateTo(_scrollController.position.minScrollExtent,
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.fastOutSlowIn)
+        .then((value) {
+      setState(() {
+        postIds.clear();
+        dataList.clear();
+        pageCount = 1;
+      });
+
+      fetchPostIds().then((value) {
+        addItemIntoLisT(1);
+      });
+    });
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
@@ -154,28 +172,60 @@ class _FeedGridState extends State<FeedGrid> {
                                 builder: (BuildContext context,
                                     AsyncSnapshot<int> snapshot) {
                                   if (snapshot.hasData) {
-                                    return GridView.count(
-                                      // physics: const AlwaysScrollableScrollPhysics(),
+                                    //return ListView.builder(
+                                    //   shrinkWrap: true,
+                                    //   // physics: const NeverScrollableScrollPhysics(),
+                                    //   // physics: const ClampingScrollPhysics(),
+                                    //   itemCount: commentModels.length,
+                                    //   itemBuilder: (context, i) {
+                                    //     return commentModels.elementAt(i);
+                                    //   },
+                                    // );
+                                    return GridView.builder(
                                       shrinkWrap: true,
-                                      childAspectRatio:
-                                          MediaQuery.of(context).size.width >=
-                                                  1700
-                                              ? (1280 / 1174)
-                                              : (1280 / 1240),
-                                      // controller: _scrollController,
-                                      scrollDirection: Axis.vertical,
-                                      crossAxisCount: 3,
-                                      mainAxisSpacing: 10.0,
-                                      crossAxisSpacing: 40.0,
-                                      children: dataList.map((value) {
+                                      itemCount: dataList.length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio:
+                                            MediaQuery.of(context).size.width >=
+                                                    1700
+                                                ? (1280 / 1174)
+                                                : (1280 / 1240),
+                                        mainAxisSpacing: 20.0,
+                                        crossAxisSpacing: 60.0,
+                                      ),
+                                      itemBuilder: (_, index) {
                                         return VideoPreview(
-                                          postId: value,
+                                          postId: dataList.elementAt(index),
                                           isAuth: snapshot.data == 200,
                                           videoPreviewMode:
                                               vputils.VideoPreviewMode.feed,
                                         );
-                                      }).toList(),
+                                      },
                                     );
+                                    // return GridView.count(
+                                    //   // physics: const AlwaysScrollableScrollPhysics(),
+                                    //   shrinkWrap: true,
+                                    //   childAspectRatio:
+                                    //       MediaQuery.of(context).size.width >=
+                                    //               1700
+                                    //           ? (1280 / 1174)
+                                    //           : (1280 / 1240),
+                                    //   // controller: _scrollController,
+                                    //   scrollDirection: Axis.vertical,
+                                    //   crossAxisCount: 3,
+                                    //   mainAxisSpacing: 10.0,
+                                    //   crossAxisSpacing: 40.0,
+                                    //   children: dataList.map((value) {
+                                    //     return VideoPreview(
+                                    //       postId: value,
+                                    //       isAuth: snapshot.data == 200,
+                                    //       videoPreviewMode:
+                                    //           vputils.VideoPreviewMode.feed,
+                                    //     );
+                                    //   }).toList(),
+                                    // );
                                   } else {
                                     return const CircularProgressIndicator();
                                   }
@@ -219,7 +269,7 @@ class _FeedGridState extends State<FeedGrid> {
   ////ADDING DATA INTO ARRAYLIST
   void addItemIntoLisT(var pageCount) {
     print("addItemIntoLisT");
-    int itemsLoading = 5;
+    int itemsLoading = 12;
     for (int i = (pageCount * itemsLoading) - itemsLoading;
         i < pageCount * itemsLoading;
         i++) {

@@ -1,22 +1,24 @@
 //Comment Widget
 
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
+
+// GlobalKey<_VideoPlayerCommentsTestState> videoPlacerCommentsKey =
+//     GlobalKey<_VideoPlayerCommentsTestState>();
 
 class VideoPlayerCommentsTest extends StatefulWidget {
   VideoPlayerCommentsTest({
-    Key? key,
+    // Key? key,
     // required this.postId,
     required this.commentIds,
-  }) : super(key: videoPlacerCommentsKey);
+  }) : super(key: videoPlacerCommentsKey2);
+  // }) : super(key: key);
 
   // final int postId;
   final List<int> commentIds;
 
-  static final GlobalKey<_VideoPlayerCommentsTestState> videoPlacerCommentsKey =
-      GlobalKey<_VideoPlayerCommentsTestState>();
+  static final GlobalKey<_VideoPlayerCommentsTestState>
+      videoPlacerCommentsKey2 = GlobalKey<_VideoPlayerCommentsTestState>();
 
   @override
   State<VideoPlayerCommentsTest> createState() =>
@@ -25,14 +27,13 @@ class VideoPlayerCommentsTest extends StatefulWidget {
 
 class _VideoPlayerCommentsTestState extends State<VideoPlayerCommentsTest> {
   static const _pageSize = 10;
-  int _pageKey = 0;
+  int _pageKey = 1;
 
   List<CommentModel> commentModels = <CommentModel>[];
 
   @override
   void initState() {
-    commentModels
-        .addAll(getNewComments(_pageKey, _pageSize, widget.commentIds));
+    commentModels.addAll(getNewComments(0, _pageSize, widget.commentIds));
     super.initState();
   }
 
@@ -67,7 +68,9 @@ List<CommentModel> getNewComments(
   final int currentIndex = pageKey * _pageSize;
   List<CommentModel> commentList = <CommentModel>[];
   for (int i = currentIndex; i < currentIndex + _pageSize; i++) {
-    commentList.add(CommentModel(commentId: commentIds.elementAt(i)));
+    if (commentIds.length > i) {
+      commentList.add(CommentModel(commentId: commentIds.elementAt(i)));
+    }
   }
   return commentList;
 }
