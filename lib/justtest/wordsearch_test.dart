@@ -255,6 +255,7 @@ class _SearchBarTestState extends State<SearchBarTest> {
         //     : const SizedBox(
         //         child: Text("dfd"),
         //       ),
+        //! Check if without Animation better
         Padding(
           padding: const EdgeInsets.only(top: 15.0),
           child: AnimatedSize(
@@ -353,6 +354,11 @@ List<Widget> getAutocompleteWidgets(
           ),
         ),
       );
+      if (i < autocompleteTerms.length - 1) {
+        widgets.add(Divider(
+          color: Colors.orange.withOpacity(0.3),
+        ));
+      }
       // widgets.add(Text("fdfsfdsf"));
     }
   }
