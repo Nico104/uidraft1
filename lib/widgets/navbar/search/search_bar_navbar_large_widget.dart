@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:beamer/beamer.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,13 +20,14 @@ class SearchBar extends StatefulWidget {
 
   final TextEditingController searchBarController;
 
+  final double borderRadius = 14;
+
   @override
   State<SearchBar> createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<SearchBar> {
   late final FocusNode _searchBarFocusNode;
-  final FocusNode _keyboardFocusNode = FocusNode();
 
   List<String> autocompleteTerms = <String>[];
 
@@ -36,66 +38,24 @@ class _SearchBarState extends State<SearchBar> {
   @override
   void initState() {
     _searchBarFocusNode = FocusNode(onKeyEvent: (focusNode, event) {
-      print("Evvent: " + event.toString());
       if (event is KeyDownEvent) {
         if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
           print("arrow up pressed");
-          changeActiveIndex(ArrowKey.up);
+          changeActiveIndexByArrowKey(ArrowKey.up);
         } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-          changeActiveIndex(ArrowKey.down);
+          changeActiveIndexByArrowKey(ArrowKey.down);
         }
-        // if (onCapsLock != null) {
-        //   onCapsLock!.call();
-        // }
       } else {
         if (event is KeyUpEvent) {
           if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            // widget.searchBarController.value = TextEditingValue(
-            //   text: widget.searchBarController.text,
-            //   selection: TextSelection.collapsed(
-            //       offset: widget.searchBarController.text.length),
-            // );
             widget.searchBarController.selection = TextSelection.fromPosition(
                 TextPosition(offset: widget.searchBarController.text.length));
           }
         }
       }
       return KeyEventResult.ignored;
-    }
-        // onKeyEvent: (event) {
-        //   // print("Evvent: " + event.toString());
-        //   if (event is KeyDownEvent) {
-        //     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-        //       print("arrow up pressed");
-        //       changeActiveIndex(ArrowKey.up);
-        //     } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-        //       changeActiveIndex(ArrowKey.down);
-        //     }
-        //     // if (onCapsLock != null) {
-        //     //   onCapsLock!.call();
-        //     // }
-        //   } else {
-        //     if (event is KeyUpEvent) {
-        //       if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-        //         // widget.searchBarController.value = TextEditingValue(
-        //         //   text: widget.searchBarController.text,
-        //         //   selection: TextSelection.collapsed(
-        //         //       offset: widget.searchBarController.text.length),
-        //         // );
-        //         widget.searchBarController.selection = TextSelection.fromPosition(
-        //             TextPosition(offset: widget.searchBarController.text.length));
-        //       }
-        //     }
-        //   }
-        // },
-        );
+    });
     super.initState();
-    // _searchBarFocusNode.addListener(() {
-    //   print("Has focus: ${_searchBarFocusNode.hasFocus}");
-    // });
-    // html.document.onKeyDown.listen((event) => event.preventDefault());
-    // html.document.onKeyPress.listen((event) => event.preventDefault());
-    // html.document.onKeyUp.listen((event) => event.preventDefault());
   }
 
   @override
@@ -104,15 +64,7 @@ class _SearchBarState extends State<SearchBar> {
     super.dispose();
   }
 
-  void changeActiveIndex(ArrowKey arrowKey) {
-    // setState(() {
-    //   widget.searchBarController.value = TextEditingValue(
-    //     text: widget.searchBarController.text,
-    //     selection: TextSelection.collapsed(
-    //         offset: widget.searchBarController.text.length),
-    //   );
-    // });
-
+  void changeActiveIndexByArrowKey(ArrowKey arrowKey) {
     switch (arrowKey) {
       case ArrowKey.up:
         if (_activeIndex == 0) {
@@ -141,6 +93,20 @@ class _SearchBarState extends State<SearchBar> {
     widget.searchBarController.text = autocompleteTerms.elementAt(_activeIndex);
   }
 
+  void changeActiveIndex(int index) {
+    if (index != _activeIndex) {
+      setState(() {
+        _activeIndex = index;
+      });
+    }
+  }
+
+  void searchActiveIndex() {
+    widget.searchBarController.text = autocompleteTerms.elementAt(_activeIndex);
+    Beamer.of(context)
+        .beamToNamed('/search/${autocompleteTerms.elementAt(_activeIndex)}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -153,6 +119,7 @@ class _SearchBarState extends State<SearchBar> {
             duration: const Duration(milliseconds: 120),
             alignment: Alignment.bottomCenter,
             child: ClipRRect(
+              borderRadius: BorderRadius.circular(widget.borderRadius),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                 child: Container(
@@ -167,9 +134,9 @@ class _SearchBarState extends State<SearchBar> {
                         .colorScheme
                         .searchBarColor
                         .withOpacity(0.95),
-                    borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(14),
-                        bottomRight: Radius.circular(14)),
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(widget.borderRadius),
+                        bottomRight: Radius.circular(widget.borderRadius)),
                     border: Border.all(
                         color: Theme.of(context).colorScheme.brandColor,
                         width: 0.5),
@@ -192,6 +159,8 @@ class _SearchBarState extends State<SearchBar> {
                               .withOpacity(0.2),
                           Colors.white,
                           _activeIndex,
+                          () => searchActiveIndex.call(),
+                          (i) => changeActiveIndex.call(i),
                         ),
                       ),
                     ),
@@ -213,6 +182,7 @@ class _SearchBarState extends State<SearchBar> {
                   await getAutocompleteSearchTerms(search);
               print("Autocomplete Terms: " + autocompleteTermsTemp.toString());
               setState(() {
+                _activeIndex = 0;
                 autocompleteTerms = autocompleteTermsTemp;
               });
               // _keyboardFocusNode.requestFocus();
@@ -224,14 +194,27 @@ class _SearchBarState extends State<SearchBar> {
   }
 }
 
-List<Widget> getAutocompleteWidgets(List<String> autocompleteTerms,
-    String search, Color dividerColor, Color textcolor, int activeIndex) {
+List<Widget> getAutocompleteWidgets(
+  List<String> autocompleteTerms,
+  String search,
+  Color dividerColor,
+  Color textcolor,
+  int activeIndex,
+  Function() onTap,
+  Function(int) onHover,
+) {
   List<Widget> widgets = <Widget>[];
 
   if (search.isNotEmpty) {
     for (int i = 0; i < autocompleteTerms.length; i++) {
       widgets.add(
         InkWell(
+          onTap: () => onTap.call(),
+          onHover: (val) {
+            if (val) {
+              onHover.call(i);
+            }
+          },
           child: Container(
             width: double.infinity,
             color: (activeIndex == i) ? Colors.grey.withOpacity(0.5) : null,

@@ -28,8 +28,8 @@ Map<ShortcutActivator, Intent> getShortcut() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
   final routerDelegate = BeamerDelegate(
-    // initialPath: '/feed',
-    initialPath: '/wordsearch',
+    initialPath: '/feed',
+    // initialPath: '/wordsearch',
     locationBuilder: simpleLocationBuilder,
     notFoundPage: BeamPage(
       key: const ValueKey('notfound'),
