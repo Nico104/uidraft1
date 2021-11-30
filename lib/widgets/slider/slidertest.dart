@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:uidraft1/customIcons/light_outlined/light_outline_notification_icon_icons.dart';
+import 'package:uidraft1/customIcons/slider/outlines/slider_test_outlines_icons.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/widgets/slider/snapslidertest.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -160,19 +161,68 @@ class PolygonSliderThumb extends SliderComponentShape {
 
     List<IconData> iconsList = [
       Icons.arrow_forward,
-      LightOutlineNotificationIcon.notification
+      // LightOutlineNotificationIcon.notification,
+      SliderTestOutlines.slidericon4
+    ];
+
+    List<IconData> sliderArrowIconList = [
+      SliderTestOutlines.slidericon0,
+      SliderTestOutlines.slidericon1,
+      SliderTestOutlines.slidericon2,
+      SliderTestOutlines.slidericon3,
+      SliderTestOutlines.slidericon4,
+      SliderTestOutlines.slidericon5,
+      SliderTestOutlines.slidericon6,
+      SliderTestOutlines.slidericon7,
+      SliderTestOutlines.slidericon8
     ];
 
     final IconData icon;
-    if (sliderValue < 0) {
-      icon = Icons.arrow_back;
+    // if (sliderValue < 0) {
+    //   icon = Icons.arrow_back;
+    // } else {
+    //   // icon = Icons.arrow_forward;
+    //   if (sliderValue.round().isOdd) {
+    //     icon = iconsList.elementAt(0);
+    //   } else {
+    //     icon = iconsList.elementAt(1);
+    //   }
+    // }
+    // if (sliderValue == 0) {
+    //   icon = sliderArrowIconList.elementAt(0);
+    // }else if(sliderValue.abs() ){
+
+    // }
+    // switch (sliderValue.abs().round()) {
+    //   case 25:
+    //     icon = sliderArrowIconList.elementAt(9);
+    //     break;
+    //   default:
+    //     icon = sliderArrowIconList.elementAt(0);
+    //     break;
+    // }
+    int val = sliderValue.abs().round();
+    if (val >= 0 && val <= 1) {
+      icon = sliderArrowIconList.elementAt(0);
+    } else if (val >= 2 && val <= 4) {
+      icon = sliderArrowIconList.elementAt(1);
+    } else if (val >= 5 && val <= 7) {
+      icon = sliderArrowIconList.elementAt(2);
+    } else if (val >= 8 && val <= 11) {
+      icon = sliderArrowIconList.elementAt(3);
+    } else if (val >= 12 && val <= 14) {
+      icon = sliderArrowIconList.elementAt(4);
+    } else if (val >= 15 && val <= 17) {
+      icon = sliderArrowIconList.elementAt(5);
+    } else if (val >= 18 && val <= 20) {
+      icon = sliderArrowIconList.elementAt(6);
+    } else if (val >= 21 && val <= 23) {
+      icon = sliderArrowIconList.elementAt(7);
+    } else if (val >= 24 && val <= 25) {
+      icon = sliderArrowIconList.elementAt(8);
     } else {
-      // icon = Icons.arrow_forward;
-      if (sliderValue.round().isOdd) {
-        icon = iconsList.elementAt(0);
-      } else {
-        icon = iconsList.elementAt(1);
-      }
+      print("nothing bro");
+      icon = Icons.bus_alert;
     }
 
     TextPainter tp = TextPainter(
@@ -213,11 +263,12 @@ class PolygonSliderThumb extends SliderComponentShape {
     //!Test
 
     canvas.translate(center.dx, center.dy);
-    if (sliderValue > 0) {
-      canvas.rotate(-sliderValue / 16);
-    } else {
-      canvas.rotate(sliderValue / 16);
-    }
+    // if (sliderValue > 0) {
+    //   canvas.rotate(-sliderValue / 16);
+    // } else {
+    //   canvas.rotate(sliderValue / 16);
+    // }
+    canvas.rotate((-sliderValue / 16) + 3.1415);
 
     canvas.translate(-center.dx, -center.dy);
 

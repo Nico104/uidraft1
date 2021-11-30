@@ -122,6 +122,10 @@ flutter:
     - family:  LightOutlineNotificationIcon
       fonts:
        - asset: assets/fonts/customIcons/LightOutlineNotificationIcon.ttf
+
+    - family:  SliderTestOutlines
+      fonts:
+       - asset: assets/fonts/customIcons/slider/outlines/SliderTestOutlines.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
