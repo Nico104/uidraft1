@@ -5,9 +5,11 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:uidraft1/justtest/glassmorphism.dart';
+import 'package:uidraft1/uiwidgets/textfields/search_textfield/search_textformfield_widget.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
+import 'package:uidraft1/widgets/navbar/search/search_bar_navbar_large_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
 
 class WordSearchTest extends StatefulWidget {
@@ -293,6 +295,7 @@ class _SearchBarTestState extends State<SearchBarTest> {
           ),
         ),
         SearchBarTextFormField(
+          focusNode: FocusNode(),
           searchBarController: widget.searchBarController,
           onChange: (search) {
             EasyDebounce.debounce(
