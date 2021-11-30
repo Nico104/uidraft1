@@ -1,7 +1,13 @@
+import 'dart:ui';
+
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
+import 'package:substring_highlight/substring_highlight.dart';
+import 'package:uidraft1/justtest/glassmorphism.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
 
 class WordSearchTest extends StatefulWidget {
@@ -23,6 +29,8 @@ class _WordSearchTestState extends State<WordSearchTest> {
 
   final Curve _curve = Curves.fastOutSlowIn;
   final Duration _duration = const Duration(milliseconds: 180);
+
+  TextEditingController controller = TextEditingController();
 
   void initiateAnimation() {
     setState(() {
@@ -62,14 +70,21 @@ class _WordSearchTestState extends State<WordSearchTest> {
   Widget build(BuildContext context) {
     return Material(
         child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Flexible(
             flex: 1,
             child: Container(
               color: Colors.transparent,
             )),
-        const SizedBox(
-          child: Slidertest(),
+        Flexible(
+          flex: 6,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: SearchBarTest(
+              searchBarController: controller,
+            ),
+          ),
         ),
         Flexible(
           flex: 3,
@@ -199,4 +214,148 @@ class _WordSearchTestState extends State<WordSearchTest> {
       ],
     ));
   }
+}
+
+class SearchBarTest extends StatefulWidget {
+  const SearchBarTest({
+    Key? key,
+    required this.searchBarController,
+  }) : super(key: key);
+
+  final TextEditingController searchBarController;
+
+  @override
+  State<SearchBarTest> createState() => _SearchBarTestState();
+}
+
+class _SearchBarTestState extends State<SearchBarTest> {
+  // List<String> autocompleteTerms = <String>[
+  //   "cdkshfds",
+  //   "klgfdhjgdflsk",
+  //   "fhdasfhsl"
+  // ];
+  List<String> autocompleteTerms = <String>[];
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      // mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        //Autocomnplete
+        // autocompleteTerms.isNotEmpty
+        //     ? Container(
+        //         width: double.infinity,
+        //         color: Colors.red.withOpacity(0.8),
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: getAutocompleteWidgets(autocompleteTerms, "nono"),
+        //         ),
+        //       )
+        //     : const SizedBox(
+        //         child: Text("dfd"),
+        //       ),
+        Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 120),
+            alignment: Alignment.bottomCenter,
+            // child: GlassMorphism(
+            //   start: 0.9,
+            //   end: 0.6,
+            // child: BackdropFilter(
+            //   filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: Container(
+              width: double.infinity,
+              height: autocompleteTerms.isEmpty ? 0 : null,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor.withOpacity(0.8),
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(14),
+                      bottomRight: Radius.circular(14)),
+                  border: Border.all(color: Colors.blue, width: 0.5)),
+              child: AnimatedSize(
+                alignment: Alignment.topCenter,
+                duration: const Duration(milliseconds: 120),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 26, 8, 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: getAutocompleteWidgets(autocompleteTerms, "nono"),
+                  ),
+                ),
+              ),
+            ),
+            // ),
+            // ),
+          ),
+        ),
+        SearchBarTextFormField(
+          searchBarController: widget.searchBarController,
+          onChange: (search) {
+            EasyDebounce.debounce(
+                'searchbar', // <-- An ID for this particular debouncer
+                const Duration(milliseconds: 500), // <-- The debounce duration
+                () async {
+              // List<String> autocompleteTermsTemp =
+              //     await getAutocompleteSearchTerms(search);
+              // print("Autocomplete Terms: " + autocompleteTermsTemp.toString());
+              // setState(() {
+              //   autocompleteTerms = autocompleteTermsTemp;
+              // });
+              if (search.isNotEmpty) {
+                if (int.parse(search) == 1) {
+                  autocompleteTerms = <String>["cdkshfds"];
+                } else if (int.parse(search) == 2) {
+                  autocompleteTerms = <String>["cdkshfds", "klgfdhjgdflsk"];
+                } else if (int.parse(search) == 3) {
+                  autocompleteTerms = <String>[
+                    "cdkshfds",
+                    "klgfdhjgdflsk",
+                    "fhdasfhsl"
+                  ];
+                } else {
+                  autocompleteTerms = <String>[];
+                }
+              } else {
+                autocompleteTerms = <String>[];
+              }
+
+              setState(() {});
+            });
+          },
+        ),
+      ],
+    );
+  }
+}
+
+List<Widget> getAutocompleteWidgets(
+    List<String> autocompleteTerms, String search) {
+  List<Widget> widgets = <Widget>[];
+
+  if (search.isNotEmpty) {
+    for (int i = 0; i < autocompleteTerms.length; i++) {
+      widgets.add(
+        SubstringHighlight(
+          text: autocompleteTerms
+              .elementAt(i), // each string needing highlighting
+          term: search, // user typed "m4a"
+          textStyle: const TextStyle(
+            // non-highlight style
+            color: Colors.green,
+          ),
+          textStyleHighlight: const TextStyle(
+            // highlight style
+            color: Colors.blue,
+            decoration: TextDecoration.underline,
+          ),
+        ),
+      );
+      // widgets.add(Text("fdfsfdsf"));
+    }
+  }
+
+  return widgets;
 }
