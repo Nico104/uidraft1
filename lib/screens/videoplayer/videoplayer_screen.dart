@@ -20,16 +20,8 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerState extends State<VideoPlayerScreen> {
   @override
   void initState() {
-    // incrementPostViewsByOne(widget.postId);
-    // createWhatchtimeAnalyticPost(widget.postId);
     super.initState();
   }
-
-  // @override
-  // void dispose() {
-  //   print("dispose");
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +35,6 @@ class _VideoPlayerState extends State<VideoPlayerScreen> {
                 smallScreen: const Text("smallScreen"),
                 mediumScreen: const Text("mediumScreen"),
                 largeScreen: Material(
-                  // child: Stack(
-                  //   alignment: Alignment.topCenter,
-                  //   // children: [ChapterVideoPlayer(), const NavBarLargeProfile()],
-                  //   children: const [VideoPlayerHome(), NavBarLargeProfile()],
-                  // ),
                   child: VideoPlayerHome(
                     postData: snapshot.data!,
                     firtTimeExternAccess: widget.firtTimeExternAccess,

@@ -147,7 +147,8 @@ class _FeedGridState extends State<FeedGrid> {
                 children: [
                   const Text("There was an error while loading your Feed"),
                   OutlinedButton(
-                      onPressed: () => fetchPostIds(),
+                      onPressed: () =>
+                          fetchPostIds().then((value) => setState(() {})),
                       child: const Text("Reload Feed"))
                 ],
               )

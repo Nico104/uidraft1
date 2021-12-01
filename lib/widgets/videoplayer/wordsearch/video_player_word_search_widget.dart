@@ -5,17 +5,22 @@ import 'package:flutter/rendering.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
 
 class VideoPlayerWordSearchLarge extends StatefulWidget {
-  const VideoPlayerWordSearchLarge(
-      {Key? key,
-      required this.postId,
-      required this.seekToSecond,
-      required this.pos})
-      : super(key: key);
+  const VideoPlayerWordSearchLarge({
+    Key? key,
+    required this.postId,
+    required this.seekToSecond,
+    required this.pos,
+    required this.animateToScript,
+    required this.openDefintion,
+  }) : super(key: key);
 
   final Function(double) seekToSecond;
   final int postId;
 
   final Duration pos;
+
+  final Function() animateToScript;
+  final Function(String) openDefintion;
 
   @override
   _VideoPlayerWordSearchLargeState createState() =>
@@ -78,6 +83,8 @@ class _VideoPlayerWordSearchLargeState
                 seekToSecond: (id) => widget.seekToSecond.call(id),
                 pos: widget.pos,
                 scrollController: _scrollController,
+                animateToScript: widget.animateToScript,
+                openDefintion: widget.openDefintion,
               ),
             ),
           )
@@ -92,12 +99,17 @@ class AllWordsWrap extends StatefulWidget {
     required this.seekToSecond,
     required this.pos,
     required this.scrollController,
+    required this.animateToScript,
+    required this.openDefintion,
   }) : super(key: key);
 
   final List<Map<String, dynamic>> words;
   final Function(double) seekToSecond;
 
   final Duration pos;
+
+  final Function() animateToScript;
+  final Function(String) openDefintion;
 
   final ScrollController scrollController;
 
@@ -109,6 +121,8 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
   GlobalKey key = GlobalKey();
   bool _tempDeactivateAutoScroll = false;
 
+  String tappedStartTime = "";
+
   @override
   @mustCallSuper
   @protected
@@ -116,14 +130,6 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
     super.didUpdateWidget(oldWidget);
     scrollToActiveWord();
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // // Context is null
-  //   scrollToActiveWord();
-  //   print("initS2");
-  // }
 
   void scrollToActiveWord() {
     if (key.currentContext != null && !_tempDeactivateAutoScroll) {
@@ -172,8 +178,17 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
               Text.rich(
                 TextSpan(
                     // default text style
-                    children: getWords(widget.words, widget.pos,
-                        widget.seekToSecond, widget.scrollController, key)),
+                    children: getWords(
+                  widget.words,
+                  widget.pos,
+                  widget.seekToSecond,
+                  widget.scrollController,
+                  key,
+                  tappedStartTime,
+                  (time) => setTappedStartTime.call(time),
+                  widget.animateToScript,
+                  widget.openDefintion,
+                )),
               ),
             ],
           ),
@@ -182,28 +197,70 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
       ),
     );
   }
+
+  void setTappedStartTime(String time) {
+    setState(() {
+      tappedStartTime = time;
+    });
+  }
 }
 
 TextSpan getWord(
-    Map<String, dynamic> word, Duration pos, Function(double) seekToSecond) {
+  Map<String, dynamic> word,
+  Duration pos,
+  Function(double) seekToSecond,
+  String tappedStartTime,
+  Function(String) setTappedStartTime,
+  Function(String) openDefintion,
+) {
+  DoubleTapGestureRecognizer _gesture = DoubleTapGestureRecognizer();
+  _gesture.onDoubleTap = () => print("DoubleTap");
+  _gesture.onDoubleTapCancel = () => print("OneTap");
+  _gesture.onDoubleTapDown = (_) => print("DoubleDown");
+
+  var _gesture2 = TapGestureRecognizer();
+  _gesture2.onTap = () {
+    if (tappedStartTime == word['start']) {
+      EasyDebounce.cancel('tap');
+      setTappedStartTime("");
+      //Execute when double tapped
+      print("DoubleTap");
+      openDefintion.call(word['word']);
+    } else {
+      setTappedStartTime(word['start']);
+      EasyDebounce.cancel('tap');
+      EasyDebounce.debounce('tap', const Duration(milliseconds: 250), () {
+        setTappedStartTime("");
+        //Execute when single tapped
+        seekToSecond.call(double.parse(word['start']));
+      });
+    }
+  };
+
   return TextSpan(
     text: word['word'],
     style: (pos.inMilliseconds / 1000 > double.parse(word['start']))
         ? const TextStyle(fontSize: 16, color: Colors.purple)
         : const TextStyle(fontSize: 16, color: Colors.white),
-    recognizer: TapGestureRecognizer()
-      ..onTap = () => seekToSecond.call(double.parse(word['start'])),
+    // recognizer: TapGestureRecognizer()
+    //   ..onTap = () => seekToSecond.call(double.parse(word['start'])),
+    recognizer: _gesture2,
   );
 }
 
 List<InlineSpan> getWords(
-    List<Map<String, dynamic>> words,
-    Duration pos,
-    Function(double) seekToSecond,
-    ScrollController scrollController,
-    GlobalKey key) {
+  List<Map<String, dynamic>> words,
+  Duration pos,
+  Function(double) seekToSecond,
+  ScrollController scrollController,
+  GlobalKey key,
+  String getTappedStartTime,
+  Function(String) setTappedStartTime,
+  Function() animateToScript,
+  Function(String) openDefintion,
+) {
   bool _keyGiven = false;
-  print("generate list");
+  // print("generate list");
   List<InlineSpan> wordList = [];
   for (int i = 0; i < words.length; i++) {
     if (pos.inMilliseconds / 1000 < double.parse(words.elementAt(i)['start']) &&
@@ -215,9 +272,20 @@ List<InlineSpan> getWords(
         ),
       ));
       _keyGiven = true;
-      print("Key given to: " + words.elementAt(i)['word']);
+      // print("Key given to: " + words.elementAt(i)['word']);
     }
-    wordList.add(getWord(words.elementAt(i), pos, seekToSecond));
+    //  else {
+    //   wordList.add(WidgetSpan(
+    //     child: GestureDetector(
+    //       onDoubleTap: () => print("double TAP!"),
+    //       child: SizedBox.fromSize(
+    //         size: Size.zero,
+    //       ),
+    //     ),
+    //   ));
+    // }
+    wordList.add(getWord(words.elementAt(i), pos, seekToSecond,
+        getTappedStartTime, setTappedStartTime, openDefintion));
   }
 
   return wordList;

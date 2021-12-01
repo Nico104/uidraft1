@@ -12,6 +12,7 @@ import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
+import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
 import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
@@ -1070,12 +1071,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                         padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
                         child: Column(
                           children: [
-                            WordSearchLarge(
-                              pos: pos,
-                              postId: widget.postData['postId'],
-                              seekToSecond: (sec) => seekToSecond.call(sec),
-                            ),
-                            const SizedBox(height: 28),
+                            (widget.postData['postTranscript'] != null)
+                                ? Column(
+                                    children: [
+                                      WordSearchLarge(
+                                        pos: pos,
+                                        postId: widget.postData['postId'],
+                                        seekToSecond: (sec) =>
+                                            seekToSecond.call(sec),
+                                      ),
+                                      const SizedBox(height: 28),
+                                    ],
+                                  )
+                                : const Text("There is no transcript bro"),
                             //Todo wieder eini tean fir video recommendations
                             // VideoPlayerVideosLargeScreen(
                             //     setSkipToId: (id) => setSkipToId.call(id)),
@@ -1089,10 +1097,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                             .globalKey.currentState !=
                                         null) {
                                       if (WordSearchLarge
-                                          .globalKey.currentState!
-                                          .getShowWords()) {
+                                              .globalKey.currentState!
+                                              .getShowWords() !=
+                                          WordMode.closed) {
                                         WordSearchLarge.globalKey.currentState!
-                                            .initiateAnimation();
+                                            .animateToClosed();
                                       }
                                     }
                                   }

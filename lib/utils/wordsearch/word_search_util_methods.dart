@@ -4,6 +4,7 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:http/http.dart' as http;
 
 enum ScrollPressMethod { smallUp, smallDown, start, end }
+enum WordMode { closed, script, definition }
 
 Future<List<Map<String, dynamic>>> fetchAllWords(int postId) async {
   final response =
