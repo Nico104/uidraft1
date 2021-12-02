@@ -5,7 +5,7 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 
 enum Menu { none, menu, notification, customfeed, options }
 
-//Get Comment Data by Id
+///Returns the number count of unseen notifications the logged in User has
 Future<int> getMyUnseenNotificationCount() async {
   String? token = await getToken();
   final response = await http.get(
@@ -22,21 +22,4 @@ Future<int> getMyUnseenNotificationCount() async {
 
   int result = json.decode(response.body)['_count']['userNotificationId'];
   return result;
-  // if (response.statusCode == 200) {
-  //   List<Map<String, dynamic>> notifications = <Map<String, dynamic>>[];
-  //   List<dynamic> values = <dynamic>[];
-  //   values = json.decode(response.body);
-  //   if (values.isNotEmpty) {
-  //     for (int i = 0; i < values.length; i++) {
-  //       if (values[i] != null) {
-  //         Map<String, dynamic> map = values[i];
-  //         notifications.add(map);
-  //       }
-  //     }
-  //   }
-  //   return notifications;
-  // } else {
-  //   // If that call was not successful, throw an error.
-  //   throw Exception('Failed to load notifications');
-  // }
 }

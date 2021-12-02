@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
-//Send Comment
+///posts a comment to the post with [postId]
+///and a comment text of [commentText]
 Future<void> sendComment(int postId, String commentText) async {
   var url = Uri.parse(baseURL + 'comment/createComment_CommentAnaytics');
   String? token = await getToken();
@@ -26,6 +27,7 @@ Future<void> sendComment(int postId, String commentText) async {
   }
 }
 
+///Fetches all comment IDs without parents (top lvel comments) of post with [postId]
 Future<List<int>> fetchPostComments(int postId) async {
   try {
     final response = await http.get(

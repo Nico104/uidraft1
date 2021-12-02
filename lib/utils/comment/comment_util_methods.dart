@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
-//Get Comment Data by Id
+///Fetches all display data of the comment with commentId [id]
 Future<Map<String, dynamic>> fetchCommentData(int id) async {
   final response =
       await http.get(Uri.parse(baseURL + 'comment/getCommentData/$id'));
@@ -22,7 +22,10 @@ Future<Map<String, dynamic>> fetchCommentData(int id) async {
   }
 }
 
-//Send Comment Reply
+//TODO postId is not needed since there is only one comment with id [parentCommentId]
+
+///posts a comment reply to the comment with commentId [parentCommentId]
+///and a comment text of [commentText]
 Future<void> sendReplyComment(
     int postId, int parentCommentId, String commentText) async {
   var url =
@@ -49,7 +52,8 @@ Future<void> sendReplyComment(
   }
 }
 
-//Get Comment Data by Id
+///Fetches all comment IDs which have the comment
+///with commentId [commentId] as parent
 Future<List<int>> getSubCommentIds(int commentId) async {
   try {
     final response = await http
@@ -77,7 +81,8 @@ Future<List<int>> getSubCommentIds(int commentId) async {
   }
 }
 
-//rates a Comment (like, dislike, superlike, superdislike)
+//TODO Slider Rating
+///rates a Comment (like, dislike, superlike, superdislike)
 Future<void> rateComment(int commentId, String rating) async {
   try {
     String? token = await getToken();
@@ -177,7 +182,7 @@ Future<int> getUserCommentRating(int commentId) async {
   }
 }
 
-//Get Comment RatingScore
+///Returns the Rating Score of the comment with commentId [commentId]
 Future<int> getCommentRatingScore(int commentId) async {
   final response = await http.get(Uri.parse(
       'http://localhost:3000/comment/getCommentRatingScore/$commentId'));

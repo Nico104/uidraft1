@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+///Cuts [word] of after every ' or .
 String prepareWord(String word) {
   if (word.contains(".")) {
     word = word.substring(0, word.indexOf('.'));
@@ -11,7 +12,7 @@ String prepareWord(String word) {
   return word;
 }
 
-//Get Word Definition
+///Return all available Dictionary Data for the word [word]
 Future<Map<String, dynamic>> getDefinition(String word) async {
   if (word.isNotEmpty) {
     Uri uri =

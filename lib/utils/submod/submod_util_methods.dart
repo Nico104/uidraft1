@@ -6,6 +6,19 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 
 enum SubModData { none, banner, picture, about }
 
+///Fetches all members of subchannel [subchannel]
+///which contain [search]
+///by [method]
+///1: Members of [subchannel]
+///2: Posters(have posted at least one in [subchannel])
+///3: Mods of [subchannel]
+///4: Banned from [subchannel]
+///
+///[handleUsername] is executed for every returned User and handles the User accordingly to the Method passed
+///
+///Returns 0 on success and 1 on error
+///
+///might night a retouch and return the Users directly
 Future<int> fetchMembersBy(String search, int method, String subchannelname,
     Function(String, String, bool, bool) handleUserName) async {
   print("Method: " + method.toString());
@@ -70,9 +83,6 @@ Future<int> fetchMembersBy(String search, int method, String subchannelname,
           }
         }
       }
-      // setState(() {
-      //   _loading = false;
-      // });
       return 0;
     } else {
       throw Exception('Failed to load members');
@@ -83,6 +93,10 @@ Future<int> fetchMembersBy(String search, int method, String subchannelname,
   }
 }
 
+///Retrun all User Data of user [username] a SUbMod is allowed to see
+///including comments
+///
+///[subchannelname] is the subchannel Name of the current SubMod Menu
 Future<Map<String, dynamic>> getSubModUserData(
     String username, String subchannelname) async {
   try {
@@ -95,9 +109,6 @@ Future<Map<String, dynamic>> getSubModUserData(
         'Authorization': 'Bearer $token',
       },
     );
-
-    // print(response.statusCode);
-    // print(response.body);
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);
       if (map.isNotEmpty) {
@@ -106,7 +117,6 @@ Future<Map<String, dynamic>> getSubModUserData(
         throw Exception('Failed to load userdata');
       }
     } else {
-      // If that call was not successful, throw an error.
       throw Exception('Failed to load userdata');
     }
   } catch (e) {
@@ -115,6 +125,7 @@ Future<Map<String, dynamic>> getSubModUserData(
   }
 }
 
+///Bans the user [username] from the Sucbahnnel [subchannelname]
 Future<void> banUser(String username, String subchannelname) async {
   try {
     String? token = await getToken();
@@ -137,6 +148,7 @@ Future<void> banUser(String username, String subchannelname) async {
   }
 }
 
+///Unbans the user [username] from the Sucbahnnel [subchannelname]
 Future<void> unbanUser(String username, String subchannelname) async {
   try {
     String? token = await getToken();
@@ -160,6 +172,7 @@ Future<void> unbanUser(String username, String subchannelname) async {
   }
 }
 
+///Makes the user [username] a Mod of the Subchannel [subchannelname]
 Future<void> makeUserSubchannelMod(
     String username, String subchannelname) async {
   try {
@@ -184,6 +197,7 @@ Future<void> makeUserSubchannelMod(
   }
 }
 
+///Removes the Mod status of user [username] from the Subchannel [subchannelName]
 Future<void> removeUserSubchannelMod(
     String username, String subchannelname) async {
   try {
@@ -208,6 +222,9 @@ Future<void> removeUserSubchannelMod(
   }
 }
 
+///Whitelists the Post with postId [postId]
+///making the Post not showing up as a reported Post again,
+///regardless if it received new reports
 Future<void> whiteListPost(int postId) async {
   try {
     String? token = await getToken();
@@ -228,6 +245,7 @@ Future<void> whiteListPost(int postId) async {
   }
 }
 
+///Unvlidates all Reports the Post with postId [postId] received
 Future<void> removePostReports(int postId) async {
   try {
     String? token = await getToken();
@@ -248,6 +266,7 @@ Future<void> removePostReports(int postId) async {
   }
 }
 
+///Updates the Subchannel [subchannelname] picture with [picture]
 Future<void> updateSubchannelPicture(
     String subchannelname, Uint8List picture) async {
   var url = Uri.parse(
@@ -265,11 +284,10 @@ Future<void> updateSubchannelPicture(
     //   'png',
     // )
   ));
-
-  // print(request.send());
   request.send();
 }
 
+///Updates the Subchannel [subchannelname] banner with [banner]
 Future<void> updateSubchannelBanner(
     String subchannelname, Uint8List banner) async {
   var url = Uri.parse(
@@ -287,13 +305,12 @@ Future<void> updateSubchannelBanner(
     //   'png',
     // )
   ));
-
-  // print(request.send());
   request.send();
 }
 
+///Updates the Subchannel [subchannelname] About Text with [abouttext]
 Future<void> updateSubchannelAboutText(
-    String subchannelname, String aboutext) async {
+    String subchannelname, String abouttext) async {
   try {
     String? token = await getToken();
     final response = await http.patch(
@@ -303,7 +320,7 @@ Future<void> updateSubchannelAboutText(
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: json.encode(<String, String>{"aboutText": aboutext}));
+        body: json.encode(<String, String>{"aboutText": abouttext}));
 
     print(response.statusCode);
     print(response.body);
@@ -313,7 +330,9 @@ Future<void> updateSubchannelAboutText(
   }
 }
 
-//Get Reported PostIds List
+///Fetches all Posts of Subchannel [subchannelname] with UNHANDLED Reports
+///filtered by [search]
+///sorted by reports
 Future<List<int>> fetchReportedPostIds(
     String subchannelname, String search) async {
   try {
@@ -345,6 +364,7 @@ Future<List<int>> fetchReportedPostIds(
   }
 }
 
+///Fetches all SubMod Menu Metrics of Post with postId [id]
 Future<Map<String, dynamic>> getSubModPostMetrics(int id) async {
   try {
     String? token = await getToken();
@@ -376,7 +396,9 @@ Future<Map<String, dynamic>> getSubModPostMetrics(int id) async {
   }
 }
 
-//Send Announcement to All Memebrs
+///Sends an Announcement Notification to all Members of Subchannel [subchannelName]
+///with Notification Title [title]
+///and Notification Text [notificationText]
 Future<void> sendAnnouncementToMembers(
     String subchannelName, String title, String notificationText) async {
   String? token = await getToken();

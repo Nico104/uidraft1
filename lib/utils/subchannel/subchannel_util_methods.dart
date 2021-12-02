@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
-//Enter Subchannel
+///turns the logged in User into a Member of the Subchannel [subchannel]
 Future<void> enterSubchannel(String subchannelName) async {
   String? token = await getToken();
   final response = await http.patch(
@@ -19,7 +18,7 @@ Future<void> enterSubchannel(String subchannelName) async {
   print(response.body);
 }
 
-//Leave Subchannel
+///removes the logged in User from the Subchannel [subchannel]
 Future<void> leaveSubchannel(String subchannelName) async {
   String? token = await getToken();
   final response = await http.patch(
@@ -35,7 +34,8 @@ Future<void> leaveSubchannel(String subchannelName) async {
   print(response.body);
 }
 
-//Leave Subchannel
+///Returns true if the logged in User is a Member of the subchannel [subchannel]
+///or false if the logged in User is not
 Future<bool> isMember(String subchannelName) async {
   String? token = await getToken();
   final response = await http.get(
@@ -46,9 +46,6 @@ Future<bool> isMember(String subchannelName) async {
       'Authorization': 'Bearer $token',
     },
   );
-
-  // print(response.statusCode);
-  // print("isMember: " + response.body);
   if (response.statusCode == 200) {
     if (response.body.isNotEmpty) {
       print("Yes is a member");
@@ -63,6 +60,8 @@ Future<bool> isMember(String subchannelName) async {
   }
 }
 
+///Returns true if the logged in User is a Mod of the subchannel [subchannel]
+///or false if the logged in User is not
 Future<bool> isMod(String subchannelName) async {
   String? token = await getToken();
   final response = await http.get(
@@ -73,9 +72,6 @@ Future<bool> isMod(String subchannelName) async {
       'Authorization': 'Bearer $token',
     },
   );
-
-  // print(response.statusCode);
-  // print("isMember: " + response.body);
   if (response.statusCode == 200) {
     return response.body.toLowerCase() == 'true';
   } else {
@@ -83,114 +79,3 @@ Future<bool> isMod(String subchannelName) async {
     return false;
   }
 }
-
-
-
-//   print("Status Code: " + response.statusCode.toString());
-//   print(response.body);
-//   if (response.statusCode == 200) {
-//     List<Map<String, dynamic>> notifications = <Map<String, dynamic>>[];
-//     List<dynamic> values = <dynamic>[];
-//     values = json.decode(response.body);
-//     if (values.isNotEmpty) {
-//       for (int i = 0; i < values.length; i++) {
-//         if (values[i] != null) {
-//           Map<String, dynamic> map = values[i];
-//           notifications.add(map);
-//         }
-//       }
-//     }
-//     return notifications;
-//   } else {
-//     // If that call was not successful, throw an error.
-//     throw Exception('Failed to load notifications');
-//   }
-// }
-
-// //Send Message to User
-// Future<void> sendMessageToUser(
-//     String toUsername, String notificationText) async {
-//   String? token = await getToken();
-//   final response = await http.post(
-//       Uri.parse(baseURL + 'user/createUserNotification'),
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Accept': 'application/json',
-//         'Authorization': 'Bearer $token',
-//       },
-//       body: json.encode(<String, String>{
-//         "toUsername": toUsername,
-//         "notificationtext": notificationText
-//       }));
-
-//   print("Status Code: " + response.statusCode.toString());
-//   print(response.body);
-// }
-
-// //Get Comment Data by Id
-// Future<List<Map<String, dynamic>>> fetchConversationWithUser(
-//     String username) async {
-//   String? token = await getToken();
-//   final response = await http.get(
-//     Uri.parse(baseURL + 'user/getConversationWithUser/$username'),
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Accept': 'application/json',
-//       'Authorization': 'Bearer $token',
-//     },
-//   );
-
-//   print("Status Code: " + response.statusCode.toString());
-//   print(response.body);
-//   if (response.statusCode == 200) {
-//     List<Map<String, dynamic>> notifications = <Map<String, dynamic>>[];
-//     List<dynamic> values = <dynamic>[];
-//     values = json.decode(response.body);
-//     if (values.isNotEmpty) {
-//       for (int i = 0; i < values.length; i++) {
-//         if (values[i] != null) {
-//           Map<String, dynamic> map = values[i];
-//           notifications.add(map);
-//         }
-//       }
-//     }
-//     return notifications;
-//   } else {
-//     // If that call was not successful, throw an error.
-//     throw Exception('Failed to load conversation');
-//   }
-// }
-
-// //See Notification
-// Future<void> seeNotification(int notiId) async {
-//   print("NotiId: " + notiId.toString());
-//   // String? token = await getToken();
-//   final response = await http.patch(
-//     Uri.parse(baseURL + 'user/seeNotification/$notiId'),
-//     // headers: {
-//     //   'Content-Type': 'application/json',
-//     //   'Accept': 'application/json',
-//     //   'Authorization': 'Bearer $token',
-//     // },
-//   );
-
-//   print("Status Code: " + response.statusCode.toString());
-//   print(response.body);
-//   // if (response.statusCode == 200) {
-//   //   List<Map<String, dynamic>> notifications = <Map<String, dynamic>>[];
-//   //   List<dynamic> values = <dynamic>[];
-//   //   values = json.decode(response.body);
-//   //   if (values.isNotEmpty) {
-//   //     for (int i = 0; i < values.length; i++) {
-//   //       if (values[i] != null) {
-//   //         Map<String, dynamic> map = values[i];
-//   //         notifications.add(map);
-//   //       }
-//   //     }
-//   //   }
-//   //   return notifications;
-//   // } else {
-//   //   // If that call was not successful, throw an error.
-//   //   throw Exception('Failed to load conversation');
-//   // }
-// }

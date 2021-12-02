@@ -141,7 +141,7 @@ Future<int> getPostRatingData(int id, String ratingType) async {
   }
 }
 
-//Get Post  Data by Id
+///Retunr all Data needed to display and play the post with postId [postId]
 Future<Map<String, dynamic>> fetchPostData(int id) async {
   final response =
       await http.get(Uri.parse('http://localhost:3000/post/getPost/$id'));
@@ -173,7 +173,9 @@ Future<int> getPostRatingScore(int id) async {
   }
 }
 
-//Create Whatchtime analytics
+///Creates a whatchtime Analytics DB entry for the post with postId [postId]
+///and a whatchtime of [postWT]
+///passes also the User if one is logged in
 Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
   if (await isAuthenticated() == 200) {
     try {
@@ -217,7 +219,9 @@ Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
   }
 }
 
-//Create Sharing analytics
+///Creates a sharing Analytics DB entry for the post with postId [postId]
+///and a sharing type of [sharingType], which can be either
+///copy of the postlink or standard share
 Future<void> createSharingAnalyticPost(
     int postId, SharingType sharingtype) async {
   int sharetypeint;
@@ -269,7 +273,7 @@ Future<void> createSharingAnalyticPost(
   }
 }
 
-//reports a Post
+///Reports the Post with postId [postId]
 Future<void> reportPost(int postId) async {
   print("report");
   try {
@@ -292,7 +296,8 @@ Future<void> reportPost(int postId) async {
   }
 }
 
-//Get User Post Rating
+///Return 1 if the logged in User already reported the Post with postId [postId]
+///or 0 if the logged in User has not
 Future<int> getUserPostReport(int postId) async {
   try {
     String? token = await getToken();
@@ -308,7 +313,6 @@ Future<int> getUserPostReport(int postId) async {
       if (response.body.isNotEmpty) {
         return 1;
       } else {
-        // print("empty rating");
         return 0;
       }
     } else {

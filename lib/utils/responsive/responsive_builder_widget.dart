@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+///Widget wich switches Screens based on Screen Width
+///
+///shows [smallScreen] for a Screen smaller than 800
+///shows [mediumScreen] for a Screen between 1200 and 800
+///shows [largeScreen] for a Screen between 1920 and 1200
+///shows [veryLargeScreen] for a Screen larger than 1920
 class ResponsiveWidget extends StatelessWidget {
   final Widget veryLargeScreen;
   final Widget largeScreen;

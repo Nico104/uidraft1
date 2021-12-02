@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
-//Get Post  Data by Id
+///Fetches all postId of the posts the logged in User has posted
 Future<List<int>> fetchUserPosts() async {
   String? token = await getToken();
   final response =
@@ -31,12 +31,11 @@ Future<List<int>> fetchUserPosts() async {
     }
     return posts;
   } else {
-    // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
   }
 }
 
-//Get PostPreview Data by Id
+///Fetches all Data needed to display the Post with postId [pstId] in the Studio Preview List
 Future<Map<String, dynamic>> fetchPostStudioPreviewData(int id) async {
   final response =
       await http.get(Uri.parse(baseURL + 'post/getPostStudioPreviewData/$id'));
@@ -54,7 +53,7 @@ Future<Map<String, dynamic>> fetchPostStudioPreviewData(int id) async {
   }
 }
 
-//Get PostPreview Data by Id
+///Fetches Metrics needed to display the Post with postId [id] in the Studio View
 Future<Map<String, dynamic>> fetchPostStudioMetrics(int id) async {
   String? token = await getToken();
   final response = await http
@@ -72,12 +71,11 @@ Future<Map<String, dynamic>> fetchPostStudioMetrics(int id) async {
       throw Exception('Failed to load post');
     }
   } else {
-    // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
   }
 }
 
-//Get Post Absolute Whatchtime
+///Returns the absolut Whatchtime the Post with postId [id] has
 Future<int> getPostAbsoluteWhatchtime(int id) async {
   final response =
       await http.get(Uri.parse(baseURL + 'post/getPostAbsoluteWhatchtime/$id'));
@@ -95,7 +93,9 @@ Future<int> getPostAbsoluteWhatchtime(int id) async {
   }
 }
 
-//Get Post Absolute Whatchtime
+///Updates the Posts with postId [id]
+///changes the Post Title to [title]
+///changes the Post Description to [desc]
 Future<void> updatePostData(int id, String title, String desc) async {
   String? token = await getToken();
   final response = await http.patch(
@@ -112,6 +112,8 @@ Future<void> updatePostData(int id, String title, String desc) async {
   print(response.body);
 }
 
+///Updates the Posts with postId [id]
+///changes the Post Thumbnail to [thumbnail]
 Future<void> updatePostThumbnail(int id, Uint8List thumbnail) async {
   var url = Uri.parse('http://localhost:3000/post/updatePostThumbnail/$id');
   String? token = await getToken();
@@ -137,7 +139,9 @@ Future<void> updatePostThumbnail(int id, Uint8List thumbnail) async {
   }
 }
 
-//Upodate Post Publicity
+///Upodate Post with postId [id] Publicity
+///to Public if [isPublic] is true
+///to Archived if [isPublic] is false
 Future<void> updatePostPublicity(int id, bool isPublic) async {
   String dir = "unarchivePost";
   if (isPublic) {
@@ -160,7 +164,7 @@ Future<void> updatePostPublicity(int id, bool isPublic) async {
   print(response.body);
 }
 
-//Delete Post
+///deltes Post with postId [id]
 Future<void> deletePost(int id) async {
   String? token = await getToken();
   final response = await http.patch(

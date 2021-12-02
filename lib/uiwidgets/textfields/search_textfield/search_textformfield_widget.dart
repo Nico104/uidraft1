@@ -2,6 +2,12 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
+/// Return a rounded TextFormField with with a Search Button and a search onFieldSubmit Function
+/// and being themed and decorated accordingly fot the search field
+/// Requires a TextEditingController for [controller],
+/// a FocusNode() for [focusNode]
+///
+/// [onChange] is called when a Key pressed while the SearchBar is focused
 class SearchBarTextFormField extends StatelessWidget {
   const SearchBarTextFormField({
     Key? key,
