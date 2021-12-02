@@ -5,9 +5,11 @@ class WordDefinition extends StatefulWidget {
   const WordDefinition({
     Key? key,
     required this.word,
+    required this.animateToScript,
   }) : super(key: key);
 
   final String word;
+  final Function() animateToScript;
 
   @override
   State<WordDefinition> createState() => _WordDefinitionState();
@@ -33,7 +35,10 @@ class _WordDefinitionState extends State<WordDefinition> {
   Widget getWordDefinition() {
     if (!_loading && _wordDictionary != null) {
       //Word Definition
-      return WordDictionaryItem(wordDictionary: _wordDictionary);
+      return WordDictionaryItem(
+        wordDictionary: _wordDictionary,
+        animateToScript: widget.animateToScript,
+      );
     } else if (_loading) {
       //Loading
       return Column(
@@ -64,72 +69,131 @@ class WordDictionaryItem extends StatelessWidget {
   const WordDictionaryItem({
     Key? key,
     required WordDictionary? wordDictionary,
+    required this.animateToScript,
   })  : _wordDictionary = wordDictionary,
         super(key: key);
 
   final WordDictionary? _wordDictionary;
+  final Function() animateToScript;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 15,
-          ),
-          Text(
-            _wordDictionary!.word,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          _wordDictionary!.phonetic.isNotEmpty
-              ? Column(
-                  children: [
-                    Text(
-                      "phonetic: " + _wordDictionary!.phonetic,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
-                )
-              : const SizedBox(),
-          _wordDictionary!.origin.isNotEmpty
-              ? Column(
-                  children: [
-                    Text(
-                      "origin: " + _wordDictionary!.origin,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
-                )
-              : const SizedBox(),
-          _wordDictionary!.meanings.isNotEmpty
-              ? Column(
-                  children: [
-                    Text(
-                      "Meaning",
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      children: getMeanings(_wordDictionary!.meanings),
-                    )
-                  ],
-                )
-              : const SizedBox(),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // const SizedBox(
+            //   height: 15,
+            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 1,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: InkWell(
+                        onTap: () => animateToScript.call(),
+                        child: const Icon(Icons.arrow_back)),
+                  ),
+                ),
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 3,
+                  child: Text(
+                    _wordDictionary!.word,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: Text(
+                      "english",
+                      textAlign: TextAlign.end,
+                    ))
+              ],
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            //No Font installed for phenitc
+            // _wordDictionary!.phonetic.isNotEmpty
+            //     ? Column(
+            //         children: [
+            //           Text(
+            //             "phonetic: " + _wordDictionary!.phonetic,
+            //             style: const TextStyle(fontSize: 16),
+            //           ),
+            //           const SizedBox(
+            //             height: 15,
+            //           ),
+            //         ],
+            //       )
+            //     : const SizedBox(),
+            _wordDictionary!.origin.isNotEmpty
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: const [
+                              Text(
+                                "Origin: ",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(width: 4),
+                            ],
+                          ),
+                          Expanded(
+                            child: Text(
+                              _wordDictionary!.origin,
+                              style: const TextStyle(fontSize: 16),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 34,
+                      ),
+                    ],
+                  )
+                : const SizedBox(),
+            _wordDictionary!.meanings.isNotEmpty
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          Text(
+                            "Meaning",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: getMeanings(_wordDictionary!.meanings),
+                      )
+                    ],
+                  )
+                : const SizedBox(),
+          ],
+        ),
       ),
     );
   }
@@ -140,8 +204,13 @@ class WordDictionaryItem extends StatelessWidget {
       if (meanings.elementAt(i).partOfSpeech.isNotEmpty) {
         columns.add(
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(meanings.elementAt(i).partOfSpeech),
+              Text(meanings.elementAt(i).partOfSpeech,
+                  style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple)),
               const SizedBox(
                 height: 15,
               ),
@@ -159,13 +228,32 @@ class WordDictionaryItem extends StatelessWidget {
 
   Column getDefinition(Definition definition) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         definition.definition.isNotEmpty
             ? Column(
                 children: [
-                  Text(
-                    "definition: " + definition.definition,
-                    style: const TextStyle(fontSize: 16),
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: const [
+                          Text(
+                            "definition: ",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(width: 4)
+                        ],
+                      ),
+                      Expanded(
+                        child: Text(
+                          definition.definition,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 15,
@@ -176,9 +264,27 @@ class WordDictionaryItem extends StatelessWidget {
         definition.example.isNotEmpty
             ? Column(
                 children: [
-                  Text(
-                    "example: " + definition.example,
-                    style: const TextStyle(fontSize: 16),
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: const [
+                          Text(
+                            "example: ",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(width: 4)
+                        ],
+                      ),
+                      Expanded(
+                        child: Text(
+                          definition.example,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 15,
@@ -188,8 +294,23 @@ class WordDictionaryItem extends StatelessWidget {
             : const SizedBox(),
         definition.synonyms.isNotEmpty
             ? Column(children: [
-                Text("Synonyms"),
-                Column(children: getOnyms(definition.synonyms)),
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Text("Synonyms: ",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold)),
+                        SizedBox(width: 12)
+                      ],
+                    ),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: getOnyms(definition.synonyms)),
+                  ],
+                ),
                 const SizedBox(
                   height: 15,
                 ),
@@ -197,8 +318,21 @@ class WordDictionaryItem extends StatelessWidget {
             : const SizedBox(),
         definition.antonyms.isNotEmpty
             ? Column(children: [
-                Text("Antonym"),
-                Column(children: getOnyms(definition.antonyms)),
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Text("Antonyms: ",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold)),
+                        SizedBox(width: 12)
+                      ],
+                    ),
+                    Column(children: getOnyms(definition.antonyms)),
+                  ],
+                ),
                 const SizedBox(
                   height: 15,
                 ),
@@ -211,7 +345,10 @@ class WordDictionaryItem extends StatelessWidget {
   List<Text> getOnyms(List<String> onyms) {
     List<Text> onytexts = <Text>[];
     for (int i = 0; i < onyms.length; i++) {
-      onytexts.add(Text(onyms.elementAt(i)));
+      onytexts.add(Text(
+        onyms.elementAt(i),
+        textAlign: TextAlign.start,
+      ));
     }
     return onytexts;
   }

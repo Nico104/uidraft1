@@ -283,7 +283,10 @@ class _ScriptState extends State<Script> {
         );
       //Return Definition
       case WordMode.definition:
-        return WordDefinition(word: _word);
+        return WordDefinition(
+          word: _word,
+          animateToScript: widget.animateToScript,
+        );
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
-import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/notfound/not_found_page_large_widget.dart';
 
 class NotFoundScreen extends StatefulWidget {
