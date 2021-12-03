@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:uidraft1/justtest/glassmorphism.dart';
 import 'package:uidraft1/uiwidgets/textfields/search_textfield/search_textformfield_widget.dart';
@@ -86,6 +87,14 @@ class _WordSearchTestState extends State<WordSearchTest> {
             child: SearchBarTest(
               searchBarController: controller,
             ),
+          ),
+        ),
+        // SLiderTestAnimRive
+        const Flexible(
+          flex: 10,
+          child: Padding(
+            padding: EdgeInsets.only(top: 15),
+            child: SLiderTestAnimRive(),
           ),
         ),
         Flexible(
@@ -238,100 +247,135 @@ class _SearchBarTestState extends State<SearchBarTest> {
   // ];
   List<String> autocompleteTerms = <String>[];
 
+  // SMITrigger? _bump;
+  // SMIInput<bool>? _hoverInput;
+
+  // var controller;
+
+  // void _onRiveInit(Artboard artboard) {
+  //   controller = StateMachineController.fromArtboard(artboard, 'files');
+  //   artboard.addController(controller!);
+  //   // _bump = controller.findInput<bool>('onHover') as SMITrigger;
+  //   _hoverInput = controller.findInput('onHover');
+  // }
+
+  // void _hitBump() => _bump?.fire();
+
+  // SMITrigger? _bump;
+  SMIBool? onHover;
+
+  void _onRiveInit(Artboard artboard) {
+    final controller =
+        StateMachineController.fromArtboard(artboard, 'controller');
+    artboard.addController(controller!);
+    // _bump = controller.findInput<bool>('bump') as SMITrigger;
+    onHover = controller.findInput<bool>('onHover') as SMIBool;
+  }
+
+  // void _hitBump() => _bump?.fire();
+  void _changeOnHoverToTrue() => onHover?.change(true);
+  void _changeOnHoverToFalse() => onHover?.change(false);
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      // mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        //Autocomnplete
-        // autocompleteTerms.isNotEmpty
-        //     ? Container(
-        //         width: double.infinity,
-        //         color: Colors.red.withOpacity(0.8),
-        //         child: Column(
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           children: getAutocompleteWidgets(autocompleteTerms, "nono"),
-        //         ),
-        //       )
-        //     : const SizedBox(
-        //         child: Text("dfd"),
-        //       ),
-        //! Check if without Animation better
-        Padding(
-          padding: const EdgeInsets.only(top: 15.0),
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 120),
-            alignment: Alignment.bottomCenter,
-            // child: GlassMorphism(
-            //   start: 0.9,
-            //   end: 0.6,
-            // child: BackdropFilter(
-            //   filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-            child: Container(
-              width: double.infinity,
-              height: autocompleteTerms.isEmpty ? 0 : null,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor.withOpacity(0.8),
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(14),
-                      bottomRight: Radius.circular(14)),
-                  border: Border.all(color: Colors.blue, width: 0.5)),
-              child: AnimatedSize(
-                alignment: Alignment.topCenter,
-                duration: const Duration(milliseconds: 120),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 26, 8, 8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: getAutocompleteWidgets(autocompleteTerms, "nono"),
-                  ),
-                ),
-              ),
-            ),
-            // ),
-            // ),
+    return Center(
+      child: MouseRegion(
+        onHover: (_) => _changeOnHoverToTrue(),
+        onExit: (_) => _changeOnHoverToFalse(),
+        child: GestureDetector(
+          // child: RiveAnimation.network(
+          //   'https://cdn.rive.app/animations/vehicles.riv',
+          //   fit: BoxFit.cover,
+          //   onInit: _onRiveInit,
+          // ),
+          child: RiveAnimation.asset(
+            'assets/animations/rive/hoverAnim.riv',
+            // fit: BoxFit.cover,
+            onInit: _onRiveInit,
           ),
+          // onTap: _hitBump,
         ),
-        SearchBarTextFormField(
-          focusNode: FocusNode(),
-          searchBarController: widget.searchBarController,
-          onChange: (search) {
-            EasyDebounce.debounce(
-                'searchbar', // <-- An ID for this particular debouncer
-                const Duration(milliseconds: 500), // <-- The debounce duration
-                () async {
-              // List<String> autocompleteTermsTemp =
-              //     await getAutocompleteSearchTerms(search);
-              // print("Autocomplete Terms: " + autocompleteTermsTemp.toString());
-              // setState(() {
-              //   autocompleteTerms = autocompleteTermsTemp;
-              // });
-              if (search.isNotEmpty) {
-                if (int.parse(search) == 1) {
-                  autocompleteTerms = <String>["cdkshfds"];
-                } else if (int.parse(search) == 2) {
-                  autocompleteTerms = <String>["cdkshfds", "klgfdhjgdflsk"];
-                } else if (int.parse(search) == 3) {
-                  autocompleteTerms = <String>[
-                    "cdkshfds",
-                    "klgfdhjgdflsk",
-                    "fhdasfhsl"
-                  ];
-                } else {
-                  autocompleteTerms = <String>[];
-                }
-              } else {
-                autocompleteTerms = <String>[];
-              }
-
-              setState(() {});
-            });
-          },
-        ),
-      ],
+      ),
     );
+    // return Stack(
+    //   // crossAxisAlignment: CrossAxisAlignment.start,
+    //   // mainAxisAlignment: MainAxisAlignment.start,
+    //   children: [
+    //     //! Check if without Animation better
+    //     Padding(
+    //       padding: const EdgeInsets.only(top: 15.0),
+    //       child: AnimatedSize(
+    //         duration: const Duration(milliseconds: 120),
+    //         alignment: Alignment.bottomCenter,
+    //         // child: GlassMorphism(
+    //         //   start: 0.9,
+    //         //   end: 0.6,
+    //         // child: BackdropFilter(
+    //         //   filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+    //         child: Container(
+    //           width: double.infinity,
+    //           height: autocompleteTerms.isEmpty ? 0 : null,
+    //           decoration: BoxDecoration(
+    //               color: Theme.of(context).canvasColor.withOpacity(0.8),
+    //               borderRadius: const BorderRadius.only(
+    //                   bottomLeft: Radius.circular(14),
+    //                   bottomRight: Radius.circular(14)),
+    //               border: Border.all(color: Colors.blue, width: 0.5)),
+    //           child: AnimatedSize(
+    //             alignment: Alignment.topCenter,
+    //             duration: const Duration(milliseconds: 120),
+    //             child: Padding(
+    //               padding: const EdgeInsets.fromLTRB(8, 26, 8, 8),
+    //               child: Column(
+    //                 mainAxisSize: MainAxisSize.min,
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: getAutocompleteWidgets(autocompleteTerms, "nono"),
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //         // ),
+    //         // ),
+    //       ),
+    //     ),
+    //     SearchBarTextFormField(
+    //       focusNode: FocusNode(),
+    //       searchBarController: widget.searchBarController,
+    //       onChange: (search) {
+    //         EasyDebounce.debounce(
+    //             'searchbar', // <-- An ID for this particular debouncer
+    //             const Duration(milliseconds: 500), // <-- The debounce duration
+    //             () async {
+    //           // List<String> autocompleteTermsTemp =
+    //           //     await getAutocompleteSearchTerms(search);
+    //           // print("Autocomplete Terms: " + autocompleteTermsTemp.toString());
+    //           // setState(() {
+    //           //   autocompleteTerms = autocompleteTermsTemp;
+    //           // });
+    //           if (search.isNotEmpty) {
+    //             if (int.parse(search) == 1) {
+    //               autocompleteTerms = <String>["cdkshfds"];
+    //             } else if (int.parse(search) == 2) {
+    //               autocompleteTerms = <String>["cdkshfds", "klgfdhjgdflsk"];
+    //             } else if (int.parse(search) == 3) {
+    //               autocompleteTerms = <String>[
+    //                 "cdkshfds",
+    //                 "klgfdhjgdflsk",
+    //                 "fhdasfhsl"
+    //               ];
+    //             } else {
+    //               autocompleteTerms = <String>[];
+    //             }
+    //           } else {
+    //             autocompleteTerms = <String>[];
+    //           }
+
+    //           setState(() {});
+    //         });
+    //       },
+    //     ),
+    //   ],
+    // );
   }
 }
 
@@ -367,4 +411,60 @@ List<Widget> getAutocompleteWidgets(
   }
 
   return widgets;
+}
+
+class SLiderTestAnimRive extends StatefulWidget {
+  const SLiderTestAnimRive({Key? key}) : super(key: key);
+
+  @override
+  _SLiderTestAnimRiveState createState() => _SLiderTestAnimRiveState();
+}
+
+class _SLiderTestAnimRiveState extends State<SLiderTestAnimRive> {
+  SMINumber? _level;
+  double _value = 10;
+
+  void _onRiveInit(Artboard artboard) {
+    final controller =
+        StateMachineController.fromArtboard(artboard, 'State Machine');
+    artboard.addController(controller!);
+    // _bump = controller.findInput<bool>('bump') as SMITrigger;
+    _level = controller.findInput<double>('Level') as SMINumber;
+    _level!.change(10);
+    // _level!.change(10);
+    // _level!.value = 10;
+  }
+
+  @override
+  void initState() {
+    // _level!.change(10);
+    super.initState();
+  }
+
+  // void _hitBump() => _bump?.fire();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 800,
+          child: RiveAnimation.asset(
+            'assets/animations/rive/water_bar_demo.riv',
+            fit: BoxFit.cover,
+            onInit: _onRiveInit,
+          ),
+        ),
+        const SizedBox(height: 15),
+        Slider(
+            min: 0,
+            max: 100,
+            value: _value,
+            onChanged: (val) => setState(() {
+                  _value = val;
+                  _level!.change(val);
+                }))
+      ],
+    );
+  }
 }

@@ -91,6 +91,8 @@ flutter:
   assets:
     - assets/animations/rive/space_coffee.riv
     - assets/animations/rive/68-95-pull-to-refresh-halloween.riv
+    - assets/animations/rive/hoverAnim.riv
+    - assets/animations/rive/water_bar_demo.riv
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
