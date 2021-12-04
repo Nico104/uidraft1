@@ -8,10 +8,10 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/profile/profile_utils_methods.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/widgets/message/write_message_large_dialog.dart';
 
-import 'profile_video_preview_large_widget.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
 import 'dart:html' as html;
@@ -213,66 +213,160 @@ class _ProfileState extends State<Profile> {
                                                     .brandColor),
                                           ),
                                           //Follow Button
-                                          !snapshotMe.data![0]
+                                          (!snapshotMe.data![0] &&
+                                                  snapshotMe.data![1] == 200)
                                               ? SizedBox(
                                                   width: 160,
                                                   height: 35,
-                                                  child: (!_isFollowing)
-                                                      ? TextButton(
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
+                                                  child: FutureBuilder(
+                                                    future: isFollowingCreator(
+                                                        widget.profileData[
+                                                            'username']),
+                                                    builder: (BuildContext
+                                                            context,
+                                                        AsyncSnapshot<bool>
+                                                            snapshotIsFollowing) {
+                                                      if (snapshotIsFollowing
+                                                          .hasData) {
+                                                        if (snapshotIsFollowing
+                                                            .data!) {
+                                                          //Is Following
+                                                          return OutlinedButton(
+                                                            style:
+                                                                OutlinedButton
+                                                                    .styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
                                                                             30.0),
-                                                                  ),
-                                                                  backgroundColor: Theme.of(
+                                                              ),
+                                                              side: BorderSide(
+                                                                  width: 2,
+                                                                  color: Theme.of(
                                                                           context)
                                                                       .colorScheme
                                                                       .brandColor),
-                                                          onPressed: () {},
-                                                          child: Text(
-                                                            'Follow',
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    'Segoe UI Black',
-                                                                fontSize: 18,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .canvasColor),
-                                                          ),
-                                                        )
-                                                      : OutlinedButton(
-                                                          style: OutlinedButton
-                                                              .styleFrom(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          30.0),
                                                             ),
-                                                            side: BorderSide(
-                                                                width: 2,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .brandColor),
-                                                          ),
-                                                          onPressed: () {},
-                                                          child: Text(
-                                                            'Followed',
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    'Segoe UI',
-                                                                fontSize: 18,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .brandColor),
-                                                          ),
-                                                        ))
+                                                            onPressed: () => unfollowUser(
+                                                                    widget.profileData[
+                                                                        'username'])
+                                                                .then((value) =>
+                                                                    setState(
+                                                                        () {})),
+                                                            child: Text(
+                                                              'Followed',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Segoe UI',
+                                                                  fontSize: 18,
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .brandColor),
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          //Is Not Following
+                                                          return TextButton(
+                                                            style: TextButton
+                                                                .styleFrom(
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              30.0),
+                                                                    ),
+                                                                    backgroundColor: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .brandColor),
+                                                            onPressed: () => followUser(
+                                                                    widget.profileData[
+                                                                        'username'])
+                                                                .then((value) =>
+                                                                    setState(
+                                                                        () {})),
+                                                            child: Text(
+                                                              'Follow',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Segoe UI Black',
+                                                                  fontSize: 18,
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .canvasColor),
+                                                            ),
+                                                          );
+                                                        }
+                                                      } else {
+                                                        return const CircularProgressIndicator();
+                                                      }
+                                                    },
+                                                  ),
+                                                  //  (!_isFollowing)
+                                                  //     ? TextButton(
+                                                  //         style: TextButton
+                                                  //             .styleFrom(
+                                                  //                 shape:
+                                                  //                     RoundedRectangleBorder(
+                                                  //                   borderRadius:
+                                                  //                       BorderRadius.circular(
+                                                  //                           30.0),
+                                                  //                 ),
+                                                  //                 backgroundColor: Theme.of(
+                                                  //                         context)
+                                                  //                     .colorScheme
+                                                  //                     .brandColor),
+                                                  //         onPressed: () => followUser(
+                                                  //                 widget.profileData[
+                                                  //                     'username'])
+                                                  //             .then((value) =>
+                                                  //                 setState(
+                                                  //                     () {})),
+                                                  //         child: Text(
+                                                  //           'Follow',
+                                                  //           style: TextStyle(
+                                                  //               fontFamily:
+                                                  //                   'Segoe UI Black',
+                                                  //               fontSize: 18,
+                                                  //               color: Theme.of(
+                                                  //                       context)
+                                                  //                   .canvasColor),
+                                                  //         ),
+                                                  //       )
+                                                  //     : OutlinedButton(
+                                                  //         style: OutlinedButton
+                                                  //             .styleFrom(
+                                                  //           shape:
+                                                  //               RoundedRectangleBorder(
+                                                  //             borderRadius:
+                                                  //                 BorderRadius
+                                                  //                     .circular(
+                                                  //                         30.0),
+                                                  //           ),
+                                                  //           side: BorderSide(
+                                                  //               width: 2,
+                                                  //               color: Theme.of(
+                                                  //                       context)
+                                                  //                   .colorScheme
+                                                  //                   .brandColor),
+                                                  //         ),
+                                                  //         onPressed: () {},
+                                                  //         child: Text(
+                                                  //           'Followed',
+                                                  //           style: TextStyle(
+                                                  //               fontFamily:
+                                                  //                   'Segoe UI',
+                                                  //               fontSize: 18,
+                                                  //               color: Theme.of(
+                                                  //                       context)
+                                                  //                   .colorScheme
+                                                  //                   .brandColor),
+                                                  //         ),
+                                                  //       ),
+                                                )
                                               : const SizedBox()
                                         ],
                                       ),

@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String capitalizeOnlyFirstLater(String string) {
   if (string.trim().isEmpty) return "";
@@ -18,4 +19,12 @@ String formatNotificationDate(String ufDate) {
   final DateFormat formatter = DateFormat('dd MMM\nhh:mm');
   final String formatted = formatter.format(date);
   return formatted;
+}
+
+launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }

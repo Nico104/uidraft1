@@ -155,28 +155,35 @@ class _NavBarLargeState extends State<NavBarLarge> {
                               ? TextDirection.rtl
                               : TextDirection.ltr,
                           children: [
-                            InkWell(
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                print("taped");
-                                if (widget.onLogoClick != null) {
-                                  widget.onLogoClick!.call();
-                                } else {
-                                  Beamer.of(context).beamToNamed('/feed');
-                                }
-                              },
-                              child: Text(
-                                // "LOGO",
-                                "LIGMA",
-                                style: TextStyle(
-                                    fontFamily: 'Segoe UI Black',
-                                    fontSize: 28,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .brandColor),
+                            Listener(
+                              onPointerDown: (ev) =>
+                                  onLogoPointerDown(context, ev),
+                              child: InkWell(
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: () {
+                                  setState(() {
+                                    activeMenu = Menu.none;
+                                  });
+                                  print("taped");
+                                  if (widget.onLogoClick != null) {
+                                    widget.onLogoClick!.call();
+                                  } else {
+                                    Beamer.of(context).beamToNamed('/feed');
+                                  }
+                                },
+                                child: Text(
+                                  // "LOGO",
+                                  "LIGMA",
+                                  style: TextStyle(
+                                      fontFamily: 'Segoe UI Black',
+                                      fontSize: 28,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .brandColor),
+                                ),
                               ),
                             ),
                           ],

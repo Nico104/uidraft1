@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:uidraft1/utils/constants/global_constants.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../util_methods.dart';
 
 enum VideoPreviewMode { feed, subchannel, profile }
 
@@ -30,26 +31,18 @@ Future<void> onPointerDown(BuildContext context, PointerDownEvent event,
     // Check if menu item clicked
     switch (menuItem) {
       case 1:
-        _launchURL("http://localhost:55555/#/whatch/$postId");
+        launchURL("http://localhost:55555/#/whatch/$postId");
         break;
       case 2:
-        _launchURL("http://localhost:55555/#/subchannel/$subchannelName");
+        launchURL("http://localhost:55555/#/subchannel/$subchannelName");
         break;
       case 3:
-        _launchURL("http://localhost:55555/#/profile/$creatorUsername");
+        launchURL("http://localhost:55555/#/profile/$creatorUsername");
         break;
       default:
     }
   } else if (event.kind == PointerDeviceKind.mouse && event.buttons == 4) {
-    _launchURL("http://localhost:55555/#/whatch/$postId");
-  }
-}
-
-_launchURL(String url) async {
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
+    launchURL("http://localhost:55555/#/whatch/$postId");
   }
 }
 

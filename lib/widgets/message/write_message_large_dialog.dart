@@ -68,6 +68,7 @@ class _WriteMessageDialogState extends State<WriteMessageDialog> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 12, right: 12),
                 child: TextFormField(
+                  autofocus: true,
                   controller: _msgController,
                   cursorColor: Colors.white70,
                   autocorrect: false,

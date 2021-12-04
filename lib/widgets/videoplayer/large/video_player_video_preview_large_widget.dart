@@ -130,73 +130,97 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 //Subchannel
-                                Row(
-                                  children: [
-                                    //Subchannel icon
-                                    Icon(
-                                      Icons.smart_display_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                      size: 10,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    //Subchannelname
-                                    Text(
-                                      "c/" +
-                                          snapshot.data!['postSubchannel']
-                                              ['subchannelName'],
-                                      style: TextStyle(
-                                          fontFamily: 'Segoe UI',
-                                          fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width >=
-                                                  1650
-                                              ? 12
-                                              : 8,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .videoPreviewTextColor,
-                                          letterSpacing: 1),
-                                    ),
-                                  ],
+                                InkWell(
+                                  excludeFromSemantics: true,
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () {
+                                    Beamer.of(context).beamToNamed(
+                                        'subchannel/' +
+                                            snapshot.data!['postSubchannel']
+                                                ['subchannelName']);
+                                    print("go to subchnanel or profile");
+                                  },
+                                  child: Row(
+                                    children: [
+                                      //Subchannel icon
+                                      Icon(
+                                        Icons.smart_display_outlined,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .navBarIconColor,
+                                        size: 10,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      //Subchannelname
+                                      Text(
+                                        "c/" +
+                                            snapshot.data!['postSubchannel']
+                                                ['subchannelName'],
+                                        style: TextStyle(
+                                            fontFamily: 'Segoe UI',
+                                            fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width >=
+                                                    1650
+                                                ? 12
+                                                : 8,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .videoPreviewTextColor,
+                                            letterSpacing: 1),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 4,
                                 ),
                                 //User
-                                Row(
-                                  children: [
-                                    //User icon
-                                    Icon(
-                                      Icons.person,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                      size: 10,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    //Subchannelname
-                                    Text(
-                                      snapshot.data!['username'],
-                                      style: TextStyle(
-                                          fontFamily: 'Segoe UI',
-                                          fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width >=
-                                                  1650
-                                              ? 12
-                                              : 8,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .videoPreviewTextColor,
-                                          letterSpacing: 1),
-                                    ),
-                                  ],
+                                InkWell(
+                                  excludeFromSemantics: true,
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () {
+                                    Beamer.of(context).beamToNamed('profile/' +
+                                        snapshot.data!['username']);
+                                    print("go to subchnanel or profile");
+                                  },
+                                  child: Row(
+                                    children: [
+                                      //User icon
+                                      Icon(
+                                        Icons.person,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .navBarIconColor,
+                                        size: 10,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      //Subchannelname
+                                      Text(
+                                        snapshot.data!['username'],
+                                        style: TextStyle(
+                                            fontFamily: 'Segoe UI',
+                                            fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width >=
+                                                    1650
+                                                ? 12
+                                                : 8,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .videoPreviewTextColor,
+                                            letterSpacing: 1),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 4,
