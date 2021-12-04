@@ -13,14 +13,10 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
-import 'package:uidraft1/widgets/comment/comment_model_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
-import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget_test.dart';
 import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_normal_v2_widget.dart';
-import 'package:uidraft1/widgets/videoplayer/video_player_comments/video_player_comments_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/video_player_comments/video_player_comments_large_widget_test.dart';
-import 'package:uidraft1/widgets/videoplayer/wordsearch/video_player_word_search_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/wordsearch/word_search_large_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
@@ -108,6 +104,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   late ScrollController _scrollController2;
 
   bool _showScrollToTopComment = false;
+  bool _showScrollToTopVideoRecommandations = false;
 
   // GlobalKey<_VideoPlayerCommentsTestState> videoPlacerCommentsKey =
   //   GlobalKey<_VideoPlayerCommentsTestState>();
@@ -145,10 +142,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   }
 
   void seekToSecond(double second) {
+    // double bufferTime = 0.1;
+    double bufferTimeSeconds = 0;
+    if (second - bufferTimeSeconds < 0) {
+      second = 0;
+    } else {
+      second -= bufferTimeSeconds;
+    }
     setState(() {
       _controller.seekTo(Duration(milliseconds: (second * 1000).floor()));
       _firtTimeExternAccess = false;
     });
+    for (double i = 0; i < bufferTimeSeconds; i += (bufferTimeSeconds / 20)) {}
   }
 
   void _onFullScreenChange(ev) {
@@ -1083,7 +1088,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                       const SizedBox(height: 28),
                                     ],
                                   )
-                                : const Text("There is no transcript bro"),
+                                // : const Text("There is no transcript bro"),
+                                : const SizedBox(),
                             //Todo wieder eini tean fir video recommendations
                             // VideoPlayerVideosLargeScreen(
                             //     setSkipToId: (id) => setSkipToId.call(id)),
@@ -1118,34 +1124,64 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                     ).createShader(bounds);
                                   },
                                   // blendMode: BlendMode.dstATop,
-                                  child: SingleChildScrollView(
-                                    controller: _scrollController2,
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 25),
-                                        FutureBuilder(
-                                            future: fetchRecommendedPostIds(),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<List<int>>
-                                                    snapshot) {
-                                              if (snapshot.hasData) {
-                                                if (snapshot.data!.isNotEmpty) {
-                                                  return VideoPlayerVideosLargeScreenTest(
-                                                    postIds: snapshot.data!,
-                                                    setSkipToId: (id) =>
-                                                        setSkipToId.call(id),
-                                                    isAuth: true,
-                                                  );
-                                                } else {
-                                                  return const Text(
-                                                      "no posts for video");
-                                                }
-                                              } else {
-                                                return const CircularProgressIndicator();
-                                              }
-                                            }),
-                                      ],
-                                    ),
+                                  child: Stack(
+                                    children: [
+                                      //Video Recommandations
+                                      SingleChildScrollView(
+                                        controller: _scrollController2,
+                                        child: Column(
+                                          children: [
+                                            const SizedBox(height: 25),
+                                            FutureBuilder(
+                                                future:
+                                                    fetchRecommendedPostIds(),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<List<int>>
+                                                        snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    if (snapshot
+                                                        .data!.isNotEmpty) {
+                                                      return VideoPlayerVideosLargeScreenTest(
+                                                        postIds: snapshot.data!,
+                                                        setSkipToId: (id) =>
+                                                            setSkipToId
+                                                                .call(id),
+                                                        isAuth: true,
+                                                      );
+                                                    } else {
+                                                      return const Text(
+                                                          "no posts for video");
+                                                    }
+                                                  } else {
+                                                    return const CircularProgressIndicator();
+                                                  }
+                                                }),
+                                          ],
+                                        ),
+                                      ),
+                                      //Scroll to top Video Recommandations
+                                      _showScrollToTopVideoRecommandations
+                                          ? Positioned(
+                                              top: 40,
+                                              right: 15,
+                                              child: FloatingActionButton(
+                                                  child: const Icon(
+                                                      Icons.arrow_upward),
+                                                  onPressed: () {
+                                                    _scrollController2.animateTo(
+                                                        _scrollController2
+                                                            .position
+                                                            .minScrollExtent,
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    400),
+                                                        curve: Curves
+                                                            .fastOutSlowIn);
+                                                  }),
+                                            )
+                                          : const SizedBox()
+                                    ],
                                   ),
                                 ),
                               ),
@@ -1317,10 +1353,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   }
 
   _scrollListener() {
-    print("Offset: " + _scrollController.offset.toString());
-    print("MaxScrollExtent: " +
-        _scrollController.position.maxScrollExtent.toString());
-    print("outOfRange: " + (!_scrollController.position.outOfRange).toString());
+    // print("Offset: " + _scrollController.offset.toString());
+    // print("MaxScrollExtent: " +
+    //     _scrollController.position.maxScrollExtent.toString());
+    // print("outOfRange: " + (!_scrollController.position.outOfRange).toString());
 
     if (_scrollController.offset > 1300 && !_showScrollToTopComment) {
       setState(() {
@@ -1358,6 +1394,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
         _scrollController2.position.maxScrollExtent.toString());
     print(
         "outOfRange: " + (!_scrollController2.position.outOfRange).toString());
+
+    if (_scrollController2.offset > 200 &&
+        !_showScrollToTopVideoRecommandations) {
+      setState(() {
+        _showScrollToTopVideoRecommandations = true;
+      });
+    } else if (_scrollController2.offset < 200 &&
+        _showScrollToTopVideoRecommandations) {
+      setState(() {
+        _showScrollToTopVideoRecommandations = false;
+      });
+    }
 
     if (_scrollController2.offset >=
             _scrollController2.position.maxScrollExtent &&
