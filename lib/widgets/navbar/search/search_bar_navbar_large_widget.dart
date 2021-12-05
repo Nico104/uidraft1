@@ -8,6 +8,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:uidraft1/uiwidgets/textfields/search_textfield/search_textformfield_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/navbar/search/search_util_methods.dart';
+import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 // import 'dart:html' as html;
 
 enum ArrowKey { up, down }
@@ -56,6 +57,16 @@ class _SearchBarState extends State<SearchBar> {
       return KeyEventResult.ignored;
     });
     super.initState();
+    _searchBarFocusNode.addListener(() {
+      // print("Has focus: ${_searchBarFocusNode.hasFocus}");
+      if (_searchBarFocusNode.hasFocus) {
+        if (NavBarLarge.globalKey.currentState == null) {
+          print("current NavBarState null");
+        } else {
+          NavBarLarge.globalKey.currentState!.collapseMenus();
+        }
+      }
+    });
   }
 
   @override

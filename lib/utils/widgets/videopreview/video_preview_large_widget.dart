@@ -6,6 +6,7 @@ import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_feed_data/video_preview_feed_data_large_widget.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_profile_data/video_preview_profile_data_large_profile.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_subchannel_data/video_preview_subchannel_data_large_widget.dart';
+import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 
 class VideoPreview extends StatefulWidget {
   const VideoPreview(
@@ -52,6 +53,11 @@ class _VideoPreviewState extends State<VideoPreview> {
                 onTap: () {
                   Beamer.of(context)
                       .beamToNamed('whatchintern/' + widget.postId.toString());
+                  if (NavBarLarge.globalKey.currentState == null) {
+                    print("current NavBarState null");
+                  } else {
+                    NavBarLarge.globalKey.currentState!.collapseMenus();
+                  }
                 },
                 child: Column(
                   children: [

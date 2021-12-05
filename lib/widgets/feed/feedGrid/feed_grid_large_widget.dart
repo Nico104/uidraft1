@@ -48,11 +48,11 @@ class _FeedGridState extends State<FeedGrid> {
         });
       }
 
-      // final response =
-      //     await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
+      final response =
+          await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
       //TODO fill for non logged in users
-      final response = await http.get(Uri.parse(
-          'http://localhost:3000/brainberry/contentGrabbingTest/username'));
+      // final response = await http.get(Uri.parse(
+      //     'http://localhost:3000/brainberry/contentGrabbingTest/username'));
 
       if (response.statusCode == 200) {
         //List<int> _postIds = <int>[];
@@ -61,12 +61,12 @@ class _FeedGridState extends State<FeedGrid> {
         values = json.decode(response.body);
         if (values.isNotEmpty) {
           for (int i = 0; i < values.length; i++) {
-            // if (values[i] != null) {
-            //   Map<String, dynamic> map = values[i];
-            //   postIds.add(map['postId']);
-            //   print('Id-------${map['postId']}');
-            // }
-            postIds.add(values[i]);
+            if (values[i] != null) {
+              Map<String, dynamic> map = values[i];
+              postIds.add(map['postId']);
+              print('Id-------${map['postId']}');
+            }
+            // postIds.add(values[i]);
           }
         }
 

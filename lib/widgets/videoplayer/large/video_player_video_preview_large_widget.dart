@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
+import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 
 class VideoPlayerVideoPreview extends StatefulWidget {
   final int postId;
@@ -67,6 +68,11 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                 onTap: () {
                   Beamer.of(context)
                       .beamToNamed('whatchintern/' + widget.postId.toString());
+                  if (NavBarLarge.globalKey.currentState == null) {
+                    print("current NavBarState null");
+                  } else {
+                    NavBarLarge.globalKey.currentState!.collapseMenus();
+                  }
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,

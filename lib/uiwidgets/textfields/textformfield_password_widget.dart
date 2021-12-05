@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
@@ -54,6 +56,10 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
     super.initState();
 
     ///Initially check if CapsLock is on or off
+    print("CL: " +
+        HardwareKeyboard.instance.lockModesEnabled
+            .contains(KeyboardLockMode.capsLock)
+            .toString());
     if (HardwareKeyboard.instance.lockModesEnabled
             .contains(KeyboardLockMode.capsLock) !=
         _capsLockOn) {
@@ -80,6 +86,7 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
           _capsLockOn) {
         setState(() {
           _capsLockOn = !_capsLockOn;
+          // _capsLockOn = true;
         });
       }
     }
@@ -93,6 +100,12 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
         _capsLockOn = !_capsLockOn;
       });
     }
+    // if (HardwareKeyboard.instance.lockModesEnabled
+    //     .contains(KeyboardLockMode.capsLock)) {
+    //   setState(() {
+    //     _capsLockOn = true;
+    //   });
+    // }
   }
 
   @override
@@ -102,6 +115,7 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
       onTab: () => widget.onTab!.call(),
       onCapsLock: () => checkAndToggleCapsLock.call(),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -169,11 +183,20 @@ class _TextFormFieldPasswordState extends State<TextFormFieldPassword> {
               ),
               validator: (value) => widget.validator!.call(value),
               onFieldSubmitted: (_) => widget.onFieldSubmitted!.call(_),
+              onChanged: (v) {
+                print("CL: " +
+                    HardwareKeyboard.instance.lockModesEnabled
+                        .contains(KeyboardLockMode.capsLock)
+                        .toString());
+              },
             ),
           ),
           _capsLockOn
-              ? const Tooltip(
-                  message: "CapsLock is on boy", child: Icon(Icons.lock))
+              ? const Padding(
+                  padding: EdgeInsets.only(top: 7),
+                  child: Tooltip(
+                      message: "CapsLock is on boy", child: Icon(Icons.lock)),
+                )
               : const SizedBox()
         ],
       ),

@@ -17,6 +17,7 @@ import 'package:uidraft1/widgets/slider/slidertest.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_videos_grid_large_widget_test.dart';
 import 'package:uidraft1/widgets/videoplayer/large/videoplayers/video_player_normal_v2_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/video_player_comments/video_player_comments_large_widget_test.dart';
+import 'package:uidraft1/widgets/videoplayer/video_player_comments/video_player_write_comment_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/wordsearch/word_search_large_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
@@ -109,6 +110,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   // GlobalKey<_VideoPlayerCommentsTestState> videoPlacerCommentsKey =
   //   GlobalKey<_VideoPlayerCommentsTestState>();
 
+  FocusNode writeCommentFocusNode = FocusNode();
+
   void loadNewStuff() {
     if (VideoPlayerCommentsTest.videoPlacerCommentsKey2.currentState == null) {
       print("current NavBarState null");
@@ -188,12 +191,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
     streamQualityURL[240] = baseURL + widget.postData['postVideoPath240'];
     if (widget.postData['postVideoPath480'].toString().isNotEmpty) {
       streamQualityURL[480] = baseURL + widget.postData['postVideoPath480'];
+      print("PAth 480: " + streamQualityURL[480]!);
     }
     if (widget.postData['postVideoPath720'].toString().isNotEmpty) {
       streamQualityURL[720] = baseURL + widget.postData['postVideoPath720'];
+      print("PAth 720: " + streamQualityURL[720]!);
     }
     if (widget.postData['postVideoPath1080'].toString().isNotEmpty) {
       streamQualityURL[1080] = baseURL + widget.postData['postVideoPath1080'];
+      print("PAth 1080: " + streamQualityURL[1080]!);
     }
 
     streamQualityKeysSorted = streamQualityURL.keys.toList()
@@ -251,6 +257,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   @override
   void dispose() {
     focusNode.dispose();
+    writeCommentFocusNode.dispose();
     print("DISPOSE");
     createWhatchtimeAnalyticPost(
         widget.postData['postId'], _controller.value.position.inSeconds);
@@ -812,160 +819,29 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                 snapshot.data == 200
                                                     ? Column(
                                                         children: [
-                                                          TextFormField(
+                                                          WriteComment(
+                                                            focusNode:
+                                                                writeCommentFocusNode,
+                                                            controller:
+                                                                _postCommentTextController,
+                                                            onSend: () async {
+                                                              writeCommentFocusNode
+                                                                  .unfocus();
+                                                              //send Comment
+                                                              await sendComment(
+                                                                  widget.postData[
+                                                                      'postId'],
+                                                                  _postCommentTextController
+                                                                      .text);
+                                                              setState(() {
+                                                                _postCommentTextController
+                                                                    .clear();
+                                                              });
+                                                            },
                                                             onTap: () {
                                                               focusNode
                                                                   .unfocus();
                                                             },
-                                                            buildCounter: (_,
-                                                                    {required currentLength,
-                                                                    maxLength,
-                                                                    required isFocused}) =>
-                                                                Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left:
-                                                                          16.0),
-                                                              child: Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerLeft,
-                                                                  child: Text(currentLength
-                                                                          .toString() +
-                                                                      "/" +
-                                                                      maxLength
-                                                                          .toString())),
-                                                            ),
-                                                            controller:
-                                                                _postCommentTextController,
-                                                            cursorColor:
-                                                                Colors.white,
-                                                            autocorrect: false,
-                                                            keyboardType:
-                                                                TextInputType
-                                                                    .multiline,
-                                                            maxLength: 256,
-                                                            minLines: 1,
-                                                            maxLines: 20,
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  "Write a comment",
-                                                              labelStyle: const TextStyle(
-                                                                  fontFamily:
-                                                                      "Segoe UI",
-                                                                  color: Colors
-                                                                      .white54),
-                                                              enabledBorder:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.0),
-                                                                borderSide: const BorderSide(
-                                                                    color: Colors
-                                                                        .white70),
-                                                              ),
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.0),
-                                                                borderSide:
-                                                                    const BorderSide(
-                                                                        color: Colors
-                                                                            .pink),
-                                                              ),
-                                                            ),
-                                                            validator: (val) {
-                                                              if (val!
-                                                                  .isEmpty) {
-                                                                return "Field cannot be empty";
-                                                              } else {
-                                                                return null;
-                                                              }
-                                                            },
-                                                            style: const TextStyle(
-                                                                fontFamily:
-                                                                    "Segoe UI",
-                                                                color: Colors
-                                                                    .white70),
-                                                          ),
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .topRight,
-                                                            child:
-                                                                OutlinedButton(
-                                                              style:
-                                                                  ButtonStyle(
-                                                                side: MaterialStateProperty
-                                                                    .resolveWith(
-                                                                        (states) {
-                                                                  Color
-                                                                      _borderColor;
-                                                                  if (states.contains(
-                                                                      MaterialState
-                                                                          .pressed)) {
-                                                                    _borderColor =
-                                                                        Colors
-                                                                            .white;
-                                                                  } else if (states
-                                                                      .contains(
-                                                                          MaterialState
-                                                                              .hovered)) {
-                                                                    _borderColor = Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .brandColor;
-                                                                  } else {
-                                                                    _borderColor =
-                                                                        Colors
-                                                                            .grey;
-                                                                  }
-
-                                                                  return BorderSide(
-                                                                      color:
-                                                                          _borderColor,
-                                                                      width: 1);
-                                                                }),
-                                                                shape: MaterialStateProperty.all(
-                                                                    RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(20.0))),
-                                                              ),
-                                                              onPressed:
-                                                                  () async {
-                                                                //send Comment
-                                                                await sendComment(
-                                                                    widget.postData[
-                                                                        'postId'],
-                                                                    _postCommentTextController
-                                                                        .text);
-                                                                setState(() {
-                                                                  _postCommentTextController
-                                                                      .clear();
-                                                                });
-                                                              },
-                                                              child:
-                                                                  const Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            5.0),
-                                                                child: Text(
-                                                                  "send",
-                                                                  style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Sogeo UI',
-                                                                      fontSize:
-                                                                          14,
-                                                                      color: Colors
-                                                                          .white70),
-                                                                ),
-                                                              ),
-                                                            ),
                                                           ),
                                                           const SizedBox(
                                                             height: 40,
