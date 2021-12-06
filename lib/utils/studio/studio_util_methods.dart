@@ -139,6 +139,39 @@ Future<void> updatePostThumbnail(int id, Uint8List thumbnail) async {
   }
 }
 
+///Updates the Posts with postId [id]
+///removes the Post Tag to [tag]
+Future<void> removePostTag(int id, String tag) async {
+  String? token = await getToken();
+  final response =
+      await http.patch(Uri.parse(baseURL + 'post/removePostTag/$id'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(<String, String>{"tagname": tag}));
+
+  print(response.statusCode);
+  print(response.body);
+}
+
+///Updates the Posts with postId [id]
+///add the Post Tag to [tag]
+Future<void> addPostTag(int id, String tag) async {
+  String? token = await getToken();
+  final response = await http.patch(Uri.parse(baseURL + 'post/addPostTag/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{"tagname": tag}));
+
+  print(response.statusCode);
+  print(response.body);
+}
+
 ///Upodate Post with postId [id] Publicity
 ///to Public if [isPublic] is true
 ///to Archived if [isPublic] is false

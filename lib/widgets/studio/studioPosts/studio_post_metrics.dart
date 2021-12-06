@@ -21,6 +21,8 @@ class StudioPostMetrics extends StatefulWidget {
 }
 
 class _StudioPostMetricsState extends State<StudioPostMetrics> {
+  late Future<Map<String, dynamic>> future;
+
   final _postTitleTextController = TextEditingController();
   final _postDescriptionTextController = TextEditingController();
 
@@ -47,13 +49,27 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
 
   @override
   void initState() {
+    future = studioUtils.fetchPostStudioMetrics(widget.postId).then((value) {
+      initTagList(value['tags']);
+      _postTitleTextController.text = value['postTitle'];
+      _postDescriptionTextController.text = value['postDescription'];
+      return value;
+    });
     super.initState();
+  }
+
+  void initTagList(List<dynamic> tagsJson) {
+    for (var element in tagsJson) {
+      print("Tag: " + element['tagName']);
+      tagList.add(element['tagName']);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: studioUtils.fetchPostStudioMetrics(widget.postId),
+        // future: future,
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
@@ -974,9 +990,13 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
           style: const TextStyle(fontFamily: "Segoe UI", fontSize: 16),
         ),
         onDeleted: () {
-          setState(() {
-            print("onDelete");
-            tagList.removeAt(index);
+          studioUtils
+              .removePostTag(widget.postId, tagList.elementAt(index))
+              .then((_) {
+            setState(() {
+              print("onDelete");
+              tagList.removeAt(index);
+            });
           });
         },
       );
@@ -991,8 +1011,10 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
             builder: (context) => const TagGridLargeScreen(),
           ).then((value) {
             if (!tagList.contains(value.toString()) && value != null) {
-              setState(() {
-                tagList.add(value.toString());
+              studioUtils.addPostTag(widget.postId, value.toString()).then((_) {
+                setState(() {
+                  tagList.add(value.toString());
+                });
               });
             } else {
               print("List alredy contains $value or is null");

@@ -104,6 +104,9 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     request.fields['postDescription'] = postDescription;
     request.fields['postSubchannelName'] = postSubchannelName;
     request.fields['postTitle'] = postTitle;
+    request.fields['tag1'] = tags.isNotEmpty ? tags.elementAt(0) : "none";
+    request.fields['tag2'] = tags.length > 1 ? tags.elementAt(1) : "none";
+    request.fields['tag3'] = tags.length > 2 ? tags.elementAt(2) : "none";
 
     request.files.add(http.MultipartFile.fromBytes('picture', thumbnail,
         filename: "thumbnailname", contentType: MediaType('image', 'png')));
