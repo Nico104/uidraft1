@@ -522,30 +522,36 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                               .hasData) {
                                                                             return Row(
                                                                               children: [
+                                                                                //Slider
+                                                                                Slidertest(
+                                                                                  value: snapshotRating.data![0].toDouble(),
+                                                                                ),
+
                                                                                 //LIKE
-                                                                                IconButton(
-                                                                                  icon: Icon(
-                                                                                    Icons.thumb_up,
-                                                                                    size: 16,
-                                                                                    color: snapshotRating.data![0] == 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
-                                                                                  ),
-                                                                                  onPressed: () {
-                                                                                    switch (snapshotRating.data![0]) {
-                                                                                      case 0:
-                                                                                        ratePost(widget.postData['postId'], 'like').then((_) => setState(() {}));
-                                                                                        break;
-                                                                                      case 1:
-                                                                                        deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
-                                                                                        break;
-                                                                                      case 2:
-                                                                                        updatePostRating(widget.postData['postId'], 'like').then((_) => setState(() {}));
-                                                                                        break;
-                                                                                    }
-                                                                                  },
-                                                                                ),
-                                                                                const SizedBox(
-                                                                                  width: 8,
-                                                                                ),
+                                                                                // IconButton(
+                                                                                //   icon: Icon(
+                                                                                //     Icons.thumb_up,
+                                                                                //     size: 16,
+                                                                                //     color: snapshotRating.data![0] >= 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                                //   ),
+                                                                                //   onPressed: () {
+                                                                                //     //TODO anpassen mit Slider Werte
+                                                                                //     switch (snapshotRating.data![0]) {
+                                                                                //       case 0:
+                                                                                //         ratePost(widget.postData['postId'], 1).then((_) => setState(() {}));
+                                                                                //         break;
+                                                                                //       case 1:
+                                                                                //         deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                //         break;
+                                                                                //       case 2:
+                                                                                //         updatePostRating(widget.postData['postId'], 1).then((_) => setState(() {}));
+                                                                                //         break;
+                                                                                //     }
+                                                                                //   },
+                                                                                // ),
+                                                                                // const SizedBox(
+                                                                                //   width: 8,
+                                                                                // ),
                                                                                 //RATING
                                                                                 Text(snapshotRating.data![1].toString()),
                                                                                 const SizedBox(
@@ -553,26 +559,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                                 ),
                                                                                 // Text("dislike"),
                                                                                 //DISLIKE
-                                                                                IconButton(
-                                                                                  icon: Icon(
-                                                                                    Icons.thumb_down,
-                                                                                    size: 16,
-                                                                                    color: snapshotRating.data![0] == 2 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
-                                                                                  ),
-                                                                                  onPressed: () {
-                                                                                    switch (snapshotRating.data![0]) {
-                                                                                      case 0:
-                                                                                        ratePost(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
-                                                                                        break;
-                                                                                      case 1:
-                                                                                        updatePostRating(widget.postData['postId'], 'dislike').then((_) => setState(() {}));
-                                                                                        break;
-                                                                                      case 2:
-                                                                                        deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
-                                                                                        break;
-                                                                                    }
-                                                                                  },
-                                                                                ),
+                                                                                // IconButton(
+                                                                                //   icon: Icon(
+                                                                                //     Icons.thumb_down,
+                                                                                //     size: 16,
+                                                                                //     color: snapshotRating.data![0] == 2 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                                //   ),
+                                                                                //   onPressed: () {
+                                                                                //     switch (snapshotRating.data![0]) {
+                                                                                //       case 0:
+                                                                                //         ratePost(widget.postData['postId'], -1).then((_) => setState(() {}));
+                                                                                //         break;
+                                                                                //       case 1:
+                                                                                //         updatePostRating(widget.postData['postId'], -1).then((_) => setState(() {}));
+                                                                                //         break;
+                                                                                //       case 2:
+                                                                                //         deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                //         break;
+                                                                                //     }
+                                                                                //   },
+                                                                                // ),
                                                                                 const SizedBox(
                                                                                   width: 16,
                                                                                 ),

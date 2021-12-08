@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:uidraft1/customIcons/light_outlined/light_outline_notification_icon_icons.dart';
 import 'package:uidraft1/customIcons/slider/outlines/slider_test_outlines_icons.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
-import 'package:uidraft1/widgets/slider/snapslidertest.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'dart:math' as math;
 
 class Slidertest extends StatefulWidget {
-  const Slidertest({Key? key}) : super(key: key);
+  const Slidertest({Key? key, this.value = 0}) : super(key: key);
+
+  final double value;
 
   @override
   State<Slidertest> createState() => _SlidertestState();
@@ -19,8 +16,14 @@ extension on Color {
 }
 
 class _SlidertestState extends State<Slidertest> {
-  double sliderval = 0;
-  double _value = 0;
+  // double sliderval = 0;
+  late double _value;
+
+  @override
+  void initState() {
+    _value = widget.value;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

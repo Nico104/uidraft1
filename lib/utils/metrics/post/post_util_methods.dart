@@ -19,7 +19,7 @@ Future<void> incrementPostViewsByOne(int postId) async {
 }
 
 //rates a Post (like, dislike, superlike, superdislike)
-Future<void> ratePost(int postId, String rating) async {
+Future<void> ratePost(int postId, int rating) async {
   try {
     String? token = await getToken();
     final response =
@@ -31,7 +31,7 @@ Future<void> ratePost(int postId, String rating) async {
             },
             body: jsonEncode(<String, String>{
               'postId': '$postId',
-              'ratingType': rating,
+              'rating': '$rating',
             }));
     // print(response.body);
     // print(response.statusCode);
@@ -42,7 +42,7 @@ Future<void> ratePost(int postId, String rating) async {
 }
 
 //Changes a Post Rating
-Future<void> updatePostRating(int postId, String rating) async {
+Future<void> updatePostRating(int postId, int rating) async {
   try {
     String? token = await getToken();
     final response =
@@ -54,7 +54,7 @@ Future<void> updatePostRating(int postId, String rating) async {
             },
             body: jsonEncode(<String, String>{
               'postId': '$postId',
-              'ratingType': rating,
+              'rating': '$rating',
             }));
     print(response.body);
     print(response.statusCode);
@@ -96,12 +96,20 @@ Future<int> getUserPostRating(int postId) async {
     if (response.statusCode == 200) {
       print(response.body);
       if (response.body.isNotEmpty) {
-        if (json.decode(response.body)['postRating'] == 'LIKE') {
-          return 1;
-        } else if (json.decode(response.body)['postRating'] == 'DISLIKE') {
-          return 2;
+        // if (json.decode(response.body)['postRating'] == 'LIKE') {
+        //   return 1;
+        // } else if (json.decode(response.body)['postRating'] == 'DISLIKE') {
+        //   return 2;
+        // } else {
+        //   return 0;
+        // }
+        int rating = json.decode(response.body)['postRating'];
+        if (rating > 25) {
+          return 25;
+        } else if (rating < -25) {
+          return -25;
         } else {
-          return 0;
+          return rating;
         }
       } else {
         // print("empty rating");
@@ -111,7 +119,7 @@ Future<int> getUserPostRating(int postId) async {
       throw Exception('Failed to load posts');
     }
   } catch (e) {
-    print("Error: " + e.toString());
+    print("Error userpostrating: " + e.toString());
     throw Exception('Failed to load posts3');
   }
 }
@@ -129,12 +137,13 @@ Future<int> getPostRatingData(int id, String ratingType) async {
   }
 
   if (response.statusCode == 200) {
-    Map<String, dynamic> map = json.decode(response.body);
-    if (map.isNotEmpty) {
-      return map['_count']['postRatingUsername'];
-    } else {
-      return 0;
-    }
+    // Map<String, dynamic> map = json.decode(response.body);
+    // if (map.isNotEmpty) {
+    //   return map['_count']['postRatingUsername'];
+    // } else {
+    //   return 0;
+    // }
+    return int.parse(response.body);
   } else {
     // If that call was not successful, throw an error.
     throw Exception('Failed to load postrating');
@@ -165,7 +174,7 @@ Future<int> getPostRatingScore(int id) async {
       .get(Uri.parse('http://localhost:3000/post/getPostRatingScore/$id'));
 
   if (response.statusCode == 200) {
-    print(int.parse(response.body));
+    print("Rating" + int.parse(response.body).toString());
     return int.parse(response.body);
   } else {
     // If that call was not successful, throw an error.
