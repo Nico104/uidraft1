@@ -9,6 +9,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' as image;
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class ProcessAndSendScreen extends StatelessWidget {
   const ProcessAndSendScreen(
@@ -95,7 +96,9 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     List<int> video,
     List<String> tags,
   ) async {
-    var url = Uri.parse('http://localhost:3000/post/uploadPostWithData');
+    // var url = Uri.parse(uploadServerBaseURL + 'post/uploadPostWithData');
+    var url = Uri.parse('http://localhost:3001/post/uploadPostWithData');
+    print("URL: " + url.toString());
     String? token = await getToken();
 
     var request = http.MultipartRequest('POST', url);
@@ -129,36 +132,34 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     // }
 
     //test
-    await request
-        .send()
-        .then((result) async {
-          http.Response.fromStream(result).then((response) {
-            if (response.statusCode == 201) {
-              print("Uploaded! ");
-              // print('response.body ' + response.body);
+    await request.send().then((result) async {
+      http.Response.fromStream(result).then((response) {
+        if (response.statusCode == 201) {
+          print("Uploaded! ");
+          // print('response.body ' + response.body);
 
-              int postId = jsonDecode(response.body)['postId'];
+          int postId = jsonDecode(response.body)['postId'];
 
-              //Add posttags
-              for (var element in tags) {
-                http.patch(
-                    Uri.parse('http://localhost:3000/post/addPostTag/$postId'),
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Accept': 'application/json',
-                      'Authorization': 'Bearer $token',
-                    },
-                    body: jsonEncode(<String, String>{"tagname": element}));
-              }
-            }
+          //Add posttags
+          for (var element in tags) {
+            http.patch(
+                Uri.parse('http://localhost:3000/post/addPostTag/$postId'),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode(<String, String>{"tagname": element}));
+          }
+        }
 
-            // return response.body;
-          });
-        })
-        .catchError((err) => print('error : ' + err.toString()))
-        .whenComplete(() {
-          print("upload fertig1");
-        });
+        // return response.body;
+      });
+    }).catchError((err) {
+      print('error : ' + err.toString());
+    }).whenComplete(() {
+      print("upload fertig1");
+    });
     //test
 
     // Beamer.of(context).beamToNamed('/feed');

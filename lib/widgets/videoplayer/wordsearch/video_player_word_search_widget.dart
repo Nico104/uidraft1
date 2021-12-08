@@ -14,13 +14,13 @@ class VideoPlayerWordSearchLarge extends StatefulWidget {
     required this.openDefintion,
   }) : super(key: key);
 
-  final Function(double) seekToSecond;
+  final Function(double, bool) seekToSecond;
   final int postId;
 
   final Duration pos;
 
   final Function() animateToScript;
-  final Function(String) openDefintion;
+  final Function(String, double, double) openDefintion;
 
   @override
   _VideoPlayerWordSearchLargeState createState() =>
@@ -80,7 +80,8 @@ class _VideoPlayerWordSearchLargeState
               padding: const EdgeInsets.all(12.0),
               child: AllWordsWrap(
                 words: words,
-                seekToSecond: (id) => widget.seekToSecond.call(id),
+                seekToSecond: (sec, ease) =>
+                    widget.seekToSecond.call(sec, ease),
                 pos: widget.pos,
                 scrollController: _scrollController,
                 animateToScript: widget.animateToScript,
@@ -104,12 +105,12 @@ class AllWordsWrap extends StatefulWidget {
   }) : super(key: key);
 
   final List<Map<String, dynamic>> words;
-  final Function(double) seekToSecond;
+  final Function(double, bool) seekToSecond;
 
   final Duration pos;
 
   final Function() animateToScript;
-  final Function(String) openDefintion;
+  final Function(String, double, double) openDefintion;
 
   final ScrollController scrollController;
 
@@ -129,6 +130,11 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
   void didUpdateWidget(covariant oldWidget) {
     super.didUpdateWidget(oldWidget);
     scrollToActiveWord();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void scrollToActiveWord() {
@@ -208,10 +214,10 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
 TextSpan getWord(
   Map<String, dynamic> word,
   Duration pos,
-  Function(double) seekToSecond,
+  Function(double, bool) seekToSecond,
   String tappedStartTime,
   Function(String) setTappedStartTime,
-  Function(String) openDefintion,
+  Function(String, double, double) openDefintion,
 ) {
   DoubleTapGestureRecognizer _gesture = DoubleTapGestureRecognizer();
   _gesture.onDoubleTap = () => print("DoubleTap");
@@ -225,14 +231,15 @@ TextSpan getWord(
       setTappedStartTime("");
       //Execute when double tapped
       print("DoubleTap");
-      openDefintion.call(word['word']);
+      openDefintion.call(
+          word['word'], double.parse(word['start']), double.parse(word['end']));
     } else {
       setTappedStartTime(word['start']);
       EasyDebounce.cancel('tap');
       EasyDebounce.debounce('tap', const Duration(milliseconds: 250), () {
         setTappedStartTime("");
         //Execute when single tapped
-        seekToSecond.call(double.parse(word['start']));
+        seekToSecond.call(double.parse(word['start']), true);
       });
     }
   };
@@ -251,13 +258,13 @@ TextSpan getWord(
 List<InlineSpan> getWords(
   List<Map<String, dynamic>> words,
   Duration pos,
-  Function(double) seekToSecond,
+  Function(double, bool) seekToSecond,
   ScrollController scrollController,
   GlobalKey key,
   String getTappedStartTime,
   Function(String) setTappedStartTime,
   Function() animateToScript,
-  Function(String) openDefintion,
+  Function(String, double, double) openDefintion,
 ) {
   bool _keyGiven = false;
   // print("generate list");

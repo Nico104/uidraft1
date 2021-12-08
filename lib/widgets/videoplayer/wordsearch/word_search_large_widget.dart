@@ -15,7 +15,7 @@ class WordSearchLarge extends StatefulWidget {
       required this.pos})
       : super(key: globalKey);
 
-  final Function(double) seekToSecond;
+  final Function(double, bool) seekToSecond;
   final int postId;
 
   final Duration pos;
@@ -45,87 +45,67 @@ class _WordSearchLargeState extends State<WordSearchLarge> {
     return _wordsMode;
   }
 
-  // void initiateAnimation() {
-  //   setState(() {
-  //     //collapse
-  //     if (_widthfactor == 1) {
-  //       _scriptHeight = 53;
-  //       _borderRadius = 50;
-  //       _scriptWidthfactor = 0.17;
-  //       _searchBarBorderRadius = 24;
-  //       _showWords = false;
-  //       Future.delayed(_duration ~/ 4, () {
-  //         setState(() {
-  //           _widthfactor = 0.8;
-  //           _padding = 0;
-  //         });
-  //       });
-  //       //expand
-  //     } else {
-  //       _widthfactor = 1;
-  //       _padding = 80;
-  //       Future.delayed(_duration ~/ 4, () {
-  //         setState(() {
-  //           _scriptHeight = 500;
-  //           _borderRadius = 12;
-  //           _scriptWidthfactor = 1;
-  //           _searchBarBorderRadius = 18;
-  //           _showWords = true;
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
-
   void animateToClosed() {
-    setState(() {
-      _scriptHeight = 53;
-      _borderRadius = 50;
-      _scriptWidthfactor = 0.17;
-      _searchBarBorderRadius = 24;
-      // _showWords = false;
-      _wordsMode = WordMode.closed;
-      Future.delayed(_duration ~/ 4, () {
-        setState(() {
-          _widthfactor = 0.8;
-          _padding = 0;
+    if (mounted) {
+      setState(() {
+        _scriptHeight = 53;
+        _borderRadius = 50;
+        _scriptWidthfactor = 0.17;
+        _searchBarBorderRadius = 24;
+        // _showWords = false;
+        _wordsMode = WordMode.closed;
+        Future.delayed(_duration ~/ 4, () {
+          if (mounted) {
+            setState(() {
+              _widthfactor = 0.8;
+              _padding = 0;
+            });
+          }
         });
       });
-    });
+    }
   }
 
   void animateToScript() {
-    setState(() {
-      _widthfactor = 1;
-      _padding = 80;
-      Future.delayed(_duration ~/ 4, () {
-        setState(() {
-          _scriptHeight = 500;
-          _borderRadius = 12;
-          _scriptWidthfactor = 1;
-          _searchBarBorderRadius = 18;
-          // _showWords = true;
-          _wordsMode = WordMode.script;
+    if (mounted) {
+      setState(() {
+        _widthfactor = 1;
+        _padding = 80;
+        Future.delayed(_duration ~/ 4, () {
+          if (mounted) {
+            setState(() {
+              _scriptHeight = 500;
+              _borderRadius = 12;
+              _scriptWidthfactor = 1;
+              _searchBarBorderRadius = 18;
+              // _showWords = true;
+              _wordsMode = WordMode.script;
+            });
+          }
         });
       });
-    });
+    }
   }
 
   void animateToDefinition() {
-    setState(() {
-      _widthfactor = 1;
-      _padding = 80;
-      Future.delayed(_duration ~/ 4, () {
-        setState(() {
-          _scriptHeight = 700;
-          _borderRadius = 18;
-          _scriptWidthfactor = 1;
-          _searchBarBorderRadius = 18;
-          // _showWords = true;
-          _wordsMode = WordMode.definition;
+    if (mounted) {
+      setState(() {
+        _widthfactor = 1;
+        _padding = 80;
+        Future.delayed(_duration ~/ 4, () {
+          if (mounted) {
+            setState(() {
+              _scriptHeight = 700;
+              _borderRadius = 18;
+              _scriptWidthfactor = 1;
+              _searchBarBorderRadius = 18;
+              // _showWords = true;
+              _wordsMode = WordMode.definition;
+            });
+          }
         });
       });
-    });
+    }
   }
 
   @override
@@ -149,7 +129,8 @@ class _WordSearchLargeState extends State<WordSearchLarge> {
                   wordsMode: _wordsMode,
                   pos: widget.pos,
                   postId: widget.postId,
-                  seekToSecond: (sec) => widget.seekToSecond.call(sec),
+                  seekToSecond: (sec, ease) =>
+                      widget.seekToSecond.call(sec, ease),
                   // initiateAnimation: () => initiateAnimation.call(),
                   animateToClosed: () => animateToClosed.call(),
                   animateToScript: () => animateToScript.call(),
@@ -169,7 +150,8 @@ class _WordSearchLargeState extends State<WordSearchLarge> {
                         searchBarBorderRadius: _searchBarBorderRadius,
                         pos: widget.pos,
                         postId: widget.postId,
-                        seekToSecond: (sec) => widget.seekToSecond.call(sec),
+                        seekToSecond: (sec, ease) =>
+                            widget.seekToSecond.call(sec, ease),
                       ),
                       Expanded(
                           child: IgnorePointer(
@@ -222,7 +204,7 @@ class Script extends StatefulWidget {
 
   final WordMode _wordsMode;
 
-  final Function(double) seekToSecond;
+  final Function(double, bool) seekToSecond;
   final int postId;
 
   final Duration pos;
@@ -237,13 +219,20 @@ class Script extends StatefulWidget {
 
 class _ScriptState extends State<Script> {
   String _word = "";
+  double _start = 0;
+  double _end = 0;
 
-  void openDefintion(String word) {
+  //!open Definition
+  void openDefintion(String word, double start, double end) {
     String newword = prepareWord(word);
     if (newword.isNotEmpty) {
-      setState(() {
-        _word = newword;
-      });
+      if (mounted) {
+        setState(() {
+          _word = newword;
+          _start = start;
+          _end = end;
+        });
+      }
       widget.animateToDefinition.call();
     } else {
       print("word empty bro");
@@ -271,9 +260,11 @@ class _ScriptState extends State<Script> {
               child: VideoPlayerWordSearchLarge(
                 pos: widget.pos,
                 postId: widget.postId,
-                seekToSecond: (sec) => widget.seekToSecond.call(sec),
+                seekToSecond: (sec, ease) =>
+                    widget.seekToSecond.call(sec, ease),
                 animateToScript: widget.animateToScript,
-                openDefintion: (word) => openDefintion.call(word),
+                openDefintion: (word, start, end) =>
+                    openDefintion.call(word, start, end),
               ),
             ),
             IconButton(
@@ -286,6 +277,10 @@ class _ScriptState extends State<Script> {
         return WordDefinition(
           word: _word,
           animateToScript: widget.animateToScript,
+          start: _start,
+          end: _end,
+          pos: widget.pos,
+          seekToSecond: widget.seekToSecond,
         );
     }
   }
@@ -332,7 +327,7 @@ class SearchBar extends StatelessWidget {
   final double _width;
   final double _searchBarBorderRadius;
 
-  final Function(double) seekToSecond;
+  final Function(double, bool) seekToSecond;
   final int postId;
 
   final Duration pos;
@@ -352,7 +347,7 @@ class SearchBar extends StatelessWidget {
         child: WordSearchBar(
           pos: pos,
           postId: postId,
-          seekToSecond: (sec) => seekToSecond.call(sec),
+          seekToSecond: (sec, ease) => seekToSecond.call(sec, ease),
         ),
       ),
     );

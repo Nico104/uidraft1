@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 class WriteComment extends StatelessWidget {
   const WriteComment(

@@ -10,7 +10,7 @@ class WordSearchBar extends StatefulWidget {
       required this.pos})
       : super(key: key);
 
-  final Function(double) seekToSecond;
+  final Function(double, bool) seekToSecond;
   final int postId;
 
   final Duration pos;
@@ -47,8 +47,9 @@ class _WordSearchBarState extends State<WordSearchBar> {
     }
     findMatches().then((value) {
       if (matches.isNotEmpty) {
-        widget.seekToSecond.call(seekToClosestLargerMatch(
-            widget.pos.inMilliseconds / 1000, matches));
+        widget.seekToSecond.call(
+            seekToClosestLargerMatch(widget.pos.inMilliseconds / 1000, matches),
+            true);
         _focusNode.requestFocus();
       }
     });

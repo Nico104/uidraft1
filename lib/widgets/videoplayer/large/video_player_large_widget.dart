@@ -144,19 +144,43 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
     }
   }
 
-  void seekToSecond(double second) {
-    // double bufferTime = 0.1;
-    double bufferTimeSeconds = 0;
-    if (second - bufferTimeSeconds < 0) {
-      second = 0;
-    } else {
-      second -= bufferTimeSeconds;
-    }
-    setState(() {
+  void seekToSecond(double second, bool ease) {
+    if (ease) {
+      double bufferTimeSeconds = 0.2;
+      if (second - bufferTimeSeconds < 0) {
+        second = 0;
+      } else {
+        second -= bufferTimeSeconds;
+      }
       _controller.seekTo(Duration(milliseconds: (second * 1000).floor()));
-      _firtTimeExternAccess = false;
-    });
-    for (double i = 0; i < bufferTimeSeconds; i += (bufferTimeSeconds / 20)) {}
+      if (mounted) {
+        setState(() {
+          _firtTimeExternAccess = false;
+        });
+      }
+      easeAudioOnSeeking(bufferTimeSeconds * 1000);
+    } else {
+      _controller.seekTo(Duration(milliseconds: (second * 1000).floor()));
+    }
+  }
+
+  void easeAudioOnSeeking(double durationMilliSec) async {
+    double minVolume;
+    if (_controller.value.volume < 0.2) {
+      minVolume = 0;
+    } else {
+      minVolume = 0.2;
+    }
+    int intervals = 10;
+    double wait = durationMilliSec / intervals;
+    double steps = (_controller.value.volume - minVolume) / intervals;
+    _controller.setVolume(minVolume);
+    for (int i = 0; i < intervals; i++) {
+      await Future.delayed(Duration(milliseconds: wait.round()), () {
+        _controller.setVolume(_controller.value.volume + steps);
+        print("Volume set to " + (_controller.value.volume + steps).toString());
+      });
+    }
   }
 
   void _onFullScreenChange(ev) {
@@ -827,16 +851,23 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                             onSend: () async {
                                                               writeCommentFocusNode
                                                                   .unfocus();
-                                                              //send Comment
-                                                              await sendComment(
-                                                                  widget.postData[
-                                                                      'postId'],
+                                                              if (_postCommentTextController
+                                                                  .text
+                                                                  .trim()
+                                                                  .isNotEmpty) {
+                                                                //send Comment
+                                                                await sendComment(
+                                                                    widget.postData[
+                                                                        'postId'],
+                                                                    _postCommentTextController
+                                                                        .text);
+                                                              }
+                                                              if (mounted) {
+                                                                setState(() {
                                                                   _postCommentTextController
-                                                                      .text);
-                                                              setState(() {
-                                                                _postCommentTextController
-                                                                    .clear();
-                                                              });
+                                                                      .clear();
+                                                                });
+                                                              }
                                                             },
                                                             onTap: () {
                                                               focusNode
@@ -958,8 +989,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                       WordSearchLarge(
                                         pos: pos,
                                         postId: widget.postData['postId'],
-                                        seekToSecond: (sec) =>
-                                            seekToSecond.call(sec),
+                                        seekToSecond: (sec, ease) =>
+                                            seekToSecond.call(sec, ease),
                                       ),
                                       const SizedBox(height: 28),
                                     ],
@@ -1145,13 +1176,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
               print("Space pressed");
               if (_controller.value.isPlaying) {
                 if (mounted) {
-                  setState(() {
-                    _controller.pause();
-                    print("paused");
+                  if (mounted) {
+                    setState(() {
+                      _controller.pause();
+                      print("paused");
 
-                    _showMenu = true;
-                    print("_showMenu set to true");
-                  });
+                      _showMenu = true;
+                      print("_showMenu set to true");
+                    });
+                  }
                 }
 
                 EasyDebounce.debounce(
@@ -1160,10 +1193,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                     () {
                   if (_showMenu) {
                     if (mounted) {
-                      setState(() {
-                        _showMenu = false;
-                        print("_showMenu set to false");
-                      });
+                      if (mounted) {
+                        setState(() {
+                          _showMenu = false;
+                          print("_showMenu set to false");
+                        });
+                      }
                     }
                   }
                 }); // <-- The target method
@@ -1209,15 +1244,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
               // }
               handleFullscreen();
             } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-              setState(() {
-                _controller.seekTo(
-                    _controller.value.position - const Duration(seconds: 5));
-              });
+              if (mounted) {
+                setState(() {
+                  _controller.seekTo(
+                      _controller.value.position - const Duration(seconds: 5));
+                });
+              }
             } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-              setState(() {
-                _controller.seekTo(
-                    _controller.value.position + const Duration(seconds: 5));
-              });
+              if (mounted) {
+                setState(() {
+                  _controller.seekTo(
+                      _controller.value.position + const Duration(seconds: 5));
+                });
+              }
             } else if (event.logicalKey == LogicalKeyboardKey.keyN) {
               //Skipping Video
               print("skip");
@@ -1235,13 +1274,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
     // print("outOfRange: " + (!_scrollController.position.outOfRange).toString());
 
     if (_scrollController.offset > 1300 && !_showScrollToTopComment) {
-      setState(() {
-        _showScrollToTopComment = true;
-      });
+      if (mounted) {
+        setState(() {
+          _showScrollToTopComment = true;
+        });
+      }
     } else if (_scrollController.offset < 1300 && _showScrollToTopComment) {
-      setState(() {
-        _showScrollToTopComment = false;
-      });
+      if (mounted) {
+        setState(() {
+          _showScrollToTopComment = false;
+        });
+      }
     }
 
     if (_scrollController.offset >=
@@ -1273,14 +1316,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
 
     if (_scrollController2.offset > 200 &&
         !_showScrollToTopVideoRecommandations) {
-      setState(() {
-        _showScrollToTopVideoRecommandations = true;
-      });
+      if (mounted) {
+        setState(() {
+          _showScrollToTopVideoRecommandations = true;
+        });
+      }
     } else if (_scrollController2.offset < 200 &&
         _showScrollToTopVideoRecommandations) {
-      setState(() {
-        _showScrollToTopVideoRecommandations = false;
-      });
+      if (mounted) {
+        setState(() {
+          _showScrollToTopVideoRecommandations = false;
+        });
+      }
     }
 
     if (_scrollController2.offset >=

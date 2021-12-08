@@ -6,10 +6,19 @@ class WordDefinition extends StatefulWidget {
     Key? key,
     required this.word,
     required this.animateToScript,
+    required this.start,
+    required this.end,
+    required this.pos,
+    required this.seekToSecond,
   }) : super(key: key);
 
   final String word;
   final Function() animateToScript;
+
+  final double start;
+  final double end;
+  final Duration pos;
+  final Function(double, bool) seekToSecond;
 
   @override
   State<WordDefinition> createState() => _WordDefinitionState();
@@ -25,9 +34,11 @@ class _WordDefinitionState extends State<WordDefinition> {
       _wordDictionary = WordDictionary.fromJson(data);
       print("WordDic: " +
           _wordDictionary!.meanings[0].definitions[0].synonyms.toString());
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     });
     super.initState();
   }
@@ -38,6 +49,10 @@ class _WordDefinitionState extends State<WordDefinition> {
       return WordDictionaryItem(
         wordDictionary: _wordDictionary,
         animateToScript: widget.animateToScript,
+        start: widget.start,
+        end: widget.end,
+        pos: widget.pos,
+        seekToSecond: widget.seekToSecond,
       );
     } else if (_loading) {
       //Loading
@@ -46,7 +61,11 @@ class _WordDefinitionState extends State<WordDefinition> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const CircularProgressIndicator(),
-          Text("Definition for ${widget.word} is loading...")
+          Text("Definition for ${widget.word} is loading..."),
+          const SizedBox(height: 15),
+          InkWell(
+              onTap: () => widget.animateToScript.call(),
+              child: const Icon(Icons.arrow_back))
         ],
       );
     } else {
@@ -65,19 +84,51 @@ class _WordDefinitionState extends State<WordDefinition> {
   }
 }
 
-class WordDictionaryItem extends StatelessWidget {
+class WordDictionaryItem extends StatefulWidget {
   const WordDictionaryItem({
     Key? key,
     required WordDictionary? wordDictionary,
     required this.animateToScript,
+    required this.start,
+    required this.end,
+    required this.pos,
+    required this.seekToSecond,
   })  : _wordDictionary = wordDictionary,
         super(key: key);
 
   final WordDictionary? _wordDictionary;
   final Function() animateToScript;
 
+  final double start;
+  final double end;
+  final Duration pos;
+  final Function(double, bool) seekToSecond;
+
+  @override
+  State<WordDictionaryItem> createState() => _WordDictionaryItemState();
+}
+
+class _WordDictionaryItemState extends State<WordDictionaryItem> {
+  double currentSecond = 0;
+  bool _isLooping = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      currentSecond = widget.pos.inMilliseconds / 1000;
+    });
+  }
+
+  void seekIfWordEnded() {
+    if (_isLooping && widget.pos.inMilliseconds > (widget.end * 1000)) {
+      widget.seekToSecond(widget.start, false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    seekIfWordEnded();
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -85,9 +136,7 @@ class WordDictionaryItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // const SizedBox(
-            //   height: 15,
-            // ),
+            //Menu and Word
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -97,18 +146,55 @@ class WordDictionaryItem extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: InkWell(
-                        onTap: () => animateToScript.call(),
+                        onTap: () {
+                          widget.seekToSecond.call(currentSecond, true);
+                          if (mounted) {
+                            setState(() {
+                              _isLooping = false;
+                            });
+                          }
+
+                          widget.animateToScript.call();
+                        },
                         child: const Icon(Icons.arrow_back)),
                   ),
                 ),
                 Flexible(
                   fit: FlexFit.tight,
                   flex: 3,
-                  child: Text(
-                    _wordDictionary!.word,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget._wordDictionary!.word,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      //PlayButton, when clicked loop word in video, when clicked again resume video on where it left
+                      InkWell(
+                          onTap: () {
+                            if (_isLooping) {
+                              widget.seekToSecond.call(currentSecond, true);
+                              if (mounted) {
+                                setState(() {
+                                  _isLooping = false;
+                                });
+                              }
+                            } else {
+                              widget.seekToSecond.call(widget.start, false);
+                              if (mounted) {
+                                setState(() {
+                                  _isLooping = true;
+                                });
+                              }
+                            }
+                          },
+                          child: Icon(_isLooping
+                              ? Icons.loop
+                              : Icons.play_arrow_outlined))
+                    ],
                   ),
                 ),
                 const Flexible(
@@ -137,7 +223,7 @@ class WordDictionaryItem extends StatelessWidget {
             //         ],
             //       )
             //     : const SizedBox(),
-            _wordDictionary!.origin.isNotEmpty
+            widget._wordDictionary!.origin.isNotEmpty
                 ? Column(
                     children: [
                       Row(
@@ -156,7 +242,7 @@ class WordDictionaryItem extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              _wordDictionary!.origin,
+                              widget._wordDictionary!.origin,
                               style: const TextStyle(fontSize: 16),
                               textAlign: TextAlign.start,
                             ),
@@ -169,7 +255,7 @@ class WordDictionaryItem extends StatelessWidget {
                     ],
                   )
                 : const SizedBox(),
-            _wordDictionary!.meanings.isNotEmpty
+            widget._wordDictionary!.meanings.isNotEmpty
                 ? Column(
                     children: [
                       Row(
@@ -187,7 +273,7 @@ class WordDictionaryItem extends StatelessWidget {
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: getMeanings(_wordDictionary!.meanings),
+                        children: getMeanings(widget._wordDictionary!.meanings),
                       )
                     ],
                   )
