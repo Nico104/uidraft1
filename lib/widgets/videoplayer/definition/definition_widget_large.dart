@@ -147,7 +147,7 @@ class _WordDictionaryItemState extends State<WordDictionaryItem> {
                     alignment: Alignment.centerLeft,
                     child: InkWell(
                         onTap: () {
-                          widget.seekToSecond.call(currentSecond, true);
+                          widget.seekToSecond.call(currentSecond, false);
                           if (mounted) {
                             setState(() {
                               _isLooping = false;

@@ -119,7 +119,7 @@ class AllWordsWrap extends StatefulWidget {
 }
 
 class _AllWordsWrapState extends State<AllWordsWrap> {
-  GlobalKey key = GlobalKey();
+  final GlobalKey key = GlobalKey();
   bool _tempDeactivateAutoScroll = false;
 
   String tappedStartTime = "";
@@ -129,7 +129,10 @@ class _AllWordsWrapState extends State<AllWordsWrap> {
   @protected
   void didUpdateWidget(covariant oldWidget) {
     super.didUpdateWidget(oldWidget);
-    scrollToActiveWord();
+    // scrollToActiveWord();
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      scrollToActiveWord();
+    });
   }
 
   @override
@@ -261,6 +264,7 @@ List<InlineSpan> getWords(
   Function(double, bool) seekToSecond,
   ScrollController scrollController,
   GlobalKey key,
+  // LocalKey key,
   String getTappedStartTime,
   Function(String) setTappedStartTime,
   Function() animateToScript,
@@ -279,18 +283,7 @@ List<InlineSpan> getWords(
         ),
       ));
       _keyGiven = true;
-      // print("Key given to: " + words.elementAt(i)['word']);
     }
-    //  else {
-    //   wordList.add(WidgetSpan(
-    //     child: GestureDetector(
-    //       onDoubleTap: () => print("double TAP!"),
-    //       child: SizedBox.fromSize(
-    //         size: Size.zero,
-    //       ),
-    //     ),
-    //   ));
-    // }
     wordList.add(getWord(words.elementAt(i), pos, seekToSecond,
         getTappedStartTime, setTappedStartTime, openDefintion));
   }

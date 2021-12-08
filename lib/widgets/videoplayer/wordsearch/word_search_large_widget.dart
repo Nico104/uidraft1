@@ -5,7 +5,7 @@ import 'package:uidraft1/widgets/videoplayer/definition/definition_widget_large.
 import 'package:uidraft1/widgets/videoplayer/wordsearch/video_player_word_search_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/wordsearch/word_search_bar_widget.dart';
 
-//!Fianl Widget
+//!Final Widget
 
 class WordSearchLarge extends StatefulWidget {
   WordSearchLarge(
