@@ -167,7 +167,9 @@ final simpleLocationBuilder = SimpleLocationBuilder(
     'slidertest': (context, state) => BeamPage(
           key: const ValueKey('slidertest'),
           title: 'slidertest',
-          child: const Slidertest(),
+          child: const PostSliderV1(
+            postId: 1,
+          ),
         ),
 
     'search/:search': (context, state) {

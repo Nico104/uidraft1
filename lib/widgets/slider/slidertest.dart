@@ -1,21 +1,28 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/customIcons/slider/outlines/slider_test_outlines_icons.dart';
 import 'dart:math' as math;
 
-class Slidertest extends StatefulWidget {
-  const Slidertest({Key? key, this.value = 0}) : super(key: key);
+import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
+
+class PostSliderV1 extends StatefulWidget {
+  const PostSliderV1({Key? key, this.value = 0, required this.postId})
+      : super(key: key);
 
   final double value;
 
+  // final Function() onChange;
+  final int postId;
+
   @override
-  State<Slidertest> createState() => _SlidertestState();
+  State<PostSliderV1> createState() => _PostSliderV1State();
 }
 
 extension on Color {
   Color operator +(Color other) => Color.alphaBlend(this, other);
 }
 
-class _SlidertestState extends State<Slidertest> {
+class _PostSliderV1State extends State<PostSliderV1> {
   // double sliderval = 0;
   late double _value;
 
@@ -51,6 +58,10 @@ class _SlidertestState extends State<Slidertest> {
                       setState(() {
                         _value = 0;
                       });
+                      //deleteRating
+                      print("delete Post");
+                      deletePostRating(widget.postId);
+                      EasyDebounce.cancel('postslider');
                     }
                   }
                 },
@@ -62,6 +73,39 @@ class _SlidertestState extends State<Slidertest> {
                     setState(() {
                       _value = value;
                     });
+                    EasyDebounce.debounce(
+                        'postslider', // <-- An ID for this particular debouncer
+                        const Duration(seconds: 1), // <-- The debounce duration
+                        () async {
+                      print("WidgetVal: " + widget.value.toString());
+                      // if (widget.value == 0) {
+                      //   if (value != 0) {
+                      //     //createRating
+                      //     print("rate Post with " +
+                      //         widget.postId.toString() +
+                      //         " and " +
+                      //         value.round().toString());
+                      //     ratePost(widget.postId, value.round());
+                      //   }
+                      // } else {
+                      //   if (value == 0) {
+                      //     //deleteRating
+                      //     print("delete Post");
+                      //     deletePostRating(widget.postId);
+                      //   } else {
+                      //     //updateRating
+                      //     print("update Post");
+                      //     updatePostRating(widget.postId, value.round());
+                      //   }
+                      // }
+                      if (value == 0) {
+                        //deleteRating
+                        print("delete Post");
+                        deletePostRating(widget.postId);
+                      } else {
+                        handleRating(value, widget.postId);
+                      }
+                    });
                   },
                   value: _value,
                 ),
@@ -72,6 +116,21 @@ class _SlidertestState extends State<Slidertest> {
         ],
       ),
     );
+  }
+}
+
+Future<void> handleRating(double value, int postId) async {
+  if (await getUserPostRating(postId) == 0) {
+    //createRating
+    print("rate Post with " +
+        postId.toString() +
+        " and " +
+        value.round().toString());
+    ratePost(postId, value.round());
+  } else {
+    //updateRating
+    print("update Post");
+    updatePostRating(postId, value.round());
   }
 }
 

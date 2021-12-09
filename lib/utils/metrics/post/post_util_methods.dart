@@ -18,7 +18,8 @@ Future<void> incrementPostViewsByOne(int postId) async {
   }
 }
 
-//rates a Post (like, dislike, superlike, superdislike)
+//rates a Post
+//Requires to be logged in
 Future<void> ratePost(int postId, int rating) async {
   try {
     String? token = await getToken();

@@ -523,8 +523,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                             return Row(
                                                                               children: [
                                                                                 //Slider
-                                                                                Slidertest(
+                                                                                PostSliderV1(
                                                                                   value: snapshotRating.data![0].toDouble(),
+                                                                                  postId: widget.postData['postId'],
                                                                                 ),
 
                                                                                 //LIKE
@@ -607,7 +608,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                     :
                                                                     //SliderTest
 
-                                                                    const Slidertest()
+                                                                    PostSliderV1(
+                                                                        postId:
+                                                                            widget.postData['postId'])
                                                                 : const SizedBox(),
 
                                                             // Row(
