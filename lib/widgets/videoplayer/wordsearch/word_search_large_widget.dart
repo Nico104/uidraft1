@@ -95,7 +95,7 @@ class _WordSearchLargeState extends State<WordSearchLarge> {
         Future.delayed(_duration ~/ 4, () {
           if (mounted) {
             setState(() {
-              _scriptHeight = 700;
+              _scriptHeight = 600;
               _borderRadius = 18;
               _scriptWidthfactor = 1;
               _searchBarBorderRadius = 18;

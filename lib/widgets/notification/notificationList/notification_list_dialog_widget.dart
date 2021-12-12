@@ -161,8 +161,7 @@ class _NotificationListState extends State<NotificationList>
                         );
                       }
                     } else {
-                      return const Text(
-                          "you have 0 notification, you lonely f***");
+                      return const Text("you have 0 notification");
                     }
                   } else {
                     return const CircularProgressIndicator();

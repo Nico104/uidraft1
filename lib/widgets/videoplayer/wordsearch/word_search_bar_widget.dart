@@ -49,7 +49,7 @@ class _WordSearchBarState extends State<WordSearchBar> {
       if (matches.isNotEmpty) {
         widget.seekToSecond.call(
             seekToClosestLargerMatch(widget.pos.inMilliseconds / 1000, matches),
-            true);
+            false);
         _focusNode.requestFocus();
       }
     });
