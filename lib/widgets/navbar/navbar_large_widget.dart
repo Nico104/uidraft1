@@ -176,7 +176,7 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                 },
                                 child: Text(
                                   // "LOGO",
-                                  "LIGMA",
+                                  "LOGO",
                                   style: TextStyle(
                                       fontFamily: 'Segoe UI Black',
                                       fontSize: 28,
