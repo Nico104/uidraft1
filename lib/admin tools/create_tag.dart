@@ -4,6 +4,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class CreateTagLargeScreen extends StatelessWidget {
   const CreateTagLargeScreen({Key? key}) : super(key: key);
@@ -57,7 +58,7 @@ class _CreateTagFormState extends State<CreateTagForm> {
   }
 
   Future<void> _createTag(String tagname) async {
-    var url = Uri.parse('http://localhost:3000/tag/createTag');
+    var url = Uri.parse(baseURL + 'tag/createTag');
     var response = await http.post(url, body: {'tagname': '$tagname'});
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -71,7 +72,7 @@ class _CreateTagFormState extends State<CreateTagForm> {
 
   Future<void> _createTagWithParent(
       String tagname, String parenttagname) async {
-    var url = Uri.parse('http://localhost:3000/tag/createTagWithParentTag');
+    var url = Uri.parse(baseURL + 'tag/createTagWithParentTag');
     var response = await http.post(url,
         body: {'tagname': '$tagname', 'parenttagname': '$parenttagname'});
     print('Response status: ${response.statusCode}');

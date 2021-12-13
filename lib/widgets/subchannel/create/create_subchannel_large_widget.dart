@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:uidraft1/utils/widgets/toggle/toggle_animated_button_widget.dart';
@@ -574,8 +575,7 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
     List<int>? subchannelPicture,
     List<int>? banner,
   ) async {
-    var url =
-        Uri.parse('http://localhost:3000/subchannel/createSubchannelWithData');
+    var url = Uri.parse(baseURL + 'subchannel/createSubchannelWithData');
     String? token = await getToken();
 
     var request = http.MultipartRequest('POST', url);

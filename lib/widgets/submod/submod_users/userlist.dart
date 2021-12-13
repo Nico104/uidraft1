@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/submod/submod_util_methods.dart';
 
 class SubmodUserlist extends StatefulWidget {
@@ -22,8 +23,6 @@ class SubmodUserlist extends StatefulWidget {
 }
 
 class _SubmodUserlistState extends State<SubmodUserlist> {
-  final String baseURL = 'http://localhost:3000/';
-
   bool _loading = true;
 
   List<List<dynamic>> userNames = [];

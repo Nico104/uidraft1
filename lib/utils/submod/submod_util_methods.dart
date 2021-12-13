@@ -269,8 +269,8 @@ Future<void> removePostReports(int postId) async {
 ///Updates the Subchannel [subchannelname] picture with [picture]
 Future<void> updateSubchannelPicture(
     String subchannelname, Uint8List picture) async {
-  var url = Uri.parse(
-      'http://localhost:3000/subchannel/updateSubchannelPicture/$subchannelname');
+  var url =
+      Uri.parse(baseURL + 'subchannel/updateSubchannelPicture/$subchannelname');
   String? token = await getToken();
 
   var request = http.MultipartRequest('POST', url);
@@ -290,8 +290,8 @@ Future<void> updateSubchannelPicture(
 ///Updates the Subchannel [subchannelname] banner with [banner]
 Future<void> updateSubchannelBanner(
     String subchannelname, Uint8List banner) async {
-  var url = Uri.parse(
-      'http://localhost:3000/subchannel/updateSubchannelBanner/$subchannelname');
+  var url =
+      Uri.parse(baseURL + 'subchannel/updateSubchannelBanner/$subchannelname');
   String? token = await getToken();
 
   var request = http.MultipartRequest('POST', url);
@@ -336,8 +336,8 @@ Future<void> updateSubchannelAboutText(
 Future<List<int>> fetchReportedPostIds(
     String subchannelname, String search) async {
   try {
-    final response = await http.get(Uri.parse(
-        'http://localhost:3000/post/getSubchannelReportedPublicPostIds/$subchannelname/$search'));
+    final response = await http.get(Uri.parse(baseURL +
+        'post/getSubchannelReportedPublicPostIds/$subchannelname/$search'));
 
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON

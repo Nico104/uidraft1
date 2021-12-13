@@ -4,6 +4,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_video_preview_large_widget.dart';
 import 'dart:html' as html;
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
@@ -51,8 +52,7 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideosLargeScreen> {
         });
       }
 
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
+      final response = await http.get(Uri.parse(baseURL + 'post/getPostIds'));
 
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON

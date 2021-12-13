@@ -8,6 +8,7 @@ import 'package:uidraft1/screens/auth/auth_screen.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class SignUpV2LargeScreen extends StatelessWidget {
   const SignUpV2LargeScreen({Key? key}) : super(key: key);
@@ -52,7 +53,7 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
 
 //LoginMethod
   Future<bool> _login(String username, String password) async {
-    var url = Uri.parse('http://localhost:3000/login');
+    var url = Uri.parse(baseURL + 'login');
     var response = await http
         .post(url, body: {'username': '$username', 'password': '$password'});
     print('Response status: ${response.statusCode}');
@@ -74,7 +75,7 @@ class _SignUpV2FormState extends State<SignUpV2Form> {
   }
 
   Future<void> _signUp(String username, String useremail) async {
-    var url = Uri.parse('http://localhost:3000/user/signupv2');
+    var url = Uri.parse(baseURL + 'user/signupv2');
     var response = await http.post(url, body: {
       "username": username,
       "useremail": useremail,

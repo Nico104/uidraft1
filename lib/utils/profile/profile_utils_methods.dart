@@ -55,8 +55,8 @@ Future<bool> isFollowingCreator(String creator) async {
 
 //Get Profile Data by Username
 Future<Map<String, dynamic>> fetchProfileData(String username) async {
-  final response = await http
-      .get(Uri.parse('http://localhost:3000/user/getProfile/$username'));
+  final response =
+      await http.get(Uri.parse(baseURL + 'user/getProfile/$username'));
 
   print("Staus profile code: " + response.statusCode.toString());
 

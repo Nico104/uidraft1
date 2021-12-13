@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class CreateProfilePreviewLargeScreen extends StatelessWidget {
   const CreateProfilePreviewLargeScreen(
@@ -32,7 +33,7 @@ class CreateProfilePreviewLargeScreen extends StatelessWidget {
                   height: 500,
                 )
               : Image.network(
-                  'http://localhost:3000/uploads/default/defaultProfilePicture.png',
+                  baseURL + 'uploads/default/defaultProfilePicture.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.center,
                   width: 500,

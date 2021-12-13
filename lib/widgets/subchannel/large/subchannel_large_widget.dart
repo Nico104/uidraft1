@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/subchannel/subchannel_util_methods.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/widgets/subchannel/large/subchannel_video_preview_large_widget.dart';
@@ -41,8 +42,6 @@ class Subchannel extends StatefulWidget {
 }
 
 class _SubchannelState extends State<Subchannel> {
-  String baseURL = 'http://localhost:3000/';
-
   //About Text
   bool _showAboutText = false;
 

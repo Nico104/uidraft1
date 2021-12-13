@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'dart:convert';
 
 import 'package:uidraft1/widgets/navbar/navbar_menu_large_widget.dart';
@@ -19,13 +20,11 @@ class _NavBarLargeProfileState extends State<NavBarLargeProfile> {
 
   bool _isLeftHand = false;
 
-  String baseURL = 'http://localhost:3000/';
-
   late String username;
 
   //Get Profile Data by Username
   Future<Map<String, dynamic>> fetchMyProfileData() async {
-    var url = Uri.parse('http://localhost:3000/user/getMyProfile');
+    var url = Uri.parse(baseURL + 'user/getMyProfile');
     String? token = await getToken();
 
     final response = await http.get(url, headers: {

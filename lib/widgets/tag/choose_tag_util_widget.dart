@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/widgets/tag/tag_chip_widget.dart';
 
 class ChooseTagUtil extends StatefulWidget {
@@ -29,8 +30,8 @@ class _ChooseTagUtilState extends State<ChooseTagUtil> {
   //Get PostIds List
   Future<void> fetchTags(String parentTagName) async {
     try {
-      final response = await http.get(Uri.parse(
-          'http://localhost:3000/tag/getTagsByParent/$parentTagName'));
+      final response = await http
+          .get(Uri.parse(baseURL + 'tag/getTagsByParent/$parentTagName'));
 
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON
@@ -60,8 +61,8 @@ class _ChooseTagUtilState extends State<ChooseTagUtil> {
   //Check if Tag has Subtags
   Future<bool> _hasSubtags(String parentTagName) async {
     try {
-      final response = await http.get(Uri.parse(
-          'http://localhost:3000/tag/getTagsByParent/$parentTagName'));
+      final response = await http
+          .get(Uri.parse(baseURL + 'tag/getTagsByParent/$parentTagName'));
 
       if (response.statusCode == 200) {
         print("Response Body Json: " + json.decode(response.body).toString());
@@ -83,8 +84,8 @@ class _ChooseTagUtilState extends State<ChooseTagUtil> {
 
   Future<String> getTagParent(String parentTagName) async {
     try {
-      final response = await http.get(
-          Uri.parse('http://localhost:3000/tag/getTagParent/$parentTagName'));
+      final response = await http
+          .get(Uri.parse(baseURL + 'tag/getTagParent/$parentTagName'));
 
       if (response.statusCode == 200) {
         if (json.decode(response.body)['parentTag'] != null) {

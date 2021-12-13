@@ -115,7 +115,7 @@ Future<void> updatePostData(int id, String title, String desc) async {
 ///Updates the Posts with postId [id]
 ///changes the Post Thumbnail to [thumbnail]
 Future<void> updatePostThumbnail(int id, Uint8List thumbnail) async {
-  var url = Uri.parse('http://localhost:3000/post/updatePostThumbnail/$id');
+  var url = Uri.parse(baseURL + 'post/updatePostThumbnail/$id');
   String? token = await getToken();
 
   var request = http.MultipartRequest('POST', url);

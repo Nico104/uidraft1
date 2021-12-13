@@ -5,6 +5,8 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:uidraft1/utils/constants/global_constants.dart';
+
 // class NavBarLargeStudio extends StatelessWidget implements PreferredSizeWidget {
 class NavBarLargeStudio extends StatefulWidget {
   const NavBarLargeStudio({Key? key}) : super(key: key);
@@ -15,11 +17,9 @@ class NavBarLargeStudio extends StatefulWidget {
 class _NavBarLargeStudioState extends State<NavBarLargeStudio> {
   bool _showMenu = false;
 
-  String baseURL = 'http://localhost:3000/';
-
   //Get Studio Data by Username
   Future<Map<String, dynamic>> fetchMyProfileData() async {
-    var url = Uri.parse('http://localhost:3000/user/getMyProfile');
+    var url = Uri.parse(baseURL + 'user/getMyProfile');
     String? token = await getToken();
 
     final response = await http.get(url, headers: {

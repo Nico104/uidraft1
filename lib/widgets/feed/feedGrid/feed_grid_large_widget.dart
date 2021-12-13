@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
@@ -48,8 +49,7 @@ class _FeedGridState extends State<FeedGrid> {
         });
       }
 
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
+      final response = await http.get(Uri.parse(baseURL + 'post/getPostIds'));
       //TODO fill for non logged in users
       // final response = await http.get(Uri.parse(
       //     'http://localhost:3000/brainberry/contentGrabbingTest/username'));

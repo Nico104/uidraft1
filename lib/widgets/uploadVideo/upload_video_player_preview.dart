@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class UploadVideoPlayerVideoPreview extends StatelessWidget {
   final String postTitle;
@@ -36,7 +37,8 @@ class UploadVideoPlayerVideoPreview extends StatelessWidget {
                       fit: BoxFit.fill,
                     )
                   : Image.network(
-                      "http://localhost:3000/uploads/default/defaultUploadVideoThumbnailPreview.png",
+                      baseURL +
+                          "uploads/default/defaultUploadVideoThumbnailPreview.png",
                       fit: BoxFit.cover,
                       alignment: Alignment.center,
                     ),

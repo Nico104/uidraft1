@@ -97,7 +97,7 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
     List<String> tags,
   ) async {
     // var url = Uri.parse(uploadServerBaseURL + 'post/uploadPostWithData');
-    var url = Uri.parse('http://localhost:3001/post/uploadPostWithData');
+    var url = Uri.parse(uploadServerBaseURL + 'post/uploadPostWithData');
     print("URL: " + url.toString());
     String? token = await getToken();
 
@@ -142,8 +142,7 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
 
           //Add posttags
           for (var element in tags) {
-            http.patch(
-                Uri.parse('http://localhost:3000/post/addPostTag/$postId'),
+            http.patch(Uri.parse(baseURL + 'post/addPostTag/$postId'),
                 headers: {
                   'Content-Type': 'application/json',
                   'Accept': 'application/json',

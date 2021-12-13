@@ -4,6 +4,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
@@ -23,11 +24,10 @@ class VideoPlayerVideoPreview extends StatefulWidget {
 }
 
 class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
-  String baseURL = 'http://localhost:3000/';
   //Get PostPreview Data by Id
   Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
-    final response = await http
-        .get(Uri.parse('http://localhost:3000/post/getPostPreviewData/$id'));
+    final response =
+        await http.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);
@@ -87,7 +87,7 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12.0),
                           child: Image.network(
-                            "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",
+                            baseURL + "${snapshot.data!['postTumbnailPath']}",
                             fit: BoxFit.cover,
                             alignment: Alignment.center,
                           ),

@@ -184,8 +184,8 @@ Future<int> getUserCommentRating(int commentId) async {
 
 ///Returns the Rating Score of the comment with commentId [commentId]
 Future<int> getCommentRatingScore(int commentId) async {
-  final response = await http.get(Uri.parse(
-      'http://localhost:3000/comment/getCommentRatingScore/$commentId'));
+  final response = await http
+      .get(Uri.parse(baseURL + 'comment/getCommentRatingScore/$commentId'));
 
   if (response.statusCode == 200) {
     print(int.parse(response.body));

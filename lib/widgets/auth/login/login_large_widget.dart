@@ -7,6 +7,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class LoginLargeScreen extends StatelessWidget {
   const LoginLargeScreen({Key? key}) : super(key: key);
@@ -84,7 +85,7 @@ class _LoginFormState extends State<LoginForm> {
 
   //LoginMethod
   Future<bool> _login(String username, String password) async {
-    var url = Uri.parse('http://localhost:3000/login');
+    var url = Uri.parse(baseURL + 'login');
     var response = await http
         .post(url, body: {'username': '$username', 'password': '$password'});
     print('Response status: ${response.statusCode}');

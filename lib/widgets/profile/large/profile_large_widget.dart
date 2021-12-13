@@ -8,6 +8,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/profile/profile_utils_methods.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/widgets/message/write_message_large_dialog.dart';
@@ -45,8 +46,6 @@ class _ProfileState extends State<Profile> {
   //Profil
   bool _isFollowing = false;
 
-  String baseURL = 'http://localhost:3000/';
-
   //Grid Vars
   bool _loading = true;
   bool _error = false;
@@ -65,8 +64,8 @@ class _ProfileState extends State<Profile> {
           _loading = true;
         });
       }
-      final response = await http.get(Uri.parse(
-          'http://localhost:3000/post/getUserByUsernamePostIds/$username'));
+      final response = await http
+          .get(Uri.parse(baseURL + 'post/getUserByUsernamePostIds/$username'));
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON
         List<dynamic> values = <dynamic>[];

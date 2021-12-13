@@ -153,8 +153,7 @@ Future<int> getPostRatingData(int id, String ratingType) async {
 
 ///Retunr all Data needed to display and play the post with postId [postId]
 Future<Map<String, dynamic>> fetchPostData(int id) async {
-  final response =
-      await http.get(Uri.parse('http://localhost:3000/post/getPost/$id'));
+  final response = await http.get(Uri.parse(baseURL + 'post/getPost/$id'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> map = json.decode(response.body);
@@ -171,8 +170,8 @@ Future<Map<String, dynamic>> fetchPostData(int id) async {
 
 //Get Post RatingScore
 Future<int> getPostRatingScore(int id) async {
-  final response = await http
-      .get(Uri.parse('http://localhost:3000/post/getPostRatingScore/$id'));
+  final response =
+      await http.get(Uri.parse(baseURL + 'post/getPostRatingScore/$id'));
 
   if (response.statusCode == 200) {
     print("Rating" + int.parse(response.body).toString());

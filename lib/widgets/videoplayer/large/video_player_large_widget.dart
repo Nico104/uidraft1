@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
@@ -77,7 +78,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
   Duration pos = const Duration();
 
   //Serverconnection
-  String baseURL = 'http://localhost:3000/';
 
   //Shortcuts
   var focusNode = FocusNode();
@@ -1375,8 +1375,7 @@ List<Widget> _getVideoTagWidgets(List<String> list) {
 
 Future<List<int>> fetchRecommendedPostIds() async {
   try {
-    final response =
-        await http.get(Uri.parse('http://localhost:3000/post/getPostIds'));
+    final response = await http.get(Uri.parse(baseURL + 'post/getPostIds'));
 
     if (response.statusCode == 200) {
       List<int> postIds = <int>[];

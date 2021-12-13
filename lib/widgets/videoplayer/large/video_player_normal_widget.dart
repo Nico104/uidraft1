@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html';
@@ -45,7 +46,6 @@ class _VideoPlayerNormalLargeState extends State<VideoPlayerNormalLarge> {
   Duration pos = const Duration();
 
   //Serverconnection
-  String baseURL = 'http://localhost:3000/';
 
   //Shortcuts
   var focusNode = FocusNode();

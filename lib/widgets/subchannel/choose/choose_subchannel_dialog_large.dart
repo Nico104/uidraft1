@@ -4,6 +4,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/widgets/tag/tag_chip_widget.dart';
 
 class ChooseSubchannelLargeScreen extends StatelessWidget {
@@ -38,8 +39,6 @@ class ChooseSubchannel extends StatefulWidget {
 }
 
 class _ChooseSubchannelState extends State<ChooseSubchannel> {
-  final String baseURL = 'http://localhost:3000/';
-
   bool _loading = true;
 
   // List<String> subchannelNames = <String>[];

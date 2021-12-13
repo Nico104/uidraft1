@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class ChooseUserUtil extends StatefulWidget {
   const ChooseUserUtil({Key? key, required this.notifyParent})
@@ -15,8 +16,6 @@ class ChooseUserUtil extends StatefulWidget {
 }
 
 class _ChooseUserUtilState extends State<ChooseUserUtil> {
-  final String baseURL = 'http://localhost:3000/';
-
   bool _loading = true;
 
   List<List<String>> userNames = [];

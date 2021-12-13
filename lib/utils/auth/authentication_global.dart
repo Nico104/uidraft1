@@ -126,7 +126,6 @@ Future<bool> createPendingAccount(String usermail) async {
       },
       body: json.encode(<String, String>{
         "useremail": '$usermail',
-        // "notificationtext": notificationText
       }));
 
   print('Response status: ${response.statusCode}');

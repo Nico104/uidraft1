@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 
 class CreateSubchannelPreviewLargeScreen extends StatelessWidget {
   const CreateSubchannelPreviewLargeScreen({
@@ -43,7 +44,8 @@ class CreateSubchannelPreviewLargeScreen extends StatelessWidget {
                             width: 1920,
                           )
                         : Image.network(
-                            "http://localhost:3000/uploads/default/defaultSubchannelBanner.jpg",
+                            baseURL +
+                                "uploads/default/defaultSubchannelBanner.jpg",
                             fit: BoxFit.cover, alignment: Alignment.center,
                             // width: MediaQuery.of(context).size.width,
                             height: 230,
@@ -61,7 +63,8 @@ class CreateSubchannelPreviewLargeScreen extends StatelessWidget {
                             width: 720,
                           )
                         : Image.network(
-                            "http://localhost:3000/uploads/default/defaultSubchannelBanner.jpg",
+                            baseURL +
+                                "uploads/default/defaultSubchannelBanner.jpg",
                             fit: BoxFit.cover, alignment: Alignment.center,
                             // width: MediaQuery.of(context).size.width,
                             height: 230,
@@ -88,7 +91,8 @@ class CreateSubchannelPreviewLargeScreen extends StatelessWidget {
                             height: 87,
                           )
                         : Image.network(
-                            "http://localhost:3000/uploads/default/defaultSubchannelPicture.jpg",
+                            baseURL +
+                                "uploads/default/defaultSubchannelPicture.jpg",
                             fit: BoxFit.cover,
                             alignment: Alignment.center,
                             width: 87,

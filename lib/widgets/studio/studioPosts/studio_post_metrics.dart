@@ -298,7 +298,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                                                         .fill,
                                                                   )
                                                                 : Image.network(
-                                                                    "http://localhost:3000/" +
+                                                                    baseURL +
                                                                         snapshot
                                                                             .data!['postTumbnailPath'],
                                                                     fit: BoxFit

@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/widgets/profile/create/create_profile_preview_widget.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:http/http.dart' as http;
@@ -48,7 +49,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
   late DropzoneViewController controller;
 
   Future<Map<String, dynamic>> fetchCurrentProfileData() async {
-    var url = Uri.parse('http://localhost:3000/user/getMyProfile');
+    var url = Uri.parse(baseURL + 'user/getMyProfile');
     String? token = await getToken();
 
     final response = await http.get(url, headers: {
@@ -76,8 +77,8 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
   Future<void> applyCurrentProfileData() async {
     Map<String, dynamic> profileData = await fetchCurrentProfileData();
     print(profileData.toString());
-    Uint8List tempPB = await http.readBytes(Uri.parse(
-        'http://localhost:3000/' + profileData['profilePicturePath']));
+    Uint8List tempPB = await http
+        .readBytes(Uri.parse(baseURL + profileData['profilePicturePath']));
     if (mounted) {
       setState(() {
         _profileBioTextController.text = profileData['profileBio'];
@@ -87,23 +88,12 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
     }
   }
 
-  // //Set profile Picture to default
-  // Future<void> deleteProfilePicture() async {
-  //   Uint8List tempPB = await http.readBytes(Uri.parse(
-  //       'http://localhost:3000/uploads/default/defaultProfilePicture.png'));
-  //   if (mounted) {
-  //     setState(() {
-  //       profilePicturePreview = tempPB;
-  //     });
-  //   }
-  // }
-
   //Update Profile
   Future<void> _updateProfile(
     String profileBio,
     List<int>? profilePicture,
   ) async {
-    var url = Uri.parse('http://localhost:3000/user/updateMyUserProfile');
+    var url = Uri.parse(baseURL + 'user/updateMyUserProfile');
     String? token = await getToken();
 
     var request = http.MultipartRequest('PATCH', url);

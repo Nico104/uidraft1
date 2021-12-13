@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
@@ -39,8 +40,8 @@ class _SearchGridState extends State<SearchGridLargeScreen> {
         });
       }
 
-      final response = await http
-          .get(Uri.parse('http://localhost:3000/post/searchPostIds/$search'));
+      final response =
+          await http.get(Uri.parse(baseURL + 'post/searchPostIds/$search'));
 
       if (response.statusCode == 200) {
         //List<int> _postIds = <int>[];

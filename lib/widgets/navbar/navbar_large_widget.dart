@@ -7,6 +7,7 @@ import 'package:uidraft1/customIcons/light_outlined/light_outline_notification_i
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/navbar/navbar_util_methods.dart';
 import 'package:uidraft1/utils/theme/theme_notifier.dart';
 import 'package:uidraft1/widgets/navbar/customfeed/customfeedlist/custom_feed_list_dialog_widget.dart';
@@ -59,8 +60,6 @@ class _NavBarLargeState extends State<NavBarLarge> {
   Menu activeMenu = Menu.none;
 
   bool _isLeftHand = false;
-
-  String baseURL = 'http://localhost:3000/';
 
   late String username;
 
