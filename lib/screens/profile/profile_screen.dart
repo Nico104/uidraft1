@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/screens/notfound/not_found_profile_screen.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/profile/profile_utils_methods.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
@@ -19,8 +21,10 @@ class _ProfileState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: FutureBuilder(
-          future: fetchProfileData(widget.username),
+      child: Consumer<ConnectionService>(builder: (context, connection, _) {
+        return FutureBuilder(
+          future:
+              fetchProfileData(widget.username, connection.returnConnection()),
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>> snapshot) {
             if (snapshot.hasData) {
@@ -48,7 +52,9 @@ class _ProfileState extends State<ProfileScreen> {
             } else {
               return const Center(child: CircularProgressIndicator());
             }
-          }),
+          },
+        );
+      }),
     );
   }
 }

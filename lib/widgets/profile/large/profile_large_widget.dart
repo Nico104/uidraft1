@@ -227,7 +227,9 @@ class _ProfileState extends State<Profile> {
                                                     child: FutureBuilder(
                                                       future: isFollowingCreator(
                                                           widget.profileData[
-                                                              'username']),
+                                                              'username'],
+                                                          connection
+                                                              .returnConnection()),
                                                       builder: (BuildContext
                                                               context,
                                                           AsyncSnapshot<bool>
@@ -257,7 +259,9 @@ class _ProfileState extends State<Profile> {
                                                               ),
                                                               onPressed: () => unfollowUser(
                                                                       widget.profileData[
-                                                                          'username'])
+                                                                          'username'],
+                                                                      connection
+                                                                          .returnConnection())
                                                                   .then((value) =>
                                                                       setState(
                                                                           () {})),
@@ -290,7 +294,9 @@ class _ProfileState extends State<Profile> {
                                                                           .brandColor),
                                                               onPressed: () => followUser(
                                                                       widget.profileData[
-                                                                          'username'])
+                                                                          'username'],
+                                                                      connection
+                                                                          .returnConnection())
                                                                   .then((value) =>
                                                                       setState(
                                                                           () {})),

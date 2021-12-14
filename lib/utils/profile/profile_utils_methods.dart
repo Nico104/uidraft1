@@ -6,9 +6,9 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:http_parser/http_parser.dart';
 
 ///Follow user
-Future<void> followUser(String creator) async {
+Future<void> followUser(String creator, http.Client client) async {
   String? token = await getToken();
-  final response = await http.patch(
+  final response = await client.patch(
     Uri.parse(baseURL + 'user/followUser/$creator'),
     headers: {
       'Content-Type': 'application/json',
@@ -22,9 +22,9 @@ Future<void> followUser(String creator) async {
 }
 
 ///Follow user
-Future<void> unfollowUser(String creator) async {
+Future<void> unfollowUser(String creator, http.Client client) async {
   String? token = await getToken();
-  final response = await http.patch(
+  final response = await client.patch(
     Uri.parse(baseURL + 'user/unfollowUser/$creator'),
     headers: {
       'Content-Type': 'application/json',
@@ -38,9 +38,9 @@ Future<void> unfollowUser(String creator) async {
 }
 
 ///Is Following Creator
-Future<bool> isFollowingCreator(String creator) async {
+Future<bool> isFollowingCreator(String creator, http.Client client) async {
   String? token = await getToken();
-  final response = await http.get(
+  final response = await client.get(
     Uri.parse(baseURL + 'user/isFollowingCreator/$creator'),
     headers: {
       'Content-Type': 'application/json',
@@ -55,9 +55,10 @@ Future<bool> isFollowingCreator(String creator) async {
 }
 
 //Get Profile Data by Username
-Future<Map<String, dynamic>> fetchProfileData(String username) async {
+Future<Map<String, dynamic>> fetchProfileData(
+    String username, http.Client client) async {
   final response =
-      await http.get(Uri.parse(baseURL + 'user/getProfile/$username'));
+      await client.get(Uri.parse(baseURL + 'user/getProfile/$username'));
 
   print("Staus profile code: " + response.statusCode.toString());
 
