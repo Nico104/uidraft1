@@ -36,26 +36,27 @@ class _CommentModelState extends State<CommentModel> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: fetchCommentData(widget.commentId),
-        builder: (BuildContext context,
-            AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          if (snapshot.hasData) {
-            //Calculate Subcomments
-            List<int> subCommentIds = <int>[];
-            List<dynamic> values = snapshot.data!['subcomments'];
-            if (values.isNotEmpty) {
-              for (int i = 0; i < values.length; i++) {
-                if (values[i] != null) {
-                  Map<String, dynamic> map = values[i];
-                  subCommentIds.add(map['commentId']);
+    return Consumer<ConnectionService>(builder: (context, connection, _) {
+      return FutureBuilder(
+          future:
+              fetchCommentData(widget.commentId, connection.returnConnection()),
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if (snapshot.hasData) {
+              //Calculate Subcomments
+              List<int> subCommentIds = <int>[];
+              List<dynamic> values = snapshot.data!['subcomments'];
+              if (values.isNotEmpty) {
+                for (int i = 0; i < values.length; i++) {
+                  if (values[i] != null) {
+                    Map<String, dynamic> map = values[i];
+                    subCommentIds.add(map['commentId']);
+                  }
                 }
               }
-            }
-            // print("Subcomments: " + subCommentIds.toString());
-            //Comment
-            return Consumer<ConnectionService>(
-                builder: (context, connection, _) {
+              // print("Subcomments: " + subCommentIds.toString());
+              //Comment
+
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -147,9 +148,12 @@ class _CommentModelState extends State<CommentModel> {
                                         ? FutureBuilder(
                                             future: Future.wait([
                                               getUserCommentRating(
-                                                  widget.commentId),
+                                                  widget.commentId,
+                                                  connection
+                                                      .returnConnection()),
                                               getCommentRatingScore(
-                                                  widget.commentId)
+                                                  widget.commentId,
+                                                  connection.returnConnection())
                                             ]),
                                             builder: (BuildContext context,
                                                 AsyncSnapshot<List<int>>
@@ -177,7 +181,9 @@ class _CommentModelState extends State<CommentModel> {
                                                             rateComment(
                                                                     widget
                                                                         .commentId,
-                                                                    'like')
+                                                                    'like',
+                                                                    connection
+                                                                        .returnConnection())
                                                                 .then((_) =>
                                                                     setState(
                                                                         () {}));
@@ -185,7 +191,9 @@ class _CommentModelState extends State<CommentModel> {
                                                           case 1:
                                                             deleteCommentRating(
                                                                     widget
-                                                                        .commentId)
+                                                                        .commentId,
+                                                                    connection
+                                                                        .returnConnection())
                                                                 .then((_) =>
                                                                     setState(
                                                                         () {}));
@@ -194,7 +202,9 @@ class _CommentModelState extends State<CommentModel> {
                                                             updateCommentRating(
                                                                     widget
                                                                         .commentId,
-                                                                    'like')
+                                                                    'like',
+                                                                    connection
+                                                                        .returnConnection())
                                                                 .then((_) =>
                                                                     setState(
                                                                         () {}));
@@ -232,7 +242,9 @@ class _CommentModelState extends State<CommentModel> {
                                                             rateComment(
                                                                     widget
                                                                         .commentId,
-                                                                    'dislike')
+                                                                    'dislike',
+                                                                    connection
+                                                                        .returnConnection())
                                                                 .then((_) =>
                                                                     setState(
                                                                         () {}));
@@ -241,7 +253,9 @@ class _CommentModelState extends State<CommentModel> {
                                                             updateCommentRating(
                                                                     widget
                                                                         .commentId,
-                                                                    'dislike')
+                                                                    'dislike',
+                                                                    connection
+                                                                        .returnConnection())
                                                                 .then((_) =>
                                                                     setState(
                                                                         () {}));
@@ -249,7 +263,9 @@ class _CommentModelState extends State<CommentModel> {
                                                           case 2:
                                                             deleteCommentRating(
                                                                     widget
-                                                                        .commentId)
+                                                                        .commentId,
+                                                                    connection
+                                                                        .returnConnection())
                                                                 .then((_) =>
                                                                     setState(
                                                                         () {}));
@@ -289,9 +305,18 @@ class _CommentModelState extends State<CommentModel> {
                                       if (event.logicalKey.keyLabel ==
                                           'Enter') {
                                         print("enter pressed");
-                                        _sendReply(
-                                            snapshot.data!['commentPostId'],
-                                            snapshot.data!['commentId']);
+                                        sendReplyComment(
+                                                snapshot.data!['commentPostId'],
+                                                snapshot.data!['commentId'],
+                                                _commentTextController.text
+                                                    .trim(),
+                                                connection.returnConnection())
+                                            .then((value) {
+                                          setState(() {
+                                            _commentTextController.text = "";
+                                            _showReplyTextField = false;
+                                          });
+                                        });
                                       }
                                     }
                                   },
@@ -310,9 +335,23 @@ class _CommentModelState extends State<CommentModel> {
                                             Icons.send,
                                             color: Colors.white70,
                                           ),
-                                          onPressed: () => _sendReply(
-                                              snapshot.data!['commentPostId'],
-                                              snapshot.data!['commentId'])),
+                                          onPressed: () => sendReplyComment(
+                                                      snapshot.data![
+                                                          'commentPostId'],
+                                                      snapshot
+                                                          .data!['commentId'],
+                                                      _commentTextController
+                                                          .text
+                                                          .trim(),
+                                                      connection
+                                                          .returnConnection())
+                                                  .then((value) {
+                                                setState(() {
+                                                  _commentTextController.text =
+                                                      "";
+                                                  _showReplyTextField = false;
+                                                });
+                                              })),
                                       labelText: "Reply to comment",
                                       labelStyle: const TextStyle(
                                           fontFamily: "Segoe UI",
@@ -356,7 +395,8 @@ class _CommentModelState extends State<CommentModel> {
                         subCommentIds.isNotEmpty
                             ? _showSubComments
                                 ? FutureBuilder(
-                                    future: getSubCommentIds(widget.commentId),
+                                    future: getSubCommentIds(widget.commentId,
+                                        connection.returnConnection()),
                                     builder: (BuildContext context,
                                         AsyncSnapshot<List<int>> snapshot) {
                                       if (snapshot.hasData) {
@@ -385,19 +425,19 @@ class _CommentModelState extends State<CommentModel> {
                   )
                 ],
               );
-            });
-          } else {
-            return const CircularProgressIndicator();
-          }
-        });
-  }
-
-  void _sendReply(int postId, int commentId) {
-    sendReplyComment(postId, commentId, _commentTextController.text.trim());
-    print("pressed");
-    setState(() {
-      _commentTextController.text = "";
-      _showReplyTextField = false;
+            } else {
+              return const CircularProgressIndicator();
+            }
+          });
     });
   }
+
+  // void _sendReply(int postId, int commentId) {
+  //   sendReplyComment(postId, commentId, _commentTextController.text.trim());
+  //   print("pressed");
+  //   setState(() {
+  //     _commentTextController.text = "";
+  //     _showReplyTextField = false;
+  //   });
+  // }
 }

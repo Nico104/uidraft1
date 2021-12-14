@@ -6,11 +6,12 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 
 ///posts a comment to the post with [postId]
 ///and a comment text of [commentText]
-Future<void> sendComment(int postId, String commentText) async {
+Future<void> sendComment(
+    int postId, String commentText, http.Client client) async {
   var url = Uri.parse(baseURL + 'comment/createComment_CommentAnaytics');
   String? token = await getToken();
 
-  final response = await http.post(url,
+  final response = await client.post(url,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -28,9 +29,9 @@ Future<void> sendComment(int postId, String commentText) async {
 }
 
 ///Fetches all comment IDs without parents (top lvel comments) of post with [postId]
-Future<List<int>> fetchPostComments(int postId) async {
+Future<List<int>> fetchPostComments(int postId, http.Client client) async {
   try {
-    final response = await http.get(
+    final response = await client.get(
         Uri.parse(baseURL + 'comment/getPostCommentsWithoutParent/$postId'));
 
     if (response.statusCode == 200) {

@@ -5,9 +5,10 @@ import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
 ///Fetches all display data of the comment with commentId [id]
-Future<Map<String, dynamic>> fetchCommentData(int id) async {
+Future<Map<String, dynamic>> fetchCommentData(
+    int id, http.Client client) async {
   final response =
-      await http.get(Uri.parse(baseURL + 'comment/getCommentData/$id'));
+      await client.get(Uri.parse(baseURL + 'comment/getCommentData/$id'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> map = json.decode(response.body);
@@ -26,13 +27,13 @@ Future<Map<String, dynamic>> fetchCommentData(int id) async {
 
 ///posts a comment reply to the comment with commentId [parentCommentId]
 ///and a comment text of [commentText]
-Future<void> sendReplyComment(
-    int postId, int parentCommentId, String commentText) async {
+Future<void> sendReplyComment(int postId, int parentCommentId,
+    String commentText, http.Client client) async {
   var url =
       Uri.parse(baseURL + 'comment/createComment_CommentAnayticsWithParent');
   String? token = await getToken();
 
-  final response = await http.post(url,
+  final response = await client.post(url,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -54,9 +55,9 @@ Future<void> sendReplyComment(
 
 ///Fetches all comment IDs which have the comment
 ///with commentId [commentId] as parent
-Future<List<int>> getSubCommentIds(int commentId) async {
+Future<List<int>> getSubCommentIds(int commentId, http.Client client) async {
   try {
-    final response = await http
+    final response = await client
         .get(Uri.parse(baseURL + 'comment/getCommentChildren/$commentId'));
 
     if (response.statusCode == 200) {
@@ -83,11 +84,12 @@ Future<List<int>> getSubCommentIds(int commentId) async {
 
 //TODO Slider Rating
 ///rates a Comment (like, dislike, superlike, superdislike)
-Future<void> rateComment(int commentId, String rating) async {
+Future<void> rateComment(
+    int commentId, String rating, http.Client client) async {
   try {
     String? token = await getToken();
     final response =
-        await http.post(Uri.parse(baseURL + 'comment/createCommentRating'),
+        await client.post(Uri.parse(baseURL + 'comment/createCommentRating'),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
@@ -106,11 +108,12 @@ Future<void> rateComment(int commentId, String rating) async {
 }
 
 //Changes a Comment Rating
-Future<void> updateCommentRating(int commentId, String rating) async {
+Future<void> updateCommentRating(
+    int commentId, String rating, http.Client client) async {
   try {
     String? token = await getToken();
     final response =
-        await http.patch(Uri.parse(baseURL + 'comment/updateCommentRating'),
+        await client.patch(Uri.parse(baseURL + 'comment/updateCommentRating'),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
@@ -129,10 +132,10 @@ Future<void> updateCommentRating(int commentId, String rating) async {
 }
 
 //Deletes a Comment Rating
-Future<void> deleteCommentRating(int commentId) async {
+Future<void> deleteCommentRating(int commentId, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.delete(
+    final response = await client.delete(
         Uri.parse(baseURL + 'comment/deleteCommentRating/$commentId'),
         headers: {
           'Content-Type': 'application/json',
@@ -148,10 +151,10 @@ Future<void> deleteCommentRating(int commentId) async {
 }
 
 //Get User Comment Rating
-Future<int> getUserCommentRating(int commentId) async {
+Future<int> getUserCommentRating(int commentId, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.get(
+    final response = await client.get(
         Uri.parse(baseURL + 'comment/getUserCommentRating/$commentId'),
         headers: {
           'Content-Type': 'application/json',
@@ -183,8 +186,8 @@ Future<int> getUserCommentRating(int commentId) async {
 }
 
 ///Returns the Rating Score of the comment with commentId [commentId]
-Future<int> getCommentRatingScore(int commentId) async {
-  final response = await http
+Future<int> getCommentRatingScore(int commentId, http.Client client) async {
+  final response = await client
       .get(Uri.parse(baseURL + 'comment/getCommentRatingScore/$commentId'));
 
   if (response.statusCode == 200) {
@@ -195,3 +198,9 @@ Future<int> getCommentRatingScore(int commentId) async {
     throw Exception('Failed to load post rating');
   }
 }
+
+// void sendReply(
+//     int postId, int commentId, String commenttext, http.Client client) {
+//   sendReplyComment(postId, commentId, commenttext, client);
+//   print("pressed");
+// }

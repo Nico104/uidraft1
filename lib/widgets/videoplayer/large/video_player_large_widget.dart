@@ -881,7 +881,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                       widget.postData[
                                                                           'postId'],
                                                                       _postCommentTextController
-                                                                          .text);
+                                                                          .text,
+                                                                      connection
+                                                                          .returnConnection());
                                                                 }
                                                                 if (mounted) {
                                                                   setState(() {
@@ -906,7 +908,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                   FutureBuilder(
                                                       future: fetchPostComments(
                                                           widget.postData[
-                                                              'postId']),
+                                                              'postId'],
+                                                          connection
+                                                              .returnConnection()),
                                                       builder:
                                                           (BuildContext context,
                                                               AsyncSnapshot<
