@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
-import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/utils/studio/studio_util_methods.dart';

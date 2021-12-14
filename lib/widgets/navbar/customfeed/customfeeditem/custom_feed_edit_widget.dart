@@ -1,9 +1,12 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/customfeed/custom_feed_util_methods.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/widgets/subchannel/choose/choose_subchannel_util_widget.dart';
 import 'package:uidraft1/widgets/tag/choose_tag_util_widget.dart';
 import 'package:uidraft1/widgets/user/choose/choose_user_util_widget.dart';
+import 'package:http/http.dart' as http;
 
 class CustomFeedEdit extends StatefulWidget {
   const CustomFeedEdit(
@@ -37,35 +40,41 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getCustomFeed(widget.cfId),
-        builder: (BuildContext context,
-            AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          return snapshot.hasData
-              ? Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  MenuBar(
-                    customFeedName: snapshot.data!['customFeedName'],
-                    customFeedId: widget.cfId,
-                    isLeftHand: widget.isLeftHand,
-                    back: widget.back,
-                    isNew: widget.isNew,
-                  ),
-                  const SizedBox(height: 12),
-                  AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        return ScaleTransition(child: child, scale: animation);
-                      },
-                      child:
-                          getBodyWidget(activeSearchElement, snapshot.data!)),
-                ])
-              : const SizedBox(height: 300, child: CircularProgressIndicator());
-        });
+    return Consumer<ConnectionService>(builder: (context, connection, _) {
+      return FutureBuilder(
+          future: getCustomFeed(widget.cfId, connection.returnConnection()),
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            return snapshot.hasData
+                ? Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    MenuBar(
+                      customFeedName: snapshot.data!['customFeedName'],
+                      customFeedId: widget.cfId,
+                      isLeftHand: widget.isLeftHand,
+                      back: widget.back,
+                      isNew: widget.isNew,
+                      client: connection.returnConnection(),
+                    ),
+                    const SizedBox(height: 12),
+                    AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return ScaleTransition(
+                              child: child, scale: animation);
+                        },
+                        child: getBodyWidget(activeSearchElement,
+                            snapshot.data!, connection.returnConnection())),
+                  ])
+                : const SizedBox(
+                    height: 300, child: CircularProgressIndicator());
+          });
+    });
   }
 
   //Return either the added Elements of the custom feed or a search screen
-  Widget getBodyWidget(CFsearchElement se, Map<String, dynamic> map) {
+  Widget getBodyWidget(
+      CFsearchElement se, Map<String, dynamic> map, http.Client client) {
     switch (se) {
       case CFsearchElement.none:
         Future.delayed(Duration.zero, () async {
@@ -87,8 +96,8 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
                 Wrap(
                   runSpacing: 5,
                   spacing: 5,
-                  children: _getWrapWidgets(
-                      map['subchannels'], widget.cfId, CFElement.subchannel),
+                  children: _getWrapWidgets(map['subchannels'], widget.cfId,
+                      CFElement.subchannel, client),
                 ),
               ],
             ),
@@ -102,11 +111,14 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
                   height: 10,
                 ),
                 Wrap(
-                  runSpacing: 5,
-                  spacing: 5,
-                  children:
-                      _getWrapWidgets(map['tags'], widget.cfId, CFElement.tag),
-                ),
+                    runSpacing: 5,
+                    spacing: 5,
+                    children: _getWrapWidgets(
+                      map['tags'],
+                      widget.cfId,
+                      CFElement.tag,
+                      client,
+                    )),
               ],
             ),
             const SizedBox(
@@ -121,8 +133,8 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
                 Wrap(
                   runSpacing: 5,
                   spacing: 5,
-                  children: _getWrapWidgets(
-                      map['addedUsers'], widget.cfId, CFElement.creator),
+                  children: _getWrapWidgets(map['addedUsers'], widget.cfId,
+                      CFElement.creator, client),
                 ),
               ],
             ),
@@ -133,7 +145,7 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
               alignment: Alignment.bottomLeft,
               child: IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () => deleteCustomFeed(widget.cfId)
+                onPressed: () => deleteCustomFeed(widget.cfId, client)
                     .then((value) => widget.back.call()),
               ),
             )
@@ -149,7 +161,7 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
         });
         return ChooseSubchannelUtil(
             notifyParent: (val) =>
-                addToCustomFeed(CFElement.subchannel, widget.cfId, val)
+                addToCustomFeed(CFElement.subchannel, widget.cfId, val, client)
                     .then((value) => setState(() {
                           activeSearchElement = CFsearchElement.none;
                         })));
@@ -158,7 +170,7 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
           height: 600,
           child: ChooseTagUtil(
               notifyParent: (val) =>
-                  addToCustomFeed(CFElement.tag, widget.cfId, val)
+                  addToCustomFeed(CFElement.tag, widget.cfId, val, client)
                       .then((value) => setState(() {
                             activeSearchElement = CFsearchElement.none;
                           })),
@@ -169,7 +181,7 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
           height: 600,
           child: ChooseUserUtil(
               notifyParent: (val) =>
-                  addToCustomFeed(CFElement.creator, widget.cfId, val)
+                  addToCustomFeed(CFElement.creator, widget.cfId, val, client)
                       .then((value) => setState(() {
                             activeSearchElement = CFsearchElement.none;
                           }))),
@@ -177,7 +189,8 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
     }
   }
 
-  List<Widget> _getWrapWidgets(List<dynamic>? list, int cfId, CFElement cfe) {
+  List<Widget> _getWrapWidgets(
+      List<dynamic>? list, int cfId, CFElement cfe, http.Client client) {
     List<Widget> widgetList = <Widget>[];
     String fieldName;
     String addName;
@@ -220,7 +233,7 @@ class _CustomFeedEditState extends State<CustomFeedEdit> {
           ),
           onDeleted: () {
             removeFromCustomFeed(
-                    cfe, cfId, subchannels.elementAt(index)[fieldName])
+                    cfe, cfId, subchannels.elementAt(index)[fieldName], client)
                 .then((value) => setState(() {}));
           },
         );
@@ -261,7 +274,8 @@ class MenuBar extends StatefulWidget {
       required this.customFeedName,
       required this.back,
       required this.customFeedId,
-      required this.isNew})
+      required this.isNew,
+      required this.client})
       : super(key: key);
 
   final bool isLeftHand;
@@ -269,6 +283,8 @@ class MenuBar extends StatefulWidget {
   final Function() back;
   final int customFeedId;
   final bool isNew;
+
+  final http.Client client;
 
   @override
   State<MenuBar> createState() => _MenuBarState();
@@ -316,7 +332,8 @@ class _MenuBarState extends State<MenuBar> {
                       'titleTextField-debouncer', // <-- An ID for this particular debouncer
                       const Duration(
                           milliseconds: 1000), // <-- The debounce duration
-                      () => changeCustomFeedName(widget.customFeedId, text));
+                      () => changeCustomFeedName(
+                          widget.customFeedId, text, widget.client));
                 },
               ),
             ),
