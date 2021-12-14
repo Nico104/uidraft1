@@ -185,12 +185,14 @@ Future<int> getPostRatingScore(int id) async {
 ///Creates a whatchtime Analytics DB entry for the post with postId [postId]
 ///and a whatchtime of [postWT]
 ///passes also the User if one is logged in
+//! no http Client
 Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
-  if (await isAuthenticated() == 200) {
+  http.Client client = http.Client();
+  if (await isAuthenticated(client) == 200) {
     try {
       print("auth wt");
       String? token = await getToken();
-      final response = await http.post(
+      final response = await client.post(
           Uri.parse(baseURL + 'post/createPostWhatchtimeAnalyticWithUser'),
           headers: {
             'Content-Type': 'application/json',
@@ -232,7 +234,7 @@ Future<void> createWhatchtimeAnalyticPost(int postId, int postWT) async {
 ///and a sharing type of [sharingType], which can be either
 ///copy of the postlink or standard share
 Future<void> createSharingAnalyticPost(
-    int postId, SharingType sharingtype) async {
+    int postId, SharingType sharingtype, http.Client client) async {
   int sharetypeint;
   if (sharingtype == SharingType.copy) {
     sharetypeint = 0;
@@ -240,11 +242,11 @@ Future<void> createSharingAnalyticPost(
     sharetypeint = 1;
   }
 
-  if (await isAuthenticated() == 200) {
+  if (await isAuthenticated(client) == 200) {
     try {
       print("auth wt");
       String? token = await getToken();
-      final response = await http.post(
+      final response = await client.post(
           Uri.parse(baseURL + 'post/createPostSharingAnalyticWithUser'),
           headers: {
             'Content-Type': 'application/json',

@@ -1,12 +1,14 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 
 class ChangePasswordLargeScreen extends StatelessWidget {
   const ChangePasswordLargeScreen({Key? key}) : super(key: key);
@@ -293,39 +295,43 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                 height: 60,
               ),
               //Submit Button
-              SizedBox(
-                // width: 200,
-                height: 40,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      backgroundColor:
-                          Theme.of(context).colorScheme.brandColor),
-                  child: Text(
-                    buttonText,
-                    style: TextStyle(
-                        fontFamily: 'Segoe UI Black',
-                        fontSize: 18,
-                        color:
-                            Theme.of(context).colorScheme.textInputCursorColor),
-                  ),
-                  onPressed: () async {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      if (await changePassword(
-                              _newConfirmUserpasswordTextController.text) ==
-                          200) {
-                        print("password chnaged");
-                      } else {
-                        print("problem while changing password");
+              Consumer<ConnectionService>(builder: (context, connection, _) {
+                return SizedBox(
+                  // width: 200,
+                  height: 40,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        backgroundColor:
+                            Theme.of(context).colorScheme.brandColor),
+                    child: Text(
+                      buttonText,
+                      style: TextStyle(
+                          fontFamily: 'Segoe UI Black',
+                          fontSize: 18,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .textInputCursorColor),
+                    ),
+                    onPressed: () async {
+                      // Validate returns true if the form is valid, or false otherwise.
+                      if (_formKey.currentState!.validate()) {
+                        if (await changePassword(
+                                _newConfirmUserpasswordTextController.text,
+                                connection.returnConnection()) ==
+                            200) {
+                          print("password chnaged");
+                        } else {
+                          print("problem while changing password");
+                        }
+                        Beamer.of(context).beamToNamed('/feed');
                       }
-                      Beamer.of(context).beamToNamed('/feed');
-                    }
-                  },
-                ),
-              ),
+                    },
+                  ),
+                );
+              }),
               const SizedBox(
                 height: 10,
               ),

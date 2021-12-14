@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/subchannel/subchannel_util_methods.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/widgets/subchannel/large/subchannel_video_preview_large_widget.dart';
@@ -119,288 +121,298 @@ class _SubchannelState extends State<Subchannel> {
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-      child: Stack(
-        children: [
-          //Subchannel Banner
-          Padding(
-            // padding: const EdgeInsets.only(left: 15, right: 15),
-            padding: const EdgeInsets.all(0),
-            child: ClipRRect(
-              // borderRadius: const BorderRadius.only(
-              //     bottomLeft: Radius.circular(40),
-              //     bottomRight: Radius.circular(40)),
-              child: Image.network(
-                baseURL +
-                    widget.subchannelData['subchannelPreview']
-                        ['subchannelBannerPath'],
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width,
-                height: 230,
+      child: Consumer<ConnectionService>(builder: (context, connection, _) {
+        return Stack(
+          children: [
+            //Subchannel Banner
+            Padding(
+              // padding: const EdgeInsets.only(left: 15, right: 15),
+              padding: const EdgeInsets.all(0),
+              child: ClipRRect(
+                // borderRadius: const BorderRadius.only(
+                //     bottomLeft: Radius.circular(40),
+                //     bottomRight: Radius.circular(40)),
+                child: Image.network(
+                  baseURL +
+                      widget.subchannelData['subchannelPreview']
+                          ['subchannelBannerPath'],
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  height: 230,
+                ),
               ),
             ),
-          ),
-          SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              //crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 180,
-                ),
-                //SubchannelPicture
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(14)),
-                  child: Image.network(
-                    baseURL +
-                        widget.subchannelData['subchannelPreview']
-                            ['subchannelSubchannelPicturePath'],
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                    width: 87,
-                    height: 87,
+            SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 180,
                   ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Text(
-                  "c/" + widget.subchannelData['subchannelName'],
-                  style: TextStyle(
-                      fontFamily: 'Segoe UI',
-                      fontSize: 30,
-                      color: Theme.of(context).colorScheme.navBarIconColor),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                //Short Description
-                SizedBox(
-                  width: 400,
-                  child: Text(
-                    widget.subchannelData['subchannelPreview']
-                        ['subchannelShortDescriptiveText'],
+                  //SubchannelPicture
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(14)),
+                    child: Image.network(
+                      baseURL +
+                          widget.subchannelData['subchannelPreview']
+                              ['subchannelSubchannelPicturePath'],
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                      width: 87,
+                      height: 87,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    "c/" + widget.subchannelData['subchannelName'],
                     style: TextStyle(
                         fontFamily: 'Segoe UI',
-                        fontSize: 16,
+                        fontSize: 30,
                         color: Theme.of(context).colorScheme.navBarIconColor),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                //Follower
-                Text(
-                  "1432 Followers",
-                  style: TextStyle(
-                      fontFamily: 'Segoe UI',
-                      fontSize: 17,
-                      color: Theme.of(context).colorScheme.navBarIconColor),
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                StatefulBuilder(builder:
-                    (BuildContext context, StateSetter setStateButtonBar) {
-                  return FutureBuilder(
-                      future: Future.wait([
-                        isMember(widget.subchannelData['subchannelName']),
-                        isMod(widget.subchannelData['subchannelName'])
-                      ]),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<bool>> snapshotIsMember) {
-                        if (snapshotIsMember.hasData) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 160,
-                                height: 35,
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    side: BorderSide(
-                                        width: 2,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .brandColor),
-                                  ),
-                                  onPressed: () => setState(() {
-                                    print("About pressed");
-                                    _showAboutText = !_showAboutText;
-                                  }),
-                                  child: Text(
-                                    'About',
-                                    style: TextStyle(
-                                        fontFamily: 'Segoe UI',
-                                        fontSize: 18,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .brandColor),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              SizedBox(
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  //Short Description
+                  SizedBox(
+                    width: 400,
+                    child: Text(
+                      widget.subchannelData['subchannelPreview']
+                          ['subchannelShortDescriptiveText'],
+                      style: TextStyle(
+                          fontFamily: 'Segoe UI',
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.navBarIconColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  //Follower
+                  Text(
+                    "1432 Followers",
+                    style: TextStyle(
+                        fontFamily: 'Segoe UI',
+                        fontSize: 17,
+                        color: Theme.of(context).colorScheme.navBarIconColor),
+                  ),
+                  const SizedBox(
+                    height: 17,
+                  ),
+                  StatefulBuilder(builder:
+                      (BuildContext context, StateSetter setStateButtonBar) {
+                    return FutureBuilder(
+                        future: Future.wait([
+                          isMember(widget.subchannelData['subchannelName']),
+                          isMod(widget.subchannelData['subchannelName'])
+                        ]),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<bool>> snapshotIsMember) {
+                          if (snapshotIsMember.hasData) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
                                   width: 160,
                                   height: 35,
-                                  child: (snapshotIsMember.data![1])
-                                      ? OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
+                                  child: OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                      side: BorderSide(
+                                          width: 2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .brandColor),
+                                    ),
+                                    onPressed: () => setState(() {
+                                      print("About pressed");
+                                      _showAboutText = !_showAboutText;
+                                    }),
+                                    child: Text(
+                                      'About',
+                                      style: TextStyle(
+                                          fontFamily: 'Segoe UI',
+                                          fontSize: 18,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .brandColor),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                SizedBox(
+                                    width: 160,
+                                    height: 35,
+                                    child: (snapshotIsMember.data![1])
+                                        ? OutlinedButton(
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                              side: BorderSide(
+                                                  width: 2,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .brandColor),
                                             ),
-                                            side: BorderSide(
-                                                width: 2,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .brandColor),
-                                          ),
-                                          onPressed: () {
-                                            Beamer.of(context).beamToNamed(
-                                                '/submod/${widget.subchannelData['subchannelName']}');
-                                          },
-                                          child: Text(
-                                            'ModMenu',
-                                            style: TextStyle(
-                                                fontFamily: 'Segoe UI',
-                                                fontSize: 18,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .brandColor),
-                                          ),
-                                        )
-                                      : (!snapshotIsMember.data![0])
-                                          ? TextButton(
-                                              style: TextButton.styleFrom(
+                                            onPressed: () {
+                                              Beamer.of(context).beamToNamed(
+                                                  '/submod/${widget.subchannelData['subchannelName']}');
+                                            },
+                                            child: Text(
+                                              'ModMenu',
+                                              style: TextStyle(
+                                                  fontFamily: 'Segoe UI',
+                                                  fontSize: 18,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .brandColor),
+                                            ),
+                                          )
+                                        : (!snapshotIsMember.data![0])
+                                            ? TextButton(
+                                                style: TextButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30.0),
+                                                    ),
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .brandColor),
+                                                onPressed: () =>
+                                                    enterSubchannel(widget
+                                                                .subchannelData[
+                                                            'subchannelName'])
+                                                        .then((value) =>
+                                                            setStateButtonBar(
+                                                                () {})),
+                                                child: Text(
+                                                  'Follow',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Segoe UI Black',
+                                                      fontSize: 18,
+                                                      color: Theme.of(context)
+                                                          .canvasColor),
+                                                ),
+                                              )
+                                            : OutlinedButton(
+                                                style: OutlinedButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             30.0),
                                                   ),
-                                                  backgroundColor:
-                                                      Theme.of(context)
+                                                  side: BorderSide(
+                                                      width: 2,
+                                                      color: Theme.of(context)
                                                           .colorScheme
                                                           .brandColor),
-                                              onPressed: () => enterSubchannel(
-                                                      widget.subchannelData[
-                                                          'subchannelName'])
-                                                  .then((value) =>
-                                                      setStateButtonBar(() {})),
-                                              child: Text(
-                                                'Follow',
-                                                style: TextStyle(
-                                                    fontFamily:
-                                                        'Segoe UI Black',
-                                                    fontSize: 18,
-                                                    color: Theme.of(context)
-                                                        .canvasColor),
-                                              ),
-                                            )
-                                          : OutlinedButton(
-                                              style: OutlinedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30.0),
                                                 ),
-                                                side: BorderSide(
-                                                    width: 2,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .brandColor),
-                                              ),
-                                              onPressed: () => leaveSubchannel(
-                                                      widget.subchannelData[
-                                                          'subchannelName'])
-                                                  .then((value) =>
-                                                      setStateButtonBar(() {})),
-                                              child: Text(
-                                                'Followed',
-                                                style: TextStyle(
-                                                    fontFamily: 'Segoe UI',
-                                                    fontSize: 18,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .brandColor),
-                                              ),
-                                            )),
-                            ],
-                          );
-                        } else {
-                          return const SizedBox();
-                        }
-                      });
-                }),
-                const SizedBox(
-                  height: 40,
-                ),
-                // SubchannelVideosGrid Or SubchannelAboutText,
-                _showAboutText
-                    //About Text
-                    ? Container(
-                        width: 1000,
-                        alignment: Alignment.topCenter,
-                        child:
-                            Text(widget.subchannelData['subchannelAboutText']),
-                      )
-                    //Videos Grid
-                    : Container(
-                        width: 1500,
-                        alignment: Alignment.topCenter,
-                        child: _loading
-                            ? const Center(child: CircularProgressIndicator())
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(160, 100, 160, 0),
-                                child: FutureBuilder(
-                                    future: isAuthenticated(),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<int> snapshot) {
-                                      if (snapshot.hasData) {
-                                        return GridView.count(
-                                          // physics: BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          childAspectRatio: (1280 / 1174),
-                                          // controller: _scrollController,
-                                          scrollDirection: Axis.vertical,
-                                          // Create a grid with 2 columns. If you change the scrollDirection to
-                                          // horizontal, this produces 2 rows.
-                                          crossAxisCount: 3,
-                                          // Generate 100 widgets that display their index in the List.
-                                          mainAxisSpacing: 10.0,
-                                          crossAxisSpacing: 40.0,
-                                          children: dataList.map((value) {
-                                            print("In Preview");
-                                            // return SubchannelVideoPreview(
-                                            //   postId: value,
-                                            //   isAuth: snapshot.data == 200,
-                                            // );
-                                            return VideoPreview(
-                                              postId: value,
-                                              isAuth: snapshot.data == 200,
-                                              videoPreviewMode: vputils
-                                                  .VideoPreviewMode.subchannel,
-                                            );
-                                          }).toList(),
-                                        );
-                                      } else {
-                                        return const CircularProgressIndicator();
-                                      }
-                                    }),
-                              ))
-              ],
+                                                onPressed: () =>
+                                                    leaveSubchannel(widget
+                                                                .subchannelData[
+                                                            'subchannelName'])
+                                                        .then((value) =>
+                                                            setStateButtonBar(
+                                                                () {})),
+                                                child: Text(
+                                                  'Followed',
+                                                  style: TextStyle(
+                                                      fontFamily: 'Segoe UI',
+                                                      fontSize: 18,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .brandColor),
+                                                ),
+                                              )),
+                              ],
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        });
+                  }),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  // SubchannelVideosGrid Or SubchannelAboutText,
+                  _showAboutText
+                      //About Text
+                      ? Container(
+                          width: 1000,
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                              widget.subchannelData['subchannelAboutText']),
+                        )
+                      //Videos Grid
+                      : Container(
+                          width: 1500,
+                          alignment: Alignment.topCenter,
+                          child: _loading
+                              ? const Center(child: CircularProgressIndicator())
+                              : Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      160, 100, 160, 0),
+                                  child: FutureBuilder(
+                                      future: isAuthenticated(
+                                          connection.returnConnection()),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<int> snapshot) {
+                                        if (snapshot.hasData) {
+                                          return GridView.count(
+                                            // physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            childAspectRatio: (1280 / 1174),
+                                            // controller: _scrollController,
+                                            scrollDirection: Axis.vertical,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            crossAxisCount: 3,
+                                            // Generate 100 widgets that display their index in the List.
+                                            mainAxisSpacing: 10.0,
+                                            crossAxisSpacing: 40.0,
+                                            children: dataList.map((value) {
+                                              print("In Preview");
+                                              // return SubchannelVideoPreview(
+                                              //   postId: value,
+                                              //   isAuth: snapshot.data == 200,
+                                              // );
+                                              return VideoPreview(
+                                                postId: value,
+                                                isAuth: snapshot.data == 200,
+                                                videoPreviewMode: vputils
+                                                    .VideoPreviewMode
+                                                    .subchannel,
+                                              );
+                                            }).toList(),
+                                          );
+                                        } else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                      }),
+                                ))
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 

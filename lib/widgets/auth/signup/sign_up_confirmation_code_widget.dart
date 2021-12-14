@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/widgets/auth/code_input_field_large_widget.dart';
 
 class SignUpConfirmationCodeLarge extends StatefulWidget {
@@ -139,187 +141,219 @@ class _SignUpConfirmationCodeLargeState
             border: Border.all(
                 color: Theme.of(context).colorScheme.brandColor, width: 2),
             borderRadius: const BorderRadius.all(Radius.circular(20))),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 50,
-            ),
-            //LOGO
-            SizedBox(
-              width: 270,
-              child: Text(
-                "LOGO",
-                style: TextStyle(
-                    fontFamily: 'Segoe UI Black',
-                    fontSize: 28,
-                    color: Theme.of(context).colorScheme.brandColor),
-                textAlign: TextAlign.center,
+        child: Consumer<ConnectionService>(builder: (context, connection, _) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 50,
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            //Please veryfy email
-            SizedBox(
-              width: 270,
-              child: Text(
-                "please verify your Email",
-                style: TextStyle(
-                  fontFamily: 'Segoe UI',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.textInputCursorColor,
+              //LOGO
+              SizedBox(
+                width: 270,
+                child: Text(
+                  "LOGO",
+                  style: TextStyle(
+                      fontFamily: 'Segoe UI Black',
+                      fontSize: 28,
+                      color: Theme.of(context).colorScheme.brandColor),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            //Thank you for signing up text
-            SizedBox(
-              width: 270,
-              child: Text(
-                titleText,
-                style: TextStyle(
-                  fontFamily: 'Segoe UI',
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.textInputCursorColor,
+              const SizedBox(
+                height: 50,
+              ),
+              //Please veryfy email
+              SizedBox(
+                width: 270,
+                child: Text(
+                  "please verify your Email",
+                  style: TextStyle(
+                    fontFamily: 'Segoe UI',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.textInputCursorColor,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            //CodeField
-            Expanded(
-              child: Form(
-                key: _formKey,
+              const SizedBox(
+                height: 50,
+              ),
+              //Thank you for signing up text
+              SizedBox(
+                width: 270,
+                child: Text(
+                  titleText,
+                  style: TextStyle(
+                    fontFamily: 'Segoe UI',
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.textInputCursorColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              //CodeField
+              Expanded(
+                child: Form(
+                  key: _formKey,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      //Code Digit One
+                      CodeInputField(
+                          focusNode: fnCodeDigitOne,
+                          handleInputAction: () =>
+                              fnCodeDigitTwo.requestFocus(),
+                          handleDeleteAction: () {},
+                          codeDigitController: _codeDigitOneController),
+                      //Code Digit Two
+                      CodeInputField(
+                          focusNode: fnCodeDigitTwo,
+                          handleInputAction: () =>
+                              fnCodeDigitThree.requestFocus(),
+                          handleDeleteAction: () => handleDelete(
+                              fnCodeDigitOne, _codeDigitOneController),
+                          codeDigitController: _codeDigitTwoController),
+                      //Code Digit Three
+                      CodeInputField(
+                          focusNode: fnCodeDigitThree,
+                          handleInputAction: () =>
+                              fnCodeDigitFour.requestFocus(),
+                          handleDeleteAction: () => handleDelete(
+                              fnCodeDigitTwo, _codeDigitTwoController),
+                          codeDigitController: _codeDigitThreeController),
+                      //Code Digit Four
+                      CodeInputField(
+                          focusNode: fnCodeDigitFour,
+                          handleInputAction: () =>
+                              fnCodeDigitFive.requestFocus(),
+                          handleDeleteAction: () => handleDelete(
+                              fnCodeDigitThree, _codeDigitThreeController),
+                          codeDigitController: _codeDigitFourController),
+                      //Code Digit Five
+                      CodeInputField(
+                          focusNode: fnCodeDigitFive,
+                          handleInputAction: () =>
+                              fnCodeDigitSix.requestFocus(),
+                          handleDeleteAction: () => handleDelete(
+                              fnCodeDigitFour, _codeDigitFourController),
+                          codeDigitController: _codeDigitFiveController),
+                      //Code Digit Six
+                      CodeInputField(
+                          focusNode: fnCodeDigitSix,
+                          handleInputAction: () =>
+                              submit(connection.returnConnection()),
+                          handleDeleteAction: () => handleDelete(
+                              fnCodeDigitFive, _codeDigitFiveController),
+                          codeDigitController: _codeDigitSixController),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              //TODO manually verify code button
+              //Submit Button
+              SizedBox(
+                width: 200,
+                height: 40,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.brandColor),
+                  child: Text(
+                    'Verify Email',
+                    style: TextStyle(
+                        fontFamily: 'Segoe UI Black',
+                        fontSize: 18,
+                        color:
+                            Theme.of(context).colorScheme.textInputCursorColor),
+                  ),
+                  onPressed: () => submit(connection.returnConnection()),
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              SizedBox(
+                width: 270,
+                child: Text(
+                  "Didn't reveive the email? Check your spam folder.",
+                  style: TextStyle(
+                    fontFamily: 'Segoe UI',
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.textInputCursorColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                width: 340,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    //Code Digit One
-                    CodeInputField(
-                        focusNode: fnCodeDigitOne,
-                        handleInputAction: () => fnCodeDigitTwo.requestFocus(),
-                        handleDeleteAction: () {},
-                        codeDigitController: _codeDigitOneController),
-                    //Code Digit Two
-                    CodeInputField(
-                        focusNode: fnCodeDigitTwo,
-                        handleInputAction: () =>
-                            fnCodeDigitThree.requestFocus(),
-                        handleDeleteAction: () => handleDelete(
-                            fnCodeDigitOne, _codeDigitOneController),
-                        codeDigitController: _codeDigitTwoController),
-                    //Code Digit Three
-                    CodeInputField(
-                        focusNode: fnCodeDigitThree,
-                        handleInputAction: () => fnCodeDigitFour.requestFocus(),
-                        handleDeleteAction: () => handleDelete(
-                            fnCodeDigitTwo, _codeDigitTwoController),
-                        codeDigitController: _codeDigitThreeController),
-                    //Code Digit Four
-                    CodeInputField(
-                        focusNode: fnCodeDigitFour,
-                        handleInputAction: () => fnCodeDigitFive.requestFocus(),
-                        handleDeleteAction: () => handleDelete(
-                            fnCodeDigitThree, _codeDigitThreeController),
-                        codeDigitController: _codeDigitFourController),
-                    //Code Digit Five
-                    CodeInputField(
-                        focusNode: fnCodeDigitFive,
-                        handleInputAction: () => fnCodeDigitSix.requestFocus(),
-                        handleDeleteAction: () => handleDelete(
-                            fnCodeDigitFour, _codeDigitFourController),
-                        codeDigitController: _codeDigitFiveController),
-                    //Code Digit Six
-                    CodeInputField(
-                        focusNode: fnCodeDigitSix,
-                        handleInputAction: () => submit(),
-                        handleDeleteAction: () => handleDelete(
-                            fnCodeDigitFive, _codeDigitFiveController),
-                        codeDigitController: _codeDigitSixController),
+                    //TODO Resend email
+                    Text(
+                      "Re-send",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontFamily: 'Segoe UI',
+                        fontSize: 16,
+                        color:
+                            Theme.of(context).colorScheme.textInputCursorColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      " email or ",
+                      style: TextStyle(
+                        fontFamily: 'Segoe UI',
+                        fontSize: 16,
+                        color:
+                            Theme.of(context).colorScheme.textInputCursorColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    //! Takes User back to SignUp but with all fields filled again, except email and set focus on email field
+                    //TODO testen
+                    InkWell(
+                      onTap: () => widget.changeEmail.call(),
+                      child: Text(
+                        "change the email address",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontFamily: 'Segoe UI',
+                          fontSize: 16,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .textInputCursorColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            //TODO manually verify code button
-            //Submit Button
-            SizedBox(
-              width: 200,
-              height: 40,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    backgroundColor: Theme.of(context).colorScheme.brandColor),
-                child: Text(
-                  'Verify Email',
-                  style: TextStyle(
-                      fontFamily: 'Segoe UI Black',
-                      fontSize: 18,
-                      color:
-                          Theme.of(context).colorScheme.textInputCursorColor),
-                ),
-                onPressed: () => submit(),
+              const SizedBox(
+                height: 50,
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            SizedBox(
-              width: 270,
-              child: Text(
-                "Didn't reveive the email? Check your spam folder.",
-                style: TextStyle(
-                  fontFamily: 'Segoe UI',
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.textInputCursorColor,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(
-              width: 340,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //TODO Resend email
-                  Text(
-                    "Re-send",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Segoe UI',
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.textInputCursorColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    " email or ",
-                    style: TextStyle(
-                      fontFamily: 'Segoe UI',
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.textInputCursorColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  //! Takes User back to SignUp but with all fields filled again, except email and set focus on email field
-                  //TODO testen
-                  InkWell(
-                    onTap: () => widget.changeEmail.call(),
-                    child: Text(
-                      "change the email address",
+              SizedBox(
+                width: 270,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have a Ligma account? ",
                       style: TextStyle(
-                        decoration: TextDecoration.underline,
                         fontFamily: 'Segoe UI',
                         fontSize: 16,
                         color:
@@ -327,60 +361,41 @@ class _SignUpConfirmationCodeLargeState
                       ),
                       textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            SizedBox(
-              width: 270,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Already have a Ligma account? ",
-                    style: TextStyle(
-                      fontFamily: 'Segoe UI',
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.textInputCursorColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  //! Takes User to Login
-                  InkWell(
-                    onTap: () => Beamer.of(context).beamToNamed('/login'),
-                    child: Text(
-                      "Log in",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontFamily: 'Segoe UI',
-                        fontSize: 16,
-                        color:
-                            Theme.of(context).colorScheme.textInputCursorColor,
+                    //! Takes User to Login
+                    InkWell(
+                      onTap: () => Beamer.of(context).beamToNamed('/login'),
+                      child: Text(
+                        "Log in",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontFamily: 'Segoe UI',
+                          fontSize: 16,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .textInputCursorColor,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            //Already have an Account?
-          ],
-        ));
+              const SizedBox(
+                height: 50,
+              ),
+              //Already have an Account?
+            ],
+          );
+        }));
   }
 
-  Future<void> submit() async {
+  Future<void> submit(http.Client client) async {
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
       // If the form is valid, display a snackbar. In the real world,
       // you'd often call a server or save the information in a database.
 
-      if (await checkCode(widget.useremail, getCode())) {
+      if (await checkCode(widget.useremail, getCode(), client)) {
         await _signUp(widget.username, widget.useremail, widget.password);
 
         if (await _login(widget.username, widget.password)) {

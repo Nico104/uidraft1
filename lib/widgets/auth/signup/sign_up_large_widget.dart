@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_check_widget.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_password_widget.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpLarge extends StatefulWidget {
   const SignUpLarge(
@@ -74,158 +77,167 @@ class _SignUpLargeState extends State<SignUpLarge> {
         child: Form(
           key: _formKey,
           // child: const SizedBox(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              //Thank you for signing up text
-              SizedBox(
-                width: 270,
-                child: Text(
-                  titleText,
-                  style: TextStyle(
-                    fontFamily: 'Segoe UI',
-                    fontSize: 16,
-                    color: Theme.of(context).colorScheme.textInputCursorColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              //Username
-              SizedBox(
-                width: 350,
-                child: TextFormFieldCheck(
-                  // checking: isUsernameAvailable(_usernameTextController.text),
-                  checking: (check) => isUsernameAvailable.call(check),
-                  controller: _usernameTextController,
-                  focusNode: fnUsername,
-                  fontSize: 15,
-                  labelText: 'Username...',
-                  autofocus: widget.username.isEmpty ? true : false,
-                  validator: (value) {
-                    //Check if username is free
-                    if (value == null || value.isEmpty) {
-                      return 'You may choose a username, sir';
-                    }
-                    return null;
-                  },
-                  onFieldSubmitted: (_) => submit(),
-                  onTab: () => fnUseremail.requestFocus(),
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              //Useremail
-              SizedBox(
-                width: 350,
-                child: TextFormFieldCheck(
-                  checking: (check) => isUseremailAvailable.call(check),
-                  controller: _useremailTextController,
-                  focusNode: fnUseremail,
-                  fontSize: 15,
-                  labelText: 'Email...',
-                  autofocus: widget.useremail.isEmpty ? true : false,
-                  validator: (value) {
-                    //check if email is already used
-                    Pattern pattern =
-                        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-                        r"{0,253}[a-zA-Z0-9])?)*$";
-                    RegExp regex = RegExp(pattern.toString());
-                    if (!regex.hasMatch(value!)) {
-                      return 'Enter a valid email address, sir';
-                    } else {
-                      return null;
-                    }
-                  },
-                  onFieldSubmitted: (_) => submit(),
-                  onTab: () => fnUserpassword.requestFocus(),
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              //Password
-              SizedBox(
-                width: 350,
-                child: TextFormFieldPassword(
-                  controller: _userpasswordTextController,
-                  fontSize: 15,
-                  labelText: 'Password...',
-                  onFieldSubmitted: (_) => submit(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 6) {
-                      return 'Password has to be at least 6 characters, sir';
-                    }
-                    return null;
-                  },
-                  focusNode: fnUserpassword,
-                  onTab: () => fnUserControlpassword.requestFocus(),
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              //Password2
-              SizedBox(
-                width: 350,
-                child: TextFormFieldPassword(
-                  controller: _userpasswordControlTextController,
-                  fontSize: 15,
-                  labelText: 'Re-enter your Password...',
-                  onFieldSubmitted: (_) => submit(),
-                  validator: (value) {
-                    if (value == null ||
-                        value.isEmpty ||
-                        value != _userpasswordTextController.text) {
-                      return 'Password does not match, sir';
-                    }
-                    return null;
-                  },
-                  focusNode: fnUserControlpassword,
-                  onTab: () => fnUsername.requestFocus(),
-                ),
-              ),
-              const SizedBox(
-                height: 60,
-              ),
-              //Submit Button
-              SizedBox(
-                width: 200,
-                height: 40,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      backgroundColor:
-                          Theme.of(context).colorScheme.brandColor),
+          child: Consumer<ConnectionService>(builder: (context, connection, _) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                //Thank you for signing up text
+                SizedBox(
+                  width: 270,
                   child: Text(
-                    'Sign Up',
+                    titleText,
                     style: TextStyle(
-                        fontFamily: 'Segoe UI Black',
-                        fontSize: 18,
-                        color:
-                            Theme.of(context).colorScheme.textInputCursorColor),
+                      fontFamily: 'Segoe UI',
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.textInputCursorColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  onPressed: () => submit(),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
+                const SizedBox(
+                  height: 50,
+                ),
+                //Username
+                SizedBox(
+                  width: 350,
+                  child: TextFormFieldCheck(
+                    // checking: isUsernameAvailable(_usernameTextController.text),
+                    checking: (check) => isUsernameAvailable.call(
+                        check, connection.returnConnection()),
+                    controller: _usernameTextController,
+                    focusNode: fnUsername,
+                    fontSize: 15,
+                    labelText: 'Username...',
+                    autofocus: widget.username.isEmpty ? true : false,
+                    validator: (value) {
+                      //Check if username is free
+                      if (value == null || value.isEmpty) {
+                        return 'You may choose a username, sir';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) =>
+                        submit(connection.returnConnection()),
+                    onTab: () => fnUseremail.requestFocus(),
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                //Useremail
+                SizedBox(
+                  width: 350,
+                  child: TextFormFieldCheck(
+                    checking: (check) => isUseremailAvailable.call(
+                        check, connection.returnConnection()),
+                    controller: _useremailTextController,
+                    focusNode: fnUseremail,
+                    fontSize: 15,
+                    labelText: 'Email...',
+                    autofocus: widget.useremail.isEmpty ? true : false,
+                    validator: (value) {
+                      //check if email is already used
+                      Pattern pattern =
+                          r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                          r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                          r"{0,253}[a-zA-Z0-9])?)*$";
+                      RegExp regex = RegExp(pattern.toString());
+                      if (!regex.hasMatch(value!)) {
+                        return 'Enter a valid email address, sir';
+                      } else {
+                        return null;
+                      }
+                    },
+                    onFieldSubmitted: (_) =>
+                        submit(connection.returnConnection()),
+                    onTab: () => fnUserpassword.requestFocus(),
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                //Password
+                SizedBox(
+                  width: 350,
+                  child: TextFormFieldPassword(
+                    controller: _userpasswordTextController,
+                    fontSize: 15,
+                    labelText: 'Password...',
+                    onFieldSubmitted: (_) =>
+                        submit(connection.returnConnection()),
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 6) {
+                        return 'Password has to be at least 6 characters, sir';
+                      }
+                      return null;
+                    },
+                    focusNode: fnUserpassword,
+                    onTab: () => fnUserControlpassword.requestFocus(),
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                //Password2
+                SizedBox(
+                  width: 350,
+                  child: TextFormFieldPassword(
+                    controller: _userpasswordControlTextController,
+                    fontSize: 15,
+                    labelText: 'Re-enter your Password...',
+                    onFieldSubmitted: (_) =>
+                        submit(connection.returnConnection()),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value != _userpasswordTextController.text) {
+                        return 'Password does not match, sir';
+                      }
+                      return null;
+                    },
+                    focusNode: fnUserControlpassword,
+                    onTab: () => fnUsername.requestFocus(),
+                  ),
+                ),
+                const SizedBox(
+                  height: 60,
+                ),
+                //Submit Button
+                SizedBox(
+                  width: 200,
+                  height: 40,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        backgroundColor:
+                            Theme.of(context).colorScheme.brandColor),
+                    child: Text(
+                      'Sign Up',
+                      style: TextStyle(
+                          fontFamily: 'Segoe UI Black',
+                          fontSize: 18,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .textInputCursorColor),
+                    ),
+                    onPressed: () => submit(connection.returnConnection()),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            );
+          }),
         ));
   }
 
-  Future<void> submit() async {
+  Future<void> submit(http.Client client) async {
     if (_formKey.currentState!.validate()) {
-      if (await createPendingAccount(_useremailTextController.text)) {
+      if (await createPendingAccount(_useremailTextController.text, client)) {
         widget.setUser(
             _usernameTextController.text,
             _useremailTextController.text,

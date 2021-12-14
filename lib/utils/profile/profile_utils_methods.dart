@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:http_parser/http_parser.dart';
 
 ///Follow user
 Future<void> followUser(String creator) async {
@@ -73,5 +74,51 @@ Future<Map<String, dynamic>> fetchProfileData(String username) async {
     print("error");
     // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
+  }
+}
+
+//Update Profile
+Future<String?> updateProfile(
+    String profileBio, List<int>? profilePicture, http.Client client) async {
+  var url = Uri.parse(baseURL + 'user/updateMyUserProfile');
+  String? token = await getToken();
+
+  var request = http.MultipartRequest('PATCH', url);
+
+  request.headers['Authorization'] = 'Bearer $token';
+  request.fields['profileBio'] = profileBio;
+
+  if (profilePicture != null) {
+    print("profilePic not null");
+    request.files.add(http.MultipartFile.fromBytes('picture', profilePicture,
+        filename: "picture", contentType: MediaType('image', 'png')));
+  } else {
+    print("profilePic is null");
+  }
+
+  var response = await request.send();
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    print('Updated!');
+  } else {
+    print('Update Error!');
+  }
+
+  String? un = await getMyUsername(client);
+  return un;
+}
+
+Future<bool> isThisMe(String username, http.Client client) async {
+  if (await isAuthenticated(client) == 200) {
+    if (await getMyUsername(client) == username) {
+      print("This is me");
+      return true;
+    } else {
+      print("This is not me");
+      return false;
+    }
+  } else {
+    print("You are not even signed in");
+    return false;
   }
 }

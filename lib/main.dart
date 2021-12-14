@@ -6,12 +6,22 @@ import 'package:uidraft1/screens/notfound/not_found_screen.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'beamer/location_builders.dart';
+import 'utils/network/http_client.dart';
 import 'utils/theme/theme_notifier.dart';
 
 void main() {
   //Beamer.setPathUrlStrategy();
-  return runApp(ChangeNotifierProvider<ThemeNotifier>(
-    create: (_) => ThemeNotifier(),
+
+  // return runApp(ChangeNotifierProvider<ThemeNotifier>(
+  //   create: (_) => ThemeNotifier(),
+  //   child: MyApp(),
+  // ));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<ConnectionService>(
+          create: (_) => ConnectionService()),
+      ChangeNotifierProvider<ThemeNotifier>(create: (_) => ThemeNotifier())
+    ],
     child: MyApp(),
   ));
 }

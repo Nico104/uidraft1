@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_large_widget.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
@@ -143,108 +145,113 @@ class _FeedGridState extends State<FeedGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading
-        ? const Center(child: CircularProgressIndicator())
-        : _error
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text("There was an error while loading your Feed"),
-                  OutlinedButton(
-                      onPressed: () =>
-                          fetchPostIds().then((value) => setState(() {})),
-                      child: const Text("Reload Feed"))
-                ],
-              )
-            : ScrollConfiguration(
-                behavior:
-                    ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  // physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 120,
-                      ),
-                      Row(
-                        children: [
-                          Flexible(flex: 1, child: Container()),
-                          Flexible(
-                            flex: 4,
-                            child: FutureBuilder(
-                                future: isAuthenticated(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<int> snapshot) {
-                                  if (snapshot.hasData) {
-                                    //return ListView.builder(
-                                    //   shrinkWrap: true,
-                                    //   // physics: const NeverScrollableScrollPhysics(),
-                                    //   // physics: const ClampingScrollPhysics(),
-                                    //   itemCount: commentModels.length,
-                                    //   itemBuilder: (context, i) {
-                                    //     return commentModels.elementAt(i);
-                                    //   },
-                                    // );
-                                    return GridView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: dataList.length,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        childAspectRatio:
-                                            MediaQuery.of(context).size.width >=
-                                                    1700
-                                                ? (1280 / 1174)
-                                                : (1280 / 1240),
-                                        mainAxisSpacing: 20.0,
-                                        crossAxisSpacing: 60.0,
-                                      ),
-                                      itemBuilder: (_, index) {
-                                        return VideoPreview(
-                                          postId: dataList.elementAt(index),
-                                          isAuth: snapshot.data == 200,
-                                          videoPreviewMode:
-                                              vputils.VideoPreviewMode.feed,
-                                        );
-                                      },
-                                    );
-                                    // return GridView.count(
-                                    //   // physics: const AlwaysScrollableScrollPhysics(),
-                                    //   shrinkWrap: true,
-                                    //   childAspectRatio:
-                                    //       MediaQuery.of(context).size.width >=
-                                    //               1700
-                                    //           ? (1280 / 1174)
-                                    //           : (1280 / 1240),
-                                    //   // controller: _scrollController,
-                                    //   scrollDirection: Axis.vertical,
-                                    //   crossAxisCount: 3,
-                                    //   mainAxisSpacing: 10.0,
-                                    //   crossAxisSpacing: 40.0,
-                                    //   children: dataList.map((value) {
-                                    //     return VideoPreview(
-                                    //       postId: value,
-                                    //       isAuth: snapshot.data == 200,
-                                    //       videoPreviewMode:
-                                    //           vputils.VideoPreviewMode.feed,
-                                    //     );
-                                    //   }).toList(),
-                                    // );
-                                  } else {
-                                    return const CircularProgressIndicator();
-                                  }
-                                }),
-                          ),
-                          Flexible(flex: 1, child: Container()),
-                        ],
-                      ),
-                      // ),
-                    ],
+    return Consumer<ConnectionService>(builder: (context, connection, _) {
+      return _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text("There was an error while loading your Feed"),
+                    OutlinedButton(
+                        onPressed: () =>
+                            fetchPostIds().then((value) => setState(() {})),
+                        child: const Text("Reload Feed"))
+                  ],
+                )
+              : ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context)
+                      .copyWith(scrollbars: false),
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    // physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 120,
+                        ),
+                        Row(
+                          children: [
+                            Flexible(flex: 1, child: Container()),
+                            Flexible(
+                              flex: 4,
+                              child: FutureBuilder(
+                                  future: isAuthenticated(
+                                      connection.returnConnection()),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<int> snapshot) {
+                                    if (snapshot.hasData) {
+                                      //return ListView.builder(
+                                      //   shrinkWrap: true,
+                                      //   // physics: const NeverScrollableScrollPhysics(),
+                                      //   // physics: const ClampingScrollPhysics(),
+                                      //   itemCount: commentModels.length,
+                                      //   itemBuilder: (context, i) {
+                                      //     return commentModels.elementAt(i);
+                                      //   },
+                                      // );
+                                      return GridView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: dataList.length,
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          childAspectRatio:
+                                              MediaQuery.of(context)
+                                                          .size
+                                                          .width >=
+                                                      1700
+                                                  ? (1280 / 1174)
+                                                  : (1280 / 1240),
+                                          mainAxisSpacing: 20.0,
+                                          crossAxisSpacing: 60.0,
+                                        ),
+                                        itemBuilder: (_, index) {
+                                          return VideoPreview(
+                                            postId: dataList.elementAt(index),
+                                            isAuth: snapshot.data == 200,
+                                            videoPreviewMode:
+                                                vputils.VideoPreviewMode.feed,
+                                          );
+                                        },
+                                      );
+                                      // return GridView.count(
+                                      //   // physics: const AlwaysScrollableScrollPhysics(),
+                                      //   shrinkWrap: true,
+                                      //   childAspectRatio:
+                                      //       MediaQuery.of(context).size.width >=
+                                      //               1700
+                                      //           ? (1280 / 1174)
+                                      //           : (1280 / 1240),
+                                      //   // controller: _scrollController,
+                                      //   scrollDirection: Axis.vertical,
+                                      //   crossAxisCount: 3,
+                                      //   mainAxisSpacing: 10.0,
+                                      //   crossAxisSpacing: 40.0,
+                                      //   children: dataList.map((value) {
+                                      //     return VideoPreview(
+                                      //       postId: value,
+                                      //       isAuth: snapshot.data == 200,
+                                      //       videoPreviewMode:
+                                      //           vputils.VideoPreviewMode.feed,
+                                      //     );
+                                      //   }).toList(),
+                                      // );
+                                    } else {
+                                      return const CircularProgressIndicator();
+                                    }
+                                  }),
+                            ),
+                            Flexible(flex: 1, child: Container()),
+                          ],
+                        ),
+                        // ),
+                      ],
+                    ),
                   ),
-                ),
-              );
+                );
+    });
   }
 
   //// ADDING THE SCROLL LISTINER

@@ -6,12 +6,14 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_post_util_methods.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
@@ -379,52 +381,569 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          //SingleChildScrollView
-          //scrollDirection: Axis.vertical,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(width: _isFullScreen ? 0 : 40),
-              Expanded(
-                // flex: 7,
-                flex: 8,
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      controller: _scrollController,
-                      child: FutureBuilder(
-                        future: _initializeVideoPlayerFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            // if (false) {
-                            return !_isFullScreen
-                                ?
-                                //Normal Player
-                                Column(
-                                    // ListView(
-                                    // scrollDirection: Axis.vertical,
-                                    // shrinkWrap: true,
-                                    children: [
-                                      const SizedBox(
-                                        height: 120,
-                                      ),
-                                      // VideoPlayer + Menu Normal
-                                      // AspectRatio(
-                                      //   aspectRatio: _controller.value.aspectRatio,
-                                      //   child: VideoPlayerNormalLarge(
-                                      //     firtTimeExternAccess:
-                                      //         widget.firtTimeExternAccess,
-                                      //     postData: widget.postData,
-                                      //   ),
-                                      // ),
+    return Consumer<ConnectionService>(builder: (context, connection, _) {
+      return Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          ScrollConfiguration(
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            //SingleChildScrollView
+            //scrollDirection: Axis.vertical,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(width: _isFullScreen ? 0 : 40),
+                Expanded(
+                  // flex: 7,
+                  flex: 8,
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        controller: _scrollController,
+                        child: FutureBuilder(
+                          future: _initializeVideoPlayerFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              // if (false) {
+                              return !_isFullScreen
+                                  ?
+                                  //Normal Player
+                                  Column(
+                                      // ListView(
+                                      // scrollDirection: Axis.vertical,
+                                      // shrinkWrap: true,
+                                      children: [
+                                        const SizedBox(
+                                          height: 120,
+                                        ),
+                                        // VideoPlayer + Menu Normal
+                                        // AspectRatio(
+                                        //   aspectRatio: _controller.value.aspectRatio,
+                                        //   child: VideoPlayerNormalLarge(
+                                        //     firtTimeExternAccess:
+                                        //         widget.firtTimeExternAccess,
+                                        //     postData: widget.postData,
+                                        //   ),
+                                        // ),
 
-                                      videoPlayerKeyboardListener(
+                                        videoPlayerKeyboardListener(
+                                          VideoPlayerNormalV2(
+                                            activeQualityStream:
+                                                activeQualityStream,
+                                            controller: _controller,
+                                            firstTimeExternAccess:
+                                                _firtTimeExternAccess,
+                                            streamQualityKeysSorted:
+                                                streamQualityKeysSorted,
+                                            focusNode: focusNode,
+                                            handleFullscreenButton: () =>
+                                                handleFullscreen.call(),
+                                            handleQualityChange: (index) =>
+                                                handleQualityChange.call(index),
+                                            disbaleFirstTimeAccess: () =>
+                                                disableFirstTimeAccess.call(),
+                                            skipToNextVideo: () =>
+                                                skipToNextVideo.call(),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 30),
+                                        //Post Title and Metric, Comments, Description etc.
+                                        FutureBuilder(
+                                            future: isAuthenticated(
+                                                connection.returnConnection()),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<int> snapshot) {
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      //Post Title
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          //Title
+                                                          Text(
+                                                              widget.postData[
+                                                                  'postTitle'],
+                                                              style: const TextStyle(
+                                                                  fontSize: 20,
+                                                                  fontFamily:
+                                                                      'Segoe UI')),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          //Tags
+                                                          Wrap(
+                                                            runSpacing: 5,
+                                                            spacing: 5,
+                                                            children:
+                                                                _getVideoTagWidgets(
+                                                                    taglist),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      //Post Metrics and Ratings
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              //Post Ratings
+                                                              snapshot.hasData
+                                                                  ? snapshot.data ==
+                                                                          200
+                                                                      ? FutureBuilder(
+                                                                          future:
+                                                                              Future.wait([
+                                                                            getUserPostRating(widget.postData['postId']),
+                                                                            getPostRatingScore(
+                                                                              widget.postData['postId'],
+                                                                            ),
+                                                                            getUserPostReport(widget.postData['postId'])
+                                                                          ]),
+                                                                          builder: (BuildContext context,
+                                                                              AsyncSnapshot<List<int>>
+                                                                                  snapshotRating) {
+                                                                            if (snapshotRating.hasData) {
+                                                                              return Row(
+                                                                                children: [
+                                                                                  //Slider
+                                                                                  PostSliderV1(
+                                                                                    value: snapshotRating.data![0].toDouble(),
+                                                                                    postId: widget.postData['postId'],
+                                                                                  ),
+
+                                                                                  //LIKE
+                                                                                  // IconButton(
+                                                                                  //   icon: Icon(
+                                                                                  //     Icons.thumb_up,
+                                                                                  //     size: 16,
+                                                                                  //     color: snapshotRating.data![0] >= 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                                  //   ),
+                                                                                  //   onPressed: () {
+                                                                                  //     //TODO anpassen mit Slider Werte
+                                                                                  //     switch (snapshotRating.data![0]) {
+                                                                                  //       case 0:
+                                                                                  //         ratePost(widget.postData['postId'], 1).then((_) => setState(() {}));
+                                                                                  //         break;
+                                                                                  //       case 1:
+                                                                                  //         deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                  //         break;
+                                                                                  //       case 2:
+                                                                                  //         updatePostRating(widget.postData['postId'], 1).then((_) => setState(() {}));
+                                                                                  //         break;
+                                                                                  //     }
+                                                                                  //   },
+                                                                                  // ),
+                                                                                  // const SizedBox(
+                                                                                  //   width: 8,
+                                                                                  // ),
+                                                                                  //RATING
+                                                                                  Text(snapshotRating.data![1].toString()),
+                                                                                  const SizedBox(
+                                                                                    width: 8,
+                                                                                  ),
+                                                                                  // Text("dislike"),
+                                                                                  //DISLIKE
+                                                                                  // IconButton(
+                                                                                  //   icon: Icon(
+                                                                                  //     Icons.thumb_down,
+                                                                                  //     size: 16,
+                                                                                  //     color: snapshotRating.data![0] == 2 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                                  //   ),
+                                                                                  //   onPressed: () {
+                                                                                  //     switch (snapshotRating.data![0]) {
+                                                                                  //       case 0:
+                                                                                  //         ratePost(widget.postData['postId'], -1).then((_) => setState(() {}));
+                                                                                  //         break;
+                                                                                  //       case 1:
+                                                                                  //         updatePostRating(widget.postData['postId'], -1).then((_) => setState(() {}));
+                                                                                  //         break;
+                                                                                  //       case 2:
+                                                                                  //         deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
+                                                                                  //         break;
+                                                                                  //     }
+                                                                                  //   },
+                                                                                  // ),
+                                                                                  const SizedBox(
+                                                                                    width: 16,
+                                                                                  ),
+                                                                                  //Report Post
+                                                                                  IconButton(
+                                                                                    icon: Icon(
+                                                                                      Icons.flag,
+                                                                                      size: 16,
+                                                                                      color: snapshotRating.data![2] == 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
+                                                                                    ),
+                                                                                    onPressed: () => (snapshotRating.data![2] == 1)
+                                                                                        ? null
+                                                                                        : {
+                                                                                            reportPost(widget.postData['postId']).then((_) => setState(() {}))
+                                                                                          },
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 40,
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            } else {
+                                                                              return const SizedBox();
+                                                                            }
+                                                                          })
+                                                                      :
+                                                                      //SliderTest
+
+                                                                      PostSliderV1(
+                                                                          postId:
+                                                                              widget.postData['postId'])
+                                                                  : const SizedBox(),
+
+                                                              // Row(
+                                                              //     children: const [
+                                                              //       Text(
+                                                              //           "login to rate and comment post",
+                                                              //           style: TextStyle(
+                                                              //               color: Colors
+                                                              //                   .white38)),
+                                                              //       SizedBox(
+                                                              //         width: 40,
+                                                              //       )
+                                                              //     ],
+                                                              //   ),
+
+                                                              //Post Metrics
+                                                              const Icon(
+                                                                Icons
+                                                                    .visibility,
+                                                                size: 24,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
+                                                              Text(widget
+                                                                  .postData[
+                                                                      '_count'][
+                                                                      'postWhatchtimeAnalytics']
+                                                                  .toString()),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 15),
+                                                          //Sharing share
+                                                          Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              //COPY
+                                                              InkWell(
+                                                                onTap: () {
+                                                                  Clipboard.setData(ClipboardData(
+                                                                          text: "http://localhost:55555/#/whatch/" +
+                                                                              widget.postData['postId']
+                                                                                  .toString()))
+                                                                      .then((_) =>
+                                                                          _showToast(
+                                                                              context));
+                                                                  //Create Sharing DB Eintrag
+                                                                  createSharingAnalyticPost(
+                                                                      widget.postData[
+                                                                          'postId'],
+                                                                      SharingType
+                                                                          .copy,
+                                                                      connection
+                                                                          .returnConnection());
+                                                                },
+                                                                child: const Icon(
+                                                                    Icons.copy,
+                                                                    size: 16),
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 10),
+                                                              //SHARE
+                                                              InkWell(
+                                                                onTap: () => Share.share(
+                                                                        'check out my website https://example.com',
+                                                                        subject:
+                                                                            'Look what I made!')
+                                                                    .then(
+                                                                        (value) {
+                                                                  print(
+                                                                      "create sharing");
+                                                                  //Create Sharing DB Eintrag
+                                                                  createSharingAnalyticPost(
+                                                                      widget.postData[
+                                                                          'postId'],
+                                                                      SharingType
+                                                                          .link,
+                                                                      connection
+                                                                          .returnConnection());
+                                                                }),
+                                                                child: const Icon(
+                                                                    Icons.share,
+                                                                    size: 20),
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 10)
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  //Video Data and Comments Normal
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      //Post SubchannelName
+                                                      InkWell(
+                                                        excludeFromSemantics:
+                                                            true,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        focusColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () {
+                                                          Beamer.of(context).beamToNamed(
+                                                              'subchannel/' +
+                                                                  widget.postData[
+                                                                      'postSubchannelName']);
+                                                          print(
+                                                              "go to subchnanel");
+                                                        },
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      14.0),
+                                                          child: Image.network(
+                                                            baseURL +
+                                                                widget.postData[
+                                                                            'postSubchannel']
+                                                                        [
+                                                                        'subchannelPreview']
+                                                                    [
+                                                                    'subchannelSubchannelPicturePath'],
+                                                            fit: BoxFit.cover,
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width: 40,
+                                                            height: 40,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text("c/" +
+                                                          widget.postData[
+                                                              'postSubchannelName']),
+                                                      const SizedBox(
+                                                        width: 20,
+                                                      ),
+
+                                                      //Post Username
+                                                      InkWell(
+                                                        excludeFromSemantics:
+                                                            true,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        focusColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () {
+                                                          Beamer.of(context)
+                                                              .beamToNamed('profile/' +
+                                                                  widget.postData[
+                                                                      'username']);
+                                                          print(
+                                                              "go to profile");
+                                                        },
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      14.0),
+                                                          child: Image.network(
+                                                            baseURL +
+                                                                widget.postData[
+                                                                            'user']
+                                                                        [
+                                                                        'userProfile']
+                                                                    [
+                                                                    'profilePicturePath'],
+                                                            fit: BoxFit.cover,
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width: 40,
+                                                            height: 40,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        widget.postData[
+                                                            'username'],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  //Post Published Date Time
+                                                  Text(widget.postData[
+                                                              'postPublishedDateTime'] !=
+                                                          null
+                                                      ? "published " +
+                                                          formatDate(widget
+                                                                  .postData[
+                                                              'postPublishedDateTime'])
+                                                      : "published 15. October 2021"),
+                                                  const SizedBox(
+                                                    height: 50,
+                                                  ),
+                                                  //Post Description
+                                                  ReadMoreText(
+                                                    widget.postData[
+                                                        'postDescription'],
+                                                    trimLines: 2,
+                                                    colorClickableText:
+                                                        Colors.pink,
+                                                    trimMode: TrimMode.Line,
+                                                    trimCollapsedText:
+                                                        'Show more',
+                                                    trimExpandedText:
+                                                        'Show less',
+                                                    // moreStyle: TextStyle(
+                                                    //     fontSize: 14,
+                                                    //     fontWeight: FontWeight.bold),
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 40,
+                                                  ),
+                                                  //Comments
+                                                  const Text("Comments"),
+                                                  const SizedBox(
+                                                    height: 40,
+                                                  ),
+                                                  //Write Comment only if User logged in
+                                                  snapshot.data == 200
+                                                      ? Column(
+                                                          children: [
+                                                            WriteComment(
+                                                              focusNode:
+                                                                  writeCommentFocusNode,
+                                                              controller:
+                                                                  _postCommentTextController,
+                                                              onSend: () async {
+                                                                writeCommentFocusNode
+                                                                    .unfocus();
+                                                                if (_postCommentTextController
+                                                                    .text
+                                                                    .trim()
+                                                                    .isNotEmpty) {
+                                                                  //send Comment
+                                                                  await sendComment(
+                                                                      widget.postData[
+                                                                          'postId'],
+                                                                      _postCommentTextController
+                                                                          .text);
+                                                                }
+                                                                if (mounted) {
+                                                                  setState(() {
+                                                                    _postCommentTextController
+                                                                        .clear();
+                                                                  });
+                                                                }
+                                                              },
+                                                              onTap: () {
+                                                                focusNode
+                                                                    .unfocus();
+                                                              },
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 40,
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : const SizedBox(),
+                                                  //!Test Comment
+                                                  // Show Post Comments
+                                                  FutureBuilder(
+                                                      future: fetchPostComments(
+                                                          widget.postData[
+                                                              'postId']),
+                                                      builder:
+                                                          (BuildContext context,
+                                                              AsyncSnapshot<
+                                                                      List<int>>
+                                                                  snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          if (snapshot.data!
+                                                              .isNotEmpty) {
+                                                            return VideoPlayerCommentsTest(
+                                                                // key:
+                                                                //     videoPlacerCommentsKey,
+                                                                commentIds:
+                                                                    snapshot
+                                                                        .data!);
+                                                          } else {
+                                                            return const Text(
+                                                                "no comments for video");
+                                                          }
+                                                        } else {
+                                                          return const CircularProgressIndicator();
+                                                        }
+                                                      }),
+                                                ],
+                                              );
+                                            }),
+
+                                        const SizedBox(
+                                          height: 140,
+                                        ),
+                                      ],
+                                    )
+                                  :
+                                  //Fullcreen
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: videoPlayerKeyboardListener(
                                         VideoPlayerNormalV2(
                                           activeQualityStream:
                                               activeQualityStream,
@@ -444,723 +963,222 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                               skipToNextVideo.call(),
                                         ),
                                       ),
-
-                                      const SizedBox(height: 30),
-                                      //Post Title and Metric, Comments, Description etc.
-                                      FutureBuilder(
-                                          future: isAuthenticated(),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<int> snapshot) {
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    //Post Title
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        //Title
-                                                        Text(
-                                                            widget.postData[
-                                                                'postTitle'],
-                                                            style: const TextStyle(
-                                                                fontSize: 20,
-                                                                fontFamily:
-                                                                    'Segoe UI')),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        //Tags
-                                                        Wrap(
-                                                          runSpacing: 5,
-                                                          spacing: 5,
-                                                          children:
-                                                              _getVideoTagWidgets(
-                                                                  taglist),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    //Post Metrics and Ratings
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            //Post Ratings
-                                                            snapshot.hasData
-                                                                ? snapshot.data ==
-                                                                        200
-                                                                    ? FutureBuilder(
-                                                                        future:
-                                                                            Future.wait([
-                                                                          getUserPostRating(
-                                                                              widget.postData['postId']),
-                                                                          getPostRatingScore(
-                                                                            widget.postData['postId'],
-                                                                          ),
-                                                                          getUserPostReport(
-                                                                              widget.postData['postId'])
-                                                                        ]),
-                                                                        builder: (BuildContext
-                                                                                context,
-                                                                            AsyncSnapshot<List<int>>
-                                                                                snapshotRating) {
-                                                                          if (snapshotRating
-                                                                              .hasData) {
-                                                                            return Row(
-                                                                              children: [
-                                                                                //Slider
-                                                                                PostSliderV1(
-                                                                                  value: snapshotRating.data![0].toDouble(),
-                                                                                  postId: widget.postData['postId'],
-                                                                                ),
-
-                                                                                //LIKE
-                                                                                // IconButton(
-                                                                                //   icon: Icon(
-                                                                                //     Icons.thumb_up,
-                                                                                //     size: 16,
-                                                                                //     color: snapshotRating.data![0] >= 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
-                                                                                //   ),
-                                                                                //   onPressed: () {
-                                                                                //     //TODO anpassen mit Slider Werte
-                                                                                //     switch (snapshotRating.data![0]) {
-                                                                                //       case 0:
-                                                                                //         ratePost(widget.postData['postId'], 1).then((_) => setState(() {}));
-                                                                                //         break;
-                                                                                //       case 1:
-                                                                                //         deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
-                                                                                //         break;
-                                                                                //       case 2:
-                                                                                //         updatePostRating(widget.postData['postId'], 1).then((_) => setState(() {}));
-                                                                                //         break;
-                                                                                //     }
-                                                                                //   },
-                                                                                // ),
-                                                                                // const SizedBox(
-                                                                                //   width: 8,
-                                                                                // ),
-                                                                                //RATING
-                                                                                Text(snapshotRating.data![1].toString()),
-                                                                                const SizedBox(
-                                                                                  width: 8,
-                                                                                ),
-                                                                                // Text("dislike"),
-                                                                                //DISLIKE
-                                                                                // IconButton(
-                                                                                //   icon: Icon(
-                                                                                //     Icons.thumb_down,
-                                                                                //     size: 16,
-                                                                                //     color: snapshotRating.data![0] == 2 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
-                                                                                //   ),
-                                                                                //   onPressed: () {
-                                                                                //     switch (snapshotRating.data![0]) {
-                                                                                //       case 0:
-                                                                                //         ratePost(widget.postData['postId'], -1).then((_) => setState(() {}));
-                                                                                //         break;
-                                                                                //       case 1:
-                                                                                //         updatePostRating(widget.postData['postId'], -1).then((_) => setState(() {}));
-                                                                                //         break;
-                                                                                //       case 2:
-                                                                                //         deletePostRating(widget.postData['postId']).then((_) => setState(() {}));
-                                                                                //         break;
-                                                                                //     }
-                                                                                //   },
-                                                                                // ),
-                                                                                const SizedBox(
-                                                                                  width: 16,
-                                                                                ),
-                                                                                //Report Post
-                                                                                IconButton(
-                                                                                  icon: Icon(
-                                                                                    Icons.flag,
-                                                                                    size: 16,
-                                                                                    color: snapshotRating.data![2] == 1 ? Theme.of(context).colorScheme.brandColor : Colors.white60,
-                                                                                  ),
-                                                                                  onPressed: () => (snapshotRating.data![2] == 1)
-                                                                                      ? null
-                                                                                      : {
-                                                                                          reportPost(widget.postData['postId']).then((_) => setState(() {}))
-                                                                                        },
-                                                                                ),
-                                                                                const SizedBox(
-                                                                                  width: 40,
-                                                                                ),
-                                                                              ],
-                                                                            );
-                                                                          } else {
-                                                                            return const SizedBox();
-                                                                          }
-                                                                        })
-                                                                    :
-                                                                    //SliderTest
-
-                                                                    PostSliderV1(
-                                                                        postId:
-                                                                            widget.postData['postId'])
-                                                                : const SizedBox(),
-
-                                                            // Row(
-                                                            //     children: const [
-                                                            //       Text(
-                                                            //           "login to rate and comment post",
-                                                            //           style: TextStyle(
-                                                            //               color: Colors
-                                                            //                   .white38)),
-                                                            //       SizedBox(
-                                                            //         width: 40,
-                                                            //       )
-                                                            //     ],
-                                                            //   ),
-
-                                                            //Post Metrics
-                                                            const Icon(
-                                                              Icons.visibility,
-                                                              size: 24,
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            Text(widget
-                                                                .postData[
-                                                                    '_count'][
-                                                                    'postWhatchtimeAnalytics']
-                                                                .toString()),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 15),
-                                                        //Sharing share
-                                                        Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            //COPY
-                                                            InkWell(
-                                                              onTap: () {
-                                                                Clipboard.setData(ClipboardData(
-                                                                        text: "http://localhost:55555/#/whatch/" +
-                                                                            widget.postData['postId']
-                                                                                .toString()))
-                                                                    .then((_) =>
-                                                                        _showToast(
-                                                                            context));
-                                                                //Create Sharing DB Eintrag
-                                                                createSharingAnalyticPost(
-                                                                    widget.postData[
-                                                                        'postId'],
-                                                                    SharingType
-                                                                        .copy);
-                                                              },
-                                                              child: const Icon(
-                                                                  Icons.copy,
-                                                                  size: 16),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 10),
-                                                            //SHARE
-                                                            InkWell(
-                                                              onTap: () => Share.share(
-                                                                      'check out my website https://example.com',
-                                                                      subject:
-                                                                          'Look what I made!')
-                                                                  .then(
-                                                                      (value) {
-                                                                print(
-                                                                    "create sharing");
-                                                                //Create Sharing DB Eintrag
-                                                                createSharingAnalyticPost(
-                                                                    widget.postData[
-                                                                        'postId'],
-                                                                    SharingType
-                                                                        .link);
-                                                              }),
-                                                              child: const Icon(
-                                                                  Icons.share,
-                                                                  size: 20),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 10)
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 30,
-                                                ),
-                                                //Video Data and Comments Normal
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    //Post SubchannelName
-                                                    InkWell(
-                                                      excludeFromSemantics:
-                                                          true,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () {
-                                                        Beamer.of(context).beamToNamed(
-                                                            'subchannel/' +
-                                                                widget.postData[
-                                                                    'postSubchannelName']);
-                                                        print(
-                                                            "go to subchnanel");
-                                                      },
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(14.0),
-                                                        child: Image.network(
-                                                          baseURL +
-                                                              widget.postData[
-                                                                          'postSubchannel']
-                                                                      [
-                                                                      'subchannelPreview']
-                                                                  [
-                                                                  'subchannelSubchannelPicturePath'],
-                                                          fit: BoxFit.cover,
-                                                          alignment:
-                                                              Alignment.center,
-                                                          width: 40,
-                                                          height: 40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text("c/" +
-                                                        widget.postData[
-                                                            'postSubchannelName']),
-                                                    const SizedBox(
-                                                      width: 20,
-                                                    ),
-
-                                                    //Post Username
-                                                    InkWell(
-                                                      excludeFromSemantics:
-                                                          true,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () {
-                                                        Beamer.of(context)
-                                                            .beamToNamed('profile/' +
-                                                                widget.postData[
-                                                                    'username']);
-                                                        print("go to profile");
-                                                      },
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(14.0),
-                                                        child: Image.network(
-                                                          baseURL +
-                                                              widget.postData[
-                                                                          'user']
-                                                                      [
-                                                                      'userProfile']
-                                                                  [
-                                                                  'profilePicturePath'],
-                                                          fit: BoxFit.cover,
-                                                          alignment:
-                                                              Alignment.center,
-                                                          width: 40,
-                                                          height: 40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      widget
-                                                          .postData['username'],
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                                //Post Published Date Time
-                                                Text(widget.postData[
-                                                            'postPublishedDateTime'] !=
-                                                        null
-                                                    ? "published " +
-                                                        formatDate(widget
-                                                                .postData[
-                                                            'postPublishedDateTime'])
-                                                    : "published 15. October 2021"),
-                                                const SizedBox(
-                                                  height: 50,
-                                                ),
-                                                //Post Description
-                                                ReadMoreText(
-                                                  widget.postData[
-                                                      'postDescription'],
-                                                  trimLines: 2,
-                                                  colorClickableText:
-                                                      Colors.pink,
-                                                  trimMode: TrimMode.Line,
-                                                  trimCollapsedText:
-                                                      'Show more',
-                                                  trimExpandedText: 'Show less',
-                                                  // moreStyle: TextStyle(
-                                                  //     fontSize: 14,
-                                                  //     fontWeight: FontWeight.bold),
-                                                  style: const TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                                const SizedBox(
-                                                  height: 40,
-                                                ),
-                                                //Comments
-                                                const Text("Comments"),
-                                                const SizedBox(
-                                                  height: 40,
-                                                ),
-                                                //Write Comment only if User logged in
-                                                snapshot.data == 200
-                                                    ? Column(
-                                                        children: [
-                                                          WriteComment(
-                                                            focusNode:
-                                                                writeCommentFocusNode,
-                                                            controller:
-                                                                _postCommentTextController,
-                                                            onSend: () async {
-                                                              writeCommentFocusNode
-                                                                  .unfocus();
-                                                              if (_postCommentTextController
-                                                                  .text
-                                                                  .trim()
-                                                                  .isNotEmpty) {
-                                                                //send Comment
-                                                                await sendComment(
-                                                                    widget.postData[
-                                                                        'postId'],
-                                                                    _postCommentTextController
-                                                                        .text);
-                                                              }
-                                                              if (mounted) {
-                                                                setState(() {
-                                                                  _postCommentTextController
-                                                                      .clear();
-                                                                });
-                                                              }
-                                                            },
-                                                            onTap: () {
-                                                              focusNode
-                                                                  .unfocus();
-                                                            },
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 40,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : const SizedBox(),
-                                                //!Test Comment
-                                                // Show Post Comments
-                                                FutureBuilder(
-                                                    future: fetchPostComments(
-                                                        widget.postData[
-                                                            'postId']),
-                                                    builder: (BuildContext
-                                                            context,
-                                                        AsyncSnapshot<List<int>>
-                                                            snapshot) {
-                                                      if (snapshot.hasData) {
-                                                        if (snapshot
-                                                            .data!.isNotEmpty) {
-                                                          return VideoPlayerCommentsTest(
-                                                              // key:
-                                                              //     videoPlacerCommentsKey,
-                                                              commentIds:
-                                                                  snapshot
-                                                                      .data!);
-                                                        } else {
-                                                          return const Text(
-                                                              "no comments for video");
-                                                        }
-                                                      } else {
-                                                        return const CircularProgressIndicator();
-                                                      }
-                                                    }),
-                                              ],
-                                            );
-                                          }),
-
-                                      const SizedBox(
-                                        height: 140,
-                                      ),
-                                    ],
-                                  )
-                                :
-                                //Fullcreen
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height,
-                                    child: videoPlayerKeyboardListener(
-                                      VideoPlayerNormalV2(
-                                        activeQualityStream:
-                                            activeQualityStream,
-                                        controller: _controller,
-                                        firstTimeExternAccess:
-                                            _firtTimeExternAccess,
-                                        streamQualityKeysSorted:
-                                            streamQualityKeysSorted,
-                                        focusNode: focusNode,
-                                        handleFullscreenButton: () =>
-                                            handleFullscreen.call(),
-                                        handleQualityChange: (index) =>
-                                            handleQualityChange.call(index),
-                                        disbaleFirstTimeAccess: () =>
-                                            disableFirstTimeAccess.call(),
-                                        skipToNextVideo: () =>
-                                            skipToNextVideo.call(),
-                                      ),
-                                    ),
-                                  );
-                          } else {
-                            // If the VideoPlayerController is still initializing, show a
-                            // loading spinner.
-                            return const Center(
-                                child: Padding(
-                              padding: EdgeInsets.only(top: 400),
-                              child: CircularProgressIndicator(),
-                            ));
-                          }
-                        },
+                                    );
+                            } else {
+                              // If the VideoPlayerController is still initializing, show a
+                              // loading spinner.
+                              return const Center(
+                                  child: Padding(
+                                padding: EdgeInsets.only(top: 400),
+                                child: CircularProgressIndicator(),
+                              ));
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                    //Scroll to top
-                    _showScrollToTopComment
-                        ? Positioned(
-                            top: 120,
-                            right: 25,
-                            child: FloatingActionButton(
-                                child: const Icon(Icons.arrow_upward),
-                                onPressed: () {
-                                  _scrollController.animateTo(
-                                      _scrollController
-                                          .position.minScrollExtent,
-                                      duration:
-                                          const Duration(milliseconds: 400),
-                                      curve: Curves.fastOutSlowIn);
-                                }),
-                          )
-                        : const SizedBox()
-                  ],
+                      //Scroll to top
+                      _showScrollToTopComment
+                          ? Positioned(
+                              top: 120,
+                              right: 25,
+                              child: FloatingActionButton(
+                                  child: const Icon(Icons.arrow_upward),
+                                  onPressed: () {
+                                    _scrollController.animateTo(
+                                        _scrollController
+                                            .position.minScrollExtent,
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        curve: Curves.fastOutSlowIn);
+                                  }),
+                            )
+                          : const SizedBox()
+                    ],
+                  ),
                 ),
-              ),
-              _isFullScreen ? const SizedBox() : const SizedBox(width: 30),
-              //Video Recommendations
-              _isFullScreen
-                  ? const SizedBox()
-                  : Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
-                        child: Column(
-                          children: [
-                            (widget.postData['postTranscript'] != null)
-                                ? Column(
-                                    children: [
-                                      WordSearchLarge(
-                                        pos: pos,
-                                        postId: widget.postData['postId'],
-                                        seekToSecond: (sec, ease) =>
-                                            seekToSecond.call(sec, ease),
-                                      ),
-                                      const SizedBox(height: 28),
-                                    ],
-                                  )
-                                // : const Text("There is no transcript bro"),
-                                : const SizedBox(),
-                            //Todo wieder eini tean fir video recommendations
-                            // VideoPlayerVideosLargeScreen(
-                            //     setSkipToId: (id) => setSkipToId.call(id)),
+                _isFullScreen ? const SizedBox() : const SizedBox(width: 30),
+                //Video Recommendations
+                _isFullScreen
+                    ? const SizedBox()
+                    : Expanded(
+                        flex: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
+                          child: Column(
+                            children: [
+                              (widget.postData['postTranscript'] != null)
+                                  ? Column(
+                                      children: [
+                                        WordSearchLarge(
+                                          pos: pos,
+                                          postId: widget.postData['postId'],
+                                          seekToSecond: (sec, ease) =>
+                                              seekToSecond.call(sec, ease),
+                                        ),
+                                        const SizedBox(height: 28),
+                                      ],
+                                    )
+                                  // : const Text("There is no transcript bro"),
+                                  : const SizedBox(),
+                              //Todo wieder eini tean fir video recommendations
+                              // VideoPlayerVideosLargeScreen(
+                              //     setSkipToId: (id) => setSkipToId.call(id)),
 
-                            //! InfiniteScroll Test Videos Recommended
-                            Expanded(
-                              child: Listener(
-                                onPointerSignal: (pointerSignal) {
-                                  if (pointerSignal is PointerScrollEvent) {
-                                    if (WordSearchLarge
-                                            .globalKey.currentState !=
-                                        null) {
+                              //! InfiniteScroll Test Videos Recommended
+                              Expanded(
+                                child: Listener(
+                                  onPointerSignal: (pointerSignal) {
+                                    if (pointerSignal is PointerScrollEvent) {
                                       if (WordSearchLarge
+                                              .globalKey.currentState !=
+                                          null) {
+                                        if (WordSearchLarge
+                                                .globalKey.currentState!
+                                                .getShowWords() !=
+                                            WordMode.closed) {
+                                          WordSearchLarge
                                               .globalKey.currentState!
-                                              .getShowWords() !=
-                                          WordMode.closed) {
-                                        WordSearchLarge.globalKey.currentState!
-                                            .animateToClosed();
+                                              .animateToClosed();
+                                        }
                                       }
                                     }
-                                  }
-                                },
-                                child: ShaderMask(
-                                  shaderCallback: (Rect bounds) {
-                                    return const LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment(0.0, -0.9),
-                                      colors: <Color>[
-                                        Colors.transparent,
-                                        Colors.white
-                                      ],
-                                    ).createShader(bounds);
                                   },
-                                  // blendMode: BlendMode.dstATop,
-                                  child: Stack(
-                                    children: [
-                                      //Video Recommandations
-                                      SingleChildScrollView(
-                                        controller: _scrollController2,
-                                        child: Column(
-                                          children: [
-                                            const SizedBox(height: 25),
-                                            FutureBuilder(
-                                                future:
-                                                    fetchRecommendedPostIds(),
-                                                builder: (BuildContext context,
-                                                    AsyncSnapshot<List<int>>
-                                                        snapshot) {
-                                                  if (snapshot.hasData) {
-                                                    if (snapshot
-                                                        .data!.isNotEmpty) {
-                                                      return VideoPlayerVideosLargeScreenTest(
-                                                        postIds: snapshot.data!,
-                                                        setSkipToId: (id) =>
-                                                            setSkipToId
-                                                                .call(id),
-                                                        isAuth: true,
-                                                      );
+                                  child: ShaderMask(
+                                    shaderCallback: (Rect bounds) {
+                                      return const LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment(0.0, -0.9),
+                                        colors: <Color>[
+                                          Colors.transparent,
+                                          Colors.white
+                                        ],
+                                      ).createShader(bounds);
+                                    },
+                                    // blendMode: BlendMode.dstATop,
+                                    child: Stack(
+                                      children: [
+                                        //Video Recommandations
+                                        SingleChildScrollView(
+                                          controller: _scrollController2,
+                                          child: Column(
+                                            children: [
+                                              const SizedBox(height: 25),
+                                              FutureBuilder(
+                                                  future:
+                                                      fetchRecommendedPostIds(),
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot<List<int>>
+                                                          snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      if (snapshot
+                                                          .data!.isNotEmpty) {
+                                                        return VideoPlayerVideosLargeScreenTest(
+                                                          postIds:
+                                                              snapshot.data!,
+                                                          setSkipToId: (id) =>
+                                                              setSkipToId
+                                                                  .call(id),
+                                                          isAuth: true,
+                                                        );
+                                                      } else {
+                                                        return const Text(
+                                                            "no posts for video");
+                                                      }
                                                     } else {
-                                                      return const Text(
-                                                          "no posts for video");
+                                                      return const CircularProgressIndicator();
                                                     }
-                                                  } else {
-                                                    return const CircularProgressIndicator();
-                                                  }
-                                                }),
-                                          ],
-                                        ),
-                                      ),
-                                      //Scroll to top Video Recommandations
-                                      _showScrollToTopVideoRecommandations
-                                          ? Positioned(
-                                              top: 40,
-                                              right: 15,
-                                              child: FloatingActionButton(
-                                                  child: const Icon(
-                                                      Icons.arrow_upward),
-                                                  onPressed: () {
-                                                    _scrollController2.animateTo(
-                                                        _scrollController2
-                                                            .position
-                                                            .minScrollExtent,
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    400),
-                                                        curve: Curves
-                                                            .fastOutSlowIn);
                                                   }),
-                                            )
-                                          : const SizedBox()
-                                    ],
+                                            ],
+                                          ),
+                                        ),
+                                        //Scroll to top Video Recommandations
+                                        _showScrollToTopVideoRecommandations
+                                            ? Positioned(
+                                                top: 40,
+                                                right: 15,
+                                                child: FloatingActionButton(
+                                                    child: const Icon(
+                                                        Icons.arrow_upward),
+                                                    onPressed: () {
+                                                      _scrollController2.animateTo(
+                                                          _scrollController2
+                                                              .position
+                                                              .minScrollExtent,
+                                                          duration:
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      400),
+                                                          curve: Curves
+                                                              .fastOutSlowIn);
+                                                    }),
+                                              )
+                                            : const SizedBox()
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-              _isFullScreen ? const SizedBox() : const SizedBox(width: 20),
-            ],
-          ),
-        ),
-        !_isFullScreen ? widget.navbar : const SizedBox(),
-        //Press F
-        Center(
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: _duration),
-            width: _width,
-            height: _height,
-            curve: Curves.fastOutSlowIn,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(18)),
-              color: Colors.grey.shade700.withOpacity(0.3),
+                _isFullScreen ? const SizedBox() : const SizedBox(width: 20),
+              ],
             ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      children: [
-                        const Text(
-                          "Press  ",
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            border: Border.all(color: Colors.white),
-                            color: Colors.black.withOpacity(0.8),
+          ),
+          !_isFullScreen ? widget.navbar : const SizedBox(),
+          //Press F
+          Center(
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: _duration),
+              width: _width,
+              height: _height,
+              curve: Curves.fastOutSlowIn,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(18)),
+                color: Colors.grey.shade700.withOpacity(0.3),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Press  ",
+                            style: TextStyle(fontSize: 24),
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(2.0),
-                            child: Text(
-                              " F ",
-                              style: TextStyle(
-                                  fontSize: 28, fontWeight: FontWeight.bold),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(4)),
+                              border: Border.all(color: Colors.white),
+                              color: Colors.black.withOpacity(0.8),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(2.0),
+                              child: Text(
+                                " F ",
+                                style: TextStyle(
+                                    fontSize: 28, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
-                        ),
-                        const Text(
-                          "  to exit Fullscreen",
-                          style: TextStyle(fontSize: 24),
-                        ),
-                      ],
-                    )),
+                          const Text(
+                            "  to exit Fullscreen",
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        ],
+                      )),
+                ),
               ),
             ),
-          ),
-        )
-      ],
-    );
+          )
+        ],
+      );
+    });
   }
 
   Widget videoPlayerKeyboardListener(Widget child) {

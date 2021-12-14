@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_video_preview_large_widget.dart';
 import 'dart:html' as html;
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
@@ -118,48 +120,54 @@ class _VideoPlayerVideosState extends State<VideoPlayerVideosLargeScreen> {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topCenter,
-      child: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _error
-              ? Column(
-                  children: [
-                    const SizedBox(
-                      height: 150,
-                    ),
-                    const Text(
-                        "There was an error while loading this Users Video"),
-                    OutlinedButton(
-                        onPressed: () => fetchPostIds(),
-                        child: const Text("Reload Videos"))
-                  ],
-                )
-              : FutureBuilder(
-                  future: isAuthenticated(),
-                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                    if (snapshot.hasData) {
-                      return GridView.count(
-                        shrinkWrap: true,
-                        childAspectRatio: (600 / 180),
-                        controller: _scrollController,
-                        scrollDirection: Axis.vertical,
-                        // Create a grid with 2 columns. If you change the scrollDirection to
-                        // horizontal, this produces 2 rows.
-                        crossAxisCount: 1,
-                        // Generate 100 widgets that display their index in the List.
-                        mainAxisSpacing: 25.0,
-                        // crossAxisSpacing: 40.0,
-                        children: dataList.map((value) {
-                          return VideoPlayerVideoPreview(
-                            postId: value,
-                            isAuth: snapshot.data == 200,
+      child: Consumer<ConnectionService>(
+        builder: (context, connection, _) {
+          return _loading
+              ? const Center(child: CircularProgressIndicator())
+              : _error
+                  ? Column(
+                      children: [
+                        const SizedBox(
+                          height: 150,
+                        ),
+                        const Text(
+                            "There was an error while loading this Users Video"),
+                        OutlinedButton(
+                            onPressed: () => fetchPostIds(),
+                            child: const Text("Reload Videos"))
+                      ],
+                    )
+                  : FutureBuilder(
+                      future: isAuthenticated(connection.returnConnection()),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<int> snapshot) {
+                        if (snapshot.hasData) {
+                          return GridView.count(
+                            shrinkWrap: true,
+                            childAspectRatio: (600 / 180),
+                            controller: _scrollController,
+                            scrollDirection: Axis.vertical,
+                            // Create a grid with 2 columns. If you change the scrollDirection to
+                            // horizontal, this produces 2 rows.
+                            crossAxisCount: 1,
+                            // Generate 100 widgets that display their index in the List.
+                            mainAxisSpacing: 25.0,
+                            // crossAxisSpacing: 40.0,
+                            children: dataList.map((value) {
+                              return VideoPlayerVideoPreview(
+                                postId: value,
+                                isAuth: snapshot.data == 200,
+                              );
+                              // return (Text(value.toString()));
+                            }).toList(),
                           );
-                          // return (Text(value.toString()));
-                        }).toList(),
-                      );
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  }),
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+                    );
+        },
+      ),
     );
   }
 

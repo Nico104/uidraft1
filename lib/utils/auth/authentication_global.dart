@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
 ///Return 200 if the User is Authenticated
-Future<int> isAuthenticated() async {
+Future<int> isAuthenticated(http.Client client) async {
   var url = Uri.parse(baseURL + 'protected');
   String? token = await getToken();
 
@@ -24,7 +24,7 @@ Future<String?> getToken() async {
 }
 
 ///Returns the Username associated with the, if available, currently saved AccessToken
-Future<String?> getMyUsername() async {
+Future<String?> getMyUsername(http.Client client) async {
   var url = Uri.parse(baseURL + 'user/getMyUsername');
   String? token = await getToken();
 
@@ -48,7 +48,7 @@ Future<String?> getMyUsername() async {
 ///and returns 200 if the operation was successfull
 ///
 ///takes in the new Password as a String for [password]
-Future<int> changePassword(String password) async {
+Future<int> changePassword(String password, http.Client client) async {
   var url = Uri.parse(baseURL + 'user/updateUserPassword');
   String? token = await getToken();
 
@@ -82,7 +82,7 @@ Future<void> logout() async {
 ///
 ///takes in a String for [useremail], which will be the pending account which gets checked
 ///takes in a String for [code], which should be the Code the User received as an Email
-Future<bool> checkCode(String usermail, String code) async {
+Future<bool> checkCode(String usermail, String code, http.Client client) async {
   var url = Uri.parse(baseURL + 'user/checkCode');
   final response = await http.post(url,
       headers: {
@@ -114,7 +114,7 @@ Future<bool> checkCode(String usermail, String code) async {
 /// returns true if the operation was successfull, otherwise return false
 ///
 /// takes in the given email as a String for [usermail]
-Future<bool> createPendingAccount(String usermail) async {
+Future<bool> createPendingAccount(String usermail, http.Client client) async {
   print(usermail);
 
   var url = Uri.parse(baseURL + 'user/signupPendingAccount');
@@ -141,7 +141,7 @@ Future<bool> createPendingAccount(String usermail) async {
 ///Checks if [username] is a already used Userame or not
 ///
 ///return true if [username] is available, otherwise return false
-Future<bool> isUsernameAvailable(String username) async {
+Future<bool> isUsernameAvailable(String username, http.Client client) async {
   print("Usenmae:" + username);
   var url = Uri.parse(baseURL + 'user/isUsernameAvailable/$username');
   final response = await http.get(
@@ -170,7 +170,7 @@ Future<bool> isUsernameAvailable(String username) async {
 ///Checks if [useremail] is a already used Userame or not
 ///
 ///return true if [useremail] is available, otherwise return false
-Future<bool> isUseremailAvailable(String username) async {
+Future<bool> isUseremailAvailable(String username, http.Client client) async {
   var url = Uri.parse(baseURL + 'user/isUseremailAvailable/$username');
   final response = await http.get(
     url,
@@ -193,4 +193,24 @@ Future<bool> isUseremailAvailable(String username) async {
       return false;
     }
   }
+}
+
+//LoginMethod
+Future<bool> login(String username, String password, http.Client client) async {
+  var url = Uri.parse(baseURL + 'login');
+  var response = await client
+      .post(url, body: {'username': '$username', 'password': '$password'});
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
+  if (response.statusCode == 201) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        'access_token', json.decode(response.body)["access_token"]);
+    print("Acess Token: ${prefs.getString('access_token')}");
+
+    return true;
+  }
+
+  return false;
 }
