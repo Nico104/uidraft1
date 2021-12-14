@@ -188,7 +188,8 @@ class _SubModPostListItemState extends State<SubModPostListItem> {
                                         .brandColor,
                                     iconData: Icons.delete,
                                     toolTipMsg: "Delte Post",
-                                    handeleTap: () => deletePost(widget.postId)
+                                    handeleTap: () => deletePost(widget.postId,
+                                            connection.returnConnection())
                                         .then((value) =>
                                             widget.notifyParent.call()),
                                     // handeleTap: () {},

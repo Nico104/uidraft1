@@ -8,10 +8,10 @@ import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
 ///Fetches all postId of the posts the logged in User has posted
-Future<List<int>> fetchUserPosts() async {
+Future<List<int>> fetchUserPosts(http.Client client) async {
   String? token = await getToken();
   final response =
-      await http.get(Uri.parse(baseURL + 'post/getUserPostIds'), headers: {
+      await client.get(Uri.parse(baseURL + 'post/getUserPostIds'), headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',
@@ -36,9 +36,10 @@ Future<List<int>> fetchUserPosts() async {
 }
 
 ///Fetches all Data needed to display the Post with postId [pstId] in the Studio Preview List
-Future<Map<String, dynamic>> fetchPostStudioPreviewData(int id) async {
-  final response =
-      await http.get(Uri.parse(baseURL + 'post/getPostStudioPreviewData/$id'));
+Future<Map<String, dynamic>> fetchPostStudioPreviewData(
+    int id, http.Client client) async {
+  final response = await client
+      .get(Uri.parse(baseURL + 'post/getPostStudioPreviewData/$id'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> map = json.decode(response.body);
@@ -54,9 +55,10 @@ Future<Map<String, dynamic>> fetchPostStudioPreviewData(int id) async {
 }
 
 ///Fetches Metrics needed to display the Post with postId [id] in the Studio View
-Future<Map<String, dynamic>> fetchPostStudioMetrics(int id) async {
+Future<Map<String, dynamic>> fetchPostStudioMetrics(
+    int id, http.Client client) async {
   String? token = await getToken();
-  final response = await http
+  final response = await client
       .get(Uri.parse(baseURL + 'post/getPostStudioMetrics/$id'), headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -76,9 +78,9 @@ Future<Map<String, dynamic>> fetchPostStudioMetrics(int id) async {
 }
 
 ///Returns the absolut Whatchtime the Post with postId [id] has
-Future<int> getPostAbsoluteWhatchtime(int id) async {
-  final response =
-      await http.get(Uri.parse(baseURL + 'post/getPostAbsoluteWhatchtime/$id'));
+Future<int> getPostAbsoluteWhatchtime(int id, http.Client client) async {
+  final response = await client
+      .get(Uri.parse(baseURL + 'post/getPostAbsoluteWhatchtime/$id'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> map = json.decode(response.body);
@@ -96,9 +98,10 @@ Future<int> getPostAbsoluteWhatchtime(int id) async {
 ///Updates the Posts with postId [id]
 ///changes the Post Title to [title]
 ///changes the Post Description to [desc]
-Future<void> updatePostData(int id, String title, String desc) async {
+Future<void> updatePostData(
+    int id, String title, String desc, http.Client client) async {
   String? token = await getToken();
-  final response = await http.patch(
+  final response = await client.patch(
       Uri.parse(baseURL + 'post/updatePostData/$id'),
       headers: {
         'Content-Type': 'application/json',
@@ -141,10 +144,10 @@ Future<void> updatePostThumbnail(int id, Uint8List thumbnail) async {
 
 ///Updates the Posts with postId [id]
 ///removes the Post Tag to [tag]
-Future<void> removePostTag(int id, String tag) async {
+Future<void> removePostTag(int id, String tag, http.Client client) async {
   String? token = await getToken();
   final response =
-      await http.patch(Uri.parse(baseURL + 'post/removePostTag/$id'),
+      await client.patch(Uri.parse(baseURL + 'post/removePostTag/$id'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -158,15 +161,16 @@ Future<void> removePostTag(int id, String tag) async {
 
 ///Updates the Posts with postId [id]
 ///add the Post Tag to [tag]
-Future<void> addPostTag(int id, String tag) async {
+Future<void> addPostTag(int id, String tag, http.Client client) async {
   String? token = await getToken();
-  final response = await http.patch(Uri.parse(baseURL + 'post/addPostTag/$id'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(<String, String>{"tagname": tag}));
+  final response =
+      await client.patch(Uri.parse(baseURL + 'post/addPostTag/$id'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(<String, String>{"tagname": tag}));
 
   print(response.statusCode);
   print(response.body);
@@ -175,7 +179,8 @@ Future<void> addPostTag(int id, String tag) async {
 ///Upodate Post with postId [id] Publicity
 ///to Public if [isPublic] is true
 ///to Archived if [isPublic] is false
-Future<void> updatePostPublicity(int id, bool isPublic) async {
+Future<void> updatePostPublicity(
+    int id, bool isPublic, http.Client client) async {
   String dir = "unarchivePost";
   if (isPublic) {
     dir = "archivePost";
@@ -184,7 +189,7 @@ Future<void> updatePostPublicity(int id, bool isPublic) async {
   print(dir);
 
   String? token = await getToken();
-  final response = await http.patch(
+  final response = await client.patch(
     Uri.parse(baseURL + 'post/$dir/$id'),
     headers: {
       'Content-Type': 'application/json',
@@ -198,9 +203,9 @@ Future<void> updatePostPublicity(int id, bool isPublic) async {
 }
 
 ///deltes Post with postId [id]
-Future<void> deletePost(int id) async {
+Future<void> deletePost(int id, http.Client client) async {
   String? token = await getToken();
-  final response = await http.patch(
+  final response = await client.patch(
     Uri.parse(baseURL + 'post/deletePost/$id'),
     headers: {
       'Content-Type': 'application/json',

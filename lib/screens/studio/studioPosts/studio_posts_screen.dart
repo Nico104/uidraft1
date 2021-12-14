@@ -17,8 +17,8 @@ class StudioPostsScreen extends StatefulWidget {
 class _StudioPostsState extends State<StudioPostsScreen> {
   int? chosenPostId;
 
-  ScrollController _scrollControllerPosts = ScrollController();
-  ScrollController _scrollControllerComments = ScrollController();
+  final ScrollController _scrollControllerPosts = ScrollController();
+  final ScrollController _scrollControllerComments = ScrollController();
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _StudioPostsState extends State<StudioPostsScreen> {
     return Material(
       child: Consumer<ConnectionService>(builder: (context, connection, _) {
         return FutureBuilder(
-            future: fetchUserPosts(),
+            future: fetchUserPosts(connection.returnConnection()),
             builder: (BuildContext context, AsyncSnapshot<List<int>> snapshot) {
               if (snapshot.hasData) {
                 return ResponsiveWidget(

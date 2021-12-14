@@ -12,6 +12,7 @@ import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'dart:html' as html;
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:http/http.dart' as http;
 
 class StudioPostMetrics extends StatefulWidget {
   final int postId;
@@ -23,7 +24,7 @@ class StudioPostMetrics extends StatefulWidget {
 }
 
 class _StudioPostMetricsState extends State<StudioPostMetrics> {
-  late Future<Map<String, dynamic>> future;
+  // late Future<Map<String, dynamic>> future;
 
   final _postTitleTextController = TextEditingController();
   final _postDescriptionTextController = TextEditingController();
@@ -51,12 +52,12 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
 
   @override
   void initState() {
-    future = studioUtils.fetchPostStudioMetrics(widget.postId).then((value) {
-      initTagList(value['tags']);
-      _postTitleTextController.text = value['postTitle'];
-      _postDescriptionTextController.text = value['postDescription'];
-      return value;
-    });
+    // future = studioUtils.fetchPostStudioMetrics(widget.postId).then((value) {
+    //   initTagList(value['tags']);
+    //   _postTitleTextController.text = value['postTitle'];
+    //   _postDescriptionTextController.text = value['postDescription'];
+    //   return value;
+    // });
     super.initState();
   }
 
@@ -71,7 +72,15 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
   Widget build(BuildContext context) {
     return Consumer<ConnectionService>(builder: (context, connection, _) {
       return FutureBuilder(
-          future: studioUtils.fetchPostStudioMetrics(widget.postId),
+          future: studioUtils
+              .fetchPostStudioMetrics(
+                  widget.postId, connection.returnConnection())
+              .then((value) {
+            initTagList(value['tags']);
+            _postTitleTextController.text = value['postTitle'];
+            _postDescriptionTextController.text = value['postDescription'];
+            return value;
+          }),
           // future: future,
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>> snapshot) {
@@ -343,8 +352,9 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                           Wrap(
                                             runSpacing: 5,
                                             spacing: 5,
-                                            children:
-                                                _getVideoTagWidgets(tagList),
+                                            children: _getVideoTagWidgets(
+                                                tagList,
+                                                connection.returnConnection()),
                                           ),
                                           //ShowError
                                           !_formError['tag']!
@@ -413,7 +423,9 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                                   {
                                                     studioUtils
                                                         .deletePost(
-                                                            widget.postId)
+                                                            widget.postId,
+                                                            connection
+                                                                .returnConnection())
                                                         .then((value) => html
                                                             .window.location
                                                             .reload())
@@ -466,7 +478,8 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                           studioUtils
                                               .updatePostPublicity(
                                                   widget.postId,
-                                                  snapshot.data!['isPublished'])
+                                                  snapshot.data!['isPublished'],
+                                                  connection.returnConnection())
                                               .then((value) => setState(() {}));
                                         },
                                         child: Padding(
@@ -523,7 +536,9 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                                       _postTitleTextController
                                                           .text,
                                                       _postDescriptionTextController
-                                                          .text);
+                                                          .text,
+                                                      connection
+                                                          .returnConnection());
                                                 })
                                               : setState(() {
                                                   print("form has error");
@@ -748,8 +763,9 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                               ),
                               //Post Avergae Whatchtime - Absolut Whatchtime
                               FutureBuilder(
-                                  future: studioUtils
-                                      .getPostAbsoluteWhatchtime(widget.postId),
+                                  future: studioUtils.getPostAbsoluteWhatchtime(
+                                      widget.postId,
+                                      connection.returnConnection()),
                                   builder: (BuildContext context,
                                       AsyncSnapshot<int> snapshotWhatchtime) {
                                     if (snapshotWhatchtime.hasData) {
@@ -1001,7 +1017,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
   }
 
   //Get Video Tag Widgets
-  List<Widget> _getVideoTagWidgets(List<String> list) {
+  List<Widget> _getVideoTagWidgets(List<String> list, http.Client client) {
     List<Widget> widgetList = List.generate(tagList.length, (index) {
       return Chip(
         label: Text(
@@ -1010,7 +1026,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
         ),
         onDeleted: () {
           studioUtils
-              .removePostTag(widget.postId, tagList.elementAt(index))
+              .removePostTag(widget.postId, tagList.elementAt(index), client)
               .then((_) {
             setState(() {
               print("onDelete");
@@ -1030,7 +1046,9 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
             builder: (context) => const TagGridLargeScreen(),
           ).then((value) {
             if (!tagList.contains(value.toString()) && value != null) {
-              studioUtils.addPostTag(widget.postId, value.toString()).then((_) {
+              studioUtils
+                  .addPostTag(widget.postId, value.toString(), client)
+                  .then((_) {
                 setState(() {
                   tagList.add(value.toString());
                 });
