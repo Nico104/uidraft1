@@ -3,9 +3,9 @@ import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 
 ///turns the logged in User into a Member of the Subchannel [subchannel]
-Future<void> enterSubchannel(String subchannelName) async {
+Future<void> enterSubchannel(String subchannelName, http.Client client) async {
   String? token = await getToken();
-  final response = await http.patch(
+  final response = await client.patch(
     Uri.parse(baseURL + 'subchannel/enterSubchannel/$subchannelName'),
     headers: {
       'Content-Type': 'application/json',
@@ -19,9 +19,9 @@ Future<void> enterSubchannel(String subchannelName) async {
 }
 
 ///removes the logged in User from the Subchannel [subchannel]
-Future<void> leaveSubchannel(String subchannelName) async {
+Future<void> leaveSubchannel(String subchannelName, http.Client client) async {
   String? token = await getToken();
-  final response = await http.patch(
+  final response = await client.patch(
     Uri.parse(baseURL + 'subchannel/leaveSubchannel/$subchannelName'),
     headers: {
       'Content-Type': 'application/json',
@@ -36,9 +36,9 @@ Future<void> leaveSubchannel(String subchannelName) async {
 
 ///Returns true if the logged in User is a Member of the subchannel [subchannel]
 ///or false if the logged in User is not
-Future<bool> isMember(String subchannelName) async {
+Future<bool> isMember(String subchannelName, http.Client client) async {
   String? token = await getToken();
-  final response = await http.get(
+  final response = await client.get(
     Uri.parse(baseURL + 'subchannel/isMember/$subchannelName'),
     headers: {
       'Content-Type': 'application/json',
@@ -62,9 +62,9 @@ Future<bool> isMember(String subchannelName) async {
 
 ///Returns true if the logged in User is a Mod of the subchannel [subchannel]
 ///or false if the logged in User is not
-Future<bool> isMod(String subchannelName) async {
+Future<bool> isMod(String subchannelName, http.Client client) async {
   String? token = await getToken();
-  final response = await http.get(
+  final response = await client.get(
     Uri.parse(baseURL + 'user/isMod/$subchannelName'),
     headers: {
       'Content-Type': 'application/json',

@@ -209,8 +209,10 @@ class _SubchannelState extends State<Subchannel> {
                       (BuildContext context, StateSetter setStateButtonBar) {
                     return FutureBuilder(
                         future: Future.wait([
-                          isMember(widget.subchannelData['subchannelName']),
-                          isMod(widget.subchannelData['subchannelName'])
+                          isMember(widget.subchannelData['subchannelName'],
+                              connection.returnConnection()),
+                          isMod(widget.subchannelData['subchannelName'],
+                              connection.returnConnection())
                         ]),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<bool>> snapshotIsMember) {
@@ -294,13 +296,14 @@ class _SubchannelState extends State<Subchannel> {
                                                         Theme.of(context)
                                                             .colorScheme
                                                             .brandColor),
-                                                onPressed: () =>
-                                                    enterSubchannel(widget
-                                                                .subchannelData[
-                                                            'subchannelName'])
-                                                        .then((value) =>
-                                                            setStateButtonBar(
-                                                                () {})),
+                                                onPressed: () => enterSubchannel(
+                                                        widget.subchannelData[
+                                                            'subchannelName'],
+                                                        connection
+                                                            .returnConnection())
+                                                    .then((value) =>
+                                                        setStateButtonBar(
+                                                            () {})),
                                                 child: Text(
                                                   'Follow',
                                                   style: TextStyle(
@@ -324,13 +327,14 @@ class _SubchannelState extends State<Subchannel> {
                                                           .colorScheme
                                                           .brandColor),
                                                 ),
-                                                onPressed: () =>
-                                                    leaveSubchannel(widget
-                                                                .subchannelData[
-                                                            'subchannelName'])
-                                                        .then((value) =>
-                                                            setStateButtonBar(
-                                                                () {})),
+                                                onPressed: () => leaveSubchannel(
+                                                        widget.subchannelData[
+                                                            'subchannelName'],
+                                                        connection
+                                                            .returnConnection())
+                                                    .then((value) =>
+                                                        setStateButtonBar(
+                                                            () {})),
                                                 child: Text(
                                                   'Followed',
                                                   style: TextStyle(
