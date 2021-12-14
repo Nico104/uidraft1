@@ -98,10 +98,10 @@ Future<int> fetchMembersBy(String search, int method, String subchannelname,
 ///
 ///[subchannelname] is the subchannel Name of the current SubMod Menu
 Future<Map<String, dynamic>> getSubModUserData(
-    String username, String subchannelname) async {
+    String username, String subchannelname, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.get(
+    final response = await client.get(
       Uri.parse(baseURL + 'user/getSubModUserData/$subchannelname/$username'),
       headers: {
         'Content-Type': 'application/json',
@@ -126,10 +126,12 @@ Future<Map<String, dynamic>> getSubModUserData(
 }
 
 ///Bans the user [username] from the Sucbahnnel [subchannelname]
-Future<void> banUser(String username, String subchannelname) async {
+Future<void> banUser(
+    String username, String subchannelname, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.post(Uri.parse(baseURL + 'subchannel/banUser'),
+    final response = await client.post(
+        Uri.parse(baseURL + 'subchannel/banUser'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -149,10 +151,11 @@ Future<void> banUser(String username, String subchannelname) async {
 }
 
 ///Unbans the user [username] from the Sucbahnnel [subchannelname]
-Future<void> unbanUser(String username, String subchannelname) async {
+Future<void> unbanUser(
+    String username, String subchannelname, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.post(
+    final response = await client.post(
         Uri.parse(baseURL + 'subchannel/unbanUser'),
         headers: {
           'Content-Type': 'application/json',
@@ -174,10 +177,10 @@ Future<void> unbanUser(String username, String subchannelname) async {
 
 ///Makes the user [username] a Mod of the Subchannel [subchannelname]
 Future<void> makeUserSubchannelMod(
-    String username, String subchannelname) async {
+    String username, String subchannelname, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.patch(
+    final response = await client.patch(
         Uri.parse(baseURL + 'subchannel/makeUserSubchannelMod'),
         headers: {
           'Content-Type': 'application/json',
@@ -199,10 +202,10 @@ Future<void> makeUserSubchannelMod(
 
 ///Removes the Mod status of user [username] from the Subchannel [subchannelName]
 Future<void> removeUserSubchannelMod(
-    String username, String subchannelname) async {
+    String username, String subchannelname, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.patch(
+    final response = await client.patch(
         Uri.parse(baseURL + 'subchannel/removeUserSubchannelMod'),
         headers: {
           'Content-Type': 'application/json',
@@ -225,10 +228,10 @@ Future<void> removeUserSubchannelMod(
 ///Whitelists the Post with postId [postId]
 ///making the Post not showing up as a reported Post again,
 ///regardless if it received new reports
-Future<void> whiteListPost(int postId) async {
+Future<void> whiteListPost(int postId, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.patch(
+    final response = await client.patch(
       Uri.parse(baseURL + 'post/whitelistPost/$postId'),
       headers: {
         'Content-Type': 'application/json',
@@ -246,10 +249,10 @@ Future<void> whiteListPost(int postId) async {
 }
 
 ///Unvlidates all Reports the Post with postId [postId] received
-Future<void> removePostReports(int postId) async {
+Future<void> removePostReports(int postId, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.patch(
+    final response = await client.patch(
       Uri.parse(baseURL + 'post/removePostReports/$postId'),
       headers: {
         'Content-Type': 'application/json',
@@ -310,10 +313,10 @@ Future<void> updateSubchannelBanner(
 
 ///Updates the Subchannel [subchannelname] About Text with [abouttext]
 Future<void> updateSubchannelAboutText(
-    String subchannelname, String abouttext) async {
+    String subchannelname, String abouttext, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.patch(
+    final response = await client.patch(
         Uri.parse(baseURL + 'subchannel/updateSubchannelAbout/$subchannelname'),
         headers: {
           'Content-Type': 'application/json',
@@ -334,9 +337,9 @@ Future<void> updateSubchannelAboutText(
 ///filtered by [search]
 ///sorted by reports
 Future<List<int>> fetchReportedPostIds(
-    String subchannelname, String search) async {
+    String subchannelname, String search, http.Client client) async {
   try {
-    final response = await http.get(Uri.parse(baseURL +
+    final response = await client.get(Uri.parse(baseURL +
         'post/getSubchannelReportedPublicPostIds/$subchannelname/$search'));
 
     if (response.statusCode == 200) {
@@ -365,10 +368,11 @@ Future<List<int>> fetchReportedPostIds(
 }
 
 ///Fetches all SubMod Menu Metrics of Post with postId [id]
-Future<Map<String, dynamic>> getSubModPostMetrics(int id) async {
+Future<Map<String, dynamic>> getSubModPostMetrics(
+    int id, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http.get(
+    final response = await client.get(
       Uri.parse(baseURL + 'post/getPostSubModMetrics/$id'),
       headers: {
         'Content-Type': 'application/json',
@@ -399,10 +403,10 @@ Future<Map<String, dynamic>> getSubModPostMetrics(int id) async {
 ///Sends an Announcement Notification to all Members of Subchannel [subchannelName]
 ///with Notification Title [title]
 ///and Notification Text [notificationText]
-Future<void> sendAnnouncementToMembers(
-    String subchannelName, String title, String notificationText) async {
+Future<void> sendAnnouncementToMembers(String subchannelName, String title,
+    String notificationText, http.Client client) async {
   String? token = await getToken();
-  final response = await http.post(
+  final response = await client.post(
       Uri.parse(baseURL + 'user/createSubchannelAnnoucementNotification'),
       headers: {
         'Content-Type': 'application/json',

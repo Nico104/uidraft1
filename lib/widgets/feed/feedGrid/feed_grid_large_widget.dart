@@ -51,7 +51,11 @@ class _FeedGridState extends State<FeedGrid> {
         });
       }
 
-      final response = await http.get(Uri.parse(baseURL + 'post/getPostIds'));
+      http.Client client =
+          Provider.of<ConnectionService>(context, listen: false)
+              .returnConnection();
+
+      final response = await client.get(Uri.parse(baseURL + 'post/getPostIds'));
       //TODO fill for non logged in users
       // final response = await http.get(Uri.parse(
       //     'http://localhost:3000/brainberry/contentGrabbingTest/username'));

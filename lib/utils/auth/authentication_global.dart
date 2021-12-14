@@ -9,7 +9,7 @@ Future<int> isAuthenticated(http.Client client) async {
   var url = Uri.parse(baseURL + 'protected');
   String? token = await getToken();
 
-  final response = await http.get(url, headers: {
+  final response = await client.get(url, headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',
@@ -28,7 +28,7 @@ Future<String?> getMyUsername(http.Client client) async {
   var url = Uri.parse(baseURL + 'user/getMyUsername');
   String? token = await getToken();
 
-  final response = await http.get(url, headers: {
+  final response = await client.get(url, headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',
@@ -52,7 +52,7 @@ Future<int> changePassword(String password, http.Client client) async {
   var url = Uri.parse(baseURL + 'user/updateUserPassword');
   String? token = await getToken();
 
-  final response = await http.patch(url,
+  final response = await client.patch(url,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -84,7 +84,7 @@ Future<void> logout() async {
 ///takes in a String for [code], which should be the Code the User received as an Email
 Future<bool> checkCode(String usermail, String code, http.Client client) async {
   var url = Uri.parse(baseURL + 'user/checkCode');
-  final response = await http.post(url,
+  final response = await client.post(url,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -118,7 +118,7 @@ Future<bool> createPendingAccount(String usermail, http.Client client) async {
   print(usermail);
 
   var url = Uri.parse(baseURL + 'user/signupPendingAccount');
-  final response = await http.post(url,
+  final response = await client.post(url,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -144,7 +144,7 @@ Future<bool> createPendingAccount(String usermail, http.Client client) async {
 Future<bool> isUsernameAvailable(String username, http.Client client) async {
   print("Usenmae:" + username);
   var url = Uri.parse(baseURL + 'user/isUsernameAvailable/$username');
-  final response = await http.get(
+  final response = await client.get(
     url,
     headers: {
       'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ Future<bool> isUsernameAvailable(String username, http.Client client) async {
 ///return true if [useremail] is available, otherwise return false
 Future<bool> isUseremailAvailable(String username, http.Client client) async {
   var url = Uri.parse(baseURL + 'user/isUseremailAvailable/$username');
-  final response = await http.get(
+  final response = await client.get(
     url,
     headers: {
       'Content-Type': 'application/json',

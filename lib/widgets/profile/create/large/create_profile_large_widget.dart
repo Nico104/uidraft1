@@ -54,7 +54,10 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
     var url = Uri.parse(baseURL + 'user/getMyProfile');
     String? token = await getToken();
 
-    final response = await http.get(url, headers: {
+    http.Client client = Provider.of<ConnectionService>(context, listen: false)
+        .returnConnection();
+
+    final response = await client.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',

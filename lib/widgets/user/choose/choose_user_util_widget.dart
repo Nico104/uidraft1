@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 
 class ChooseUserUtil extends StatefulWidget {
   const ChooseUserUtil({Key? key, required this.notifyParent})
@@ -26,8 +28,11 @@ class _ChooseUserUtilState extends State<ChooseUserUtil> {
   //Get SubchannleNames List
   Future<void> fetchUsers(String search) async {
     try {
+      http.Client client =
+          Provider.of<ConnectionService>(context, listen: false)
+              .returnConnection();
       final response =
-          await http.get(Uri.parse(baseURL + 'user/searchUser/$search'));
+          await client.get(Uri.parse(baseURL + 'user/searchUser/$search'));
 
       if (response.statusCode == 200) {
         userNames.clear();

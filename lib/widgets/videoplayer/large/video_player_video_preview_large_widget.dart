@@ -28,8 +28,10 @@ class VideoPlayerVideoPreview extends StatefulWidget {
 class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
   //Get PostPreview Data by Id
   Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
+    http.Client client = Provider.of<ConnectionService>(context, listen: false)
+        .returnConnection();
     final response =
-        await http.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
+        await client.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);

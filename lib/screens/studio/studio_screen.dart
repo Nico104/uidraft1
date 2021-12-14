@@ -20,23 +20,23 @@ class _StudioState extends State<StudioScreen> {
 
   bool _isLeftHand = false;
 
-  //Get Post  Data by Id
-  Future<Map<String, dynamic>> fetchPostData(int id) async {
-    final response =
-        await http.get(Uri.parse('http://localhost:3000/post/getPost/$id'));
+  // //Get Post  Data by Id
+  // Future<Map<String, dynamic>> fetchPostData(int id) async {
+  //   final response =
+  //       await http.get(Uri.parse('http://localhost:3000/post/getPost/$id'));
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> map = json.decode(response.body);
-      if (map.isNotEmpty) {
-        return map;
-      } else {
-        throw Exception('Failed to load post');
-      }
-    } else {
-      // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     Map<String, dynamic> map = json.decode(response.body);
+  //     if (map.isNotEmpty) {
+  //       return map;
+  //     } else {
+  //       throw Exception('Failed to load post');
+  //     }
+  //   } else {
+  //     // If that call was not successful, throw an error.
+  //     throw Exception('Failed to load post');
+  //   }
+  // }
 
   @override
   void initState() {

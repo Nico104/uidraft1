@@ -41,9 +41,11 @@ class _SearchGridState extends State<SearchGridLargeScreen> {
           _loading = true;
         });
       }
-
+      http.Client client =
+          Provider.of<ConnectionService>(context, listen: false)
+              .returnConnection();
       final response =
-          await http.get(Uri.parse(baseURL + 'post/searchPostIds/$search'));
+          await client.get(Uri.parse(baseURL + 'post/searchPostIds/$search'));
 
       if (response.statusCode == 200) {
         //List<int> _postIds = <int>[];

@@ -30,7 +30,8 @@ class _SubModPostListItemState extends State<SubModPostListItem> {
   Widget build(BuildContext context) {
     return Consumer<ConnectionService>(builder: (context, connection, _) {
       return FutureBuilder(
-          future: getSubModPostMetrics(widget.postId),
+          future: getSubModPostMetrics(
+              widget.postId, connection.returnConnection()),
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>> snapshot) {
             if (snapshot.hasData) {
@@ -199,10 +200,11 @@ class _SubModPostListItemState extends State<SubModPostListItem> {
                                     color: Colors.white70,
                                     iconData: Icons.list,
                                     toolTipMsg: "Whitelist Post",
-                                    handeleTap: () =>
-                                        whiteListPost(widget.postId).then(
-                                            (value) =>
-                                                widget.notifyParent.call()),
+                                    handeleTap: () => whiteListPost(
+                                            widget.postId,
+                                            connection.returnConnection())
+                                        .then((value) =>
+                                            widget.notifyParent.call()),
                                     // handeleTap: () {},
                                   ),
                                   const SizedBox(height: 5),
@@ -210,10 +212,11 @@ class _SubModPostListItemState extends State<SubModPostListItem> {
                                     color: Colors.blue,
                                     iconData: Icons.flag,
                                     toolTipMsg: "Remove Post Reports",
-                                    handeleTap: () =>
-                                        removePostReports(widget.postId).then(
-                                            (value) =>
-                                                widget.notifyParent.call()),
+                                    handeleTap: () => removePostReports(
+                                            widget.postId,
+                                            connection.returnConnection())
+                                        .then((value) =>
+                                            widget.notifyParent.call()),
                                     // handeleTap: () {},
                                   ),
                                   const SizedBox(height: 5),

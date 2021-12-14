@@ -81,6 +81,8 @@ class _SignUpConfirmationCodeLargeState
     super.dispose();
   }
 
+  //TODO outsource http methods and add http client
+
 //LoginMethod
   Future<bool> _login(String username, String password) async {
     var url = Uri.parse(baseURL + 'login');

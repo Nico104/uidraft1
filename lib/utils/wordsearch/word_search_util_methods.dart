@@ -6,9 +6,10 @@ import 'package:http/http.dart' as http;
 enum ScrollPressMethod { smallUp, smallDown, start, end }
 enum WordMode { closed, script, definition }
 
-Future<List<Map<String, dynamic>>> fetchAllWords(int postId) async {
+Future<List<Map<String, dynamic>>> fetchAllWords(
+    int postId, http.Client client) async {
   final response =
-      await http.get(Uri.parse(baseURL + 'transcript/getAllWords/$postId'));
+      await client.get(Uri.parse(baseURL + 'transcript/getAllWords/$postId'));
 
   // print("response body: " + response.body);
   print("penis1: " + response.statusCode.toString());
@@ -31,9 +32,10 @@ Future<List<Map<String, dynamic>>> fetchAllWords(int postId) async {
   }
 }
 
-Future<List<double>> searchWords(int postId, String search) async {
+Future<List<double>> searchWords(
+    int postId, String search, http.Client client) async {
   if (search.isNotEmpty) {
-    final response = await http
+    final response = await client
         .get(Uri.parse(baseURL + 'transcript/searchWords/$postId/$search'));
 
     print("response body: " + response.body);

@@ -62,7 +62,10 @@ class _SubchannelState extends State<Subchannel> {
   //Get PostIds List
   Future<void> fetchSubchannelPostIds(String subchannelname) async {
     try {
-      final response = await http.get(
+      http.Client client =
+          Provider.of<ConnectionService>(context, listen: false)
+              .returnConnection();
+      final response = await client.get(
           Uri.parse(baseURL + 'post/getSubchannelPostIds/$subchannelname'));
 
       if (response.statusCode == 200) {

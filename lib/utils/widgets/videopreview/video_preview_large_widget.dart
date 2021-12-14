@@ -1,6 +1,8 @@
 import 'package:beamer/beamer.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
 import 'package:uidraft1/utils/widgets/videopreview/video_preview_feed_data/video_preview_feed_data_large_widget.dart';
@@ -25,8 +27,6 @@ class VideoPreview extends StatefulWidget {
 }
 
 class _VideoPreviewState extends State<VideoPreview> {
-  String baseURL = 'http://localhost:3000/';
-
   @override
   void initState() {
     super.initState();
@@ -34,87 +34,90 @@ class _VideoPreviewState extends State<VideoPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: vputils.fetchPostPreviewData(widget.postId),
-        builder: (BuildContext context,
-            AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          if (snapshot.hasData) {
-            return Listener(
-              onPointerDown: (ev) => vputils.onPointerDown(
-                  context,
-                  ev,
-                  snapshot.data!['postId'],
-                  snapshot.data!['postSubchannel']['subchannelName'],
-                  snapshot.data!['username']),
-              child: InkWell(
-                hoverColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () {
-                  Beamer.of(context)
-                      .beamToNamed('whatchintern/' + widget.postId.toString());
-                  if (NavBarLarge.globalKey.currentState == null) {
-                    print("current NavBarState null");
-                  } else {
-                    NavBarLarge.globalKey.currentState!.collapseMenus();
-                  }
-                },
-                child: Column(
-                  children: [
-                    //Thumbnail
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: Image.network(
-                        "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
+    return Consumer<ConnectionService>(builder: (context, connection, _) {
+      return FutureBuilder(
+          future: vputils.fetchPostPreviewData(
+              widget.postId, connection.returnConnection()),
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if (snapshot.hasData) {
+              return Listener(
+                onPointerDown: (ev) => vputils.onPointerDown(
+                    context,
+                    ev,
+                    snapshot.data!['postId'],
+                    snapshot.data!['postSubchannel']['subchannelName'],
+                    snapshot.data!['username']),
+                child: InkWell(
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () {
+                    Beamer.of(context).beamToNamed(
+                        'whatchintern/' + widget.postId.toString());
+                    if (NavBarLarge.globalKey.currentState == null) {
+                      print("current NavBarState null");
+                    } else {
+                      NavBarLarge.globalKey.currentState!.collapseMenus();
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      //Thumbnail
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image.network(
+                          "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 18,
-                    ),
-                    //Data Preview
-                    LayoutBuilder(builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      return SizedBox(
-                        width: constraints.maxWidth,
-                        child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.topLeft,
-                            child: getVideoPreviewDataWidget(snapshot)),
-                      );
-                    })
-                  ],
+                      const SizedBox(
+                        height: 18,
+                      ),
+                      //Data Preview
+                      LayoutBuilder(builder:
+                          (BuildContext context, BoxConstraints constraints) {
+                        return SizedBox(
+                          width: constraints.maxWidth,
+                          child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.topLeft,
+                              child: getVideoPreviewDataWidget(snapshot)),
+                        );
+                      })
+                    ],
+                  ),
                 ),
-              ),
-            );
-          } else {
-            return Column(
-              children: [
-                //Thumbnail
-                Expanded(
-                  flex: 8,
-                  child: Container(
-                      decoration: BoxDecoration(
-                    color: Colors.grey.shade900,
-                    borderRadius: BorderRadius.circular(12.0),
-                  )),
-                ),
-                const SizedBox(
-                  height: 18,
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                      decoration: BoxDecoration(
-                    color: Colors.grey.shade900,
-                    borderRadius: BorderRadius.circular(12.0),
-                  )),
-                ),
-              ],
-            );
-          }
-        });
+              );
+            } else {
+              return Column(
+                children: [
+                  //Thumbnail
+                  Expanded(
+                    flex: 8,
+                    child: Container(
+                        decoration: BoxDecoration(
+                      color: Colors.grey.shade900,
+                      borderRadius: BorderRadius.circular(12.0),
+                    )),
+                  ),
+                  const SizedBox(
+                    height: 18,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                        decoration: BoxDecoration(
+                      color: Colors.grey.shade900,
+                      borderRadius: BorderRadius.circular(12.0),
+                    )),
+                  ),
+                ],
+              );
+            }
+          });
+    });
   }
 
   //Returns correct VideoPreviewData Widget for wherever the Video Prefview is shown

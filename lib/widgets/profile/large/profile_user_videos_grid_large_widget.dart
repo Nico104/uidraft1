@@ -49,7 +49,11 @@ class _ProfileUserVideosState extends State<ProfileUserVideos> {
         });
       }
 
-      final response = await http.get(Uri.parse(baseURL + 'post/getPostIds'));
+      http.Client client =
+          Provider.of<ConnectionService>(context, listen: false)
+              .returnConnection();
+
+      final response = await client.get(Uri.parse(baseURL + 'post/getPostIds'));
 
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON

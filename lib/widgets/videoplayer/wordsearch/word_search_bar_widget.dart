@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_no_tab_widget.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
+import 'package:http/http.dart' as http;
 
 class WordSearchBar extends StatefulWidget {
   const WordSearchBar(
@@ -30,7 +33,10 @@ class _WordSearchBarState extends State<WordSearchBar> {
   //active match closest after current pos
 
   Future<void> findMatches() async {
-    await searchWords(widget.postId, _controller.text)
+    http.Client client = Provider.of<ConnectionService>(context, listen: false)
+        .returnConnection();
+
+    await searchWords(widget.postId, _controller.text, client)
         .then((value) => setState(() {
               matches = value;
             }));

@@ -47,9 +47,10 @@ Future<void> onPointerDown(BuildContext context, PointerDownEvent event,
 }
 
 //Get PostPreview Data by Id
-Future<Map<String, dynamic>> fetchPostPreviewData(int id) async {
+Future<Map<String, dynamic>> fetchPostPreviewData(
+    int id, http.Client client) async {
   final response =
-      await http.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
+      await client.get(Uri.parse(baseURL + 'post/getPostPreviewData/$id'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> map = json.decode(response.body);

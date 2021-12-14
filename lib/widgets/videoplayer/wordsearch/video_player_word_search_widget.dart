@@ -2,7 +2,10 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/wordsearch/word_search_util_methods.dart';
+import 'package:http/http.dart' as http;
 
 class VideoPlayerWordSearchLarge extends StatefulWidget {
   const VideoPlayerWordSearchLarge({
@@ -38,7 +41,10 @@ class _VideoPlayerWordSearchLargeState
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      fetchAllWords(widget.postId).then((value) {
+      http.Client client =
+          Provider.of<ConnectionService>(context, listen: false)
+              .returnConnection();
+      fetchAllWords(widget.postId, client).then((value) {
         words = value;
         if (words.elementAt(0)['word'] == 'the') {
           words.removeAt(0);
