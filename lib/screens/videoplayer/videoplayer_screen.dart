@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/videoplayer/large/video_player_large_widget.dart';
@@ -26,31 +28,33 @@ class _VideoPlayerState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-          future: fetchPostData(widget.postId),
-          builder: (BuildContext context,
-              AsyncSnapshot<Map<String, dynamic>> snapshot) {
-            if (snapshot.hasData) {
-              return ResponsiveWidget(
-                smallScreen: const Text("smallScreen"),
-                mediumScreen: const Text("mediumScreen"),
-                largeScreen: Material(
-                  child: VideoPlayerHome(
-                    postData: snapshot.data!,
-                    firtTimeExternAccess: widget.firtTimeExternAccess,
-                    navbar: NavBarLarge(
-                      setActiveFeed: (_) {},
-                      activeFeed: 0,
-                      customFeed: false,
+      body: Consumer<ConnectionService>(builder: (context, connection, _) {
+        return FutureBuilder(
+            future: fetchPostData(widget.postId, connection.returnConnection()),
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, dynamic>> snapshot) {
+              if (snapshot.hasData) {
+                return ResponsiveWidget(
+                  smallScreen: const Text("smallScreen"),
+                  mediumScreen: const Text("mediumScreen"),
+                  largeScreen: Material(
+                    child: VideoPlayerHome(
+                      postData: snapshot.data!,
+                      firtTimeExternAccess: widget.firtTimeExternAccess,
+                      navbar: NavBarLarge(
+                        setActiveFeed: (_) {},
+                        activeFeed: 0,
+                        customFeed: false,
+                      ),
                     ),
                   ),
-                ),
-                veryLargeScreen: const Text("veryLargeScreen"),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
+                  veryLargeScreen: const Text("veryLargeScreen"),
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            });
+      }),
     );
   }
 }

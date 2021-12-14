@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:beamer/beamer.dart';
+import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
@@ -49,309 +51,319 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: fetchPostPreviewData(widget.postId),
-        builder: (BuildContext context,
-            AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          if (snapshot.hasData) {
-            return Listener(
-              onPointerDown: (ev) => vputils.onPointerDown(
-                  context,
-                  ev,
-                  snapshot.data!['postId'],
-                  snapshot.data!['postSubchannel']['subchannelName'],
-                  snapshot.data!['username']),
-              child: InkWell(
-                hoverColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () {
-                  Beamer.of(context)
-                      .beamToNamed('whatchintern/' + widget.postId.toString());
-                  if (NavBarLarge.globalKey.currentState == null) {
-                    print("current NavBarState null");
-                  } else {
-                    NavBarLarge.globalKey.currentState!.collapseMenus();
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //Thumbnail
-                    Flexible(
-                      // fit: FlexFit.tight,
-                      flex: 6,
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: Image.network(
-                            baseURL + "${snapshot.data!['postTumbnailPath']}",
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center,
+    return Consumer<ConnectionService>(builder: (context, connection, _) {
+      return FutureBuilder(
+          future: fetchPostPreviewData(widget.postId),
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if (snapshot.hasData) {
+              return Listener(
+                onPointerDown: (ev) => vputils.onPointerDown(
+                    context,
+                    ev,
+                    snapshot.data!['postId'],
+                    snapshot.data!['postSubchannel']['subchannelName'],
+                    snapshot.data!['username']),
+                child: InkWell(
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () {
+                    Beamer.of(context).beamToNamed(
+                        'whatchintern/' + widget.postId.toString());
+                    if (NavBarLarge.globalKey.currentState == null) {
+                      print("current NavBarState null");
+                    } else {
+                      NavBarLarge.globalKey.currentState!.collapseMenus();
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //Thumbnail
+                      Flexible(
+                        // fit: FlexFit.tight,
+                        flex: 6,
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: Image.network(
+                              baseURL + "${snapshot.data!['postTumbnailPath']}",
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    //Data Preview
-                    Flexible(
-                      //fit: FlexFit.loose,
-                      flex: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 1, bottom: 1),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //Title
-                            Text(
-                              snapshot.data!['postTitle'],
-                              //overflow: TextOverflow.fade,
-                              // softWrap: false,
-                              maxLines:
-                                  MediaQuery.of(context).size.width >= 1650
-                                      ? 3
-                                      : 2,
-                              style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize:
-                                      MediaQuery.of(context).size.width >= 1650
-                                          ? 15
-                                          : 13,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .videoPreviewTextColor,
-                                  letterSpacing: 1),
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            //Video Preview Data
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //Subchannel
-                                InkWell(
-                                  excludeFromSemantics: true,
-                                  hoverColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onTap: () {
-                                    Beamer.of(context).beamToNamed(
-                                        'subchannel/' +
-                                            snapshot.data!['postSubchannel']
-                                                ['subchannelName']);
-                                    print("go to subchnanel or profile");
-                                  },
-                                  child: Row(
-                                    children: [
-                                      //Subchannel icon
-                                      Icon(
-                                        Icons.smart_display_outlined,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .navBarIconColor,
-                                        size: 10,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      //Subchannelname
-                                      Text(
-                                        "c/" +
-                                            snapshot.data!['postSubchannel']
-                                                ['subchannelName'],
-                                        style: TextStyle(
-                                            fontFamily: 'Segoe UI',
-                                            fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .width >=
-                                                    1650
-                                                ? 12
-                                                : 8,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .videoPreviewTextColor,
-                                            letterSpacing: 1),
-                                      ),
-                                    ],
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      //Data Preview
+                      Flexible(
+                        //fit: FlexFit.loose,
+                        flex: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 1, bottom: 1),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              //Title
+                              Text(
+                                snapshot.data!['postTitle'],
+                                //overflow: TextOverflow.fade,
+                                // softWrap: false,
+                                maxLines:
+                                    MediaQuery.of(context).size.width >= 1650
+                                        ? 3
+                                        : 2,
+                                style: TextStyle(
+                                    fontFamily: 'Segoe UI',
+                                    fontSize:
+                                        MediaQuery.of(context).size.width >=
+                                                1650
+                                            ? 15
+                                            : 13,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .videoPreviewTextColor,
+                                    letterSpacing: 1),
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              //Video Preview Data
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //Subchannel
+                                  InkWell(
+                                    excludeFromSemantics: true,
+                                    hoverColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () {
+                                      Beamer.of(context).beamToNamed(
+                                          'subchannel/' +
+                                              snapshot.data!['postSubchannel']
+                                                  ['subchannelName']);
+                                      print("go to subchnanel or profile");
+                                    },
+                                    child: Row(
+                                      children: [
+                                        //Subchannel icon
+                                        Icon(
+                                          Icons.smart_display_outlined,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .navBarIconColor,
+                                          size: 10,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        //Subchannelname
+                                        Text(
+                                          "c/" +
+                                              snapshot.data!['postSubchannel']
+                                                  ['subchannelName'],
+                                          style: TextStyle(
+                                              fontFamily: 'Segoe UI',
+                                              fontSize: MediaQuery.of(context)
+                                                          .size
+                                                          .width >=
+                                                      1650
+                                                  ? 12
+                                                  : 8,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .videoPreviewTextColor,
+                                              letterSpacing: 1),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                //User
-                                InkWell(
-                                  excludeFromSemantics: true,
-                                  hoverColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onTap: () {
-                                    Beamer.of(context).beamToNamed('profile/' +
-                                        snapshot.data!['username']);
-                                    print("go to subchnanel or profile");
-                                  },
-                                  child: Row(
-                                    children: [
-                                      //User icon
-                                      Icon(
-                                        Icons.person,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .navBarIconColor,
-                                        size: 10,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      //Subchannelname
-                                      Text(
-                                        snapshot.data!['username'],
-                                        style: TextStyle(
-                                            fontFamily: 'Segoe UI',
-                                            fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .width >=
-                                                    1650
-                                                ? 12
-                                                : 8,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .videoPreviewTextColor,
-                                            letterSpacing: 1),
-                                      ),
-                                    ],
+                                  const SizedBox(
+                                    height: 4,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                //Metrics
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    //Score - trending icon
-                                    widget.isAuth
-                                        ? FutureBuilder(
-                                            future: getPostRatingScore(
-                                                widget.postId),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<int>
-                                                    snapshotRating) {
-                                              if (snapshotRating.hasData) {
-                                                return Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .trending_up_outlined,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .navBarIconColor,
-                                                      size: 10,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 4,
-                                                    ),
-                                                    //Score
-                                                    Text(
-                                                      snapshotRating.data
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Segoe UI',
-                                                          fontSize: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width >=
-                                                                  1650
-                                                              ? 12
-                                                              : 8,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .videoPreviewTextColor,
-                                                          letterSpacing: 1),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    //Dot in the middle
-                                                    Container(
-                                                      width: 5,
-                                                      height: 5,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
+                                  //User
+                                  InkWell(
+                                    excludeFromSemantics: true,
+                                    hoverColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () {
+                                      Beamer.of(context).beamToNamed(
+                                          'profile/' +
+                                              snapshot.data!['username']);
+                                      print("go to subchnanel or profile");
+                                    },
+                                    child: Row(
+                                      children: [
+                                        //User icon
+                                        Icon(
+                                          Icons.person,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .navBarIconColor,
+                                          size: 10,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        //Subchannelname
+                                        Text(
+                                          snapshot.data!['username'],
+                                          style: TextStyle(
+                                              fontFamily: 'Segoe UI',
+                                              fontSize: MediaQuery.of(context)
+                                                          .size
+                                                          .width >=
+                                                      1650
+                                                  ? 12
+                                                  : 8,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .videoPreviewTextColor,
+                                              letterSpacing: 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  //Metrics
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      //Score - trending icon
+                                      widget.isAuth
+                                          ? FutureBuilder(
+                                              future: getPostRatingScore(
+                                                  widget.postId,
+                                                  connection
+                                                      .returnConnection()),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<int>
+                                                      snapshotRating) {
+                                                if (snapshotRating.hasData) {
+                                                  return Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .trending_up_outlined,
                                                         color: Theme.of(context)
                                                             .colorScheme
                                                             .navBarIconColor,
+                                                        size: 10,
                                                       ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                  ],
-                                                );
-                                              } else {
-                                                return const SizedBox();
-                                              }
-                                            })
-                                        : const SizedBox(),
+                                                      const SizedBox(
+                                                        width: 4,
+                                                      ),
+                                                      //Score
+                                                      Text(
+                                                        snapshotRating.data
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                'Segoe UI',
+                                                            fontSize: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width >=
+                                                                    1650
+                                                                ? 12
+                                                                : 8,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .videoPreviewTextColor,
+                                                            letterSpacing: 1),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      //Dot in the middle
+                                                      Container(
+                                                        width: 5,
+                                                        height: 5,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .navBarIconColor,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                    ],
+                                                  );
+                                                } else {
+                                                  return const SizedBox();
+                                                }
+                                              })
+                                          : const SizedBox(),
 
-                                    //Comments Icon
-                                    Icon(
-                                      Icons.mode_comment_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .navBarIconColor,
-                                      size: 10,
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    //Comment Count
-                                    Text(
-                                      snapshot.data!['_count']['comments']
-                                          .toString(),
-                                      style: TextStyle(
-                                          fontFamily: 'Segoe UI',
-                                          fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width >=
-                                                  1650
-                                              ? 12
-                                              : 8,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .videoPreviewTextColor,
-                                          letterSpacing: 1),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
+                                      //Comments Icon
+                                      Icon(
+                                        Icons.mode_comment_outlined,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .navBarIconColor,
+                                        size: 10,
+                                      ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      //Comment Count
+                                      Text(
+                                        snapshot.data!['_count']['comments']
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontFamily: 'Segoe UI',
+                                            fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width >=
+                                                    1650
+                                                ? 12
+                                                : 8,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .videoPreviewTextColor,
+                                            letterSpacing: 1),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            );
-          } else {
-            return Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                color: Theme.of(context).canvasColor,
-                child: const Text("loading"));
-          }
-        });
+              );
+            } else {
+              return Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  color: Theme.of(context).canvasColor,
+                  child: const Text("loading"));
+            }
+          });
+    });
   }
 }

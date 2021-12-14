@@ -512,11 +512,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                       ? FutureBuilder(
                                                                           future:
                                                                               Future.wait([
-                                                                            getUserPostRating(widget.postData['postId']),
-                                                                            getPostRatingScore(
-                                                                              widget.postData['postId'],
-                                                                            ),
-                                                                            getUserPostReport(widget.postData['postId'])
+                                                                            getUserPostRating(widget.postData['postId'],
+                                                                                connection.returnConnection()),
+                                                                            getPostRatingScore(widget.postData['postId'],
+                                                                                connection.returnConnection()),
+                                                                            getUserPostReport(widget.postData['postId'],
+                                                                                connection.returnConnection())
                                                                           ]),
                                                                           builder: (BuildContext context,
                                                                               AsyncSnapshot<List<int>>
@@ -595,7 +596,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                                     onPressed: () => (snapshotRating.data![2] == 1)
                                                                                         ? null
                                                                                         : {
-                                                                                            reportPost(widget.postData['postId']).then((_) => setState(() {}))
+                                                                                            reportPost(widget.postData['postId'], connection.returnConnection()).then((_) => setState(() {}))
                                                                                           },
                                                                                   ),
                                                                                   const SizedBox(

@@ -6,9 +6,9 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 
 enum SharingType { copy, link }
 
-Future<void> incrementPostViewsByOne(int postId) async {
-  final response =
-      await http.patch(Uri.parse(baseURL + 'post/incrementPostViews/$postId'));
+Future<void> incrementPostViewsByOne(int postId, http.Client client) async {
+  final response = await client
+      .patch(Uri.parse(baseURL + 'post/incrementPostViews/$postId'));
 
   if (response.statusCode == 200) {
     print("Vies for post $postId incremented by 1");
@@ -20,11 +20,11 @@ Future<void> incrementPostViewsByOne(int postId) async {
 
 //rates a Post
 //Requires to be logged in
-Future<void> ratePost(int postId, int rating) async {
+Future<void> ratePost(int postId, int rating, http.Client client) async {
   try {
     String? token = await getToken();
     final response =
-        await http.post(Uri.parse(baseURL + 'post/createPostRating'),
+        await client.post(Uri.parse(baseURL + 'post/createPostRating'),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
@@ -43,11 +43,12 @@ Future<void> ratePost(int postId, int rating) async {
 }
 
 //Changes a Post Rating
-Future<void> updatePostRating(int postId, int rating) async {
+Future<void> updatePostRating(
+    int postId, int rating, http.Client client) async {
   try {
     String? token = await getToken();
     final response =
-        await http.patch(Uri.parse(baseURL + 'post/updatePostRating'),
+        await client.patch(Uri.parse(baseURL + 'post/updatePostRating'),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
@@ -66,10 +67,10 @@ Future<void> updatePostRating(int postId, int rating) async {
 }
 
 //Deletes a Post Rating
-Future<void> deletePostRating(int postId) async {
+Future<void> deletePostRating(int postId, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http
+    final response = await client
         .delete(Uri.parse(baseURL + 'post/deletePostRating/$postId'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -84,10 +85,10 @@ Future<void> deletePostRating(int postId) async {
 }
 
 //Get User Post Rating
-Future<int> getUserPostRating(int postId) async {
+Future<int> getUserPostRating(int postId, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http
+    final response = await client
         .get(Uri.parse(baseURL + 'post/getUserPostRating/$postId'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -126,15 +127,16 @@ Future<int> getUserPostRating(int postId) async {
 }
 
 //Get Post Rating Data by Id
-Future<int> getPostRatingData(int id, String ratingType) async {
+Future<int> getPostRatingData(
+    int id, String ratingType, http.Client client) async {
   final http.Response response;
 
   if (ratingType == "like") {
     response =
-        await http.get(Uri.parse(baseURL + 'post/getPostRatingLikes/$id'));
+        await client.get(Uri.parse(baseURL + 'post/getPostRatingLikes/$id'));
   } else {
     response =
-        await http.get(Uri.parse(baseURL + 'post/getPostRatingDislikes/$id'));
+        await client.get(Uri.parse(baseURL + 'post/getPostRatingDislikes/$id'));
   }
 
   if (response.statusCode == 200) {
@@ -152,8 +154,8 @@ Future<int> getPostRatingData(int id, String ratingType) async {
 }
 
 ///Retunr all Data needed to display and play the post with postId [postId]
-Future<Map<String, dynamic>> fetchPostData(int id) async {
-  final response = await http.get(Uri.parse(baseURL + 'post/getPost/$id'));
+Future<Map<String, dynamic>> fetchPostData(int id, http.Client client) async {
+  final response = await client.get(Uri.parse(baseURL + 'post/getPost/$id'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> map = json.decode(response.body);
@@ -169,9 +171,9 @@ Future<Map<String, dynamic>> fetchPostData(int id) async {
 }
 
 //Get Post RatingScore
-Future<int> getPostRatingScore(int id) async {
+Future<int> getPostRatingScore(int id, http.Client client) async {
   final response =
-      await http.get(Uri.parse(baseURL + 'post/getPostRatingScore/$id'));
+      await client.get(Uri.parse(baseURL + 'post/getPostRatingScore/$id'));
 
   if (response.statusCode == 200) {
     print("Rating" + int.parse(response.body).toString());
@@ -285,12 +287,12 @@ Future<void> createSharingAnalyticPost(
 }
 
 ///Reports the Post with postId [postId]
-Future<void> reportPost(int postId) async {
+Future<void> reportPost(int postId, http.Client client) async {
   print("report");
   try {
     String? token = await getToken();
     final response =
-        await http.post(Uri.parse(baseURL + 'post/createPostReport'),
+        await client.post(Uri.parse(baseURL + 'post/createPostReport'),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
@@ -309,10 +311,10 @@ Future<void> reportPost(int postId) async {
 
 ///Return 1 if the logged in User already reported the Post with postId [postId]
 ///or 0 if the logged in User has not
-Future<int> getUserPostReport(int postId) async {
+Future<int> getUserPostReport(int postId, http.Client client) async {
   try {
     String? token = await getToken();
-    final response = await http
+    final response = await client
         .get(Uri.parse(baseURL + 'post/getUserPostReport/$postId'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
