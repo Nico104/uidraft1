@@ -11,9 +11,9 @@ import '../util_methods.dart';
 enum Menu { none, menu, notification, customfeed, options }
 
 ///Returns the number count of unseen notifications the logged in User has
-Future<int> getMyUnseenNotificationCount() async {
+Future<int> getMyUnseenNotificationCount(http.Client client) async {
   String? token = await getToken();
-  final response = await http.get(
+  final response = await client.get(
     Uri.parse(baseURL + 'user/getMyUnseenNotificationsCount'),
     headers: {
       'Content-Type': 'application/json',

@@ -4,10 +4,11 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 
 ///Returns a List of autocomplete Search Terms accordigly to the passed search parameter [search]
 ///Returns nothing if the search is empty or if there is no autocomplete Search Term dor [search]
-Future<List<String>> getAutocompleteSearchTerms(String search) async {
+Future<List<String>> getAutocompleteSearchTerms(
+    String search, http.Client client) async {
   List<String> autocompleteSearchTerms = <String>[];
   if (search.isNotEmpty) {
-    final response = await http
+    final response = await client
         .get(Uri.parse(baseURL + 'search/autocompleteSearch/$search'));
 
     List<dynamic> values = json.decode(response.body);

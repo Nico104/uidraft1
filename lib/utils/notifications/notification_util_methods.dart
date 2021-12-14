@@ -6,9 +6,10 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 enum NotificationMode { chat, notification, none }
 
 ///Return all UNSEEN Notification the logged in User got
-Future<List<Map<String, dynamic>>> fetchUserNotifications() async {
+Future<List<Map<String, dynamic>>> fetchUserNotifications(
+    http.Client client) async {
   String? token = await getToken();
-  final response = await http.get(
+  final response = await client.get(
     Uri.parse(baseURL + 'user/getMyUnseenNotifications'),
     headers: {
       'Content-Type': 'application/json',
@@ -41,9 +42,9 @@ Future<List<Map<String, dynamic>>> fetchUserNotifications() async {
 ///Sends a Message Notification to the User with username [toUSername]
 ///and a message text of [notificationText]
 Future<void> sendMessageToUser(
-    String toUsername, String notificationText) async {
+    String toUsername, String notificationText, http.Client client) async {
   String? token = await getToken();
-  final response = await http.post(
+  final response = await client.post(
       Uri.parse(baseURL + 'user/createUserMessage'),
       headers: {
         'Content-Type': 'application/json',
@@ -62,9 +63,9 @@ Future<void> sendMessageToUser(
 ///Return all messages the logged in User send to and received from [username]
 ///sorted by date
 Future<List<Map<String, dynamic>>> fetchConversationWithUser(
-    String username) async {
+    String username, http.Client client) async {
   String? token = await getToken();
-  final response = await http.get(
+  final response = await client.get(
     Uri.parse(baseURL + 'user/getConversationWithUser/$username'),
     headers: {
       'Content-Type': 'application/json',
@@ -94,12 +95,22 @@ Future<List<Map<String, dynamic>>> fetchConversationWithUser(
 }
 
 ///Returns Details of the Notification with the notificationId [notiId]
-Future<void> seeNotification(int notiId) async {
+Future<void> seeNotification(int notiId, http.Client client) async {
   print("NotiId: " + notiId.toString());
-  final response = await http.patch(
+  final response = await client.patch(
     Uri.parse(baseURL + 'user/seeNotification/$notiId'),
   );
 
   print("Status Code: " + response.statusCode.toString());
   print(response.body);
+}
+
+Future<bool> submitMsg(
+    String toUsername, String msg, http.Client client) async {
+  if (msg.trim().isNotEmpty) {
+    await sendMessageToUser(toUsername, msg.trim(), client);
+    return true;
+  } else {
+    return false;
+  }
 }

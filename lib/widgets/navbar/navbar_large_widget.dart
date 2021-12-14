@@ -263,8 +263,9 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                                         //Notifications
                                                         widget.notification
                                                             ? FutureBuilder(
-                                                                future:
-                                                                    getMyUnseenNotificationCount(),
+                                                                future: getMyUnseenNotificationCount(
+                                                                    connection
+                                                                        .returnConnection()),
                                                                 builder: (BuildContext
                                                                         context,
                                                                     AsyncSnapshot

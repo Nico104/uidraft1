@@ -4,10 +4,12 @@ import 'package:beamer/beamer.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:uidraft1/uiwidgets/textfields/search_textfield/search_textformfield_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/navbar/search/search_util_methods.dart';
+import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 // import 'dart:html' as html;
 
@@ -181,25 +183,30 @@ class _SearchBarState extends State<SearchBar> {
             ),
           ),
         ),
-        SearchBarTextFormField(
-          searchBarController: widget.searchBarController,
-          focusNode: _searchBarFocusNode,
-          onChange: (search) {
-            EasyDebounce.debounce(
-                'searchbar', // <-- An ID for this particular debouncer
-                const Duration(milliseconds: 500), // <-- The debounce duration
-                () async {
-              List<String> autocompleteTermsTemp =
-                  await getAutocompleteSearchTerms(search);
-              print("Autocomplete Terms: " + autocompleteTermsTemp.toString());
-              setState(() {
-                _activeIndex = 0;
-                autocompleteTerms = autocompleteTermsTemp;
+        Consumer<ConnectionService>(builder: (context, connection, _) {
+          return SearchBarTextFormField(
+            searchBarController: widget.searchBarController,
+            focusNode: _searchBarFocusNode,
+            onChange: (search) {
+              EasyDebounce.debounce(
+                  'searchbar', // <-- An ID for this particular debouncer
+                  const Duration(
+                      milliseconds: 500), // <-- The debounce duration
+                  () async {
+                List<String> autocompleteTermsTemp =
+                    await getAutocompleteSearchTerms(
+                        search, connection.returnConnection());
+                print(
+                    "Autocomplete Terms: " + autocompleteTermsTemp.toString());
+                setState(() {
+                  _activeIndex = 0;
+                  autocompleteTerms = autocompleteTermsTemp;
+                });
+                // _keyboardFocusNode.requestFocus();
               });
-              // _keyboardFocusNode.requestFocus();
-            });
-          },
-        ),
+            },
+          );
+        }),
       ],
     );
   }
