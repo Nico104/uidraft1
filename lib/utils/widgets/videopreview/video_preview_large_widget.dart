@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/videopreview/videopreview_utils_methods.dart'
     as vputils;
@@ -67,7 +68,7 @@ class _VideoPreviewState extends State<VideoPreview> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: Image.network(
-                          "http://localhost:3000/${snapshot.data!['postTumbnailPath']}",
+                          baseURL + "${snapshot.data!['postTumbnailPath']}",
                           fit: BoxFit.cover,
                           alignment: Alignment.center,
                         ),

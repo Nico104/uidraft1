@@ -50,6 +50,9 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
   //Upload File
   late DropzoneViewController controller;
 
+  //Progress
+  double _sent = 0;
+
   Future<Map<String, dynamic>> fetchCurrentProfileData() async {
     var url = Uri.parse(baseURL + 'user/getMyProfile');
     String? token = await getToken();
@@ -108,12 +111,19 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
     applyCurrentProfileData();
   }
 
+  void showProgess(int sent, int total) {
+    print("$sent of $total");
+    if (mounted) {
+      setState(() {
+        _sent = sent / total;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ConnectionService>(builder: (context, connection, _) {
       return Row(
-        // crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Flexible(flex: 1, child: Container()),
           //DataForm
@@ -121,111 +131,223 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
               flex: 3,
               child: Padding(
                 padding: const EdgeInsets.only(top: 110, bottom: 50),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.lightBlue,
-                    // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
-                    borderRadius: BorderRadius.all(Radius.circular(80)),
-                    //  boxShadow: [
-                    //     BoxShadow(
-                    //       color: Colors.blue.withOpacity(0.4),
-                    //       spreadRadius: 2,
-                    //       blurRadius: 25,
-                    //       offset: const Offset(0, 7), // changes position of shadow
-                    //     ),
-                    //   ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, top: 50, bottom: 30),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: ListView(
+                child: !(_sent > 0 && _sent <= 1)
+                    ? Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.lightBlue,
+                          // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
+                          borderRadius: BorderRadius.all(Radius.circular(80)),
+                          //  boxShadow: [
+                          //     BoxShadow(
+                          //       color: Colors.blue.withOpacity(0.4),
+                          //       spreadRadius: 2,
+                          //       blurRadius: 25,
+                          //       offset: const Offset(0, 7), // changes position of shadow
+                          //     ),
+                          //   ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 50, bottom: 30),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              //Dropzone
-                              Container(
-                                decoration: BoxDecoration(
-                                    // color: Colors.lightBlue,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(20)),
-                                    border: Border.all(
-                                        color: profilePicturePreview != null
-                                            ? Colors.greenAccent
-                                            : Colors.pink,
-                                        width: profilePicturePreview != null
-                                            ? 4
-                                            : 2)),
-                                // color: Colors.pink,
-                                height: 150,
-                                child: InkWell(
-                                  onTap: () async {
-                                    result = await FilePicker.platform
-                                        .pickFiles(
-                                            type: FileType.image,
-                                            allowMultiple: false);
+                              Expanded(
+                                child: ListView(
+                                  children: [
+                                    //Dropzone
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          // color: Colors.lightBlue,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(20)),
+                                          border: Border.all(
+                                              color:
+                                                  profilePicturePreview != null
+                                                      ? Colors.greenAccent
+                                                      : Colors.pink,
+                                              width:
+                                                  profilePicturePreview != null
+                                                      ? 4
+                                                      : 2)),
+                                      // color: Colors.pink,
+                                      height: 150,
+                                      child: InkWell(
+                                        onTap: () async {
+                                          result = await FilePicker.platform
+                                              .pickFiles(
+                                                  type: FileType.image,
+                                                  allowMultiple: false);
 
-                                    setState(() {
-                                      profilePicturePreview =
-                                          result!.files.first.bytes;
-                                    });
+                                          setState(() {
+                                            profilePicturePreview =
+                                                result!.files.first.bytes;
+                                          });
 
-                                    print("testprint1");
-                                  },
-                                  child: Stack(
-                                    children: [
-                                      IgnorePointer(
-                                        child: DropzoneView(
-                                          mime: const [
-                                            "image/png",
-                                            "image/jpeg"
+                                          print("testprint1");
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            IgnorePointer(
+                                              child: DropzoneView(
+                                                mime: const [
+                                                  "image/png",
+                                                  "image/jpeg"
+                                                ],
+                                                operation: DragOperation.copy,
+                                                cursor: CursorType.grab,
+                                                onCreated:
+                                                    (DropzoneViewController
+                                                            ctrl) =>
+                                                        controller = ctrl,
+                                                onLoaded: () =>
+                                                    print('Zone loaded'),
+                                                onError: (String? ev) =>
+                                                    print('Error: $ev'),
+                                                onHover: () =>
+                                                    print('Zone hovered'),
+                                                onDrop: (dynamic ev) async {
+                                                  setState(() {
+                                                    print("Dropped: $ev");
+                                                  });
+                                                  if (ev != null) {
+                                                    print("FileName: " +
+                                                        await controller
+                                                            .getFilename(ev));
+                                                    profilePicturePreview =
+                                                        await controller
+                                                            .getFileData(ev);
+                                                    setState(() {
+                                                      print("weiter");
+                                                    });
+                                                  }
+                                                },
+                                                onLeave: () =>
+                                                    print('Zone left'),
+                                              ),
+                                            ),
+                                            Center(
+                                              child: Text(
+                                                profilePicturePreview != null
+                                                    ? "Change Profile Picture "
+                                                    : "Choose Profile Picture",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
                                           ],
-                                          operation: DragOperation.copy,
-                                          cursor: CursorType.grab,
-                                          onCreated:
-                                              (DropzoneViewController ctrl) =>
-                                                  controller = ctrl,
-                                          onLoaded: () => print('Zone loaded'),
-                                          onError: (String? ev) =>
-                                              print('Error: $ev'),
-                                          onHover: () => print('Zone hovered'),
-                                          onDrop: (dynamic ev) async {
-                                            setState(() {
-                                              print("Dropped: $ev");
-                                            });
-                                            if (ev != null) {
-                                              print("FileName: " +
-                                                  await controller
-                                                      .getFilename(ev));
-                                              profilePicturePreview =
-                                                  await controller
-                                                      .getFileData(ev);
-                                              setState(() {
-                                                print("weiter");
-                                              });
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    SizedBox(
+                                      width: 150,
+                                      child: OutlinedButton(
+                                        style: ButtonStyle(
+                                          side:
+                                              MaterialStateProperty.resolveWith(
+                                                  (states) {
+                                            Color _borderColor;
+                                            if (states.contains(
+                                                MaterialState.pressed)) {
+                                              _borderColor = Colors.white;
+                                            } else if (states.contains(
+                                                MaterialState.hovered)) {
+                                              _borderColor = Theme.of(context)
+                                                  .colorScheme
+                                                  .brandColor;
+                                            } else {
+                                              _borderColor = Colors.black;
                                             }
-                                          },
-                                          onLeave: () => print('Zone left'),
+
+                                            return BorderSide(
+                                                color: _borderColor, width: 2);
+                                          }),
+                                          shape: MaterialStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30.0))),
+                                        ),
+                                        onPressed: () => setState(() {
+                                          profilePicturePreview = null;
+                                        }),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Delet Profile Picture",
+                                            style: TextStyle(
+                                                fontFamily: 'Sogeo UI',
+                                                fontSize: 14,
+                                                color: Colors.black),
+                                          ),
                                         ),
                                       ),
-                                      Center(
-                                        child: Text(
-                                          profilePicturePreview != null
-                                              ? "Change Profile Picture "
-                                              : "Choose Profile Picture",
-                                          textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                    //Short Description
+                                    TextFormField(
+                                      controller: _profileBioTextController,
+                                      // enableSuggestions: false,
+                                      cursorColor: Colors.black,
+                                      autocorrect: false,
+                                      keyboardType: TextInputType.multiline,
+                                      maxLength: 256,
+                                      minLines: 1,
+                                      maxLines: 35,
+                                      decoration: InputDecoration(
+                                        labelText: "Bio...",
+                                        labelStyle: const TextStyle(
+                                            fontFamily: "Segoe UI",
+                                            color: Colors.black),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          borderSide:
+                                              BorderSide(color: Colors.black),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          borderSide:
+                                              BorderSide(color: Colors.pink),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                      validator: (val) {
+                                        if (val!.isEmpty) {
+                                          return "Field cannot be empty";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      style: const TextStyle(
+                                          fontFamily: "Segoe UI",
+                                          color: Colors.black),
+                                      onChanged: (value) {
+                                        EasyDebounce.debounce(
+                                            'profileBioTextField-debouncer', // <-- An ID for this particular debouncer
+                                            const Duration(
+                                                milliseconds:
+                                                    300), // <-- The debounce duration
+                                            () => setState(() {
+                                                  print("Bio changed");
+                                                }) // <-- The target method
+                                            );
+                                      },
+                                    ),
+
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 20,
-                              ),
+                              //Submit Post Button
                               SizedBox(
-                                width: 150,
+                                width: 200,
                                 child: OutlinedButton(
                                   style: ButtonStyle(
                                     side: MaterialStateProperty.resolveWith(
@@ -244,135 +366,44 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
                                       }
 
                                       return BorderSide(
-                                          color: _borderColor, width: 2);
+                                          color: _borderColor, width: 3);
                                     }),
                                     shape: MaterialStateProperty.all(
                                         RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(30.0))),
                                   ),
-                                  onPressed: () => setState(() {
-                                    profilePicturePreview = null;
+                                  onPressed: () => updateProfile(
+                                          _profileBioTextController.text,
+                                          profilePicturePreview,
+                                          connection.returnConnection(),
+                                          showProgess)
+                                      .then((value) {
+                                    if (value != null) {
+                                      Beamer.of(context)
+                                          .beamToNamed('/profile/$value');
+                                    }
                                   }),
                                   child: const Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      "Delet Profile Picture",
+                                      "Update Profile",
                                       style: TextStyle(
                                           fontFamily: 'Sogeo UI',
-                                          fontSize: 14,
+                                          fontSize: 18,
                                           color: Colors.black),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              //Short Description
-                              TextFormField(
-                                controller: _profileBioTextController,
-                                // enableSuggestions: false,
-                                cursorColor: Colors.black,
-                                autocorrect: false,
-                                keyboardType: TextInputType.multiline,
-                                maxLength: 256,
-                                minLines: 1,
-                                maxLines: 35,
-                                decoration: InputDecoration(
-                                  labelText: "Bio...",
-                                  labelStyle: const TextStyle(
-                                      fontFamily: "Segoe UI",
-                                      color: Colors.black),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    borderSide: BorderSide(color: Colors.black),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    borderSide: BorderSide(color: Colors.pink),
-                                  ),
-                                ),
-                                validator: (val) {
-                                  if (val!.isEmpty) {
-                                    return "Field cannot be empty";
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                style: const TextStyle(
-                                    fontFamily: "Segoe UI",
-                                    color: Colors.black),
-                                onChanged: (value) {
-                                  EasyDebounce.debounce(
-                                      'profileBioTextField-debouncer', // <-- An ID for this particular debouncer
-                                      const Duration(
-                                          milliseconds:
-                                              300), // <-- The debounce duration
-                                      () => setState(() {
-                                            print("Bio changed");
-                                          }) // <-- The target method
-                                      );
-                                },
-                              ),
-
-                              const SizedBox(
-                                height: 40,
-                              ),
                             ],
                           ),
                         ),
-                        //Submit Post Button
-                        SizedBox(
-                          width: 200,
-                          child: OutlinedButton(
-                            style: ButtonStyle(
-                              side: MaterialStateProperty.resolveWith((states) {
-                                Color _borderColor;
-                                if (states.contains(MaterialState.pressed)) {
-                                  _borderColor = Colors.white;
-                                } else if (states
-                                    .contains(MaterialState.hovered)) {
-                                  _borderColor =
-                                      Theme.of(context).colorScheme.brandColor;
-                                } else {
-                                  _borderColor = Colors.black;
-                                }
-
-                                return BorderSide(
-                                    color: _borderColor, width: 3);
-                              }),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(30.0))),
-                            ),
-                            onPressed: () => updateProfile(
-                                    _profileBioTextController.text,
-                                    profilePicturePreview,
-                                    connection.returnConnection())
-                                .then((value) {
-                              if (value != null) {
-                                Beamer.of(context)
-                                    .beamToNamed('/profile/$value');
-                              }
-                            }),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Update Profile",
-                                style: TextStyle(
-                                    fontFamily: 'Sogeo UI',
-                                    fontSize: 18,
-                                    color: Colors.black),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      )
+                    //Progress Bar
+                    : LinearProgressIndicator(
+                        value: _sent,
+                      ),
               )),
           Flexible(flex: 1, child: Container()),
           //Preview
@@ -407,4 +438,8 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
       );
     });
   }
+}
+
+void onPorgress(int i, int j) {
+  print(i.toString() + " of " + j.toString());
 }

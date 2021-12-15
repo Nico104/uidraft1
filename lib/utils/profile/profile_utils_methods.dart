@@ -5,6 +5,7 @@ import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:uidraft1/utils/upload/upload_helper_util_methods.dart';
+import 'package:dio/dio.dart' as dartio;
 
 ///Follow user
 Future<void> followUser(String creator, http.Client client) async {
@@ -80,8 +81,8 @@ Future<Map<String, dynamic>> fetchProfileData(
 }
 
 //Update Profile
-Future<String?> updateProfile(
-    String profileBio, List<int>? profilePicture, http.Client client) async {
+Future<String?> updateProfile(String profileBio, List<int>? profilePicture,
+    http.Client client, OnUploadProgressCallback? onUploadProgress) async {
   //! Prod MEthod
   // var url = Uri.parse(baseURL + 'user/updateMyUserProfile');
   // String? token = await getToken();
@@ -111,12 +112,62 @@ Future<String?> updateProfile(
   // return un;
   //! Prod MEthod
 
-  await fileUploadMultipartProfilePicture2(
-      profilePicture: profilePicture, onUploadProgress: onPorgress);
-}
+  //TODO Split Bio and Picture update methods
 
-void onPorgress(int i, int j) {
-  print(i.toString() + " of " + j.toString());
+  String urlFileStore = baseURL + 'user/updateMyUserProfile';
+  String token = await getToken() ?? "";
+
+  dartio.BaseOptions options = dartio.BaseOptions(
+      contentType: "multipart/form-data",
+      headers: {'Authorization': 'Bearer $token'},
+      connectTimeout: 200000,
+      receiveTimeout: 200000,
+      sendTimeout: 200000,
+      followRedirects: true,
+      validateStatus: (status) {
+        print('uploadFile Status: $status');
+        return status! <= 500;
+      });
+
+  dartio.Dio _dio = dartio.Dio(options);
+
+  try {
+    var formData = dartio.FormData.fromMap({
+      'picture': dartio.MultipartFile.fromBytes(
+        profilePicture!,
+        filename: "picture",
+        contentType: MediaType('image', 'png'),
+      ),
+      'profileBio': profileBio
+    });
+    // var response = await _dio.patch(
+    //   urlFileStore,
+    //   data: formData,
+    //   onSendProgress: (int sent, int total) {
+    //     // print('$sent $total');
+    //     onUploadProgress!.call(sent, total);
+    //   },
+    // );
+    // print(response);
+    _dio.patch(
+      urlFileStore,
+      data: formData,
+      onSendProgress: (int sent, int total) {
+        // print('$sent $total');
+        onUploadProgress!.call(sent, total);
+      },
+    ).then((response) {
+      print(response);
+    });
+  } on Exception catch (e) {
+    print(e);
+  }
+
+  String? un = await getMyUsername(client);
+  return un;
+
+  // await fileUploadMultipartProfilePicture2(
+  //     profilePicture: profilePicture, onUploadProgress: onPorgress);
 }
 
 Future<bool> isThisMe(String username, http.Client client) async {

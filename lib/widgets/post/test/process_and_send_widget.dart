@@ -82,14 +82,21 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
   Future<void> uploadPost() {
     return Future.delayed(
         const Duration(seconds: 1),
-        () => sendPost(
-            widget.postTitle,
-            widget.postDescription,
-            widget.postSubchannelName,
-            widget.thumbnail!.files.first.bytes!,
-            widget.video,
-            widget.tags,
-            callback));
+        () =>
+            // sendPost(
+            postUploadProgress(
+                widget.postTitle,
+                widget.postDescription,
+                widget.postSubchannelName,
+                widget.thumbnail!.files.first.bytes!,
+                widget.video,
+                widget.tags,
+                // callback,
+                progressprint));
+  }
+
+  void progressprint(int sent, int total) {
+    print("$sent of $total");
   }
 
   // List<int> _processThumbnail(FilePickerResult? result) {

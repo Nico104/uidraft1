@@ -577,6 +577,8 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
                           print(
                               "FileName: " + await controller.getFilename(ev));
                           Uint8List fileData = await controller.getFileData(ev);
+                          String filepath = await controller.getFilename(ev);
+                          print("File PAth: " + filepath);
                           setState(() {
                             print("weiter");
                             videoBytes = fileData;
