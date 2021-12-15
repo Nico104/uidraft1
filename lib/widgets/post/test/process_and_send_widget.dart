@@ -1,15 +1,10 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:beamer/beamer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:image/image.dart' as image;
-import 'package:http/http.dart' as http;
-import 'package:uidraft1/utils/auth/authentication_global.dart';
-import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:uidraft1/utils/upload/post/upload_post_util_methods.dart';
 
 class ProcessAndSendScreen extends StatelessWidget {
   const ProcessAndSendScreen(
@@ -76,92 +71,25 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
   int alreadyProcessed = 0;
   int toProcess = 2;
 
-  Future<void> uploadPost() {
-    return Future.delayed(
-        const Duration(seconds: 1),
-        () => _sendPost(
-            widget.postTitle,
-            widget.postDescription,
-            widget.postSubchannelName,
-            widget.thumbnail!.files.first.bytes!,
-            widget.video,
-            widget.tags));
-  }
-
-  Future<void> _sendPost(
-    String postTitle,
-    String postDescription,
-    String postSubchannelName,
-    Uint8List thumbnail,
-    List<int> video,
-    List<String> tags,
-  ) async {
-    // var url = Uri.parse(uploadServerBaseURL + 'post/uploadPostWithData');
-    var url = Uri.parse(uploadServerBaseURL + 'post/uploadPostWithData');
-    print("URL: " + url.toString());
-    String? token = await getToken();
-
-    var request = http.MultipartRequest('POST', url);
-
-    request.headers['Authorization'] = 'Bearer $token';
-    request.fields['postDescription'] = postDescription;
-    request.fields['postSubchannelName'] = postSubchannelName;
-    request.fields['postTitle'] = postTitle;
-    request.fields['tag1'] = tags.isNotEmpty ? tags.elementAt(0) : "none";
-    request.fields['tag2'] = tags.length > 1 ? tags.elementAt(1) : "none";
-    request.fields['tag3'] = tags.length > 2 ? tags.elementAt(2) : "none";
-
-    request.files.add(http.MultipartFile.fromBytes('picture', thumbnail,
-        filename: "thumbnailname", contentType: MediaType('image', 'png')));
-    request.files.add(http.MultipartFile.fromBytes('video', video,
-        filename: "videoname", contentType: MediaType('video', 'mp4')));
-
+  void callback() {
     if (mounted) {
       setState(() {
         alreadyProcessed += 1;
       });
     }
+  }
 
-    // var response = await request.send();
-    // print(response.statusCode);
-    // print("Response: " + http.Response.fromStream(response).toString());
-    // if (response.statusCode == 201) {
-    //   print('Uploaded!');
-    // } else {
-    //   print('Upload Error!');
-    // }
-
-    //test
-    await request.send().then((result) async {
-      http.Response.fromStream(result).then((response) {
-        if (response.statusCode == 201) {
-          print("Uploaded! ");
-          // print('response.body ' + response.body);
-
-          int postId = jsonDecode(response.body)['postId'];
-
-          //Add posttags
-          for (var element in tags) {
-            http.patch(Uri.parse(baseURL + 'post/addPostTag/$postId'),
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'Authorization': 'Bearer $token',
-                },
-                body: jsonEncode(<String, String>{"tagname": element}));
-          }
-        }
-
-        // return response.body;
-      });
-    }).catchError((err) {
-      print('error : ' + err.toString());
-    }).whenComplete(() {
-      print("upload fertig1");
-    });
-    //test
-
-    // Beamer.of(context).beamToNamed('/feed');
+  Future<void> uploadPost() {
+    return Future.delayed(
+        const Duration(seconds: 1),
+        () => sendPost(
+            widget.postTitle,
+            widget.postDescription,
+            widget.postSubchannelName,
+            widget.thumbnail!.files.first.bytes!,
+            widget.video,
+            widget.tags,
+            callback));
   }
 
   // List<int> _processThumbnail(FilePickerResult? result) {

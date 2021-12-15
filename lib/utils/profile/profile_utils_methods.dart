@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:uidraft1/utils/upload/upload_helper_util_methods.dart';
 
 ///Follow user
 Future<void> followUser(String creator, http.Client client) async {
@@ -81,32 +82,41 @@ Future<Map<String, dynamic>> fetchProfileData(
 //Update Profile
 Future<String?> updateProfile(
     String profileBio, List<int>? profilePicture, http.Client client) async {
-  var url = Uri.parse(baseURL + 'user/updateMyUserProfile');
-  String? token = await getToken();
+  //! Prod MEthod
+  // var url = Uri.parse(baseURL + 'user/updateMyUserProfile');
+  // String? token = await getToken();
 
-  var request = http.MultipartRequest('PATCH', url);
+  // var request = http.MultipartRequest('PATCH', url);
 
-  request.headers['Authorization'] = 'Bearer $token';
-  request.fields['profileBio'] = profileBio;
+  // request.headers['Authorization'] = 'Bearer $token';
+  // request.fields['profileBio'] = profileBio;
 
-  if (profilePicture != null) {
-    print("profilePic not null");
-    request.files.add(http.MultipartFile.fromBytes('picture', profilePicture,
-        filename: "picture", contentType: MediaType('image', 'png')));
-  } else {
-    print("profilePic is null");
-  }
+  // if (profilePicture != null) {
+  //   print("profilePic not null");
+  //   request.files.add(http.MultipartFile.fromBytes('picture', profilePicture,
+  //       filename: "picture", contentType: MediaType('image', 'png')));
+  // } else {
+  //   print("profilePic is null");
+  // }
 
-  var response = await request.send();
-  print(response.statusCode);
-  if (response.statusCode == 200) {
-    print('Updated!');
-  } else {
-    print('Update Error!');
-  }
+  // var response = await request.send();
+  // print(response.statusCode);
+  // if (response.statusCode == 200) {
+  //   print('Updated!');
+  // } else {
+  //   print('Update Error!');
+  // }
 
-  String? un = await getMyUsername(client);
-  return un;
+  // String? un = await getMyUsername(client);
+  // return un;
+  //! Prod MEthod
+
+  await fileUploadMultipartProfilePicture2(
+      profilePicture: profilePicture, onUploadProgress: onPorgress);
+}
+
+void onPorgress(int i, int j) {
+  print(i.toString() + " of " + j.toString());
 }
 
 Future<bool> isThisMe(String username, http.Client client) async {
