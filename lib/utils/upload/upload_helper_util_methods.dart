@@ -220,18 +220,12 @@ Future<String> fileUploadMultipartProfilePicture(
 //? DIO Test -> Working Function
 Future<void> fileUploadMultipartProfilePicture2(
     {List<int>? profilePicture,
-    // File? file,
     OnUploadProgressCallback? onUploadProgress}) async {
-  // String urlFileStore =
-  //     (authController.state as Authenticated).currentAccount.urlFileStore;
-  // String apiTokenFileStore =
-  //     (authController.state as Authenticated).currentAccount.apiTokenFileStore;
   String urlFileStore = baseURL + 'user/updateMyUserProfile';
   String token = await getToken() ?? "";
 
   dartio.BaseOptions options = dartio.BaseOptions(
       contentType: "multipart/form-data",
-      // headers: {'Authorization': apiTokenFileStore},
       headers: {'Authorization': 'Bearer $token'},
       connectTimeout: 200000,
       receiveTimeout: 200000,
@@ -245,21 +239,13 @@ Future<void> fileUploadMultipartProfilePicture2(
   dartio.Dio _dio = dartio.Dio(options);
 
   try {
-    var multipart = http.MultipartFile.fromBytes('picture', profilePicture!,
-        filename: "picture", contentType: MediaType('image', 'png'));
-
-    // var formData = dartio.FormData.fromMap({
-    //   'file': await dartio.MultipartFile.fromFile(message.filePath),
-    // });
     var formData = dartio.FormData.fromMap({
       'picture': dartio.MultipartFile.fromBytes(
-        profilePicture,
+        profilePicture!,
         filename: "picture",
         contentType: MediaType('image', 'png'),
       )
     });
-
-    // var response = await _dio.post(
     var response = await _dio.patch(
       urlFileStore,
       data: formData,
@@ -267,7 +253,6 @@ Future<void> fileUploadMultipartProfilePicture2(
         print('$sent $total');
       },
     );
-    //update message object filePath
     print(response);
   } on Exception catch (e) {
     print(e);
