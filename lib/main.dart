@@ -84,6 +84,11 @@ class MyApp extends StatelessWidget {
           } else {
             NavBarLarge.globalKey.currentState!.collapseMenus();
           }
+          // if (globalKey.currentState == null) {
+          //   print("current NavBarState null");
+          // } else {
+          //   globalKey.currentState!.collapseMenus();
+          // }
         },
         child: MaterialApp.router(
           shortcuts: shortcuts,

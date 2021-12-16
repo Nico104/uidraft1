@@ -33,6 +33,7 @@ final simpleLocationBuilder = SimpleLocationBuilder(
     '/feed': (context, state) => BeamPage(
           key: const ValueKey('feed'),
           title: 'feed',
+          // type: BeamPageType.noTransition,
           child: const FeedScreen(),
         ),
 
@@ -100,6 +101,7 @@ final simpleLocationBuilder = SimpleLocationBuilder(
       return BeamPage(
         key: ValueKey('videoplayer-$postId'),
         title: 'VideoPlayer',
+        // type: BeamPageType.noTransition,
         child: VideoPlayerScreen(
           postId: int.parse(postId),
           firtTimeExternAccess: true,

@@ -29,5 +29,10 @@ void showPostUploadDialog(BuildContext context) {
     } else {
       NavBarLarge.globalKey.currentState!.collapseMenus();
     }
+    // if (globalKey.currentState == null) {
+    //   print("current NavBarState null");
+    // } else {
+    //   globalKey.currentState!.collapseMenus();
+    // }
   });
 }

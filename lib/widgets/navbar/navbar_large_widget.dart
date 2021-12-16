@@ -21,6 +21,8 @@ import 'package:uidraft1/widgets/notification/notificationList/notification_list
 import 'navbar_menu_large_widget.dart';
 import 'options/options_grid_widget.dart';
 
+// final GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
+
 class NavBarLarge extends StatefulWidget {
   NavBarLarge({
     Key? key,
@@ -35,6 +37,19 @@ class NavBarLarge extends StatefulWidget {
     this.onLogoClick,
     // }) : super(key: globalKey);
   }) : super(key: globalKey);
+  // const NavBarLarge({
+  //   required Key key,
+  //   required this.setActiveFeed,
+  //   required this.activeFeed,
+  //   this.leftHand = true,
+  //   this.notification = true,
+  //   this.theme = true,
+  //   this.customFeed = true,
+  //   this.profile = true,
+  //   this.searchInitialValue = "",
+  //   this.onLogoClick,
+  //   // }) : super(key: globalKey);
+  // }) : super(key: key);
 
   final int activeFeed;
   final Function(int i) setActiveFeed;
@@ -50,9 +65,9 @@ class NavBarLarge extends StatefulWidget {
   final Function()? onLogoClick;
 
   //! Test GlobalKey for tap menu
-  // static final GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
-  static GlobalKey<_NavBarLargeState> globalKey =
-      GlobalKey<_NavBarLargeState>();
+  static final GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
+  // GlobalKey<_NavBarLargeState> globalKey =
+  //     GlobalKey<_NavBarLargeState>(debugLabel: "NAVBAR GlobalKey");
 
   final double borderRadius = 26;
 

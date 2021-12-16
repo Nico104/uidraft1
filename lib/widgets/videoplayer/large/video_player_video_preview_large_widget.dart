@@ -78,6 +78,11 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                     } else {
                       NavBarLarge.globalKey.currentState!.collapseMenus();
                     }
+                    // if (globalKey.currentState == null) {
+                    //   print("current NavBarState null");
+                    // } else {
+                    //   globalKey.currentState!.collapseMenus();
+                    // }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,

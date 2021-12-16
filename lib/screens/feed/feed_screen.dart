@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uidraft1/uiwidgets/blindgaenger/navbar/empty_navbar_widget.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/widgets/feed/feedGrid/feed_grid_large_widget.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
@@ -29,11 +30,12 @@ class _FeedState extends State<FeedScreen> {
           alignment: Alignment.topCenter,
           children: [
             FeedGrid(),
-            NavBarLarge(
-              setActiveFeed: setActiveFeedTo,
-              activeFeed: activeFeed,
-              onLogoClick: () => reloadFeed.call(),
-            ),
+            // NavBarLarge(
+            //   setActiveFeed: setActiveFeedTo,
+            //   activeFeed: activeFeed,
+            //   onLogoClick: () => reloadFeed.call(),
+            // ),
+            getNavbar(),
             activeFeed != 0
                 ? Center(
                     child: Text(
@@ -52,5 +54,34 @@ class _FeedState extends State<FeedScreen> {
     setState(() {
       activeFeed = i;
     });
+  }
+
+  bool isNavBarKeyFree() {
+    bool _isFree = false;
+    if (NavBarLarge.globalKey.currentState == null) {
+      _isFree = true;
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _isFree = isNavBarKeyFree();
+      });
+    }
+    return _isFree;
+  }
+
+  Widget getNavbar() {
+    if (NavBarLarge.globalKey.currentState == null) {
+      return NavBarLarge(
+        setActiveFeed: setActiveFeedTo,
+        activeFeed: activeFeed,
+        onLogoClick: () => reloadFeed.call(),
+      );
+    } else {
+      Future.delayed(const Duration(milliseconds: 50), () {
+        setState(() {});
+      });
+      //TODO add empty NavBar to show in meantime and add everywhere navbar is loaded
+      // return const SizedBox();
+      return const EmptyNavBarLarge();
+    }
   }
 }
