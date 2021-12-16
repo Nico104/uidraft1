@@ -33,6 +33,7 @@ class NavBarLarge extends StatefulWidget {
     this.profile = true,
     this.searchInitialValue = "",
     this.onLogoClick,
+    // }) : super(key: globalKey);
   }) : super(key: globalKey);
 
   final int activeFeed;
@@ -49,7 +50,9 @@ class NavBarLarge extends StatefulWidget {
   final Function()? onLogoClick;
 
   //! Test GlobalKey for tap menu
-  static final GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
+  // static final GlobalKey<_NavBarLargeState> globalKey = GlobalKey();
+  static GlobalKey<_NavBarLargeState> globalKey =
+      GlobalKey<_NavBarLargeState>();
 
   final double borderRadius = 26;
 

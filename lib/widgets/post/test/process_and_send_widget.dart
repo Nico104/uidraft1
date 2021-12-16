@@ -4,7 +4,10 @@ import 'package:beamer/beamer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/utils/upload/post/upload_post_util_methods.dart';
+import 'package:uidraft1/utils/upload/provider/upload_status.dart';
 
 class ProcessAndSendScreen extends StatelessWidget {
   const ProcessAndSendScreen(
@@ -80,53 +83,28 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
   }
 
   Future<void> uploadPost() {
+    UploadStatus _uploadStatus =
+        Provider.of<UploadStatus>(context, listen: false);
+
     return Future.delayed(
         const Duration(seconds: 1),
         () =>
             // sendPost(
             postUploadProgress(
-                widget.postTitle,
-                widget.postDescription,
-                widget.postSubchannelName,
-                widget.thumbnail!.files.first.bytes!,
-                widget.video,
-                widget.tags,
-                // callback,
-                progressprint));
+              widget.postTitle,
+              widget.postDescription,
+              widget.postSubchannelName,
+              widget.thumbnail!.files.first.bytes!,
+              widget.video,
+              widget.tags,
+              progressprint,
+              _uploadStatus,
+            ));
   }
 
   void progressprint(int sent, int total) {
     print("$sent of $total");
   }
-
-  // List<int> _processThumbnail(FilePickerResult? result) {
-  //   var fileBytes = result!.files.first.bytes;
-  //   var fileName = result.files.first.name;
-
-  //   image.Image? raw = image.decodeImage(List.from(fileBytes!));
-
-  //   print("FileName: " + fileName);
-
-  //   if (raw!.width != 1280 && raw.height != 720) {
-  //     print("Image not 1280x720");
-  //     image.Image? resized = image.copyResize(raw, width: 1280, height: 720);
-  //     if (mounted) {
-  //       setState(() {
-  //         alreadyProcessed += 1;
-  //       });
-  //     }
-
-  //     return image.encodePng(resized);
-  //   }
-  //   print("Image is 1280x720");
-  //   if (mounted) {
-  //     setState(() {
-  //       alreadyProcessed += 1;
-  //     });
-  //   }
-
-  //   return fileBytes;
-  // }
 
   @override
   void initState() {
@@ -135,7 +113,11 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
       print("lesgo");
       uploadPost();
 
-      Beamer.of(context).beamToNamed('/feed');
+      // Beamer.of(context).beamToNamed('/feed');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FeedScreen()),
+      );
     });
   }
 

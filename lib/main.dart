@@ -8,6 +8,7 @@ import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'beamer/location_builders.dart';
 import 'utils/network/http_client.dart';
 import 'utils/theme/theme_notifier.dart';
+import 'utils/upload/provider/upload_status.dart';
 
 void main() {
   //Beamer.setPathUrlStrategy();
@@ -20,7 +21,8 @@ void main() {
     providers: [
       ChangeNotifierProvider<ConnectionService>(
           create: (_) => ConnectionService()),
-      ChangeNotifierProvider<ThemeNotifier>(create: (_) => ThemeNotifier())
+      ChangeNotifierProvider<ThemeNotifier>(create: (_) => ThemeNotifier()),
+      ChangeNotifierProvider<UploadStatus>(create: (_) => UploadStatus())
     ],
     child: MyApp(),
   ));

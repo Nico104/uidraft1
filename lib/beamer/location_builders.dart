@@ -128,12 +128,12 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           child: const CreateTagLargeScreen(),
         ),
 
-    'uploadvideo': (context, state) => BeamPage(
-          key: const ValueKey('uploadvideotest'),
-          type: BeamPageType.fadeTransition,
-          title: 'uploadvideotest',
-          child: const UploadVideoScreen(),
-        ),
+    // 'uploadvideo': (context, state) => BeamPage(
+    //       key: const ValueKey('uploadvideotest'),
+    //       type: BeamPageType.fadeTransition,
+    //       title: 'uploadvideotest',
+    //       child: const UploadVideoScreen(),
+    //     ),
 
     'createsubchannel': (context, state) => BeamPage(
           key: const ValueKey('createsubchannel'),

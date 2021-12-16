@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/global_constants.dart';
+import 'package:uidraft1/utils/upload/provider/upload_status.dart';
 
 import '../upload_helper_util_methods.dart';
 
@@ -79,7 +78,10 @@ Future<void> postUploadProgress(
     Uint8List thumbnail,
     List<int> video,
     List<String> tags,
-    OnUploadProgressCallback? onUploadProgress) async {
+    OnUploadProgressCallback? onUploadProgress,
+    UploadStatus uploadStatus) async {
+  int _uploadStatusIndex = uploadStatus.addUploadProcess(postTitle);
+
   String urlFileStore = uploadServerBaseURL + 'post/uploadPostWithData';
   String token = await getToken() ?? "";
 
@@ -96,30 +98,6 @@ Future<void> postUploadProgress(
       });
 
   dartio.Dio _dio = dartio.Dio(options);
-
-//  request.files.add(http.MultipartFile.fromBytes('picture', thumbnail,
-//       filename: "thumbnailname", contentType: MediaType('image', 'png')));
-//   request.files.add(http.MultipartFile.fromBytes('video', video,
-//       filename: "videoname", contentType: MediaType('video', 'mp4')));
-// de(<String, String>{"tagname": element}));
-
-//  request.fields['postDescription'] = postDescription;
-//   request.fields['postSubchannelName'] = postSubchannelName;
-//   request.fields['postTitle'] = postTitle;
-//   request.fields['tag1'] = tags.isNotEmpty ? tags.elementAt(0) : "none";
-//   request.fields['tag2'] = tags.length > 1 ? tags.elementAt(1) : "none";
-//   request.fields['tag3'] = tags.length > 2 ? tags.elementAt(2) : "none";
-  // File filevideo = File.
-  // final buffer = .buffer;
-  // Directory tempDir = await getTemporaryDirectory();
-  // String tempPath = tempDir.path;
-
-  // String directory = (await getApplicationDocumentsDirectory()).path;
-  // var filePath = directory +
-  //     // tempPath +
-  //     '/file_01.tmp'; // file_01.tmp is dump file, can be anything
-  // File filevideo = await File(filePath).writeAsBytes(video);
-
   try {
     var formData = dartio.FormData.fromMap({
       'picture': dartio.MultipartFile.fromBytes(
@@ -127,14 +105,14 @@ Future<void> postUploadProgress(
         filename: "thumbnailname",
         contentType: MediaType('image', 'png'),
       ),
-      // 'video': dartio.MultipartFile.fromBytes(
-      //   video,
-      //   filename: "videoname",
-      //   contentType: MediaType('video', 'mp4'),
-      // ),
-      'video':
-          // dartio.MultipartFile(filevideo.openRead(), filevideo.lengthSync()),
-          http.MultipartFile.fromBytes("temp", video),
+      'video': dartio.MultipartFile.fromBytes(
+        video,
+        filename: "videoname",
+        contentType: MediaType('video', 'mp4'),
+      ),
+      // 'video':
+      //     // dartio.MultipartFile(filevideo.openRead(), filevideo.lengthSync()),
+      //     http.MultipartFile.fromBytes("temp", video),
       'postDescription': postDescription,
       'postSubchannelName': postSubchannelName,
       'postTitle': postTitle,
@@ -149,19 +127,21 @@ Future<void> postUploadProgress(
         print('$sent $total');
       },
     );
-    print(response);
-    int postId = jsonDecode(response.data)['postId'];
-    print("PostId: " + postId.toString());
-    for (var element in tags) {
-      http.patch(Uri.parse(baseURL + 'post/addPostTag/$postId'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode(<String, String>{"tagname": element}));
-    }
+    print(response.data.toString());
+    // int postId = json.decode(response.data)['postId'];
+    // print("PostId: " + postId.toString());
+    // for (var element in tags) {
+    //   http.patch(Uri.parse(baseURL + 'post/addPostTag/$postId'),
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Accept': 'application/json',
+    //         'Authorization': 'Bearer $token',
+    //       },
+    //       body: jsonEncode(<String, String>{"tagname": element}));
+    // }
+    uploadStatus.setSuccess(_uploadStatusIndex);
   } on Exception catch (e) {
+    uploadStatus.setError(_uploadStatusIndex);
     print(e);
   }
 }
