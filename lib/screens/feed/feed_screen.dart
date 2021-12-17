@@ -22,12 +22,6 @@ class _FeedState extends State<FeedScreen> {
 
   Widget _navbar = const EmptyNavBarLarge();
 
-  @override
-  void initState() {
-    initNavBar();
-    super.initState();
-  }
-
   void initNavBar() async {
     if (NavBarLarge.globalKey.currentState == null) {
       setState(() {
@@ -41,6 +35,12 @@ class _FeedState extends State<FeedScreen> {
       await Future.delayed(const Duration(milliseconds: 30), () {});
       initNavBar();
     }
+  }
+
+  @override
+  void initState() {
+    initNavBar();
+    super.initState();
   }
 
   @override
@@ -80,32 +80,32 @@ class _FeedState extends State<FeedScreen> {
     });
   }
 
-  bool isNavBarKeyFree() {
-    bool _isFree = false;
-    if (NavBarLarge.globalKey.currentState == null) {
-      _isFree = true;
-    } else {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        _isFree = isNavBarKeyFree();
-      });
-    }
-    return _isFree;
-  }
+  // bool isNavBarKeyFree() {
+  //   bool _isFree = false;
+  //   if (NavBarLarge.globalKey.currentState == null) {
+  //     _isFree = true;
+  //   } else {
+  //     Future.delayed(const Duration(milliseconds: 100), () {
+  //       _isFree = isNavBarKeyFree();
+  //     });
+  //   }
+  //   return _isFree;
+  // }
 
-  Widget getNavbar() {
-    if (NavBarLarge.globalKey.currentState == null) {
-      return NavBarLarge(
-        setActiveFeed: setActiveFeedTo,
-        activeFeed: activeFeed,
-        onLogoClick: () => reloadFeed.call(),
-      );
-    } else {
-      Future.delayed(const Duration(milliseconds: 50), () {
-        setState(() {});
-      });
-      //TODO add empty NavBar to show in meantime and add everywhere navbar is loaded
-      // return const SizedBox();
-      return const EmptyNavBarLarge();
-    }
-  }
+  // Widget getNavbar() {
+  //   if (NavBarLarge.globalKey.currentState == null) {
+  //     return NavBarLarge(
+  //       setActiveFeed: setActiveFeedTo,
+  //       activeFeed: activeFeed,
+  //       onLogoClick: () => reloadFeed.call(),
+  //     );
+  //   } else {
+  //     Future.delayed(const Duration(milliseconds: 50), () {
+  //       setState(() {});
+  //     });
+  //     //TODO add empty NavBar to show in meantime and add everywhere navbar is loaded
+  //     // return const SizedBox();
+  //     return const EmptyNavBarLarge();
+  //   }
+  // }
 }

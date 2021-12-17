@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/uiwidgets/blindgaenger/navbar/empty_navbar_widget.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
@@ -20,8 +21,26 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerState extends State<VideoPlayerScreen> {
+  Widget _navbar = const EmptyNavBarLarge();
+
+  void initNavBar() async {
+    if (NavBarLarge.globalKey.currentState == null) {
+      setState(() {
+        _navbar = NavBarLarge(
+          setActiveFeed: (_) {},
+          activeFeed: 0,
+          customFeed: false,
+        );
+      });
+    } else {
+      await Future.delayed(const Duration(milliseconds: 30), () {});
+      initNavBar();
+    }
+  }
+
   @override
   void initState() {
+    initNavBar();
     super.initState();
   }
 
@@ -41,11 +60,12 @@ class _VideoPlayerState extends State<VideoPlayerScreen> {
                     child: VideoPlayerHome(
                       postData: snapshot.data!,
                       firtTimeExternAccess: widget.firtTimeExternAccess,
-                      navbar: NavBarLarge(
-                        setActiveFeed: (_) {},
-                        activeFeed: 0,
-                        customFeed: false,
-                      ),
+                      // navbar: NavBarLarge(
+                      //   setActiveFeed: (_) {},
+                      //   activeFeed: 0,
+                      //   customFeed: false,
+                      // ),
+                      navbar: _navbar,
                     ),
                   ),
                   veryLargeScreen: const Text("veryLargeScreen"),

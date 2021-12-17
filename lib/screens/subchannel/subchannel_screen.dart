@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/uiwidgets/blindgaenger/navbar/empty_navbar_widget.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/utils/subchannel/subchannel_util_methods.dart';
@@ -19,6 +20,29 @@ class SubchannelScreen extends StatefulWidget {
 }
 
 class _SubchannelState extends State<SubchannelScreen> {
+  Widget _navbar = const EmptyNavBarLarge();
+
+  void initNavBar() async {
+    if (NavBarLarge.globalKey.currentState == null) {
+      setState(() {
+        _navbar = NavBarLarge(
+          setActiveFeed: (_) {},
+          activeFeed: 0,
+          customFeed: false,
+        );
+      });
+    } else {
+      await Future.delayed(const Duration(milliseconds: 30), () {});
+      initNavBar();
+    }
+  }
+
+  @override
+  void initState() {
+    initNavBar();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ConnectionService>(builder: (context, connection, _) {
@@ -38,11 +62,12 @@ class _SubchannelState extends State<SubchannelScreen> {
                       SubchannelLargeScreen(
                         subchannelData: snapshot.data!,
                       ),
-                      NavBarLarge(
-                        setActiveFeed: (_) {},
-                        activeFeed: 0,
-                        customFeed: false,
-                      ),
+                      // NavBarLarge(
+                      //   setActiveFeed: (_) {},
+                      //   activeFeed: 0,
+                      //   customFeed: false,
+                      // ),
+                      _navbar
                     ],
                   ),
                 ),

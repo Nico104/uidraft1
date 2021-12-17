@@ -474,8 +474,9 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                                         ],
                                                       );
                                                     } else {
-                                                      return const Text(
-                                                          "loading Profile Data...");
+                                                      return const EmptyNavbarProfileRow();
+                                                      // return const Text(
+                                                      //     "loading Profile Data...");
                                                     }
                                                   });
                                             } else {
