@@ -5,6 +5,8 @@ import 'package:uidraft1/customIcons/light_outlined/light_outline_notification_i
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/widgets/navbar/search/search_bar_navbar_large_widget.dart';
 
+import 'empty_navbar_profilerow_widget.dart';
+
 class EmptyNavBarLarge extends StatefulWidget {
   const EmptyNavBarLarge({
     Key? key,
@@ -90,9 +92,7 @@ class _EmptyNavBarLargeState extends State<EmptyNavBarLarge> {
                       flex: 4,
                       child: Row(
                         children: [
-                          //To Fill up Space
                           const Expanded(child: SizedBox()),
-                          //Icons and PB
                           ClipRRect(
                             borderRadius:
                                 BorderRadius.circular(widget.borderRadius),
@@ -106,75 +106,13 @@ class _EmptyNavBarLargeState extends State<EmptyNavBarLarge> {
                                       .canvasColor
                                       .withOpacity(0.7),
                                 ),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        //Notifications
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              LightOutlineNotificationIcon
-                                                  .notification,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .navBarIconColor,
-                                              size: 24,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 18,
-                                        ),
-                                        //Dark Light Mode Switch
-                                        // widget.theme
-                                        //     ? const DarkModeSwitcherIcon()
-                                        //     : const SizedBox(),
-                                        // const SizedBox(
-                                        //   width: 18,
-                                        // ),
-                                        //CustomFeedSelection
-                                        Icon(
-                                          Icons.filter_list_outlined,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .navBarIconColor,
-                                          size: 30,
-                                        ),
-                                        const SizedBox(
-                                          width: 18,
-                                        ),
-                                        //Options Menu
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.apps_outlined,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .navBarIconColor,
-                                              size: 26,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(width: 32),
-                                        //ProfilePicture
-                                        Container(
-                                          width: 40,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(14.0),
-                                              color: Colors.grey),
-                                        )
-                                      ],
-                                    )),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: EmptyNavbarProfileRow(),
+                                ),
                               ),
                             ),
-                          ),
+                          )
                         ],
                       ),
                     ),

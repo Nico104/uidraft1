@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/customfeed/custom_feed_util_methods.dart'
-    as cfUtils;
+    as cf_utils;
 import 'package:uidraft1/utils/customfeed/custom_feed_util_methods.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/widgets/navbar/customfeed/customfeeditem/custom_feed_edit_widget.dart';
@@ -74,7 +74,7 @@ class _CustomFeedListState extends State<CustomFeedList>
               behavior:
                   ScrollConfiguration.of(context).copyWith(scrollbars: false),
               child: FutureBuilder(
-                  future: cfUtils.fetchUserCustomFeedsPreview(
+                  future: cf_utils.fetchUserCustomFeedsPreview(
                       connection.returnConnection()),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {

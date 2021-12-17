@@ -20,6 +20,29 @@ class _FeedState extends State<FeedScreen> {
     }
   }
 
+  Widget _navbar = const EmptyNavBarLarge();
+
+  @override
+  void initState() {
+    initNavBar();
+    super.initState();
+  }
+
+  void initNavBar() async {
+    if (NavBarLarge.globalKey.currentState == null) {
+      setState(() {
+        _navbar = NavBarLarge(
+          setActiveFeed: setActiveFeedTo,
+          activeFeed: activeFeed,
+          onLogoClick: () => reloadFeed.call(),
+        );
+      });
+    } else {
+      await Future.delayed(const Duration(milliseconds: 30), () {});
+      initNavBar();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
@@ -35,7 +58,8 @@ class _FeedState extends State<FeedScreen> {
             //   activeFeed: activeFeed,
             //   onLogoClick: () => reloadFeed.call(),
             // ),
-            getNavbar(),
+            // getNavbar(),
+            _navbar,
             activeFeed != 0
                 ? Center(
                     child: Text(
