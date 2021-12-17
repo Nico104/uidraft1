@@ -1,13 +1,16 @@
-import 'package:beamer/beamer.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/comment/comment_util_methods.dart';
 import 'package:flutter/material.dart';
-import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
-import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
 
+import 'comment_parts/comment_profile_picture_widget.dart';
+import 'comment_parts/comment_rating_widget.dart';
+import 'comment_parts/comment_reply_textformfield_widget.dart';
+import 'comment_parts/subcomments_widget.dart';
+
+///Returns Comment Model
+///takes [commentId] as the Comments ID, which will be showen
 class CommentModel extends StatefulWidget {
   final int commentId;
 
@@ -21,11 +24,8 @@ class _CommentModelState extends State<CommentModel> {
   bool _showReplyTextField = false;
   bool _showSubComments = true;
 
-  // bool _isHover
-
   final TextEditingController _commentTextController = TextEditingController();
 
-  //FocusNode
   FocusNode fnReply = FocusNode();
 
   @override
@@ -54,34 +54,13 @@ class _CommentModelState extends State<CommentModel> {
                   }
                 }
               }
-              // print("Subcomments: " + subCommentIds.toString());
-              //Comment
-
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    // excludeFromSemantics: true,
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onTap: () {
-                      Beamer.of(context).beamToNamed(
-                          'profile/' + snapshot.data!['commentUsername']);
-                      print("go to profile");
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(14.0),
-                      child: Image.network(
-                        baseURL +
-                            snapshot.data!['commentUser']['userProfile']
-                                ['profilePicturePath'],
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
+                  CommentProfilePicture(
+                    commentUsername: snapshot.data!['commentUsername'],
+                    profilePicturePath: snapshot.data!['commentUser']
+                        ['userProfile']['profilePicturePath'],
                   ),
                   const SizedBox(
                     width: 15,
@@ -145,143 +124,13 @@ class _CommentModelState extends State<CommentModel> {
 
                                     //Only load rating if auth
                                     snapshot.data == 200
-                                        ? FutureBuilder(
-                                            future: Future.wait([
-                                              getUserCommentRating(
-                                                  widget.commentId,
-                                                  connection
-                                                      .returnConnection()),
-                                              getCommentRatingScore(
-                                                  widget.commentId,
-                                                  connection.returnConnection())
-                                            ]),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<List<int>>
-                                                    snapshotRating) {
-                                              if (snapshotRating.hasData) {
-                                                return Row(
-                                                  children: [
-                                                    //LIKE
-                                                    IconButton(
-                                                      icon: Icon(
-                                                        Icons.thumb_up,
-                                                        size: 16,
-                                                        color: snapshotRating
-                                                                    .data![0] ==
-                                                                1
-                                                            ? Theme.of(context)
-                                                                .colorScheme
-                                                                .brandColor
-                                                            : Colors.white60,
-                                                      ),
-                                                      onPressed: () {
-                                                        switch (snapshotRating
-                                                            .data![0]) {
-                                                          case 0:
-                                                            rateComment(
-                                                                    widget
-                                                                        .commentId,
-                                                                    'like',
-                                                                    connection
-                                                                        .returnConnection())
-                                                                .then((_) =>
-                                                                    setState(
-                                                                        () {}));
-                                                            break;
-                                                          case 1:
-                                                            deleteCommentRating(
-                                                                    widget
-                                                                        .commentId,
-                                                                    connection
-                                                                        .returnConnection())
-                                                                .then((_) =>
-                                                                    setState(
-                                                                        () {}));
-                                                            break;
-                                                          case 2:
-                                                            updateCommentRating(
-                                                                    widget
-                                                                        .commentId,
-                                                                    'like',
-                                                                    connection
-                                                                        .returnConnection())
-                                                                .then((_) =>
-                                                                    setState(
-                                                                        () {}));
-                                                            break;
-                                                        }
-                                                      },
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    //RATING
-                                                    Text(snapshotRating.data![1]
-                                                        .toString()),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    // Text("dislike"),
-                                                    //DISLIKE
-                                                    IconButton(
-                                                      icon: Icon(
-                                                        Icons.thumb_down,
-                                                        size: 16,
-                                                        color: snapshotRating
-                                                                    .data![0] ==
-                                                                2
-                                                            ? Theme.of(context)
-                                                                .colorScheme
-                                                                .brandColor
-                                                            : Colors.white60,
-                                                      ),
-                                                      onPressed: () {
-                                                        switch (snapshotRating
-                                                            .data![0]) {
-                                                          case 0:
-                                                            rateComment(
-                                                                    widget
-                                                                        .commentId,
-                                                                    'dislike',
-                                                                    connection
-                                                                        .returnConnection())
-                                                                .then((_) =>
-                                                                    setState(
-                                                                        () {}));
-                                                            break;
-                                                          case 1:
-                                                            updateCommentRating(
-                                                                    widget
-                                                                        .commentId,
-                                                                    'dislike',
-                                                                    connection
-                                                                        .returnConnection())
-                                                                .then((_) =>
-                                                                    setState(
-                                                                        () {}));
-                                                            break;
-                                                          case 2:
-                                                            deleteCommentRating(
-                                                                    widget
-                                                                        .commentId,
-                                                                    connection
-                                                                        .returnConnection())
-                                                                .then((_) =>
-                                                                    setState(
-                                                                        () {}));
-                                                            break;
-                                                        }
-                                                      },
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                  ],
-                                                );
-                                              } else {
-                                                return const SizedBox();
-                                              }
-                                            })
+                                        ? CommentRating(
+                                            client:
+                                                connection.returnConnection(),
+                                            commentId: widget.commentId,
+                                            setStateCallback: () =>
+                                                setState(() {}),
+                                          )
                                         : const Text(
                                             "login to rate and reply to comments",
                                             style: TextStyle(
@@ -297,94 +146,19 @@ class _CommentModelState extends State<CommentModel> {
                             ? Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(20, 10, 5, 0),
-                                child: KeyboardListener(
-                                  // focusNode: fnReply,
-                                  focusNode: FocusNode(),
-                                  onKeyEvent: (event) {
-                                    if (event is KeyDownEvent) {
-                                      if (event.logicalKey.keyLabel ==
-                                          'Enter') {
-                                        print("enter pressed");
-                                        sendReplyComment(
-                                                snapshot.data!['commentPostId'],
-                                                snapshot.data!['commentId'],
-                                                _commentTextController.text
-                                                    .trim(),
-                                                connection.returnConnection())
-                                            .then((value) {
-                                          setState(() {
-                                            _commentTextController.text = "";
-                                            _showReplyTextField = false;
-                                          });
-                                        });
-                                      }
-                                    }
+                                child: CommentReplyTextFormField(
+                                  commentTextController: _commentTextController,
+                                  fnReply: fnReply,
+                                  commentId: snapshot.data!['commentId'],
+                                  commentpostId:
+                                      snapshot.data!['commentPostId'],
+                                  client: connection.returnConnection(),
+                                  afterReplySend: () {
+                                    setState(() {
+                                      _commentTextController.text = "";
+                                      _showReplyTextField = false;
+                                    });
                                   },
-                                  child: TextFormField(
-                                    focusNode: fnReply,
-                                    controller: _commentTextController,
-                                    cursorColor: Colors.white,
-                                    autocorrect: false,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLength: 256,
-                                    minLines: 1,
-                                    maxLines: 20,
-                                    decoration: InputDecoration(
-                                      suffixIcon: IconButton(
-                                          icon: const Icon(
-                                            Icons.send,
-                                            color: Colors.white70,
-                                          ),
-                                          onPressed: () => sendReplyComment(
-                                                      snapshot.data![
-                                                          'commentPostId'],
-                                                      snapshot
-                                                          .data!['commentId'],
-                                                      _commentTextController
-                                                          .text
-                                                          .trim(),
-                                                      connection
-                                                          .returnConnection())
-                                                  .then((value) {
-                                                setState(() {
-                                                  _commentTextController.text =
-                                                      "";
-                                                  _showReplyTextField = false;
-                                                });
-                                              })),
-                                      labelText: "Reply to comment",
-                                      labelStyle: const TextStyle(
-                                          fontFamily: "Segoe UI",
-                                          color: Colors.white38,
-                                          fontSize: 14),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.white54),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.pink),
-                                      ),
-                                    ),
-                                    validator: (val) {
-                                      if (val!.isEmpty) {
-                                        return "Field cannot be empty";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    style: const TextStyle(
-                                        fontFamily: "Segoe UI",
-                                        color: Colors.white70,
-                                        fontSize: 14),
-                                    // onFieldSubmitted: (_) => _sendReply(
-                                    //     snapshot.data!['commentPostId'],
-                                    //     snapshot.data!['commentId']),
-                                  ),
                                 ),
                               )
                             : const SizedBox(),
@@ -394,29 +168,9 @@ class _CommentModelState extends State<CommentModel> {
                         //Show Subcomments/Comment Reply
                         subCommentIds.isNotEmpty
                             ? _showSubComments
-                                ? FutureBuilder(
-                                    future: getSubCommentIds(widget.commentId,
-                                        connection.returnConnection()),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<List<int>> snapshot) {
-                                      if (snapshot.hasData) {
-                                        return ListView.builder(
-                                            shrinkWrap: true,
-                                            itemCount: snapshot.data!.length,
-                                            itemBuilder: (context, index) {
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        20, 20, 5, 0),
-                                                child: CommentModel(
-                                                    commentId: snapshot.data!
-                                                        .elementAt(index)),
-                                              );
-                                            });
-                                      } else {
-                                        return const CircularProgressIndicator();
-                                      }
-                                    },
+                                ? Subcomments(
+                                    commentId: widget.commentId,
+                                    client: connection.returnConnection(),
                                   )
                                 : const SizedBox()
                             : const SizedBox(),
@@ -431,13 +185,4 @@ class _CommentModelState extends State<CommentModel> {
           });
     });
   }
-
-  // void _sendReply(int postId, int commentId) {
-  //   sendReplyComment(postId, commentId, _commentTextController.text.trim());
-  //   print("pressed");
-  //   setState(() {
-  //     _commentTextController.text = "";
-  //     _showReplyTextField = false;
-  //   });
-  // }
 }

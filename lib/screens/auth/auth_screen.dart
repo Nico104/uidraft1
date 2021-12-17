@@ -4,10 +4,7 @@ import 'package:uidraft1/uiwidgets/navicons/dark_mode_switcher_icon.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/responsive/responsive_builder_widget.dart';
 import 'package:uidraft1/utils/widgets/toggle/toggle_animated_button_widget.dart';
-import 'package:uidraft1/widgets/auth/login/initial_login_large_widget.dart';
 import 'package:uidraft1/widgets/auth/login/login_large_widget.dart';
-import 'package:uidraft1/widgets/auth/signup/sign_up_large_widget.dart';
-import 'package:uidraft1/widgets/auth/signup/sign_up_v2_large_widget.dart';
 import 'package:uidraft1/widgets/auth/signup/sign_up_v3_large_widget.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -31,9 +28,6 @@ class _AuthState extends State<AuthScreen> {
 
   @override
   void initState() {
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //   isLogin = widget.isLoginInitial;
-    // });
     isLogin = widget.isLoginInitial;
     super.initState();
   }
