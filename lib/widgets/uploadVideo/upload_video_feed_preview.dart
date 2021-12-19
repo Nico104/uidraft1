@@ -35,8 +35,7 @@ class UploadVideoFeedPreview extends StatelessWidget {
                 )
               : Image.network(
                   // baseURL +
-                  spacesEndpoint +
-                      "uploads/default/defaultUploadVideoThumbnailPreview.png",
+                  spacesEndpoint + "default/defaultUploadVideoThumbnailPreview",
                   fit: BoxFit.cover,
                   alignment: Alignment.center,
                 ),

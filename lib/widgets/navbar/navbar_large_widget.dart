@@ -459,7 +459,8 @@ class _NavBarLargeState extends State<NavBarLarge> {
                                                                             14.0),
                                                                     child: Image
                                                                         .network(
-                                                                      baseURL +
+                                                                      // baseURL +
+                                                                      spacesEndpoint +
                                                                           snapshot
                                                                               .data['profilePicturePath'],
                                                                       fit: BoxFit
