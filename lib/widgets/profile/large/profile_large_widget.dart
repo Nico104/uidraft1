@@ -125,6 +125,12 @@ class _ProfileState extends State<Profile> {
   }
   //Grid Vars
 
+  String getPBPath(String pbpath) {
+    print("SpacesEndpoint: " + spacesEndpoint);
+    print("Path: " + pbpath);
+    return spacesEndpoint + pbpath;
+  }
+
   //Profile
   @override
   Widget build(BuildContext context) {
@@ -158,8 +164,10 @@ class _ProfileState extends State<Profile> {
                                   bottomRight: Radius.circular(37)),
                               child: Image.network(
                                 // baseURL +
-                                spacesEndpoint +
-                                    widget.profileData['profilePicturePath'],
+                                // spacesEndpoint +
+                                //     widget.profileData['profilePicturePath'],
+                                getPBPath(
+                                    widget.profileData['profilePicturePath']),
                                 fit: BoxFit.contain,
                                 width: 600,
                                 height: 600,

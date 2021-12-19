@@ -605,13 +605,22 @@ class _CreateSubchannelFormState extends State<CreateSubchannelForm> {
       print("banner is null");
     }
 
-    var response = await request.send();
-    print(response.statusCode);
-    if (response.statusCode == 201) {
-      print('Uploaded!');
-    } else {
-      print('Upload Error!');
-    }
+    // var response = await request.send();
+    // print(response.statusCode);
+    // if (response.statusCode == 201) {
+    //   print('Uploaded!');
+    // } else {
+    //   print('Upload Error!');
+    // }
+
+    request.send().then((response) {
+      print(response.statusCode);
+      if (response.statusCode == 201) {
+        print('Uploaded!');
+      } else {
+        print('Upload Error!');
+      }
+    });
 
     Beamer.of(context).beamToNamed('/feed');
   }
