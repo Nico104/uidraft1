@@ -30,7 +30,8 @@ class VideoPreviewPicture extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(14.0),
           child: Image.network(
-            baseURL + picturePath,
+            // baseURL
+            spacesEndpoint + picturePath,
             fit: BoxFit.cover,
             alignment: Alignment.center,
             width: width,

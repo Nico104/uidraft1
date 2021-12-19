@@ -44,8 +44,9 @@ class CreateSubchannelPreviewLargeScreen extends StatelessWidget {
                             width: 1920,
                           )
                         : Image.network(
-                            baseURL +
-                                "uploads/default/defaultSubchannelBanner.jpg",
+                            // baseURL +
+                            //     "uploads/default/defaultSubchannelBanner.jpg",
+                            spacesEndpoint + "default/defaultSubchannelBanner",
                             fit: BoxFit.cover, alignment: Alignment.center,
                             // width: MediaQuery.of(context).size.width,
                             height: 230,
@@ -63,8 +64,9 @@ class CreateSubchannelPreviewLargeScreen extends StatelessWidget {
                             width: 720,
                           )
                         : Image.network(
-                            baseURL +
-                                "uploads/default/defaultSubchannelBanner.jpg",
+                            // baseURL +
+                            //     "uploads/default/defaultSubchannelBanner.jpg",
+                            spacesEndpoint + "default/defaultSubchannelBanner",
                             fit: BoxFit.cover, alignment: Alignment.center,
                             // width: MediaQuery.of(context).size.width,
                             height: 230,
@@ -91,8 +93,9 @@ class CreateSubchannelPreviewLargeScreen extends StatelessWidget {
                             height: 87,
                           )
                         : Image.network(
-                            baseURL +
-                                "uploads/default/defaultSubchannelPicture.jpg",
+                            // baseURL +
+                            //     "uploads/default/defaultSubchannelPicture.jpg",
+                            spacesEndpoint + "default/defaultSubchannelPicture",
                             fit: BoxFit.cover,
                             alignment: Alignment.center,
                             width: 87,

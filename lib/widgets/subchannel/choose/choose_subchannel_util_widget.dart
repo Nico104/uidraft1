@@ -129,7 +129,8 @@ class _ChooseSubchannelUtilState extends State<ChooseSubchannelUtil> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(14)),
                             child: Image.network(
-                              baseURL +
+                              // baseURL +
+                              spacesEndpoint +
                                   subchannelNames.elementAt(index).elementAt(1),
                               fit: BoxFit.cover,
                               alignment: Alignment.center,

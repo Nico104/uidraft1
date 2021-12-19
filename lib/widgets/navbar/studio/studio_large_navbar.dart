@@ -161,7 +161,8 @@ class _NavBarLargeStudioState extends State<NavBarLargeStudio> {
                                           borderRadius:
                                               BorderRadius.circular(14.0),
                                           child: Image.network(
-                                            baseURL +
+                                            // baseURL +
+                                            spacesEndpoint +
                                                 snapshot
                                                     .data['profilePicturePath'],
                                             fit: BoxFit.contain,

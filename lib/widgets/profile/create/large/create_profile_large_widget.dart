@@ -86,7 +86,9 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
     Map<String, dynamic> profileData = await fetchCurrentProfileData();
     print(profileData.toString());
     Uint8List tempPB = await http
-        .readBytes(Uri.parse(baseURL + profileData['profilePicturePath']));
+        // .readBytes(Uri.parse(baseURL + profileData['profilePicturePath']));
+        .readBytes(
+            Uri.parse(spacesEndpoint + profileData['profilePicturePath']));
     if (mounted) {
       setState(() {
         _profileBioTextController.text = profileData['profileBio'];

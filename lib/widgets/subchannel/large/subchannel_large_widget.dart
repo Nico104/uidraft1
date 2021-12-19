@@ -136,7 +136,8 @@ class _SubchannelState extends State<Subchannel> {
                 //     bottomLeft: Radius.circular(40),
                 //     bottomRight: Radius.circular(40)),
                 child: Image.network(
-                  baseURL +
+                  // baseURL +
+                  spacesEndpoint +
                       widget.subchannelData['subchannelPreview']
                           ['subchannelBannerPath'],
                   fit: BoxFit.cover,
@@ -159,7 +160,8 @@ class _SubchannelState extends State<Subchannel> {
                   ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(14)),
                     child: Image.network(
-                      baseURL +
+                      // baseURL +
+                      spacesEndpoint +
                           widget.subchannelData['subchannelPreview']
                               ['subchannelSubchannelPicturePath'],
                       fit: BoxFit.cover,

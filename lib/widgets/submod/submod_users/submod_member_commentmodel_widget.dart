@@ -37,7 +37,8 @@ class SubModMemberCommentModel extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(14.0),
                     child: Image.network(
-                      baseURL +
+                      // baseURL +
+                      spacesEndpoint +
                           snapshot.data!['commentUser']['userProfile']
                               ['profilePicturePath'],
                       fit: BoxFit.cover,

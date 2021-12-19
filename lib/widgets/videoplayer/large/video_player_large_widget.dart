@@ -214,18 +214,32 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
 
     _firtTimeExternAccess = widget.firtTimeExternAccess;
 
-    streamQualityURL[240] = baseURL + widget.postData['postVideoPath240'];
+    // streamQualityURL[240] = baseURL + widget.postData['postVideoPath240'];
+    // if (widget.postData['postVideoPath480'].toString().isNotEmpty) {
+    //   streamQualityURL[480] = baseURL + widget.postData['postVideoPath480'];
+    //   print("PAth 480: " + streamQualityURL[480]!);
+    // }
+    // if (widget.postData['postVideoPath720'].toString().isNotEmpty) {
+    //   streamQualityURL[720] = baseURL + widget.postData['postVideoPath720'];
+    //   print("PAth 720: " + streamQualityURL[720]!);
+    // }
+    // if (widget.postData['postVideoPath1080'].toString().isNotEmpty) {
+    //   streamQualityURL[1080] = baseURL + widget.postData['postVideoPath1080'];
+    //   print("PAth 1080: " + streamQualityURL[1080]!);
+    // }
+    streamQualityURL[240] =
+        spacesEndpoint + widget.postData['postVideoPath240'];
     if (widget.postData['postVideoPath480'].toString().isNotEmpty) {
-      streamQualityURL[480] = baseURL + widget.postData['postVideoPath480'];
-      print("PAth 480: " + streamQualityURL[480]!);
+      streamQualityURL[480] =
+          spacesEndpoint + widget.postData['postVideoPath480'];
     }
     if (widget.postData['postVideoPath720'].toString().isNotEmpty) {
-      streamQualityURL[720] = baseURL + widget.postData['postVideoPath720'];
-      print("PAth 720: " + streamQualityURL[720]!);
+      streamQualityURL[720] =
+          spacesEndpoint + widget.postData['postVideoPath720'];
     }
     if (widget.postData['postVideoPath1080'].toString().isNotEmpty) {
-      streamQualityURL[1080] = baseURL + widget.postData['postVideoPath1080'];
-      print("PAth 1080: " + streamQualityURL[1080]!);
+      streamQualityURL[1080] =
+          spacesEndpoint + widget.postData['postVideoPath1080'];
     }
 
     streamQualityKeysSorted = streamQualityURL.keys.toList()
@@ -747,7 +761,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                   .circular(
                                                                       14.0),
                                                           child: Image.network(
-                                                            baseURL +
+                                                            // baseURL +
+                                                            spacesEndpoint +
                                                                 widget.postData[
                                                                             'postSubchannel']
                                                                         [
@@ -796,7 +811,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                                   .circular(
                                                                       14.0),
                                                           child: Image.network(
-                                                            baseURL +
+                                                            // baseURL +
+                                                            spacesEndpoint +
                                                                 widget.postData[
                                                                             'user']
                                                                         [

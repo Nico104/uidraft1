@@ -9,6 +9,7 @@ import 'package:uidraft1/justtest/glassmorphism.dart';
 import 'package:uidraft1/uiwidgets/textfields/search_textfield/search_textformfield_widget.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
+import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/navbar/search/search_bar_navbar_large_widget.dart';
 import 'package:uidraft1/widgets/slider/slidertest.dart';
@@ -84,8 +85,15 @@ class _WordSearchTestState extends State<WordSearchTest> {
           flex: 6,
           child: Padding(
             padding: const EdgeInsets.only(top: 15),
-            child: SearchBarTest(
-              searchBarController: controller,
+            // child: SearchBarTest(
+            //   searchBarController: controller,
+            // ),
+            child: Image.network(
+              // baseURL + "${snapshot.data!['postTumbnailPath']}",
+              spacesEndpoint +
+                  "post/thumbnail/eae36a5d7f265d16015eeacdaab92ee6",
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
             ),
           ),
         ),

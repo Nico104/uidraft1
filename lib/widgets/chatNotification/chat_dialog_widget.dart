@@ -54,7 +54,8 @@ class _ChatNotificationState extends State<ChatNotification> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(14.0),
                     child: Image.network(
-                      baseURL + widget.picturePath,
+                      // baseURL
+                      spacesEndpoint + widget.picturePath,
                       fit: BoxFit.contain,
                       width: 34,
                       height: 34,

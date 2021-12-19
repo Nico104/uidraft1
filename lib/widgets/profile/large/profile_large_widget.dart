@@ -157,7 +157,8 @@ class _ProfileState extends State<Profile> {
                                   bottomLeft: Radius.circular(37),
                                   bottomRight: Radius.circular(37)),
                               child: Image.network(
-                                baseURL +
+                                // baseURL +
+                                spacesEndpoint +
                                     widget.profileData['profilePicturePath'],
                                 fit: BoxFit.contain,
                                 width: 600,

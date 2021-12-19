@@ -37,7 +37,8 @@ class _StudioVideoPreviewState extends State<StudioVideoPreview> {
                     // borderRadius: BorderRadius.circular(12.0),
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
-                      baseURL + "${snapshot.data!['postTumbnailPath']}",
+                      // baseURL
+                      spacesEndpoint + "${snapshot.data!['postTumbnailPath']}",
                       fit: BoxFit.cover,
                       alignment: Alignment.center,
                     ),

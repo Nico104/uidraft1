@@ -70,7 +70,9 @@ class _SubchannelVideoPreviewState extends State<SubchannelVideoPreview> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.network(
-                        baseURL + "${snapshot.data!['postTumbnailPath']}",
+                        // baseURL
+                        spacesEndpoint +
+                            "${snapshot.data!['postTumbnailPath']}",
                         fit: BoxFit.cover,
                         alignment: Alignment.center,
                       ),
@@ -107,7 +109,8 @@ class _SubchannelVideoPreviewState extends State<SubchannelVideoPreview> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(14.0),
                                   child: Image.network(
-                                    baseURL +
+                                    // baseURL +
+                                    spacesEndpoint +
                                         snapshot.data!['user']['userProfile']
                                             ['profilePicturePath'],
                                     fit: BoxFit.cover,

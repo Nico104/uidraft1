@@ -47,7 +47,8 @@ class _SubModMemberDetailsState extends State<SubModMemberDetails> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(14.0),
                         child: Image.network(
-                          baseURL +
+                          // baseURL +
+                          spacesEndpoint +
                               snapshot.data!['userProfile']
                                   ['profilePicturePath'],
                           fit: BoxFit.cover,

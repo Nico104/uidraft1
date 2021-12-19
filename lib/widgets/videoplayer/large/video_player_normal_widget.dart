@@ -76,15 +76,30 @@ class _VideoPlayerNormalLargeState extends State<VideoPlayerNormalLarge> {
 
     _firtTimeExternAccess = widget.firtTimeExternAccess;
 
-    streamQualityURL[240] = baseURL + widget.postData['postVideoPath240'];
+    // streamQualityURL[240] = baseURL + widget.postData['postVideoPath240'];
+    // if (widget.postData['postVideoPath480'].toString().isNotEmpty) {
+    //   streamQualityURL[480] = baseURL + widget.postData['postVideoPath480'];
+    // }
+    // if (widget.postData['postVideoPath720'].toString().isNotEmpty) {
+    //   streamQualityURL[720] = baseURL + widget.postData['postVideoPath720'];
+    // }
+    // if (widget.postData['postVideoPath1080'].toString().isNotEmpty) {
+    //   streamQualityURL[1080] = baseURL + widget.postData['postVideoPath1080'];
+    // }
+
+    streamQualityURL[240] =
+        spacesEndpoint + widget.postData['postVideoPath240'];
     if (widget.postData['postVideoPath480'].toString().isNotEmpty) {
-      streamQualityURL[480] = baseURL + widget.postData['postVideoPath480'];
+      streamQualityURL[480] =
+          spacesEndpoint + widget.postData['postVideoPath480'];
     }
     if (widget.postData['postVideoPath720'].toString().isNotEmpty) {
-      streamQualityURL[720] = baseURL + widget.postData['postVideoPath720'];
+      streamQualityURL[720] =
+          spacesEndpoint + widget.postData['postVideoPath720'];
     }
     if (widget.postData['postVideoPath1080'].toString().isNotEmpty) {
-      streamQualityURL[1080] = baseURL + widget.postData['postVideoPath1080'];
+      streamQualityURL[1080] =
+          spacesEndpoint + widget.postData['postVideoPath1080'];
     }
 
     streamQualityKeysSorted = streamQualityURL.keys.toList()
@@ -93,7 +108,9 @@ class _VideoPlayerNormalLargeState extends State<VideoPlayerNormalLarge> {
     activeQualityStream = streamQualityKeysSorted.first;
 
     _controller =
-        VideoPlayerController.network(streamQualityURL[activeQualityStream]!);
+        // VideoPlayerController.network(streamQualityURL[activeQualityStream]!);
+        VideoPlayerController.network(
+            "https://nigma.fra1.digitaloceanspaces.com/post/video/720/847784e1cc8bfb20b195df4a2ab7c28f");
 
     // Initialize the controller and store the Future for later use.
     _initializeVideoPlayerFuture = _controller.initialize().then((value) {

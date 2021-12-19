@@ -73,7 +73,9 @@ class _VideoPreviewState extends State<VideoPreview> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: Image.network(
-                          baseURL + "${snapshot.data!['postTumbnailPath']}",
+                          // baseURL + "${snapshot.data!['postTumbnailPath']}",
+                          spacesEndpoint +
+                              "${snapshot.data!['postTumbnailPath']}",
                           fit: BoxFit.cover,
                           alignment: Alignment.center,
                         ),

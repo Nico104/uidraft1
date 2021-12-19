@@ -59,6 +59,7 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>> snapshot) {
             if (snapshot.hasData) {
+              print(spacesEndpoint + "${snapshot.data!['postTumbnailPath']}");
               return Listener(
                 onPointerDown: (ev) => vputils.onPointerDown(
                     context,
@@ -97,7 +98,9 @@ class _VideoPlayerVideoPreviewState extends State<VideoPlayerVideoPreview> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12.0),
                             child: Image.network(
-                              baseURL + "${snapshot.data!['postTumbnailPath']}",
+                              // baseURL + "${snapshot.data!['postTumbnailPath']}",
+                              spacesEndpoint +
+                                  "${snapshot.data!['postTumbnailPath']}",
                               fit: BoxFit.cover,
                               alignment: Alignment.center,
                             ),

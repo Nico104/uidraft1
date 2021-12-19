@@ -33,7 +33,8 @@ class CreateProfilePreviewLargeScreen extends StatelessWidget {
                   height: 500,
                 )
               : Image.network(
-                  baseURL + 'uploads/default/defaultProfilePicture.png',
+                  // baseURL + 'uploads/default/defaultProfilePicture.png',
+                  spacesEndpoint + 'default/defaultProfilePicture.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.center,
                   width: 500,

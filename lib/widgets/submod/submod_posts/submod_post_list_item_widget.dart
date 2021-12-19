@@ -73,7 +73,9 @@ class _SubModPostListItemState extends State<SubModPostListItem> {
                                 const BorderRadius.all(Radius.circular(14)),
                             child: Image.network(
                               // baseURL + userNames.elementAt(index).elementAt(1),
-                              baseURL + snapshot.data!['postTumbnailPath'],
+                              // baseURL
+                              spacesEndpoint +
+                                  snapshot.data!['postTumbnailPath'],
                               fit: BoxFit.cover,
                               alignment: Alignment.center,
                               // width: 40,

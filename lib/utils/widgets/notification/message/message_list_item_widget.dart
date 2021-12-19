@@ -32,7 +32,8 @@ class MessageItem extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image.network(
-                      baseURL + picturePath,
+                      // baseURL
+                      spacesEndpoint + picturePath,
                       fit: BoxFit.cover,
                       alignment: Alignment.center,
                       width: 40,

@@ -950,7 +950,8 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(14)),
                                         child: Image.network(
-                                          baseURL +
+                                          // baseURL +
+                                          spacesEndpoint +
                                               snapshot.data!['postSubchannel']
                                                       ['subchannelPreview'][
                                                   'subchannelSubchannelPicturePath'],
