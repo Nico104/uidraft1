@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:uidraft1/screens/feed/feed_screen.dart';
 import 'package:uidraft1/utils/upload/post/upload_post_util_methods.dart';
 import 'package:uidraft1/utils/upload/provider/upload_status.dart';
+import 'dart:html' as html;
 
 class ProcessAndSendScreen extends StatelessWidget {
   const ProcessAndSendScreen(
@@ -113,10 +114,12 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
       print("lesgo");
       uploadPost();
 
-      // Beamer.of(context).beamToNamed('/feed');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const FeedScreen()),
+        MaterialPageRoute(
+            builder: (context) => const FeedScreen(
+                  bypassNavBarFreeing: true,
+                )),
       );
     });
   }
@@ -124,13 +127,30 @@ class _ProcessAndSendFormState extends State<ProcessAndSend> {
   @override
   Widget build(BuildContext context) {
     print("yo1");
-    return Center(
-      child: !(alreadyProcessed == toProcess)
-          ? Text(alreadyProcessed.toString() +
-              " of " +
-              toProcess.toString() +
-              " processed, please wait, do not close the Application")
-          : const Text("Post processed and uploading"),
+    return Column(
+      children: [
+        Center(
+          child: !(alreadyProcessed == toProcess)
+              ? Text(alreadyProcessed.toString() +
+                  " of " +
+                  toProcess.toString() +
+                  " processed, please wait, do not close the Application")
+              : const Text("Post processed and uploading"),
+        ),
+        // OutlinedButton(
+        //     onPressed: () {
+        //       // html.window.location.reload();
+        //       // Beamer.of(context).beamToNamed('/feed');
+        //       Navigator.pushReplacement(
+        //         context,
+        //         MaterialPageRoute(
+        //             builder: (context) => FeedScreen(
+        //                   bypassNavBarFreeing: true,
+        //                 )),
+        //       );
+        //     },
+        //     child: Text("got it"))
+      ],
     );
   }
 }

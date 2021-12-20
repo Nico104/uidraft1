@@ -8,7 +8,6 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/post/test/process_and_send_widget.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:uidraft1/widgets/subchannel/choose/choose_subchannel_dialog_large.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'package:uidraft1/widgets/uploadVideo/upload_video_feed_preview.dart';
@@ -103,16 +102,7 @@ class _UploadVideoDataFormState extends State<UploadVideoDataForm> {
               child: Container(
                 decoration: const BoxDecoration(
                   color: Colors.lightBlue,
-                  // borderRadius: BorderRadius.only(bottomRight: Radius.circular(40), topRight: Radius.circular(40))
                   borderRadius: BorderRadius.all(Radius.circular(80)),
-                  //  boxShadow: [
-                  //     BoxShadow(
-                  //       color: Colors.blue.withOpacity(0.4),
-                  //       spreadRadius: 2,
-                  //       blurRadius: 25,
-                  //       offset: const Offset(0, 7), // changes position of shadow
-                  //     ),
-                  //   ],
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(

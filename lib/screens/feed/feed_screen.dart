@@ -5,7 +5,12 @@ import 'package:uidraft1/widgets/feed/feedGrid/feed_grid_large_widget.dart';
 import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 
 class FeedScreen extends StatefulWidget {
-  const FeedScreen({Key? key}) : super(key: key);
+  const FeedScreen({
+    Key? key,
+    this.bypassNavBarFreeing = false,
+  }) : super(key: key);
+
+  final bool bypassNavBarFreeing;
 
   @override
   _FeedState createState() => _FeedState();
@@ -23,7 +28,8 @@ class _FeedState extends State<FeedScreen> {
   Widget _navbar = const EmptyNavBarLarge();
 
   void initNavBar() async {
-    if (NavBarLarge.globalKey.currentState == null) {
+    if (NavBarLarge.globalKey.currentState == null ||
+        widget.bypassNavBarFreeing) {
       setState(() {
         _navbar = NavBarLarge(
           setActiveFeed: setActiveFeedTo,
@@ -32,6 +38,7 @@ class _FeedState extends State<FeedScreen> {
         );
       });
     } else {
+      print("not free");
       await Future.delayed(const Duration(milliseconds: 30), () {});
       initNavBar();
     }
