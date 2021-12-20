@@ -18,6 +18,7 @@ void showPostUploadDialog(BuildContext context) {
         MaterialPageRoute(
             builder: (context) => UploadVideoScreen(
                   videoBytes: value,
+                  bypassNavBarFreeing: true,
                 )),
       );
     } else {

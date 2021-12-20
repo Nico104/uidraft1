@@ -8,10 +8,14 @@ import 'package:uidraft1/widgets/navbar/navbar_large_widget.dart';
 import 'package:uidraft1/widgets/uploadVideo/large/upload_video_data_large_widget.dart';
 
 class UploadVideoScreen extends StatefulWidget {
-  const UploadVideoScreen({Key? key, required this.videoBytes})
-      : super(key: key);
+  const UploadVideoScreen({
+    Key? key,
+    required this.videoBytes,
+    this.bypassNavBarFreeing = false,
+  }) : super(key: key);
 
   final Uint8List videoBytes;
+  final bool bypassNavBarFreeing;
 
   @override
   _UploadVideoState createState() => _UploadVideoState();
@@ -21,10 +25,11 @@ class _UploadVideoState extends State<UploadVideoScreen> {
   Widget _navbar = const EmptyNavBarLarge();
 
   void initNavBar() async {
-    if (NavBarLarge.globalKey.currentState == null) {
+    if (NavBarLarge.globalKey.currentState == null ||
+        widget.bypassNavBarFreeing) {
       setState(() {
         _navbar = NavBarLarge(
-          notification: false,
+          // notification: false,
           customFeed: false,
           setActiveFeed: (i) {},
           activeFeed: 0,
