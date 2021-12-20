@@ -82,9 +82,8 @@ Future<void> postUploadProgress(
     UploadStatus uploadStatus) async {
   int _uploadStatusIndex = uploadStatus.addUploadProcess(postTitle);
 
-  //TODO chnage back to correct url
-  // String urlFileStore = uploadServerBaseURL + 'post/uploadPostWithData';
-  String urlFileStore = 'test';
+  String urlFileStore = uploadServerBaseURL + 'post/uploadPostWithData';
+  // String urlFileStore = 'test';
   String token = await getToken() ?? "";
 
   dartio.BaseOptions options = dartio.BaseOptions(
