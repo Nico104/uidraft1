@@ -40,8 +40,7 @@ class _SignUpLargeState extends State<SignUpLarge> {
   FocusNode fnUserpassword = FocusNode();
   FocusNode fnUserControlpassword = FocusNode();
 
-  String titleText =
-      "It is a long established fact that a reader will be distracted by the readable content of a page when Looking";
+  String titleText = "Thank you for signing up";
 
   @override
   void dispose() {
