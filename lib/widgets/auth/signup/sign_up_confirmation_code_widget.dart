@@ -142,6 +142,18 @@ class _SignUpConfirmationCodeLargeState
     }
   }
 
+  void clearCodeDigits() {
+    setState(() {
+      _codeDigitOneController.clear();
+      _codeDigitTwoController.clear();
+      _codeDigitThreeController.clear();
+      _codeDigitFourController.clear();
+      _codeDigitFiveController.clear();
+      _codeDigitSixController.clear();
+    });
+    fnCodeDigitOne.requestFocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -330,6 +342,8 @@ class _SignUpConfirmationCodeLargeState
                             }
 
                             print("Resending was: " + succ.toString());
+
+                            clearCodeDigits();
                           },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
