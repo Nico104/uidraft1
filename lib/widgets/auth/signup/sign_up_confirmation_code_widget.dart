@@ -170,7 +170,7 @@ class _SignUpConfirmationCodeLargeState
               SizedBox(
                 width: 270,
                 child: Text(
-                  "please verify your Email",
+                  "please verify your Email\nby entering the code we send you",
                   style: TextStyle(
                     fontFamily: 'Segoe UI',
                     fontWeight: FontWeight.bold,
