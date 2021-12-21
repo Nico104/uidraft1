@@ -48,7 +48,7 @@ class _SignUpConfirmationCodeLargeState
   final TextEditingController _codeDigitSixController = TextEditingController();
 
   String titleText =
-      "It is a long established fact that a reader will be distracted by the readable content of a page when Looking";
+      "Hey, you, you're finally awake.\nYou should have received an Email with a 6 digit verification code.\nPlease enter the code below.\nThanks for signing up";
 
   //FocusNodes
   FocusNode fnCodeDigitOne = FocusNode();
@@ -170,7 +170,7 @@ class _SignUpConfirmationCodeLargeState
               SizedBox(
                 width: 270,
                 child: Text(
-                  "please verify your Email\nby entering the code we send you",
+                  "Please verify your Email",
                   style: TextStyle(
                     fontFamily: 'Segoe UI',
                     fontWeight: FontWeight.bold,
