@@ -1,10 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:beamer/beamer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
-import 'package:uidraft1/screens/uploadVideo/upload_video_screen.dart';
+import 'package:video_player/video_player.dart';
 
 class UploadVideoDialog extends StatefulWidget {
   const UploadVideoDialog({Key? key}) : super(key: key);
@@ -51,6 +52,10 @@ class _UploadVideoDialogState extends State<UploadVideoDialog> {
                   result = await FilePicker.platform
                       .pickFiles(type: FileType.video, allowMultiple: false);
                   if (result!.files.first.bytes != null) {
+                    //!Test Check Video lenght
+                    // VideoPlayerController controller = VideoPlayerController.
+                    // File file = utf8.decode(result!.files.first.bytes);
+
                     Navigator.pop<Uint8List>(
                         context, result!.files.first.bytes!);
                   } else {

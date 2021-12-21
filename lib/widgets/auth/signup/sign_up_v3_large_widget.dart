@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/widgets/auth/signup/sign_up_confirmation_code_widget.dart';
 import 'package:uidraft1/widgets/auth/signup/sign_up_large_widget.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpV3LargeScreen extends StatefulWidget {
   const SignUpV3LargeScreen({Key? key}) : super(key: key);
@@ -58,6 +60,8 @@ class _SignUpV3LargeScreenState extends State<SignUpV3LargeScreen> {
               username: _username,
               useremail: _useremail,
               changeEmail: () => changeEmail.call(),
+              resendVerificationCode: (client) =>
+                  resendVerificationCode(client),
             )),
       );
     } else {
@@ -73,6 +77,15 @@ class _SignUpV3LargeScreenState extends State<SignUpV3LargeScreen> {
           ),
         ),
       );
+    }
+  }
+
+  Future<bool> resendVerificationCode(http.Client client) async {
+    if (_useremail.isNotEmpty && _username.isNotEmpty && _password.isNotEmpty) {
+      return await createPendingAccount(_useremail, client);
+    } else {
+      print("User SignUp Data is empty. Cannot create Pending Account");
+      return false;
     }
   }
 }

@@ -12,13 +12,16 @@ import 'package:uidraft1/utils/constants/global_constants.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
 import 'package:uidraft1/utils/widgets/auth/code_input_field_large_widget.dart';
 
+enum ReSend { neutral, loading, resended, error }
+
 class SignUpConfirmationCodeLarge extends StatefulWidget {
   const SignUpConfirmationCodeLarge(
       {Key? key,
       required this.password,
       required this.username,
       required this.useremail,
-      required this.changeEmail})
+      required this.changeEmail,
+      required this.resendVerificationCode})
       : super(key: key);
 
   final String password;
@@ -26,6 +29,8 @@ class SignUpConfirmationCodeLarge extends StatefulWidget {
   final String useremail;
 
   final Function() changeEmail;
+
+  final Function(http.Client) resendVerificationCode;
 
   @override
   _SignUpConfirmationCodeLargeState createState() =>
@@ -57,6 +62,9 @@ class _SignUpConfirmationCodeLargeState
   FocusNode fnCodeDigitFour = FocusNode();
   FocusNode fnCodeDigitFive = FocusNode();
   FocusNode fnCodeDigitSix = FocusNode();
+
+  //ReSend
+  ReSend _currentResendStatus = ReSend.neutral;
 
   @override
   void initState() {
@@ -121,18 +129,16 @@ class _SignUpConfirmationCodeLargeState
 
     if (response.statusCode == 201) {
       print("yes");
-
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const AuthScreen(
-      //       isLoginInitial: true,
-      //       firstTimeLogin: true,
-      //     ),
-      //   ),
-      // );
     } else {
       print("nope");
+    }
+  }
+
+  void setReSendStatusTo(ReSend newStatus) {
+    if (mounted) {
+      setState(() {
+        _currentResendStatus = newStatus;
+      });
     }
   }
 
@@ -303,17 +309,49 @@ class _SignUpConfirmationCodeLargeState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    //TODO Resend email
-                    Text(
-                      "Re-send",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontFamily: 'Segoe UI',
-                        fontSize: 16,
-                        color:
-                            Theme.of(context).colorScheme.textInputCursorColor,
-                      ),
-                      textAlign: TextAlign.center,
+                    Consumer<ConnectionService>(
+                      builder: (context, connection, _) {
+                        return InkWell(
+                          onTap: () async {
+                            setReSendStatusTo(ReSend.loading);
+
+                            Future<bool> succFu = widget.resendVerificationCode
+                                .call(connection.returnConnection());
+
+                            bool succ = await succFu;
+
+                            await Future.delayed(
+                                const Duration(milliseconds: 500));
+
+                            if (succ) {
+                              setReSendStatusTo(ReSend.resended);
+                            } else {
+                              setReSendStatusTo(ReSend.error);
+                            }
+
+                            print("Resending was: " + succ.toString());
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Re-send",
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontFamily: 'Segoe UI',
+                                  fontSize: 16,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .textInputCursorColor,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(width: 4),
+                              getResendStatusIcon(_currentResendStatus)
+                            ],
+                          ),
+                        );
+                      },
                     ),
                     Text(
                       " email or ",
@@ -325,8 +363,6 @@ class _SignUpConfirmationCodeLargeState
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    //! Takes User back to SignUp but with all fields filled again, except email and set focus on email field
-                    //TODO testen
                     InkWell(
                       onTap: () => widget.changeEmail.call(),
                       child: Text(
@@ -431,4 +467,33 @@ class _SignUpConfirmationCodeLargeState
 void handleDelete(FocusNode fn, TextEditingController tctrl) {
   tctrl.clear();
   fn.requestFocus();
+}
+
+Widget getResendStatusIcon(ReSend status) {
+  switch (status) {
+    case ReSend.neutral:
+      return const SizedBox();
+    case ReSend.loading:
+      return const SizedBox(
+        height: 12,
+        width: 12,
+        child: CircularProgressIndicator(),
+      );
+    case ReSend.resended:
+      return Container(
+        padding: const EdgeInsets.all(1),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(width: 1, color: Colors.blue)),
+        child: const Icon(Icons.check, color: Colors.blue, size: 12),
+      );
+    case ReSend.error:
+      return Container(
+        padding: const EdgeInsets.all(1),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(width: 1, color: Colors.red)),
+        child: const Icon(Icons.error, color: Colors.red, size: 12),
+      );
+  }
 }
