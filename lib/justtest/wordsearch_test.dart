@@ -3,9 +3,10 @@ import 'dart:ui';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:uidraft1/justtest/glassmorphism.dart';
+import 'package:uidraft1/uiwidgets/shadows/inner_shadow_class.dart';
 import 'package:uidraft1/uiwidgets/textfields/search_textfield/search_textformfield_widget.dart';
 import 'package:uidraft1/uiwidgets/textfields/textformfield_normal_widget.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
@@ -83,17 +84,81 @@ class _WordSearchTestState extends State<WordSearchTest> {
             )),
         Flexible(
           flex: 6,
+          // child: Padding(
+          //   padding: const EdgeInsets.only(top: 15),
+          //   // child: SearchBarTest(
+          //   //   searchBarController: controller,
+          //   // ),
+          //   child: Image.network(
+          //     // baseURL + "${snapshot.data!['postTumbnailPath']}",
+          //     spacesEndpoint +
+          //         "post/thumbnail/eae36a5d7f265d16015eeacdaab92ee6",
+          //     fit: BoxFit.cover,
+          //     alignment: Alignment.center,
+          //   ),
+          // ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 15),
-            // child: SearchBarTest(
-            //   searchBarController: controller,
-            // ),
-            child: Image.network(
-              // baseURL + "${snapshot.data!['postTumbnailPath']}",
-              spacesEndpoint +
-                  "post/thumbnail/eae36a5d7f265d16015eeacdaab92ee6",
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
+            padding: const EdgeInsets.all(16.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+              child: ClipRRect(
+                borderRadius: BorderRadius.vertical(
+                  // bottom: Radius.elliptical(
+                  //     MediaQuery.of(context).size.width, 100.0),
+                  bottom: Radius.elliptical(200, 5.0),
+                  top: Radius.elliptical(200, 5.0),
+                  // right: Radius.elliptical(200, 10.0),
+                  // left: Radius.elliptical(200, 10.0),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.horizontal(
+                    // bottom: Radius.elliptical(
+                    //     MediaQuery.of(context).size.width, 100.0),
+                    // bottom: Radius.elliptical(200, 10.0),
+                    // top: Radius.elliptical(200, 10.0),
+                    right: Radius.elliptical(5, 200.0),
+                    left: Radius.elliptical(5, 200.0),
+                  ),
+                  child: InnerShadow(
+                    blur: 16,
+                    offset: const Offset(-3, -8),
+                    color: Colors.black38.withOpacity(0.3),
+                    child: InnerShadow(
+                      blur: 16,
+                      offset: const Offset(3, 8),
+                      color: Colors.white12.withOpacity(0.2),
+                      child: InnerShadow(
+                        blur: 48,
+                        offset: const Offset(-8, -3),
+                        color: Colors.black12.withOpacity(0.2),
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.8),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(42)),
+                            child: Container(
+                              height: 200.0,
+                              // color: Colors.red,
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                // gradient: LinearGradient(
+                                //   colors: [
+                                //     Colors.blue.shade800.withOpacity(0.7),
+                                //     Colors.blue.shade800.withOpacity(0.95),
+                                //     // Colors.black.withOpacity(start),
+                                //     // Colors.black.withOpacity(end),
+                                //   ],
+                                //   begin: AlignmentDirectional.topStart,
+                                //   end: AlignmentDirectional.bottomEnd,
+                                // ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -270,14 +335,14 @@ class _SearchBarTestState extends State<SearchBarTest> {
   // void _hitBump() => _bump?.fire();
 
   // SMITrigger? _bump;
-  SMIBool? onHover;
+  rive.SMIBool? onHover;
 
-  void _onRiveInit(Artboard artboard) {
+  void _onRiveInit(rive.Artboard artboard) {
     final controller =
-        StateMachineController.fromArtboard(artboard, 'controller');
+        rive.StateMachineController.fromArtboard(artboard, 'controller');
     artboard.addController(controller!);
     // _bump = controller.findInput<bool>('bump') as SMITrigger;
-    onHover = controller.findInput<bool>('onHover') as SMIBool;
+    onHover = controller.findInput<bool>('onHover') as rive.SMIBool;
   }
 
   // void _hitBump() => _bump?.fire();
@@ -296,7 +361,7 @@ class _SearchBarTestState extends State<SearchBarTest> {
           //   fit: BoxFit.cover,
           //   onInit: _onRiveInit,
           // ),
-          child: RiveAnimation.asset(
+          child: rive.RiveAnimation.asset(
             'assets/animations/rive/hoverAnim.riv',
             // fit: BoxFit.cover,
             onInit: _onRiveInit,
@@ -429,15 +494,15 @@ class SLiderTestAnimRive extends StatefulWidget {
 }
 
 class _SLiderTestAnimRiveState extends State<SLiderTestAnimRive> {
-  SMINumber? _level;
+  rive.SMINumber? _level;
   double _value = 10;
 
-  void _onRiveInit(Artboard artboard) {
+  void _onRiveInit(rive.Artboard artboard) {
     final controller =
-        StateMachineController.fromArtboard(artboard, 'State Machine');
+        rive.StateMachineController.fromArtboard(artboard, 'State Machine');
     artboard.addController(controller!);
     // _bump = controller.findInput<bool>('bump') as SMITrigger;
-    _level = controller.findInput<double>('Level') as SMINumber;
+    _level = controller.findInput<double>('Level') as rive.SMINumber;
     _level!.change(10);
     // _level!.change(10);
     // _level!.value = 10;
@@ -457,7 +522,7 @@ class _SLiderTestAnimRiveState extends State<SLiderTestAnimRive> {
       children: [
         SizedBox(
           height: 800,
-          child: RiveAnimation.asset(
+          child: rive.RiveAnimation.asset(
             'assets/animations/rive/water_bar_demo.riv',
             fit: BoxFit.cover,
             onInit: _onRiveInit,
