@@ -73,38 +73,6 @@ class _StudioState extends State<StudioScreen> {
   PreferredSize getLargeNavBar() {
     return const PreferredSize(
         preferredSize: Size.fromHeight(70),
-        // child: Container(
-        //   child: Row(
-        //     textDirection: _isLeftHand ? TextDirection.rtl : TextDirection.ltr,
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     crossAxisAlignment: CrossAxisAlignment.center,
-        //     children: [
-        //       Text(
-        //         "LOGO",
-        //         style: TextStyle(
-        //             fontFamily: 'Segoe UI Black',
-        //             fontSize: 28,
-        //             color: Theme.of(context).colorScheme.brandColor),
-        //       ),
-        //       Row(
-        //         children: [
-        //           //LeftHand Switch
-        //           IconButton(
-        //             icon: Icon(
-        //               _isLeftHand ? Icons.switch_left : Icons.switch_right,
-        //               color: Theme.of(context).colorScheme.navBarIconColor,
-        //               size: 24,
-        //             ),
-        //             onPressed: () => setState(() {
-        //               _isLeftHand = !_isLeftHand;
-        //             }),
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // child: NavBarLargeProfile());
         child:
             Align(alignment: Alignment.topCenter, child: NavBarLargeStudio()));
   }

@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uidraft1/uiwidgets/navicons/dark_mode_switcher_icon.dart';
 import 'package:uidraft1/utils/auth/authentication_global.dart';
 import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:http/http.dart' as http;
@@ -137,13 +138,7 @@ class _NavBarLargeStudioState extends State<NavBarLargeStudio> {
                                         width: 25,
                                       ),
                                       //Dark Light Mode Switch
-                                      Icon(
-                                        Icons.dark_mode_outlined,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .navBarIconColor,
-                                        size: 24,
-                                      ),
+                                      const DarkModeSwitcherIcon(),
                                       const SizedBox(
                                         width: 28,
                                       ),

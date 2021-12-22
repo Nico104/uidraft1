@@ -7,7 +7,7 @@ import 'package:uidraft1/utils/constants/custom_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:uidraft1/utils/metrics/post/post_util_methods.dart';
 import 'package:uidraft1/utils/network/http_client.dart';
-import 'package:uidraft1/utils/studio/studio_util_methods.dart' as studioUtils;
+import 'package:uidraft1/utils/studio/studio_util_methods.dart' as _studioUtils;
 import 'package:uidraft1/utils/util_methods.dart';
 import 'package:uidraft1/widgets/tag/tag_grid_widget.dart';
 import 'dart:html' as html;
@@ -62,6 +62,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
   }
 
   void initTagList(List<dynamic> tagsJson) {
+    tagList.clear();
     for (var element in tagsJson) {
       print("Tag: " + element['tagName']);
       tagList.add(element['tagName']);
@@ -72,7 +73,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
   Widget build(BuildContext context) {
     return Consumer<ConnectionService>(builder: (context, connection, _) {
       return FutureBuilder(
-          future: studioUtils
+          future: _studioUtils
               .fetchPostStudioMetrics(
                   widget.postId, connection.returnConnection())
               .then((value) {
@@ -316,7 +317,8 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                                                     )
                                                                   : Image
                                                                       .network(
-                                                                      baseURL +
+                                                                      // baseURL +
+                                                                      spacesEndpoint +
                                                                           snapshot
                                                                               .data!['postTumbnailPath'],
                                                                       fit: BoxFit
@@ -421,7 +423,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                           .then((value) => {
                                                 if (value == "delete")
                                                   {
-                                                    studioUtils
+                                                    _studioUtils
                                                         .deletePost(
                                                             widget.postId,
                                                             connection
@@ -475,7 +477,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                         ),
                                         onPressed: () {
                                           print(snapshot.data!['isPublished']);
-                                          studioUtils
+                                          _studioUtils
                                               .updatePostPublicity(
                                                   widget.postId,
                                                   snapshot.data!['isPublished'],
@@ -531,7 +533,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                           validateForm()
                                               ? setState(() {
                                                   // print("submit");
-                                                  studioUtils.updatePostData(
+                                                  _studioUtils.updatePostData(
                                                       widget.postId,
                                                       _postTitleTextController
                                                           .text,
@@ -547,7 +549,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                                               (thumbnailPreview != null)
                                                   .toString());
                                           if (thumbnailPreview != null) {
-                                            studioUtils.updatePostThumbnail(
+                                            _studioUtils.updatePostThumbnail(
                                                 widget.postId,
                                                 thumbnailPreview!);
                                           }
@@ -763,9 +765,10 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
                               ),
                               //Post Avergae Whatchtime - Absolut Whatchtime
                               FutureBuilder(
-                                  future: studioUtils.getPostAbsoluteWhatchtime(
-                                      widget.postId,
-                                      connection.returnConnection()),
+                                  future:
+                                      _studioUtils.getPostAbsoluteWhatchtime(
+                                          widget.postId,
+                                          connection.returnConnection()),
                                   builder: (BuildContext context,
                                       AsyncSnapshot<int> snapshotWhatchtime) {
                                     if (snapshotWhatchtime.hasData) {
@@ -1026,7 +1029,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
           style: const TextStyle(fontFamily: "Segoe UI", fontSize: 16),
         ),
         onDeleted: () {
-          studioUtils
+          _studioUtils
               .removePostTag(widget.postId, tagList.elementAt(index), client)
               .then((_) {
             setState(() {
@@ -1047,7 +1050,7 @@ class _StudioPostMetricsState extends State<StudioPostMetrics> {
             builder: (context) => const TagGridLargeScreen(),
           ).then((value) {
             if (!tagList.contains(value.toString()) && value != null) {
-              studioUtils
+              _studioUtils
                   .addPostTag(widget.postId, value.toString(), client)
                   .then((_) {
                 setState(() {
