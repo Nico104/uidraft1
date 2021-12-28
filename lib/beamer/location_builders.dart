@@ -94,7 +94,7 @@ final simpleLocationBuilder = SimpleLocationBuilder(
     },
 
     //For extern calls
-    '/whatch/:postId': (context, state) {
+    '/watch/:postId': (context, state) {
       String postId =
           (context.currentBeamLocation.state).pathParameters['postId']!;
 

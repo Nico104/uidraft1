@@ -31,7 +31,7 @@ Future<void> onPointerDown(BuildContext context, PointerDownEvent event,
     // Check if menu item clicked
     switch (menuItem) {
       case 1:
-        launchURL("http://localhost:55555/#/whatch/$postId");
+        launchURL("http://localhost:55555/#/watch/$postId");
         break;
       case 2:
         launchURL("http://localhost:55555/#/subchannel/$subchannelName");
@@ -42,7 +42,7 @@ Future<void> onPointerDown(BuildContext context, PointerDownEvent event,
       default:
     }
   } else if (event.kind == PointerDeviceKind.mouse && event.buttons == 4) {
-    launchURL("http://localhost:55555/#/whatch/$postId");
+    launchURL("http://localhost:55555/#/watch/$postId");
   }
 }
 

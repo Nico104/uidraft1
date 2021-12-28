@@ -58,16 +58,24 @@ class CommentReplyTextFormField extends StatelessWidget {
         minLines: 1,
         maxLines: 20,
         decoration: InputDecoration(
-          suffixIcon: IconButton(
-              icon: const Icon(
-                Icons.send,
-                color: Colors.white70,
-              ),
-              onPressed: () => sendReplyComment(commentpostId, commentId,
-                          _commentTextController.text.trim(), client)
-                      .then((value) {
-                    afterReplySend.call();
-                  })),
+          // suffixIcon: IconButton(
+          //     icon: const Icon(
+          //       Icons.send,
+          //       color: Colors.white70,
+          //     ),
+          //     onPressed: () => sendReplyComment(commentpostId, commentId,
+          //                 _commentTextController.text.trim(), client)
+          //             .then((value) {
+          //           afterReplySend.call();
+          //         })),
+          suffix: InkWell(
+            onTap: () {
+              _commentTextController.text += '\n';
+              _commentTextController.selection = TextSelection.fromPosition(
+                  TextPosition(offset: _commentTextController.text.length));
+            },
+            child: const Icon(Icons.segment),
+          ),
           labelText: "Reply to comment",
           labelStyle: const TextStyle(
               fontFamily: "Segoe UI", color: Colors.white38, fontSize: 14),

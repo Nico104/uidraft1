@@ -135,7 +135,7 @@ class _VideoPlayerNormalLargeState extends State<VideoPlayerNormalLarge> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (!widget.firtTimeExternAccess) {
         window.history.replaceState(null, 'VideoPlayer',
-            '#/whatch/' + widget.postData['postId'].toString());
+            '#/watch/' + widget.postData['postId'].toString());
       }
     });
   }

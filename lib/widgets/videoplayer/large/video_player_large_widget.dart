@@ -278,7 +278,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (!widget.firtTimeExternAccess) {
         window.history.replaceState(null, 'VideoPlayer',
-            '#/whatch/' + widget.postData['postId'].toString());
+            '#/watch/' + widget.postData['postId'].toString());
       }
     });
   }
@@ -674,7 +674,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerHome> {
                                                               InkWell(
                                                                 onTap: () {
                                                                   Clipboard.setData(ClipboardData(
-                                                                          text: "http://localhost:55555/#/whatch/" +
+                                                                          text: "http://localhost:55555/#/watch/" +
                                                                               widget.postData['postId']
                                                                                   .toString()))
                                                                       .then((_) =>

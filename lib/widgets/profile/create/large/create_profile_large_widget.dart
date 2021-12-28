@@ -278,7 +278,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
                                         child: const Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: Text(
-                                            "Delet Profile Picture",
+                                            "Delete Profile Picture",
                                             style: TextStyle(
                                                 fontFamily: 'Sogeo UI',
                                                 fontSize: 14,
