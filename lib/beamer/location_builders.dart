@@ -3,6 +3,7 @@ import 'package:beamer/beamer.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:uidraft1/admin%20tools/create_tag.dart';
 import 'package:uidraft1/error/error_feed_widget.dart';
+import 'package:uidraft1/justtest/color_test.dart';
 import 'package:uidraft1/justtest/wordsearch_test.dart';
 import 'package:uidraft1/main.dart';
 import 'package:uidraft1/screens/auth/auth_screen.dart';
@@ -172,6 +173,12 @@ final simpleLocationBuilder = SimpleLocationBuilder(
           child: const PostSliderV1(
             postId: 1,
           ),
+        ),
+
+    'color': (context, state) => BeamPage(
+          key: const ValueKey('color'),
+          title: 'color',
+          child: const ColorTest(),
         ),
 
     'search/:search': (context, state) {

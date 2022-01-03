@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 extension CustomColorScheme on ColorScheme {
   Color get brandColor => brightness == Brightness.light
-      ? const Color(0xFFF9005D)
+      // ? const Color(0xFFF9005D)
+      ? const Color(0xFF7A56FF)
       // ? const Color(0xFFBC023B)
       // ? const Color(0xFFffe135)
       // : const Color(0xFFBC023B);
-      : const Color(0xFFF9005D);
+      // : const Color(0xFFF9005D);
+      : const Color(0xFF7A56FF);
   //!des do
   // : const Color(0xFFAF69EF);
 
